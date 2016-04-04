@@ -8,7 +8,7 @@
 
 import UIKit
 import SIMChat
-import ImSDK
+//import ImSDK
 
 class ExConversation: SIMChatBaseConversation {
     
