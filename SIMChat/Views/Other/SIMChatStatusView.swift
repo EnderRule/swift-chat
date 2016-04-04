@@ -38,7 +38,7 @@ class SIMChatStatusView: SIMControl {
                 case .Failed:
                     let btn = showView as? UIButton ?? UIButton()
                     btn.setImage(SIMChatImageManager.messageFail, forState: .Normal)
-                    btn.addTarget(self, action: "onRetry:", forControlEvents: .TouchUpInside)
+                    btn.addTarget(self, action: #selector(self.dynamicType.onRetry(_:)), forControlEvents: .TouchUpInside)
                     nv = btn
                 default:
                     break

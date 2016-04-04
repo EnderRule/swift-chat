@@ -8,7 +8,7 @@
 
 import UIKit
 import SIMChat
-import ImSDK
+//import ImSDK
 
 class ExManager: SIMChatBaseManager {
 //    private class Listener: NSObject, TIMMessageListener {
@@ -136,12 +136,12 @@ class ExManager: SIMChatBaseManager {
 //    }
 //}
 
-extension SIMChatUserType {
-    func toConversationType() -> TIMConversationType {
-        switch self {
-        case User:      return .C2C
-        case Group:     return .GROUP
-        case System:    return .SYSTEM
-        }
-    }
-}
+//extension SIMChatUserType {
+//    func toConversationType() -> TIMConversationType {
+//        switch self {
+//        case User:      return .C2C
+//        case Group:     return .GROUP
+//        case System:    return .SYSTEM
+//        }
+//    }
+//}

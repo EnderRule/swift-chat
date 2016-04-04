@@ -38,14 +38,14 @@ internal class SIMChatPhotoPickerAssets: UICollectionViewController, UICollectio
         assert(album != nil, "Album can't empty!")
         
         title = album?.title
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "onCancel:")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Done, target: nil, action: "")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dynamicType.onCancel(_:)))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Done, target: nil, action: nil)
         
         if picker?.allowsMultipleSelection ?? false {
-            let s1 = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
-            let i1 = UIBarButtonItem(title: "预览", style: .Plain, target: self, action: "onPreview:")
+            let s1 = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            let i1 = UIBarButtonItem(title: "预览", style: .Plain, target: self, action: #selector(self.dynamicType.onPreview(_:)))
             let i3 = UIBarButtonItem(customView: originButton)
-            let i4 = UIBarButtonItem(title: "发送(0)", style: .Done, target: self, action: "onSend:")
+            let i4 = UIBarButtonItem(title: "发送(0)", style: .Done, target: self, action: #selector(self.dynamicType.onSend(_:)))
             
             i1.width = 32
             i4.width = 48
@@ -59,7 +59,7 @@ internal class SIMChatPhotoPickerAssets: UICollectionViewController, UICollectio
 //        collectionView?.canCancelContentTouches = true
         
         // 添加手势
-        let pan = UIPanGestureRecognizer(target: self, action: "onSelectItems:")
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.dynamicType.onSelectItems(_:)))
         pan.delegate = self
         pan.enabled = picker?.allowsMultipleSelection ?? false
         collectionView?.panGestureRecognizer.requireGestureRecognizerToFail(pan)
@@ -69,7 +69,11 @@ internal class SIMChatPhotoPickerAssets: UICollectionViewController, UICollectio
         selectedCountChanged(picker?.selectedItems.count ?? 0)
         
         // 监听
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onSelectedCountChangedNTF:", name: SIMChatPhotoPickerCountDidChangedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(self.dynamicType.onSelectedCountChangedNTF(_:)),
+            name: SIMChatPhotoPickerCountDidChangedNotification,
+            object: nil)
     }
     
     /// 视图将要显示
@@ -218,7 +222,7 @@ internal class SIMChatPhotoPickerAssets: UICollectionViewController, UICollectio
         btn.sizeToFit()
         btn.frame = CGRectMake(0, 0, btn.bounds.width + 8, btn.bounds.height)
         
-        btn.addTarget(self, action: "onOrigin:", forControlEvents: .TouchUpInside)
+        btn.addTarget(self, action: #selector(self.dynamicType.onOrigin(_:)), forControlEvents: .TouchUpInside)
         
         return btn
     }()
@@ -339,7 +343,7 @@ extension SIMChatPhotoPickerAssets {
             contentView.addSubview(markView)
             
             // 添加点击手势
-            let tap = UITapGestureRecognizer(target: self, action: "onSelectItem:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onSelectItem(_:)))
             tap.delegate = self
             contentView.addGestureRecognizer(tap)
         }
@@ -621,9 +625,9 @@ extension SIMChatPhotoPickerAssets : UIGestureRecognizerDelegate {
             // 需要修改
             if let type = selectedType where cell.mark != rmark {
                 if type {
-                    count++
+                    count += 1
                 } else {
-                    count--
+                    count -= 1
                 }
             }
         }

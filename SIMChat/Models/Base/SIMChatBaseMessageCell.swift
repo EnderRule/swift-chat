@@ -38,8 +38,8 @@ public class SIMChatBaseMessageBubbleCell: UITableViewCell, SIMChatMessageCellPr
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         _bubbleMenuItems = [
-            UIMenuItem(title: "删除", action: "_removeMessage:"),
-            UIMenuItem(title: "撤销", action: "_revokeMessage:")
+            UIMenuItem(title: "删除", action: #selector(self.dynamicType._removeMessage(_:))),
+            UIMenuItem(title: "撤销", action: #selector(self.dynamicType._revokeMessage(_:)))
         ]
         
         // TODO: 有性能问题, 需要重新实现
@@ -204,10 +204,10 @@ public class SIMChatBaseMessageBubbleCell: UITableViewCell, SIMChatMessageCellPr
     public func initEvents() {
 //        SIMLog.trace()
         
-        SIMChatNotificationCenter.addObserver(self, selector: "userInfoDidChange:", name: SIMChatUserInfoDidChangeNotification)
-        SIMChatNotificationCenter.addObserver(self, selector: "statusDidChange:", name: SIMChatMessageStatusChangedNotification)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.userInfoDidChange(_:)), name: SIMChatUserInfoDidChangeNotification)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.statusDidChange(_:)), name: SIMChatMessageStatusChangedNotification)
         
-        stateView.addTarget(self, action: "statusDidPressRetry:", forControlEvents: .TouchUpInside)
+        stateView.addTarget(self, action: #selector(self.dynamicType.statusDidPressRetry(_:)), forControlEvents: .TouchUpInside)
         
         _bubbleGRP.delegate = self
         _bubbleGRLP.delegate = self
@@ -241,11 +241,19 @@ public class SIMChatBaseMessageBubbleCell: UITableViewCell, SIMChatMessageCellPr
     public weak var delegate: protocol<SIMChatMessageCellDelegate, SIMChatMessageCellMenuDelegate>?
     
     
-    private lazy var _bubbleGRP: UIGestureRecognizer = UITapGestureRecognizer(target: self, action: "bubbleDidPress:")
-    private lazy var _bubbleGRLP: UIGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "bubbleDidLongPress:")
+    private lazy var _bubbleGRP: UIGestureRecognizer = {
+        return UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.bubbleDidPress(_:)))
+    }()
+    private lazy var _bubbleGRLP: UIGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(self.dynamicType.bubbleDidLongPress(_:)))
+    }()
     
-    private lazy var _portraitGRP: UIGestureRecognizer = UITapGestureRecognizer(target: self, action: "portraitDidPress:")
-    private lazy var _portraitGRLP: UIGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "portraitDidLongPress:")
+    private lazy var _portraitGRP: UIGestureRecognizer = {
+        return UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.portraitDidPress(_:)))
+    }()
+    private lazy var _portraitGRLP: UIGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(self.dynamicType.portraitDidLongPress(_:)))
+    }()
 }
 
 
@@ -300,7 +308,7 @@ extension SIMChatBaseMessageBubbleCell {
     }
     
     
-    private dynamic func _copyMessage(sender: AnyObject) {
+    internal dynamic func _copyMessage(sender: AnyObject) {
         guard let message = model else {
             return
         }
@@ -308,7 +316,7 @@ extension SIMChatBaseMessageBubbleCell {
             delegate?.cellMenu(self, didCopyMessage: message)
         }
     }
-    private dynamic func _removeMessage(sender: AnyObject) {
+    internal dynamic func _removeMessage(sender: AnyObject) {
         guard let message = model else {
             return
         }
@@ -316,7 +324,7 @@ extension SIMChatBaseMessageBubbleCell {
             delegate?.cellMenu(self, didRemoveMessage: message)
         }
     }
-    private dynamic func _revokeMessage(sender: AnyObject) {
+    internal dynamic func _revokeMessage(sender: AnyObject) {
         guard let message = model else {
             return
         }

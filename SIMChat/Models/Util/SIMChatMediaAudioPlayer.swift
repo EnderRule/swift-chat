@@ -16,7 +16,7 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         super.init()
         
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "audioPlayerDidInterruption:",
+            selector: #selector(self.dynamicType.audioPlayerDidInterruption(_:)),
             name: AVAudioSessionInterruptionNotification,
             object: nil)
         

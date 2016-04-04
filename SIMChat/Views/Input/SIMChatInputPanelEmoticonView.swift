@@ -156,7 +156,7 @@ internal class SIMChatInputPanelEmoticonView: UIView, SIMChatInputPanelProtocol 
         view.contentEdgeInsets = UIEdgeInsetsMake(0, 16, 0, 16)
         view.setTitle("发送", forState: .Normal)
         view.setBackgroundImage(UIImage(named: "tabwithinpage_cursor"), forState: .Normal)
-        view.addTarget(self, action: "onReturnPress:", forControlEvents: .TouchUpInside)
+        view.addTarget(self, action: #selector(self.dynamicType.onReturnPress(_:)), forControlEvents: .TouchUpInside)
         return view
     }()
     private lazy var _pageControl: SIMChatInputPanelPageControl = {
@@ -474,7 +474,7 @@ internal class SIMChatInputPanelEmoticonCell: UICollectionViewCell, UIGestureRec
     
     
     @inline(__always) func build() {
-        let tap = UITapGestureRecognizer(target: self, action: "onItemPress:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onItemPress(_:)))
         tap.delegate = self
         gestureRecognizer.delegate = self
         
@@ -691,14 +691,14 @@ internal class SIMChatInputPanelEmoticonCell: UICollectionViewCell, UIGestureRec
     }
     lazy var backspaceButton: UIButton = {
         let view = UIButton()
-        view.addTarget(self, action: "onBackspacePress:", forControlEvents: .TouchUpInside)
+        view.addTarget(self, action: #selector(SIMChatInputPanelEmoticonCell.onBackspacePress(_:)), forControlEvents: .TouchUpInside)
         
         view.setImage(SIMChatImageManager.images_face_delete_nor, forState: .Normal)
         view.setImage(SIMChatImageManager.images_face_delete_press, forState: .Highlighted)
         return view
     }()
     private lazy var gestureRecognizer: UIGestureRecognizer = {
-        let recognzer = UILongPressGestureRecognizer(target: self, action: "onItemLongPress:")
+        let recognzer = UILongPressGestureRecognizer(target: self, action: #selector(self.dynamicType.onItemLongPress(_:)))
         recognzer.minimumPressDuration = 0.25
         return recognzer
     }()

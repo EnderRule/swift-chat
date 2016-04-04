@@ -60,10 +60,10 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
     public override func initEvents() {
         super.initEvents()
         // add kvo
-        SIMChatNotificationCenter.addObserver(self, selector: "audioDidStop:", name: SIMChatMediaPlayerDidStop)
-        SIMChatNotificationCenter.addObserver(self, selector: "audioDidPlay:", name: SIMChatMediaPlayerDidPlay)
-        SIMChatNotificationCenter.addObserver(self, selector: "audioWillLoad:", name: SIMChatFileProviderWillDownload)
-        SIMChatNotificationCenter.addObserver(self, selector: "audioDidLoad:", name: SIMChatFileProviderDidDownload)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidStop(_:)), name: SIMChatMediaPlayerDidStop)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidPlay(_:)), name: SIMChatMediaPlayerDidPlay)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioWillLoad(_:)), name: SIMChatFileProviderWillDownload)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidLoad(_:)), name: SIMChatFileProviderDidDownload)
     }
     
     /// 显示类型

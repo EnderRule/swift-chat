@@ -88,7 +88,7 @@ public class SIMChatViewController: UIViewController {
         return view
     }()
     private lazy var _tapGestureRecognizer: UITapGestureRecognizer = {
-        let recognizer = UITapGestureRecognizer(target: self, action: "onResignKeyboard:")
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onResignKeyboard(_:)))
         recognizer.delegate = self
         return recognizer
     }()
@@ -240,8 +240,9 @@ extension SIMChatViewController {
             .right.equ(view).right
             .submit()
         
-        SIMChatNotificationCenter.addObserver(self,
-            selector: "onInputBarChangeNtf:",
+        SIMChatNotificationCenter.addObserver(
+            self,
+            selector: #selector(self.dynamicType.onInputBarChangeNtf(_:)),
             name: SIMChatInputBarFrameDidChangeNotification)
         
         // 初始化工作
@@ -255,8 +256,16 @@ extension SIMChatViewController {
         super.viewWillAppear(animated)
         
         let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(self, selector: "onKeyboardShowNtf:", name: UIKeyboardWillShowNotification, object: nil)
-        center.addObserver(self, selector: "onKeyboardHideNtf:", name: UIKeyboardWillHideNotification, object: nil)
+        center.addObserver(
+            self,
+            selector: #selector(self.dynamicType.onKeyboardShowNtf(_:)),
+            name: UIKeyboardWillShowNotification,
+            object: nil)
+        center.addObserver(
+            self,
+            selector: #selector(self.dynamicType.onKeyboardHideNtf(_:)),
+            name: UIKeyboardWillHideNotification,
+            object: nil)
         
         // 添加转发
         if let recognizer = navigationController?.interactivePopGestureRecognizer {

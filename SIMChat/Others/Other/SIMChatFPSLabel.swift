@@ -61,7 +61,7 @@ public class SIMChatFPSLabel: UILabel {
             _lastTime = link.timestamp
             return
         }
-        ++_count
+        _count += 1
         let delta = link.timestamp - lastTime
         guard delta >= 1 else {
             return
@@ -82,6 +82,6 @@ public class SIMChatFPSLabel: UILabel {
     private var _lastTime: NSTimeInterval?
     
     private lazy var _link: CADisplayLink = {
-        return CADisplayLink(target: self, selector: "tack:")
+        return CADisplayLink(target: self, selector: #selector(self.dynamicType.tack(_:)))
     }()
 }

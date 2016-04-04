@@ -474,11 +474,11 @@ extension SIMChatInputBar: SIMChatInputBarButtonDelegate {
 internal class SIMChatInputBarButton: UIButton {
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        addTarget(self, action: "onClicked", forControlEvents: .TouchUpInside)
+        addTarget(self, action: #selector(self.dynamicType.onClicked), forControlEvents: .TouchUpInside)
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        addTarget(self, action: "onClicked", forControlEvents: .TouchUpInside)
+        addTarget(self, action: #selector(self.dynamicType.onClicked), forControlEvents: .TouchUpInside)
     }
     
     /// 点击事件.

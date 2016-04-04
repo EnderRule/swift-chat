@@ -307,7 +307,7 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
         inputPanelContainer.currentInputItem = nil
     }
     /// 键盘显示通知
-    private dynamic func onKeyboardShowNtf(sender: NSNotification) {
+    internal dynamic func onKeyboardShowNtf(sender: NSNotification) {
         guard let r1 = sender.userInfo?[UIKeyboardFrameEndUserInfoKey]?.CGRectValue else {
             return
         }
@@ -318,7 +318,7 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
         setKeyboardHeight(systemKeyboardFrame.height)
     }
     /// 键盘隐藏通知
-    private dynamic func onKeyboardHideNtf(sender: NSNotification) {
+    internal dynamic func onKeyboardHideNtf(sender: NSNotification) {
         systemKeyboardFrame = CGRectZero
         // 更新键盘
         if inputBar.selectedBarButtonItem == nil {
@@ -326,7 +326,7 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
         }
     }
     /// 输入栏改变
-    private dynamic func onInputBarChangeNtf(sender: NSNotification) {
+    internal dynamic func onInputBarChangeNtf(sender: NSNotification) {
         setKeyboardHeight(keyboardHeight)
     }
     /// 放弃输入

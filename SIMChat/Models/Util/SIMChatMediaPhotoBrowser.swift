@@ -352,17 +352,17 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
     
     // 手势
     private lazy var _tapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: "_tap:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType._tap(_:)))
         tap.requireGestureRecognizerToFail(self._doubleTapGestureRecognizer)
         return tap
     }()
     private lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: "_doubleTap:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType._doubleTap(_:)))
         tap.numberOfTapsRequired = 2
         return tap
     }()
     private lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = {
-        let rotation = UIRotationGestureRecognizer(target: self, action: "_rotation:")
+        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(self.dynamicType._rotation(_:)))
         rotation.delegate = self
         return rotation
     }()

@@ -27,13 +27,13 @@ internal class SIMChatPhotoPickerAlbums : UITableViewController {
         super.viewDidLoad()
         
         title = "Albums"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "onCancel:")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dynamicType.onCancel(_:)))
         
         tableView.registerClass(AlbumCell.self, forCellReuseIdentifier: "Album")
         tableView.separatorStyle = .None
         
         // 监听
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onLibraryDidChanged:", name: SIMChatPhotoLibraryDidChangedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.dynamicType.onLibraryDidChanged(_:)), name: SIMChatPhotoLibraryDidChangedNotification, object: nil)
         
         // 默认, 未加载的页面显示
         onRefresh(self)

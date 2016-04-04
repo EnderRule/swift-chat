@@ -29,10 +29,10 @@ internal class SIMChatPhotoPickerPreviews: UIViewController {
         
         title = "\(currentShowIndex + 1)/\(dataSource?.count ?? 0)"
         
-        let i4 = UIBarButtonItem(title: "发送", style: .Done, target: self, action: "onSend:")
+        let i4 = UIBarButtonItem(title: "发送", style: .Done, target: self, action: #selector(self.dynamicType.onSend(_:)))
         
         if picker?.allowsMultipleSelection ?? false {
-            let s1 = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: "")
+            let s1 = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
             let i3 = UIBarButtonItem(customView: originButton)
             
             i4.width = 48
@@ -70,7 +70,7 @@ internal class SIMChatPhotoPickerPreviews: UIViewController {
         selectedCountChanged(picker?.selectedItems.count ?? 0)
         
         // 监听
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "onSelectedCountChangedNTF:", name: SIMChatPhotoPickerCountDidChangedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.dynamicType.onSelectedCountChangedNTF(_:)), name: SIMChatPhotoPickerCountDidChangedNotification, object: nil)
     }
     
     /// 视图将要显示
@@ -132,7 +132,7 @@ internal class SIMChatPhotoPickerPreviews: UIViewController {
         //btn.setImage(img2, forState:  .Highlighted)
         btn.sizeToFit()
         
-        btn.addTarget(self, action: "onSelectItem:", forControlEvents: .TouchUpInside)
+        btn.addTarget(self, action: #selector(self.dynamicType.onSelectItem(_:)), forControlEvents: .TouchUpInside)
         
         return btn
     }()
@@ -146,7 +146,7 @@ internal class SIMChatPhotoPickerPreviews: UIViewController {
         btn.sizeToFit()
         btn.frame = CGRectMake(0, 0, btn.bounds.width + 8, btn.bounds.height)
         
-        btn.addTarget(self, action: "onOrigin:", forControlEvents: .TouchUpInside)
+        btn.addTarget(self, action: #selector(self.dynamicType.onOrigin(_:)), forControlEvents: .TouchUpInside)
         
         return btn
     }()

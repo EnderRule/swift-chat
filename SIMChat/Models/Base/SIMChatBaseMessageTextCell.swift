@@ -64,7 +64,7 @@ public class SIMChatBaseMessageTextCell: SIMChatBaseMessageBubbleCell {
     private lazy var contentLabel = SIMChatLabel(frame: CGRectZero)
     
     private lazy var _bubbleMenuItems: Array<UIMenuItem> = [
-        UIMenuItem(title: "复制", action: "_copyMessage:")
+        UIMenuItem(title: "复制", action: #selector(SIMChatBaseMessageBubbleCell._copyMessage(_:)))
     ]
 }
 

@@ -127,15 +127,15 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
     private(set) lazy var imageView = UIImageView()
     private(set) lazy var scrollView = UIScrollView()
     private(set) lazy var tapGestureRecognizer: UITapGestureRecognizer = {
-        return UITapGestureRecognizer(target: self, action: "onTap:")
+        return UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onTap(_:)))
     }()
     private(set) lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: "onDoubleTap:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onDoubleTap(_:)))
         tap.numberOfTapsRequired = 2
         return tap
     }()
     private(set) lazy var rotationGestureRecognizer: UIRotationGestureRecognizer = {
-        let rotation = UIRotationGestureRecognizer(target: self, action: "onRotation:")
+        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(self.dynamicType.onRotation(_:)))
         rotation.delegate = self
         return rotation
     }()

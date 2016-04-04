@@ -15,7 +15,7 @@ public class SIMChatMenuController: NSObject {
     public override init() {
         super.init()
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "onMenuWillHide:",
+            selector: #selector(self.dynamicType.onMenuWillHide(_:)),
             name: UIMenuControllerWillHideMenuNotification,
             object: nil)
     }

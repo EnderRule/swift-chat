@@ -326,9 +326,10 @@ public struct SIMChatMessageBox {
         ///
         public static func begin() {
             objc_sync_enter(taskCount)
-            if taskCount++ == 0 {
+            if taskCount == 0 {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             }
+            taskCount += 1
             objc_sync_exit(taskCount)
         }
         ///
@@ -336,8 +337,11 @@ public struct SIMChatMessageBox {
         ///
         public static func end() {
             objc_sync_enter(taskCount)
-            if taskCount > 0 && --taskCount == 0 {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            if taskCount > 0 {
+                taskCount -= 1
+                if taskCount == 0 {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
             }
             objc_sync_exit(taskCount)
         }

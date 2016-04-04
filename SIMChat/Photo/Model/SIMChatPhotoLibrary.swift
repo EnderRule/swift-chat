@@ -22,7 +22,7 @@ public class SIMChatPhotoLibrary: NSObject {
         if #available(iOS 9.0, *) {
             PHPhotoLibrary.sharedPhotoLibrary().registerChangeObserver(self)
         } else {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "assetsLibraryDidChange:", name: ALAssetsLibraryChangedNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.dynamicType.assetsLibraryDidChange(_:)), name: ALAssetsLibraryChangedNotification, object: nil)
         //PHPhotoLibraryChangeObserver
         //            // Register observer
         //            [[NSNotificationCenter defaultCenter] addObserver:self

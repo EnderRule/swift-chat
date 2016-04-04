@@ -108,11 +108,12 @@ public class SIMChatUpdatesTransaction<Element> {
                     guard let data = $0.element else {
                         return
                     }
-                    let indexPath = NSIndexPath(forRow: position + count++, inSection: 0)
+                    let indexPath = NSIndexPath(forRow: position + count, inSection: 0)
                     if insertIndexPaths[$1] == nil {
                         insertIndexPaths[$1] = []
                     }
-                    modifier++
+                    count += 1
+                    modifier += 1
                     //log("insert element at index: \(position), at row: \(indexPath.row)")
                     datas.insert(data, atIndex: position)
                     insertIndexPaths[$1]?.append(indexPath)
@@ -125,7 +126,7 @@ public class SIMChatUpdatesTransaction<Element> {
                 if removeIndexPaths[op] == nil {
                     removeIndexPaths[op] = []
                 }
-                modifier--
+                modifier -= 1
                 //log("remove element at index: \(position), at row: \(indexPath.row)")
                 datas.removeAtIndex(position)
                 removeIndexPaths[op]?.append(indexPath)
@@ -225,9 +226,9 @@ public class SIMChatUpdatesTransaction<Element> {
     public var checkIndexInCall: Bool = true
     
     private func log(message: Any,
-        function: StaticString = __FUNCTION__,
-        file: String = __FILE__,
-        line: Int = __LINE__) {
+        function: StaticString = #function,
+        file: String = #file,
+        line: Int = #line) {
             SIMLog.debug(message, function, file, line)
     }
     

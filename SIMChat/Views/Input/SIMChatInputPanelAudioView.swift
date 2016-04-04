@@ -172,12 +172,12 @@ internal class SIMChatInputPanelAudioView: UIView, SIMChatInputPanelProtocol {
         btn1.setTitleColor(UIColor(argb: 0xFF18B4ED), forState: .Normal)
         btn1.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_more_nor"), forState: .Normal)
         btn1.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_more_press"), forState: .Highlighted)
-        btn1.addTarget(self, action: "onAudioComfirm", forControlEvents: .TouchUpInside)
+        btn1.addTarget(self, action: #selector(self.dynamicType.onAudioComfirm), forControlEvents: .TouchUpInside)
         btn2.setTitle("取消", forState: .Normal)
         btn2.setTitleColor(UIColor(argb: 0xFF18B4ED), forState: .Normal)
         btn2.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_more_nor"), forState: .Normal)
         btn2.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_more_press"), forState: .Highlighted)
-        btn2.addTarget(self, action: "onAudioCancel", forControlEvents: .TouchUpInside)
+        btn2.addTarget(self, action: #selector(self.dynamicType.onAudioCancel), forControlEvents: .TouchUpInside)
         
         view.addSubview(btn1)
         view.addSubview(btn2)
@@ -752,12 +752,12 @@ internal class SIMChatInputPanelAudioViewOfTalkback: UICollectionViewCell, SIMCh
         view.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_button_press"), forState: .Highlighted)
         
         // add events
-        view.addTarget(self, action: "onTouchStart:", forControlEvents: .TouchDown)
-        view.addTarget(self, action: "onTouchDrag:withEvent:", forControlEvents: .TouchDragInside)
-        view.addTarget(self, action: "onTouchDrag:withEvent:", forControlEvents: .TouchDragOutside)
-        view.addTarget(self, action: "onTouchStop:", forControlEvents: .TouchUpInside)
-        view.addTarget(self, action: "onTouchStop:", forControlEvents: .TouchUpOutside)
-        view.addTarget(self, action: "onTouchInterrupt:", forControlEvents: .TouchCancel)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchStart(_:)), forControlEvents: .TouchDown)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchDrag(_:withEvent:)), forControlEvents: .TouchDragInside)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchDrag(_:withEvent:)), forControlEvents: .TouchDragOutside)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchStop(_:)), forControlEvents: .TouchUpInside)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchStop(_:)), forControlEvents: .TouchUpOutside)
+        view.addTarget(self, action: #selector(self.dynamicType.onTouchInterrupt(_:)), forControlEvents: .TouchCancel)
         
         return view
     }()
@@ -921,7 +921,7 @@ internal class SIMChatInputPanelAudioViewPreview: UIView, SIMChatSpectrumViewDel
         dispatch_async(dispatch_get_main_queue()) {
             self._duration = player.duration
             self._startAt = CACurrentMediaTime()
-            self._timer = NSTimer.scheduledTimerWithTimeInterval2(0.1, self, "onTimer:")
+            self._timer = NSTimer.scheduledTimerWithTimeInterval2(0.1, self, #selector(self.dynamicType.onTimer(_:)))
         }
     }
     func playerDidStop(player: SIMChatMediaPlayerProtocol) {
@@ -1014,7 +1014,7 @@ internal class SIMChatInputPanelAudioViewPreview: UIView, SIMChatSpectrumViewDel
     lazy var _playButton: UIButton = {
         let view = UIButton()
         
-        view.addTarget(self, action: "onPlayOrPause", forControlEvents: .TouchUpInside)
+        view.addTarget(self, action: #selector(self.dynamicType.onPlayOrPause), forControlEvents: .TouchUpInside)
         view.setImage(UIImage(named: "simchat_keyboard_voice_button_play_nor"), forState: .Normal)
         view.setImage(UIImage(named: "simchat_keyboard_voice_button_play_press"), forState: .Highlighted)
         view.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_background"), forState: .Normal)

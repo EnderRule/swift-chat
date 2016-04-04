@@ -92,8 +92,9 @@ extension UITableView {
             // If not using auto layout, you have to override "-sizeThatFits:" to provide a fitting size by yourself.
             // This is the same method used in iOS8 self-sizing cell's implementation.
             // Note: fitting height should not include separator view.
+            let selector = #selector(UIView.sizeThatFits(_:))
             let inherited = templateLayoutCell.isMemberOfClass(UITableViewCell.self)
-            let overrided = templateLayoutCell.dynamicType.instanceMethodForSelector("sizeThatFits:") != UITableViewCell.instanceMethodForSelector("sizeThatFits:")
+            let overrided = templateLayoutCell.dynamicType.instanceMethodForSelector(selector) != UITableViewCell.instanceMethodForSelector(selector)
             if (inherited && !overrided) {
                 fatalError("Customized cell must override '-sizeThatFits:' method if not using auto layout.")
             }

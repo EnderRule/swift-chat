@@ -17,7 +17,7 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         
         SIMChatMediaAudioRecorder.retainInstance = self
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "audioRecorderDidInterruption:",
+            selector: #selector(self.dynamicType.audioRecorderDidInterruption(_:)),
             name: AVAudioSessionInterruptionNotification,
             object: nil)
         

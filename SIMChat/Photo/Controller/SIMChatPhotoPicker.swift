@@ -152,8 +152,8 @@ extension SIMChatPhotoPicker {
         // 检查数量是否有改变
         if count != selectedItems.count {
             // 减少调用数量
-            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: "countDidChanged:", object: self)
-            self.performSelector("countDidChanged:", withObject: self, afterDelay: 0.1)
+            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(self.dynamicType.countDidChanged(_:)), object: self)
+            self.performSelector(#selector(self.dynamicType.countDidChanged(_:)), withObject: self, afterDelay: 0.1)
         }
         // 通知
         delegate2?.picker?(self, didSelectAsset: asset)
@@ -173,8 +173,8 @@ extension SIMChatPhotoPicker {
         // 检查数量是否有改变
         if count != selectedItems.count {
             // 减少调用数量
-            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: "countDidChanged:", object: self)
-            self.performSelector("countDidChanged:", withObject: self, afterDelay: 0.01)
+            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(self.dynamicType.countDidChanged(_:)), object: self)
+            self.performSelector(#selector(self.dynamicType.countDidChanged(_:)), withObject: self, afterDelay: 0.01)
         }
         // 通知
         delegate2?.picker?(self, didDeselectAsset: asset)

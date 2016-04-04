@@ -68,7 +68,7 @@ class SIMChatSpectrumView: SIMView {
         }
         // 启动停止器
         dispatch_async(dispatch_get_main_queue()) {
-            self.timer = NSTimer.scheduledTimerWithTimeInterval2(0.1, self, "onTimer:")
+            self.timer = NSTimer.scheduledTimerWithTimeInterval2(0.1, self, #selector(self.dynamicType.onTimer(_:)))
         }
     }
     /// 停止

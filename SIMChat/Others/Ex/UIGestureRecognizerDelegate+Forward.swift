@@ -79,12 +79,12 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
     
     public override func respondsToSelector(aSelector: Selector) -> Bool {
-        if aSelector == "gestureRecognizer:shouldRequireFailureOfGestureRecognizer:" {
+        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)) {
             return delegates.contains {
                 $0.element?.respondsToSelector(aSelector) ?? false
             }
         }
-        if aSelector == "gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:" {
+        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldBeRequiredToFailByGestureRecognizer:)) {
             return delegates.contains {
                 $0.element?.respondsToSelector(aSelector) ?? false
             }

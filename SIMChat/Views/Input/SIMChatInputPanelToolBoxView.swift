@@ -78,7 +78,7 @@ internal class SIMChatInputPanelToolBoxView: UIView, SIMChatInputPanelProtocol {
         view.hidesForSinglePage = true
         view.pageIndicatorTintColor = UIColor.grayColor()
         view.currentPageIndicatorTintColor = UIColor.darkGrayColor()
-        view.addTarget(self, action: "onPageChanged:", forControlEvents: .ValueChanged)
+        view.addTarget(self, action: #selector(self.dynamicType.onPageChanged(_:)), forControlEvents: .ValueChanged)
         return view
     }()
     private lazy var _contentView: UICollectionView = {
@@ -164,7 +164,7 @@ internal class SIMChatInputPanelToolBoxCell: UICollectionViewCell {
         addConstraints(NSLayoutConstraintMake("V:|-(0)-[c]-(0)-[t(20)]-(0)-|", views: vs))
         
         // add events
-        contentView2.addTarget(self, action: "onItemPress:", forControlEvents: .TouchUpInside)
+        contentView2.addTarget(self, action: #selector(self.dynamicType.onItemPress(_:)), forControlEvents: .TouchUpInside)
     }
     
     /// 关联的item

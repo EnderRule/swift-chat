@@ -8,7 +8,7 @@
 
 import UIKit
 import SIMChat
-import ImSDK
+//import ImSDK
 
 class ExConversation: SIMChatBaseConversation {
     
@@ -138,9 +138,9 @@ class ExConversation: SIMChatBaseConversation {
         "Self",
         "Type",
         "__COLUMN__",
-        "__FILE__",
-        "__FUNCTION__",
-        "__LINE__",
+        "#file",
+        "#function",
+        "#line",
         
         "associativity",
         "didSet",
