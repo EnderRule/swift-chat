@@ -64,7 +64,8 @@ extension SIMChatTimeLineMessage: SIMChatMessage {
     }
     /// 消息状态(发送/接收)
     var status: SIMChatMessageStatus {
-        return .Unknow
+        set {                }
+        get { return .Unknow }
     }
     /// 消息的一些选项, 默认None
     var option: SIMChatMessageOption {

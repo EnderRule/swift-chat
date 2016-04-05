@@ -40,7 +40,7 @@ public protocol SIMChatMessage: class {
     ///
     /// 消息状态(发送/接收)
     ///
-    var status: SIMChatMessageStatus { get }
+    var status: SIMChatMessageStatus { set get }
     ///
     /// 消息的一些选项, 默认None
     ///
