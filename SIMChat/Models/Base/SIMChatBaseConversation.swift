@@ -146,6 +146,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     ///
     public func updateMessage(message: SIMChatMessage, status: SIMChatMessageStatus, closure: SIMChatMessageHandler?) {
         SIMLog.trace(message.identifier)
+        message.status = status
         closure?(.Success(message))
     }
     ///
