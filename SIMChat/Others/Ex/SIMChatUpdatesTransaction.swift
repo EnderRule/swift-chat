@@ -241,14 +241,21 @@ public class SIMChatUpdatesTransaction<Element> {
     private init(count: Int) { _count = count }
 }
 
+///
 /// 提供一个事务操作, 在闭包内的修改操作只会在闭包结果后才生效
+///
+/// - parameter tableView 需要操作的视图
+/// - parameter datas 关联的数据
+/// - parameter aniamted 是否开启动画
+/// - parameter handler 一些操作
+///
 public func SIMChatUpdatesTransactionPerform<Element>(
     tableView: UITableView,
     inout _ datas: Array<Element>,
     _ animated: Bool = false,
-    @noescape _ maker: (SIMChatUpdatesTransaction<Element> -> Void)) {
+    @noescape _ handler: (SIMChatUpdatesTransaction<Element> -> Void)) {
         let transaction = SIMChatUpdatesTransaction<Element>(count: datas.count)
-        maker(transaction)
+        handler(transaction)
         transaction.apply(tableView, &datas, animated)
 }
 
