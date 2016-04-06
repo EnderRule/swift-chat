@@ -877,8 +877,6 @@ public class SIMChatTextLine {
                 return nil
             }
             
-            NSLayoutManager
-            
             let range: CFRange = CTRunGetStringRange(run)
             let rect: CGRect = {
                 var position = CGPointZero
