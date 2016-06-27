@@ -14,6 +14,16 @@ public class SIMChatBaseInputItem: SIMChatInputItemProtocol {
         itemIdentifier = identifier
         itemName = name
         
+        //SIMChatBarButtonSystemItem => UIBarButtonSystemItem => Recorder/Video/Emoticon
+        //SIMChatBarButtonItem => UIBarButtonItem
+        //SIMChatBarInputItem => UITextView
+        //SIMChatBarItem => UIBarItem
+        
+        //SIMChatInputBar => UIView => UICollectionView
+        //SIMChatInputPanel => UIView => UICollectionView
+        
+        //SIMChatBarButton
+        
         itemImage = image
         itemSelectImage = selectImage
     }

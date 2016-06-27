@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Gpz-A1-7Uk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Gpz-A1-7Uk">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -17,44 +17,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="p2U-CA-r5F" kind="show" identifier="XXX" id="zQj-0f-xAr"/>
-                        <segue destination="yUr-zI-cHu" kind="relationship" relationship="rootViewController" id="AVW-LR-dva"/>
+                        <segue destination="p2U-CA-r5F" kind="relationship" relationship="rootViewController" id="hno-xE-O3h"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Rt-gk-vL5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="217" y="-434"/>
-        </scene>
-        <!--Ex View Controller-->
-        <scene sceneID="SW3-aT-EG7">
-            <objects>
-                <viewController id="yUr-zI-cHu" customClass="ExViewController" customModule="SIMChatExample" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="D9B-k7-jgz"/>
-                        <viewControllerLayoutGuide type="bottom" id="mb2-pI-SHw"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Eax-Fz-HYb">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uHE-6M-aEn" customClass="SIMChatLabel" customModule="SIMChatExample" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="uHE-6M-aEn" firstAttribute="leading" secondItem="Eax-Fz-HYb" secondAttribute="leading" id="Rgu-0z-8Uf"/>
-                            <constraint firstItem="uHE-6M-aEn" firstAttribute="top" secondItem="D9B-k7-jgz" secondAttribute="bottom" id="fGV-Sw-OoF"/>
-                            <constraint firstItem="mb2-pI-SHw" firstAttribute="top" secondItem="uHE-6M-aEn" secondAttribute="bottom" id="kI0-fx-ide"/>
-                            <constraint firstAttribute="trailing" secondItem="uHE-6M-aEn" secondAttribute="trailing" id="rF4-8F-SyC"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="OHB-oO-esZ"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="E8Z-xB-8q6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="650" y="-1036"/>
         </scene>
         <!--Ex Conversation View Controller-->
         <scene sceneID="yb4-iw-TVb">
@@ -74,7 +42,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="A28-FA-Hi8">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="进入聊天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="A28-FA-Hi8">
                                                     <rect key="frame" x="15" y="0.0" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>

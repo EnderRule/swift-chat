@@ -41,7 +41,7 @@
 		0C7C93951C76D2F700E7DC5C /* photo_picker_mark_select_sm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C938C1C76D2F700E7DC5C /* photo_picker_mark_select_sm@2x.png */; };
 		0CE522881C63341800EB284D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CE522871C63341800EB284D /* AudioToolbox.framework */; };
 		0CF5002C1CB3854F00CAA303 /* ExViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5002B1CB3854F00CAA303 /* ExViewController.swift */; };
-		0CF5002F1CB3866A00CAA303 /* SIMChatLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5002E1CB3866A00CAA303 /* SIMChatLabel.swift */; };
+		0CF5002F1CB3866A00CAA303 /* SIMChatTextLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5002E1CB3866A00CAA303 /* SIMChatTextLabel.swift */; };
 		0CFA07191C81BC7100AF0F87 /* t1_t.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CFA07181C81BC7100AF0F87 /* t1_t.jpg */; };
 /* End PBXBuildFile section */
 
@@ -137,7 +137,7 @@
 		0CE522861C63341800EB284D /* SIMChatExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = SIMChatExample.entitlements; sourceTree = "<group>"; };
 		0CE522871C63341800EB284D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		0CF5002B1CB3854F00CAA303 /* ExViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExViewController.swift; sourceTree = "<group>"; };
-		0CF5002E1CB3866A00CAA303 /* SIMChatLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatLabel.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0CF5002E1CB3866A00CAA303 /* SIMChatTextLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTextLabel.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CFA07181C81BC7100AF0F87 /* t1_t.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t1_t.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,7 +204,7 @@
 				0C6B41521C61D68100085B66 /* ExChatViewController.swift */,
 				0C0DD6A61C60B65D00AEC8C4 /* ExConversationViewController.swift */,
 				0CF5002B1CB3854F00CAA303 /* ExViewController.swift */,
-				0CF5002E1CB3866A00CAA303 /* SIMChatLabel.swift */,
+				0CF5002E1CB3866A00CAA303 /* SIMChatTextLabel.swift */,
 				0C0DD6A81C60B65D00AEC8C4 /* Main.storyboard */,
 				0C6B415C1C61DC7500085B66 /* SIMChat.xcassets */,
 				0C0DD6AB1C60B65D00AEC8C4 /* Assets.xcassets */,
@@ -418,7 +418,7 @@
 				0C0DD6A71C60B65D00AEC8C4 /* ExConversationViewController.swift in Sources */,
 				0C0DD6A51C60B65D00AEC8C4 /* AppDelegate.swift in Sources */,
 				0C4C0C9B1C89D0D900DC3D56 /* ExUser.swift in Sources */,
-				0CF5002F1CB3866A00CAA303 /* SIMChatLabel.swift in Sources */,
+				0CF5002F1CB3866A00CAA303 /* SIMChatTextLabel.swift in Sources */,
 				0C6B41551C61D6E300085B66 /* ExManager.swift in Sources */,
 				0CF5002C1CB3854F00CAA303 /* ExViewController.swift in Sources */,
 				0C6B41531C61D68100085B66 /* ExChatViewController.swift in Sources */,

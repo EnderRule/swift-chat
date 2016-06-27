@@ -63,22 +63,22 @@ public class SIMChatViewController: UIViewController {
             return SIMChatBundle.imageWithResource("InputBar/\(name).png")
         }
         bar.delegate = self
-//        bar.leftBarButtonItems = [
-//            SIMChatInputPanelAudioView.inputPanelItem()
-//        ]
-//        bar.rightBarButtonItems = [
-//            SIMChatInputPanelEmoticonView.inputPanelItem(),
-//            SIMChatInputPanelToolBoxView.inputPanelItem()
-//        ]
-         bar.bottomBarButtonItems = [
-             SIMChatInputPanelAudioView.inputPanelItem(),
-            SIMChatBaseInputItem("", R("chat_bottom_PTV_nor"), R("chat_bottom_PTV_press")),
-            SIMChatBaseInputItem("kb:photo", R("chat_bottom_photo_nor"), R("chat_bottom_photo_press")),
-            SIMChatBaseInputItem("kb:camera", R("chat_bottom_Camera_nor"), R("chat_bottom_Camera_press")),
-            SIMChatBaseInputItem("", R("chat_bottom_red_pack_nor"), R("chat_bottom_red_pack_press")),
+        bar.leftBarButtonItems = [
+            SIMChatInputPanelAudioView.inputPanelItem()
+        ]
+        bar.rightBarButtonItems = [
             SIMChatInputPanelEmoticonView.inputPanelItem(),
             SIMChatInputPanelToolBoxView.inputPanelItem()
-         ]
+        ]
+//         bar.bottomBarButtonItems = [
+//             SIMChatInputPanelAudioView.inputPanelItem(),
+//            SIMChatBaseInputItem("", R("chat_bottom_PTV_nor"), R("chat_bottom_PTV_press")),
+//            SIMChatBaseInputItem("kb:photo", R("chat_bottom_photo_nor"), R("chat_bottom_photo_press")),
+//            SIMChatBaseInputItem("kb:camera", R("chat_bottom_Camera_nor"), R("chat_bottom_Camera_press")),
+//            SIMChatBaseInputItem("", R("chat_bottom_red_pack_nor"), R("chat_bottom_red_pack_press")),
+//            SIMChatInputPanelEmoticonView.inputPanelItem(),
+//            SIMChatInputPanelToolBoxView.inputPanelItem()
+//         ]
         return bar
     }()
     

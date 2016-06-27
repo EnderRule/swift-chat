@@ -270,50 +270,6 @@ private func _SIMChatTextDraw(line: SIMChatTextLine, context: CGContext?, size: 
 //}
 
 private func _SIMChatTextDraw(layout: SIMChatTextLayout, context: CGContextRef?, rect: CGRect) {
-    CGContextSaveGState(context)
-    
-    CGContextTranslateCTM(context, rect.minX, rect.maxY)
-    CGContextScaleCTM(context, 1, -1)
-    CGContextSetShadow(context, CGSizeZero, 0)
-    
-    for line in layout.lines {
-        
-//            NSArray *lineRunRanges = line.verticalRotateRange;
-        CGContextSetTextMatrix(context, CGAffineTransformIdentity)
-        CGContextSetTextPosition(context, line.position.x, rect.height - line.position.y)
-        
-//        CFArrayRef runs = CTLineGetGlyphRuns(line.CTLine);
-//        for (NSUInteger r = 0, rMax = CFArrayGetCount(runs); r < rMax; r++) {
-//            CTRunRef run = CFArrayGetValueAtIndex(runs, r);
-//            YYTextDrawRun(line, run, context, size, isVertical, lineRunRanges[r], verticalOffset);
-//        }
-        
-        _SIMChatTextDraw(line, context: context, size: rect.size)
-    }
-    
-//        BOOL isVertical = layout.container.verticalForm;
-//        CGFloat verticalOffset = isVertical ? (size.width - layout.container.size.width) : 0;
-//        
-//        NSArray *lines = layout.lines;
-//        for (NSUInteger l = 0, lMax = lines.count; l < lMax; l++) {
-//            YYTextLine *line = lines[l];
-//            if (layout.truncatedLine && layout.truncatedLine.index == line.index) line = layout.truncatedLine;
-//            NSArray *lineRunRanges = line.verticalRotateRange;
-//            CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-//            CGContextSetTextPosition(context, line.position.x + verticalOffset, size.height - line.position.y);
-//            CFArrayRef runs = CTLineGetGlyphRuns(line.CTLine);
-//            for (NSUInteger r = 0, rMax = CFArrayGetCount(runs); r < rMax; r++) {
-//                CTRunRef run = CFArrayGetValueAtIndex(runs, r);
-//                YYTextDrawRun(line, run, context, size, isVertical, lineRunRanges[r], verticalOffset);
-//            }
-//            if (cancel && cancel()) break;
-//        }
-    
-    // Use this to draw frame for test/debug.
-    // CGContextTranslateCTM(context, 0, rect.height)
-    // CTFrameDraw(layout._frame!, context!)
-    
-    CGContextRestoreGState(context)
 }
 //static void YYTextDrawText(YYTextLayout *layout, CGContextRef context, CGSize size, CGPoint point, BOOL (^cancel)(void)) {
 //    CGContextSaveGState(context); {
@@ -435,19 +391,298 @@ public class SIMChatTextContainer {
 ///
 public class SIMChatTextLayout {
     
-    /// The full text
-    @NSCopying public var text: NSAttributedString
+    public let text: NSAttributedString
+    public let range: NSRange
+    public let container: SIMChatTextContainer
     
-    /// The text range in full text
-    public var range: NSRange
+    public let frameSetter: CTFramesetter
+    public let frame: CTFrame
     
-    /// The text contaner
-    public var container: SIMChatTextContainer
+    public let lines: Array<SIMChatTextLine>
+    public let attachments: Array<(SIMChatTextAttachment, NSRange, CGRect)>
+    //public let attachmentContents: Set<SIMChatTextAttachment>
     
-    private var _frame: CTFrame?
-    private var _frameSetter: CTFramesetter?
+    public let rowCount: Int
+    public let visibleRange: NSRange
+    public let textBoundingRect: CGRect
+    public let textBoundingSize: CGSize
     
-    public lazy var lines: Array<SIMChatTextLine> = []
+    public let truncatedLine: SIMChatTextLine?
+    
+    private(set) public var containsHighlight: Bool = false
+    
+    // MARK: draw options
+    
+    private(set) public var needDrawText: Bool = false
+    private(set) public var needDrawAttachment: Bool = false
+    private(set) public var needDrawStrikethrough: Bool = false
+    private(set) public var needDrawShadow: Bool = false
+    private(set) public var needDrawInnerShadow: Bool = false
+    private(set) public var needDrawUnderline: Bool = false
+    private(set) public var needDrawBorder: Bool = false
+    private(set) public var needDrawBlockBorder: Bool = false
+    private(set) public var needDrawBackgroundBorder: Bool = false
+    
+    // MARK: draw method
+    
+//static void YYTextDrawBlockBorder(YYTextLayout *layout, CGContextRef context, CGSize size, CGPoint point, BOOL (^cancel)(void)) {
+    
+    private func drawBlockBorder(context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: (Void -> Bool)) throws {
+        CGContextSaveGState(context)
+        CGContextTranslateCTM(context, position.x, position.y)
+        
+//        for line in lines {
+//            guard !cancel() else {
+//                break
+//            }
+//            line.enumerateRun {
+//                guard CTRunGetGlyphCount($2) > 0 else {
+//                    return
+//                }
+//                guard let border = $1["YYTextBlockBorderAttributeName"] else {
+//                    return
+//                }
+//                
+//            }
+//        }
+        
+        CGContextRestoreGState(context)
+    }
+    private func drawBorder() throws {
+    }
+    private func drawShadow() throws {
+    }
+    private func drawDecoration() throws {
+    }
+    
+    
+    private func drawText(context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: (Void -> Bool)) throws {
+        CGContextSaveGState(context)
+        
+        CGContextTranslateCTM(context, position.x, position.y)
+        CGContextTranslateCTM(context, 0, size.height)
+        CGContextScaleCTM(context, 1, -1)
+        CGContextSetShadow(context, CGSizeZero, 0)
+        
+        for line in lines {
+            guard !cancel() else {
+                break
+            }
+            
+            CGContextSetTextMatrix(context, CGAffineTransformIdentity)
+            CGContextSetTextPosition(context, line.position.x, size.height - line.position.y)
+            
+            (CTLineGetGlyphRuns(line.line) as NSArray).forEach {
+                drawTextRun(context, $0 as! CTRun, line, size)
+            }
+        }
+        
+        // Use this to draw frame for test/debug.
+        // CGContextTranslateCTM(context, 0, size.height)
+        // CTFrameDraw(frame, context)
+        
+        CGContextRestoreGState(context)
+    }
+    private func drawTextRun(context: CGContext, _ run: CTRun, _ line: SIMChatTextLine, _ size: CGSize) {
+        
+        //let attrs = CTRunGetAttributes(run) as NSDictionary
+        let textMatrix = CTRunGetTextMatrix(run)
+        let textMatrixIsId = CGAffineTransformIsIdentity(textMatrix)
+        
+//        guard let transform = attrs["YYTextGlyphTransformAttributeName"] else {
+            // draw run
+            if !textMatrixIsId {
+                CGContextSaveGState(context)
+                CGContextSetTextMatrix(context, CGAffineTransformConcat(CGContextGetTextMatrix(context), textMatrix))
+            }
+            
+            CTRunDraw(run, context, CFRangeMake(0, 0))
+            
+            if !textMatrixIsId {
+                CGContextRestoreGState(context)
+            }
+//            return
+//        }
+        
+        // draw glyph
+        
+//        CTFontRef runFont = CFDictionaryGetValue(runAttrs, kCTFontAttributeName);
+//        if (!runFont) return;
+//        NSUInteger glyphCount = CTRunGetGlyphCount(run);
+//        if (glyphCount <= 0) return;
+//        
+//        CGGlyph glyphs[glyphCount];
+//        CGPoint glyphPositions[glyphCount];
+//        CTRunGetGlyphs(run, CFRangeMake(0, 0), glyphs);
+//        CTRunGetPositions(run, CFRangeMake(0, 0), glyphPositions);
+//        
+//        guard let font = attrs[String(kCTFontAttributeName)] as! CTFont? else {
+//            return // draw fail
+//        }
+        
+//        CGGlyph glyphs[glyphCount];
+//        CGPoint glyphPositions[glyphCount];
+//        CTRunGetGlyphs(run, CFRangeMake(0, 0), glyphs);
+//        CTRunGetPositions(run, CFRangeMake(0, 0), glyphPositions);
+//        let fillColor = attrs[String(kCTForegroundColorAttributeName)] as! CGColor? ?? UIColor.blackColor().CGColor
+//        
+//        CGContextSaveGState(context)
+//        
+//        CGContextSetFillColorWithColor(context, fillColor)
+//        
+//        if let strokeWidth = attrs[String(kCTStrokeWidthAttributeName)] as? CGFloat where strokeWidth != 0 {
+//            let strokeColor = attrs[String(kCTStrokeColorAttributeName)] as! CGColor? ?? fillColor
+//            let drawingMode: CGTextDrawingMode = strokeWidth > 0 ? .Stroke : .FillStroke
+//            
+//            CGContextSetLineWidth(context, CTFontGetSize(font) * fabs(strokeWidth * 0.01))
+//            CGContextSetTextDrawingMode(context, drawingMode)
+//            CGContextSetStrokeColorWithColor(context, strokeColor)
+//        } else {
+//            CGContextSetTextDrawingMode(context, .Fill)
+//        }
+//        
+//        
+//                    CFIndex runStrIdx[glyphCount + 1];
+//                    CTRunGetStringIndices(run, CFRangeMake(0, 0), runStrIdx);
+//                    CFRange runStrRange = CTRunGetStringRange(run);
+//                    runStrIdx[glyphCount] = runStrRange.location + runStrRange.length;
+//                    CGSize glyphAdvances[glyphCount];
+//                    CTRunGetAdvances(run, CFRangeMake(0, 0), glyphAdvances);
+//                    CGAffineTransform glyphTransform = glyphTransformValue.CGAffineTransformValue;
+//                    CGPoint zeroPoint = CGPointZero;
+//                    
+//                    for (NSUInteger g = 0; g < glyphCount; g++) {
+//                        CGContextSaveGState(context); {
+//                            CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+//                            CGContextSetTextMatrix(context, glyphTransform);
+//                            CGContextSetTextPosition(context,
+//                                                     line.position.x + glyphPositions[g].x,
+//                                                     size.height - (line.position.y + glyphPositions[g].y));
+//                            
+//                            if (CTFontContainsColorBitmapGlyphs(runFont)) {
+//                                CTFontDrawGlyphs(runFont, glyphs + g, &zeroPoint, 1, context);
+//                            } else {
+//                                CGFontRef cgFont = CTFontCopyGraphicsFont(runFont, NULL);
+//                                CGContextSetFont(context, cgFont);
+//                                CGContextSetFontSize(context, CTFontGetSize(runFont));
+//                                CGContextShowGlyphsAtPositions(context, glyphs + g, &zeroPoint, 1);
+//                                CGFontRelease(cgFont);
+//                            }
+//                        } CGContextRestoreGState(context);
+//                    }
+        
+//
+//                if (glyphTransformValue) {
+//                    CFIndex runStrIdx[glyphCount + 1];
+//                    CTRunGetStringIndices(run, CFRangeMake(0, 0), runStrIdx);
+//                    CFRange runStrRange = CTRunGetStringRange(run);
+//                    runStrIdx[glyphCount] = runStrRange.location + runStrRange.length;
+//                    CGSize glyphAdvances[glyphCount];
+//                    CTRunGetAdvances(run, CFRangeMake(0, 0), glyphAdvances);
+//                    CGAffineTransform glyphTransform = glyphTransformValue.CGAffineTransformValue;
+//                    CGPoint zeroPoint = CGPointZero;
+//                    
+//                    for (NSUInteger g = 0; g < glyphCount; g++) {
+//                        CGContextSaveGState(context); {
+//                            CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+//                            CGContextSetTextMatrix(context, glyphTransform);
+//                            CGContextSetTextPosition(context,
+//                                                     line.position.x + glyphPositions[g].x,
+//                                                     size.height - (line.position.y + glyphPositions[g].y));
+//                            
+//                            if (CTFontContainsColorBitmapGlyphs(runFont)) {
+//                                CTFontDrawGlyphs(runFont, glyphs + g, &zeroPoint, 1, context);
+//                            } else {
+//                                CGFontRef cgFont = CTFontCopyGraphicsFont(runFont, NULL);
+//                                CGContextSetFont(context, cgFont);
+//                                CGContextSetFontSize(context, CTFontGetSize(runFont));
+//                                CGContextShowGlyphsAtPositions(context, glyphs + g, &zeroPoint, 1);
+//                                CGFontRelease(cgFont);
+//                            }
+//                        } CGContextRestoreGState(context);
+//                    }
+//                } else {
+//                    if (CTFontContainsColorBitmapGlyphs(runFont)) {
+//                        CTFontDrawGlyphs(runFont, glyphs, glyphPositions, glyphCount, context);
+//                    } else {
+//                        CGFontRef cgFont = CTFontCopyGraphicsFont(runFont, NULL);
+//                        CGContextSetFont(context, cgFont);
+//                        CGContextSetFontSize(context, CTFontGetSize(runFont));
+//                        CGContextShowGlyphsAtPositions(context, glyphs, glyphPositions, glyphCount);
+//                        CGFontRelease(cgFont);
+//                    }
+//                }
+//
+//        } 
+//            CGContextRestoreGState(context)
+    }
+   
+    
+    private func drawAttachment() throws {
+    }
+    private func drawInnerShadow() throws {
+    }
+    private func drawDebug() throws {
+    }
+    
+    private func drawInContext(context: CGContext, size: CGSize, position: CGPoint, view: UIView? = nil, layer: CALayer? = nil, cancel: (Void -> Bool)? = nil) {
+        // generate test function
+        let needDrawDebug = true
+        let cancel = {
+            return cancel?() ?? false
+        }
+        let drawCheck = {
+            if cancel() {
+                throw NSError(domain: "use cancel", code: 0, userInfo: nil)
+            }
+        }
+        do {
+            if needDrawBlockBorder {
+                try drawCheck()
+                try drawBlockBorder(context, size, position, cancel)
+            }
+            if needDrawBackgroundBorder {
+                try drawCheck()
+                try drawBorder()
+            }
+            if needDrawShadow{
+                try drawCheck()
+                try drawShadow()
+            }
+            if needDrawUnderline {
+                try drawCheck()
+                try drawDecoration()
+            }
+            if needDrawText {
+                try drawCheck()
+                try drawText(context, size, position, cancel)
+            }
+            if needDrawAttachment {
+                try drawCheck()
+                try drawAttachment()
+            }
+            if needDrawInnerShadow {
+                try drawCheck()
+                try drawInnerShadow()
+            }
+            if needDrawStrikethrough {
+                try drawCheck()
+                try drawDecoration()
+            }
+            if needDrawBorder {
+                try drawCheck()
+                try drawBorder()
+            }
+            if needDrawDebug {
+                try drawCheck()
+                try drawDebug()
+            }
+        } catch {
+            return
+        }
+    }
+    
+    // MARK: create
     
     ///
     /// Creates a layout with the container.
@@ -457,65 +692,35 @@ public class SIMChatTextLayout {
     /// - parameter range: The range.
     ///
     private init(text: NSAttributedString, container: SIMChatTextContainer, range: NSRange) {
-        self.text = text
-        self.range = range
-        self.container = container
-    }
-    
-    ///
-    /// Generate a layout with the given container size and text.
-    ///
-    /// - parameter text: The text
-    /// - parameter size: The text container's size
-    ///
-    /// - returns A new layout
-    ///
-    public static func layout(text: NSAttributedString, size: CGSize) -> SIMChatTextLayout {
-        return layout(text, container: SIMChatTextContainer(size: size))
-    }
-    
-    ///
-    /// Generate a layout with the given container and text.
-    ///
-    /// - parameter container: The text container
-    /// - parameter text:      The text
-    /// - parameter range:     The text range. If the length of the range is 0, it means the length is no limit.
-    ///
-    /// - returns: A new layout
-    ///
-    static func layout(text: NSAttributedString, container: SIMChatTextContainer, range: NSRange? = nil) -> SIMChatTextLayout {
-        let range = range ?? NSMakeRange(0, text.length)
-        let maximumNumberOfLines = container.maximumNumberOfLines
         
-        let layout = SIMChatTextLayout(text: text, container: container, range: range)
-        
-        // fetch or generate the default path
-        var path = container.path?.CGPath ?? {
-            let rect = CGRect(origin: CGPointZero, size: container.size)
-            let box = UIEdgeInsetsInsetRect(rect, container.insets)
-            return CGPathCreateWithRect(box, nil)
+        let canvas: CGPath = {
+            // generate of default canvas
+            var canvas = container.path?.CGPath ?? {
+                let rect = CGRect(origin: CGPointZero, size: container.size)
+                let box = UIEdgeInsetsInsetRect(rect, container.insets)
+                return CGPathCreateWithRect(box, nil)
+                }()
+            // add the exclusion path to canvas, if need
+            if !container.exclusionPaths.isEmpty {
+                canvas = container.exclusionPaths.reduce(CGPathCreateMutableCopy(canvas)) {
+                    CGPathAddPath($0, nil, $1.CGPath)
+                    return $0
+                    } ?? canvas
+            }
+            return canvas
         }()
-        // add the exclusion path, if need
-        if !container.exclusionPaths.isEmpty {
-            path = container.exclusionPaths.reduce(CGPathCreateMutableCopy(path)) {
-                CGPathAddPath($0, nil, $1.CGPath)
-                return $0
-            } ?? path
-        }
-        // get path box bounds
-        let pathBox = CGPathGetPathBoundingBox(path)
-        // reverse y
-        path = {
+        let canvasVirtual: CGPath = {
             var trans = CGAffineTransformMakeScale(1, -1)
-            return CGPathCreateMutableCopyByTransformingPath(path, &trans)
-        }() ?? path
+            return CGPathCreateMutableCopyByTransformingPath(canvas, &trans)
+        }() ?? canvas
+        let canvasRect = CGPathGetPathBoundingBox(canvas)
         
         // frame setter config
         let frameAttrs = NSMutableDictionary()
         
         // create coretext objcts
         let frameSetter = CTFramesetterCreateWithAttributedString(text)
-        let frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(range.location, range.length), path, frameAttrs)
+        let frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(range.location, range.length), canvasVirtual, frameAttrs)
        
         var row = 0
         var last = (position: CGPoint, rect: CGRect)?()
@@ -523,13 +728,13 @@ public class SIMChatTextLayout {
         var textBoundingRect = CGRectZero
         
         // calculate line frame
-        var lines: [SIMChatTextLine] = (CTFrameGetLines(frame) as NSArray).enumerate().flatMap { (i, e) in
+        let lines: Array<SIMChatTextLine> = (CTFrameGetLines(frame) as NSArray).enumerate().flatMap { (i, e) in
             let position: CGPoint = {
                 var origin = CGPointZero
                 // read origin form frame
                 CTFrameGetLineOrigins(frame, CFRangeMake(i, 1), &origin)
                 // convert CoreText coordinate to UIKit coordinate
-                return CGPointMake(pathBox.minX + origin.x, pathBox.maxY - origin.y)
+                return CGPointMake(canvasRect.minX + origin.x, canvasRect.maxY - origin.y)
             }()
             let line = SIMChatTextLine(line: e as! CTLine, position: position)
             let rect = line.frame
@@ -550,10 +755,9 @@ public class SIMChatTextLayout {
             }
             
             _SIMChatTextDebug(rect)
-            //_SIMChatTextDraw(line.line, container.size)
+            SIMLog.debug("\(i) => \(row) => \(line.range)")
             
-            // maximumNumberOfLines conditions must be met
-            guard maximumNumberOfLines == 0 || row < maximumNumberOfLines else {
+            guard container.maximumNumberOfLines == 0 || row < container.maximumNumberOfLines else {
                 needTruncation = true
                 return nil
             }
@@ -563,8 +767,6 @@ public class SIMChatTextLayout {
             
             // update line info
             line.row = row
-            
-            SIMLog.debug("\(i) => \(row) => \(line.range)")
             
             return line
         }
@@ -595,6 +797,9 @@ public class SIMChatTextLayout {
             return CGSizeMake(max(ceil(width), 0), max(ceil(height), 0))
         }()
         
+        self.textBoundingRect = textBoundingRect
+        self.textBoundingSize = textBoundingSize
+        
         // calculate visibleRange
         var visibleRange: NSRange = {
             let range = CTFrameGetVisibleStringRange(frame)
@@ -607,213 +812,150 @@ public class SIMChatTextLayout {
             visibleRange.length = last.range.location + last.range.length - visibleRange.location
             // create truncated line
             
-            let truncationToken = container.truncationToken ?? {
-                var attrs: [String: AnyObject]?
-                if let run = (CTLineGetGlyphRuns(last.line) as NSArray).lastObject as! CTRun? {
-                    var dic = (CTRunGetAttributes(run) as NSDictionary) as? [String: AnyObject]
-                    
-                    // clean
-                    dic?.removeValueForKey(SIMChatTextAttachmentAttributeName)
-                    dic?[String(kCTFontAttributeName)] = {
-                        var fontSize = CGFloat(12)
-                        if let font = dic?[String(kCTFontAttributeName)] as! CTFont? {
-                            fontSize = CTFontGetSize(font)
-                        }
-                        return UIFont.systemFontOfSize(fontSize * 0.9)
-                    }() as CTFont
-                    
-                    attrs = dic
-                }
-                return NSAttributedString(string: SIMChatTextTruncationToken, attributes: attrs)
-            }()
-            let truncationTokenLine = CTLineCreateWithAttributedString(truncationToken)
-           
-            let lastLineText = text.attributedSubstringFromRange(last.range).mutableCopy() as! NSMutableAttributedString
-            lastLineText.appendAttributedString(truncationToken)
-            let ctLastLineExtend = CTLineCreateWithAttributedString(lastLineText)
-            
-//
-            //last.bounds.width
-            
-            
-//            var tw = last.lineWidth
-//            tw = pathBox.width
-//                                CGFloat truncatedWidth = lastLine.width;
-//                                CGRect cgPathRect = CGRectZero;
-//                                if (CGPathIsRect(cgPath, &cgPathRect)) {
-//                                    if (isVerticalForm) {
-//                                        truncatedWidth = cgPathRect.size.height;
-//                                    } else {
-//                                        truncatedWidth = cgPathRect.size.width;
-//                                    }
-//                                }
-            
-            //    kCTLineTruncationStart  = 0
-            //    kCTLineTruncationEnd    = 1
-            //    kCTLineTruncationMiddle = 2
-            //CTLineTruncationType.End
-            //let line = CTLineCreateTruncatedLine(ctLastLineExtend, Double(last.lineWidth), .End, truncationTokenLine)
-            //let line = CTLineCreateTruncatedLine(ctLastLineExtend, Double(last.bounds.width), .Middle, truncationTokenLine)
-            let line = CTLineCreateTruncatedLine(ctLastLineExtend, Double(last.bounds.width), .Start, truncationTokenLine)
-            
-            
-            let t = SIMChatTextLine(line: line!, position: last.position)
-            
-            t.row = last.row
-            
-            lines.removeLast()
-            lines.append(t)
-            
-            //                        truncatedLine = [YYTextLine lineWithCTLine:ctTruncatedLine position:lastLine.position vertical:isVerticalForm];
-            //                        truncatedLine.index = lastLine.index;
-            //                        truncatedLine.row = lastLine.row;
-           
-            //            if (truncationTokenLine) {
-            //                CTLineTruncationType type = kCTLineTruncationEnd;
-            //                if (container.truncationType == YYTextTruncationTypeStart) {
-            //                    type = kCTLineTruncationStart;
-            //                } else if (container.truncationType == YYTextTruncationTypeMiddle) {
-            //                    type = kCTLineTruncationMiddle;
-            //                }
-            //                NSMutableAttributedString *lastLineText = [text attributedSubstringFromRange:lastLine.range].mutableCopy;
-            //                [lastLineText appendAttributedString:truncationToken];
-            //                CTLineRef ctLastLineExtend = CTLineCreateWithAttributedString((CFAttributedStringRef)lastLineText);
-            //                if (ctLastLineExtend) {
-            //                    CGFloat truncatedWidth = lastLine.width;
-            //                    CGRect cgPathRect = CGRectZero;
-            //                    if (CGPathIsRect(cgPath, &cgPathRect)) {
-            //                        if (isVerticalForm) {
-            //                            truncatedWidth = cgPathRect.size.height;
-            //                        } else {
-            //                            truncatedWidth = cgPathRect.size.width;
-            //                        }
-            //                    }
-            //                    CTLineRef ctTruncatedLine = CTLineCreateTruncatedLine(ctLastLineExtend, truncatedWidth, type, truncationTokenLine);
-            //                    CFRelease(ctLastLineExtend);
-            //                    if (ctTruncatedLine) {
-            //                        truncatedLine = [YYTextLine lineWithCTLine:ctTruncatedLine position:lastLine.position vertical:isVerticalForm];
-            //                        truncatedLine.index = lastLine.index;
-            //                        truncatedLine.row = lastLine.row;
-            //                        CFRelease(ctTruncatedLine);
-            //                    }
-            //                }
-            
-            //if container.lineBreakMode =
-            
-//    NSLineBreakByWordWrapping = 0,     	// Wrap at word boundaries, default
-//    NSLineBreakByCharWrapping,		// Wrap at character boundaries
-//    NSLineBreakByClipping,		// Simply clip
-//    NSLineBreakByTruncatingHead,	// Truncate at head of line: "...wxyz"
-//    NSLineBreakByTruncatingTail,	// Truncate at tail of line: "abcd..."
-//    NSLineBreakByTruncatingMiddle	// Truncate middle of line:  "ab...yz"
-            
+            // Warning: no imp
+            // let truncationToken = container.truncationToken ?? {
+            //     var attrs: [String: AnyObject]?
+            //     if let run = (CTLineGetGlyphRuns(last.line) as NSArray).lastObject as! CTRun? {
+            //         var dic = (CTRunGetAttributes(run) as NSDictionary) as? [String: AnyObject]
+            //         
+            //         // clean
+            //         dic?.removeValueForKey(SIMChatTextAttachmentAttributeName)
+            //         dic?[String(kCTFontAttributeName)] = {
+            //             var fontSize = CGFloat(12)
+            //             if let font = dic?[String(kCTFontAttributeName)] as! CTFont? {
+            //                 fontSize = CTFontGetSize(font)
+            //             }
+            //             return UIFont.systemFontOfSize(fontSize * 0.9)
+            //         }() as CTFont
+            //         
+            //         attrs = dic
+            //     }
+            //     return NSAttributedString(string: SIMChatTextTruncationToken, attributes: attrs)
+            // }()
+            // let truncationTokenLine = CTLineCreateWithAttributedString(truncationToken)
+            // 
+            // let lastLineText = text.attributedSubstringFromRange(last.range).mutableCopy() as! NSMutableAttributedString
+            // lastLineText.appendAttributedString(truncationToken)
+            // let ctLastLineExtend = CTLineCreateWithAttributedString(lastLineText)
+            // let line = CTLineCreateTruncatedLine(ctLastLineExtend, Double(last.bounds.width), .Start, truncationTokenLine)
+            // 
+            // 
+            // let t = SIMChatTextLine(line: line!, position: last.position)
+            // 
+            // t.row = last.row
+            // 
+            // lines.removeLast()
+            // lines.append(t)
         }
         
-//    if (needTruncation) {
-//        YYTextLine *lastLine = lines.lastObject;
-//        NSRange lastRange = lastLine.range;
-//        visibleRange.length = lastRange.location + lastRange.length - visibleRange.location;
+//    for (NSUInteger i = 0, max = lines.count; i < max; i++) {
+//        YYTextLine *line = lines[i];
+//        if (truncatedLine && line.index == truncatedLine.index) line = truncatedLine;
+//        if (line.attachments.count > 0) {
+//            [attachments addObjectsFromArray:line.attachments];
+//            [attachmentRanges addObjectsFromArray:line.attachmentRanges];
+//            [attachmentRects addObjectsFromArray:line.attachmentRects];
+//            for (YYTextAttachment *attachment in line.attachments) {
+//                if (attachment.content) {
+//                    [attachmentContentsSet addObject:attachment.content];
+//                }
+//            }
+//        }
+//    }
+        
+        // checking
+        let block = { (dic: [String: AnyObject], range: NSRange, stop: UnsafeMutablePointer<ObjCBool>) in
+//            if dic[YYTextHighlightAttributeName] != nil {
+//                self.containsHighlight = true
+//            }
+//            if dic[YYTextBlockBorderAttributeName] != nil {
+//                self.needDrawBlockBorder = true
+//            }
+//            if dic[YYTextBackgroundBorderAttributeName] != nil {
+//                self.needDrawBackgroundBorder = true
+//            }
+//            if dic[YYTextShadowAttributeName] != nil || dic[NSShadowAttributeName] != nil {
+//                self.needDrawShadow = true
+//            }
+//            if dic[YYTextUnderlineAttributeName] != nil {
+//                self.needDrawUnderline = true
+//            }
+//            if dic[YYTextAttachmentAttributeName] != nil {
+//                self.needDrawAttachment = true
+//            }
+//            if dic[YYTextInnerShadowAttributeName] != nil {
+//                self.needDrawInnerShadow = true
+//            }
+//            if dic[YYTextStrikethroughAttributeName] != nil {
+//                self.needDrawStrikethrough = true
+//            }
+//            if dic[YYTextBorderAttributeName] != nil {
+//                self.needDrawBorder = true
+//            }
+        }
+        
+        self.needDrawText = true
+        
+        text.enumerateAttributesInRange(visibleRange, options: .LongestEffectiveRangeNotRequired, usingBlock: block)
+//    if (visibleRange.length > 0) {
+//        layout.needDrawText = YES;
 //        
-//        // create truncated line
-//        if (container.truncationType != YYTextTruncationTypeNone) {
-//            CTLineRef truncationTokenLine = NULL;
-//            if (container.truncationToken) {
-//                truncationToken = container.truncationToken;
-//                truncationTokenLine = CTLineCreateWithAttributedString((CFAttributedStringRef)truncationToken);
-//            } else {
-//                CFArrayRef runs = CTLineGetGlyphRuns(lastLine.CTLine);
-//                NSUInteger runCount = CFArrayGetCount(runs);
-//                NSMutableDictionary *attrs = nil;
-//                if (runCount > 0) {
-//                    CTRunRef run = CFArrayGetValueAtIndex(runs, runCount - 1);
-//                    attrs = (id)CTRunGetAttributes(run);
-//                    attrs = attrs.mutableCopy;
-//                    [attrs removeObjectForKey:YYTextAttachmentAttributeName];
-//                    CTFontRef font = (__bridge CFTypeRef)attrs[(id)kCTFontAttributeName];
-//                    CGFloat fontSize = font ? CTFontGetSize(font) : 12.0;
-//                    UIFont *uiFont = [UIFont systemFontOfSize:fontSize * 0.9];
-//                    font = [uiFont CTFontRef];
-//                    if (font) {
-//                        attrs[(id)kCTFontAttributeName] = (__bridge id)(font);
-//                        uiFont = nil;
-//                        CFRelease(font);
-//                    }
-//                    if (!attrs) attrs = [NSMutableDictionary new];
-//                }
-//                truncationToken = [[NSAttributedString alloc] initWithString:YYTextTruncationToken attributes:attrs];
-//                truncationTokenLine = CTLineCreateWithAttributedString((CFAttributedStringRef)truncationToken);
-//            }
-//            if (truncationTokenLine) {
-//                CTLineTruncationType type = kCTLineTruncationEnd;
-//                if (container.truncationType == YYTextTruncationTypeStart) {
-//                    type = kCTLineTruncationStart;
-//                } else if (container.truncationType == YYTextTruncationTypeMiddle) {
-//                    type = kCTLineTruncationMiddle;
-//                }
-//                NSMutableAttributedString *lastLineText = [text attributedSubstringFromRange:lastLine.range].mutableCopy;
-//                [lastLineText appendAttributedString:truncationToken];
-//                CTLineRef ctLastLineExtend = CTLineCreateWithAttributedString((CFAttributedStringRef)lastLineText);
-//                if (ctLastLineExtend) {
-//                    CGFloat truncatedWidth = lastLine.width;
-//                    CGRect cgPathRect = CGRectZero;
-//                    if (CGPathIsRect(cgPath, &cgPathRect)) {
-//                        if (isVerticalForm) {
-//                            truncatedWidth = cgPathRect.size.height;
-//                        } else {
-//                            truncatedWidth = cgPathRect.size.width;
-//                        }
-//                    }
-//                    CTLineRef ctTruncatedLine = CTLineCreateTruncatedLine(ctLastLineExtend, truncatedWidth, type, truncationTokenLine);
-//                    CFRelease(ctLastLineExtend);
-//                    if (ctTruncatedLine) {
-//                        truncatedLine = [YYTextLine lineWithCTLine:ctTruncatedLine position:lastLine.position vertical:isVerticalForm];
-//                        truncatedLine.index = lastLine.index;
-//                        truncatedLine.row = lastLine.row;
-//                        CFRelease(ctTruncatedLine);
-//                    }
-//                }
-//                CFRelease(truncationTokenLine);
-//            }
+//        void (^block)(NSDictionary *attrs, NSRange range, BOOL *stop) = ^(NSDictionary *attrs, NSRange range, BOOL *stop) {
+//            if (attrs[YYTextHighlightAttributeName]) layout.containsHighlight = YES;
+//            if (attrs[YYTextBlockBorderAttributeName]) layout.needDrawBlockBorder = YES;
+//            if (attrs[YYTextBackgroundBorderAttributeName]) layout.needDrawBackgroundBorder = YES;
+//            if (attrs[YYTextShadowAttributeName] || attrs[NSShadowAttributeName]) layout.needDrawShadow = YES;
+//            if (attrs[YYTextUnderlineAttributeName]) layout.needDrawUnderline = YES;
+//            if (attrs[YYTextAttachmentAttributeName]) layout.needDrawAttachment = YES;
+//            if (attrs[YYTextInnerShadowAttributeName]) layout.needDrawInnerShadow = YES;
+//            if (attrs[YYTextStrikethroughAttributeName]) layout.needDrawStrikethrough = YES;
+//            if (attrs[YYTextBorderAttributeName]) layout.needDrawBorder = YES;
+//        };
+//        
+//        [layout.text enumerateAttributesInRange:visibleRange options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired usingBlock:block];
+//        if (truncatedLine) {
+//            [truncationToken enumerateAttributesInRange:NSMakeRange(0, truncationToken.length) options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired usingBlock:block];
 //        }
 //    }
         
-//    {
-//        CGRect rect = textBoundingRect;
-//        if (container.path) {
-//            if (container.pathLineWidth > 0) {
-//                CGFloat inset = container.pathLineWidth / 2;
-//                rect = CGRectInset(rect, -inset, -inset);
-//            }
-//        } else {
-//            rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsInvert(container.insets));
-//        }
-//        rect = CGRectStandardize(rect);
-//        CGSize size = rect.size;
-//        if (container.verticalForm) {
-//            size.width += container.size.width - (rect.origin.x + rect.size.width);
-//        } else {
-//            size.width += rect.origin.x;
-//        }
-//        size.height += rect.origin.y;
-//        if (size.width < 0) size.width = 0;
-//        if (size.height < 0) size.height = 0;
-//        size.width = ceil(size.width);
-//        size.height = ceil(size.height);
-//        textBoundingSize = size;
-//    }
         
-        layout._frame = frame
-        layout._frameSetter = frameSetter
-        layout.lines = lines
+        self.text = text
+        self.range = range
+        self.container = container
+        self.frameSetter = frameSetter
+        self.rowCount = row + 1
+        self.frame = frame
+        self.visibleRange = visibleRange
         
-        SIMLog.debug(textBoundingRect)
-        SIMLog.debug(textBoundingSize)
-
-//        _SIMChatTextDebug(path, container.size)
-//        _SIMChatTextDebug(textBoundingRect)
-//        _SIMChatTextDraw(frame, container.size)
+        self.lines = lines
+        self.attachments = []
         
-        return layout
+        self.truncatedLine = nil
+    }
+    
+    ///
+    /// Generate a layout with the given container size and text.
+    ///
+    /// - parameter text: The text
+    /// - parameter size: The text container's size
+    ///
+    /// - returns A new layout
+    ///
+    public static func layout(text: NSAttributedString, size: CGSize) -> SIMChatTextLayout {
+        return layout(text, container: SIMChatTextContainer(size: size))
+    }
+    
+    ///
+    /// Generate a layout with the given container and text.
+    ///
+    /// - parameter container: The text container
+    /// - parameter text:      The text
+    /// - parameter range:     The text range. If the length of the range is 0, it means the length is no limit.
+    ///
+    /// - returns: A new layout
+    ///
+    public static func layout(text: NSAttributedString, container: SIMChatTextContainer, range: NSRange? = nil) -> SIMChatTextLayout {
+        return SIMChatTextLayout(text: text, container: container, range: range ?? NSMakeRange(0, text.length))
     }
     
     ///
@@ -825,14 +967,21 @@ public class SIMChatTextLayout {
     ///
     /// - returns An array of SIMChatTextLayout object (the count is same as containers)
     ///
-    static func layout(text: NSAttributedString, containers: [SIMChatTextContainer], range: NSRange? = nil) -> [SIMChatTextLayout] {
+    public static func layout(text: NSAttributedString, containers: [SIMChatTextContainer], range: NSRange? = nil) -> [SIMChatTextLayout] {
         var range = range ?? NSMakeRange(0, text.length)
         return containers.flatMap {
+            guard range.location + range.length < text.length else {
+                return nil
+            }
             let layout = self.layout(text, container: $0, range: range)
-            range = NSMakeRange(0, 0)
+            
+            range.location = layout.visibleRange.location + layout.visibleRange.length
+            range.length = text.length - range.location
+            
             return layout
         }
     }
+    
 }
 
 ///
@@ -858,7 +1007,7 @@ public class SIMChatTextLine {
             let width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading)
             let twWidth = CTLineGetTrailingWhitespaceWidth(line)
             return (CGFloat(width), CGFloat(twWidth), ascent, descent, leading)
-        }()
+            }()
         // generate the bounds
         self.bounds = CGRectMake(0, 0 - ascent + firstOffset.x, lineWidth, ascent + descent + leading)
         
@@ -891,10 +1040,21 @@ public class SIMChatTextLine {
                 
                 return CGRectMake(position.x , -position.y - ascent, width, ascent + descent + leading)
             }()
-            
+
             return (attachment, NSMakeRange(range.location, range.length), rect)
         }
     }
+    
+    /// enumerate all runs
+    public func enumerateRun(block: (Int, NSDictionary, CTRun) -> Void) {
+        (CTLineGetGlyphRuns(line) as NSArray).enumerate().forEach {
+            let run = $0.element as! CTRun
+            let attrs = CTRunGetAttributes(run) as NSDictionary
+            block($0.index, attrs, run)
+        }
+    }
+    
+    //CTLineGetGlyphRuns
     
     public var row: Int = 0
     
@@ -1030,12 +1190,12 @@ public class SIMChatLabel: UIView {
             UIBezierPath(ovalInRect: CGRectMake((320 - 120) / 2, (320 - 120) / 2, 120, 120))
         ]
         
-        //c1.maximumNumberOfLines = 2
+        c1.maximumNumberOfLines = 2
         
         let layout = SIMChatTextLayout.layout(ms, container: c1)
         
-        _SIMChatTextDraw(layout, context: UIGraphicsGetCurrentContext(), rect: CGRectMake(0, 0, 320, 320))
-        //SIMChatLayoutRunDelegate
+        
+        layout.drawInContext(UIGraphicsGetCurrentContext()!, size: CGSizeMake(320, 320), position: CGPointMake(0, 0))
         //let zzz = TTT()
         
 //        //CTRunDelegateCreate
