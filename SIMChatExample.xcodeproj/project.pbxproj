@@ -150,7 +150,7 @@
 		0C4C0C981C89CA7A00DC3D56 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		0C4C0C9A1C89D0D900DC3D56 /* ExUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExUser.swift; sourceTree = "<group>"; };
 		0C4C0C9C1C89D3DC00DC3D56 /* MMProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MMProgressHUD.framework; sourceTree = "<group>"; };
-		0C5A2CA91D31129C003EE2E1 /* SIMChatInputBar_Dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatInputBar_Dev.swift; sourceTree = "<group>"; };
+		0C5A2CA91D31129C003EE2E1 /* SIMChatInputBar_Dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatInputBar_Dev.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C5A2CAD1D3112E2003EE2E1 /* ExInputBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExInputBarVC.swift; sourceTree = "<group>"; };
 		0C5A2CAF1D311305003EE2E1 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		0C5A2CB21D31142E003EE2E1 /* chat_bottom_Camera_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_Camera_nor@3x.png"; sourceTree = "<group>"; };
