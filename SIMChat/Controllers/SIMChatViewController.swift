@@ -98,26 +98,26 @@ public class SIMChatViewController: UIViewController {
             SIMChatBundle.imageWithResource("InputPanel/\(n).png")
         }
         return [
-            SIMChatInputToolBoxItem("page:voip", "网络电话", R("tool_voip")),
-            SIMChatInputToolBoxItem("page:video", "视频电话", R("tool_video")),
-            SIMChatInputToolBoxItem("page:video_s", "短视频", R("tool_video_short")),
-            SIMChatInputToolBoxItem("page:favorite", "收藏", R("tool_favorite")),
-            SIMChatInputToolBoxItem("page:red_pack", "发红包", R("tool_red_pack")),
-            SIMChatInputToolBoxItem("page:transfer", "转帐", R("tool_transfer")),
-            SIMChatInputToolBoxItem("page:shake", "抖一抖", R("tool_shake")),
-            SIMChatInputToolBoxItem("page:file", "文件", R("tool_folder")),
+//            SIMChatInputToolBoxItem("page:voip", "网络电话", R("tool_voip")),
+//            SIMChatInputToolBoxItem("page:video", "视频电话", R("tool_video")),
+//            SIMChatInputToolBoxItem("page:video_s", "短视频", R("tool_video_short")),
+//            SIMChatInputToolBoxItem("page:favorite", "收藏", R("tool_favorite")),
+//            SIMChatInputToolBoxItem("page:red_pack", "发红包", R("tool_red_pack")),
+//            SIMChatInputToolBoxItem("page:transfer", "转帐", R("tool_transfer")),
+//            SIMChatInputToolBoxItem("page:shake", "抖一抖", R("tool_shake")),
+//            SIMChatInputToolBoxItem("page:file", "文件", R("tool_folder")),
             SIMChatInputToolBoxItem("page:camera", "照相机", R("tool_camera")),
             SIMChatInputToolBoxItem("page:pic", "相册", R("tool_pic")),
-            SIMChatInputToolBoxItem("page:ptt", "录音", R("tool_ptt")),
-            SIMChatInputToolBoxItem("page:music", "音乐", R("tool_music")),
-            SIMChatInputToolBoxItem("page:location", "位置", R("tool_location")),
-            SIMChatInputToolBoxItem("page:nameplate", "名片",   R("tool_share_nameplate")),
-            SIMChatInputToolBoxItem("page:aa", "AA制", R("tool_aa_collection")),
-            SIMChatInputToolBoxItem("page:gapp", "群应用", R("tool_group_app")),
-            SIMChatInputToolBoxItem("page:gvote", "群投票", R("tool_group_vote")),
-            SIMChatInputToolBoxItem("page:gvideo", "群视频", R("tool_group_video")),
-            SIMChatInputToolBoxItem("page:gtopic", "群话题", R("tool_group_topic")),
-            SIMChatInputToolBoxItem("page:gactivity", "群活动", R("tool_group_activity"))
+//            SIMChatInputToolBoxItem("page:ptt", "录音", R("tool_ptt")),
+//            SIMChatInputToolBoxItem("page:music", "音乐", R("tool_music")),
+//            SIMChatInputToolBoxItem("page:location", "位置", R("tool_location")),
+//            SIMChatInputToolBoxItem("page:nameplate", "名片",   R("tool_share_nameplate")),
+//            SIMChatInputToolBoxItem("page:aa", "AA制", R("tool_aa_collection")),
+//            SIMChatInputToolBoxItem("page:gapp", "群应用", R("tool_group_app")),
+//            SIMChatInputToolBoxItem("page:gvote", "群投票", R("tool_group_vote")),
+//            SIMChatInputToolBoxItem("page:gvideo", "群视频", R("tool_group_video")),
+//            SIMChatInputToolBoxItem("page:gtopic", "群话题", R("tool_group_topic")),
+//            SIMChatInputToolBoxItem("page:gactivity", "群活动", R("tool_group_activity"))
         ]
     }()
     

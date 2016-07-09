@@ -461,13 +461,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
 //        (a as! NSArray).writeToFile("/Users/sagesse/Desktop/Info.plist", atomically: true)
         
-        dispatch_async(dispatch_get_main_queue()) {
-            if let window = self.window {
-                let label = SIMChatFPSLabel(frame: CGRectMake(window.bounds.width - 55 - 8, 20, 55, 20))
-                label.autoresizingMask = [.FlexibleLeftMargin, .FlexibleBottomMargin]
-                window.addSubview(label)
-            }
-        }
+//        dispatch_async(dispatch_get_main_queue()) {
+//            if let window = self.window {
+//                let label = SIMChatFPSLabel(frame: CGRectMake(window.bounds.width - 55 - 8, 20, 55, 20))
+//                label.autoresizingMask = [.FlexibleLeftMargin, .FlexibleBottomMargin]
+//                window.addSubview(label)
+//            }
+//        }
         
         // Override point for customization after application launch.
         return true

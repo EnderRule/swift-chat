@@ -183,6 +183,17 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
     ///
     public func inputPanel(inputPanel: UIView, didSelectToolBoxItem item: SIMChatInputItemProtocol) {
         SIMLog.debug("\(item.itemIdentifier) => \(item.itemName)")
+        
+        switch item.itemIdentifier {
+        case "page:pic":
+            // 从相册选择图片
+            imagePickerWithPhoto()
+        case "page:camera":
+            // 从相机选择图片
+            imagePickerWithCamera()
+        default:
+            break
+        }
     }
     
     // MARK: UIImagePickerControllerDelegate

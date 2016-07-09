@@ -6,26 +6,9 @@
 		<key>image</key>
 		<string>icon/com.qq.default.png</string>
 		<key>identifier</key>
-		<string>com.qq.default</string>
+		<string>com.apple.emoji</string>
 		<key>is_default</key>
 		<true/>
-		<key>sub_groups</key>
-		<array>
-			<dict>
-				<key>image</key>
-				<string>icon/com.apple.emoji.png</string>
-				<key>identifier</key>
-				<string>com.apple.emoji</string>
-			</dict>
-			<dict>
-				<key>image</key>
-				<string>icon/com.qq.classic.png</string>
-				<key>identifier</key>
-				<string>com.qq.classic</string>
-				<key>is_default</key>
-				<true/>
-			</dict>
-		</array>
 	</dict>
 </array>
 </plist>
