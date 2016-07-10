@@ -807,7 +807,8 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         
         view.delegate = self
         view.dataSource = self
-        view.backgroundColor = UIColor.orangeColor().colorWithAlphaComponent(0.2)
+        //view.backgroundColor = UIColor.orangeColor().colorWithAlphaComponent(0.2)
+        view.backgroundColor = UIColor.clearColor()
         view.bounces = false
         view.scrollsToTop = false
         view.scrollEnabled = false
@@ -1192,8 +1193,8 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
     }
     
     @inline(__always) func _init() {
-        //backgroundColor = UIColor.clearColor()
-        backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
+        backgroundColor = UIColor.clearColor()
+        //backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
     }
     @inline(__always) func _updateItem(newValue: SIMChatInputBarItem?) {
         guard let newValue = newValue else {
@@ -1229,9 +1230,11 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
     
     private var _contentView: UIView?
     private lazy var _button: SIMChatInputBarItemButton = {
+        //let view = SIMChatInputBarItemButton(type: .Custom)
         let view = SIMChatInputBarItemButton(type: .System)
         view.multipleTouchEnabled = false
         view.exclusiveTouch = true
+        view.clipsToBounds = true
         return view
     }()
     
@@ -1296,7 +1299,9 @@ internal class SIMChatInputBarItemButton: UIButton {
             guard barItem !== newValue else {
                 return
             }
-            newValue?.apply(toButton: self)
+            UIView.performWithoutAnimation { 
+                newValue?.apply(toButton: self)
+            }
         }
     }
     
@@ -1327,7 +1332,7 @@ internal class SIMChatInputBarItemButton: UIButton {
         setImage(n, forState: .Normal)
         setImage(h, forState: .Highlighted)
         
-        _addAnimation("selected")
+        //_addAnimation("selected")
     }
     
     @inline(__always) private func _setHighlighted(highlighted: Bool, animated: Bool) {
@@ -1336,7 +1341,7 @@ internal class SIMChatInputBarItemButton: UIButton {
         if barItem?.imageForState([(selected ? .Selected : .Normal), .Highlighted]) != nil {
             imageView?.alpha = 1
         }
-        _addAnimation("highlighted")
+        //_addAnimation("highlighted")
     }
     
     @objc private func _touchHandler() {
@@ -1669,11 +1674,28 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
     func setCenterBarItem(editItem: SIMChatInputBarItem) {
         _centerBarItem = editItem
         
-        _textView.hidden = (editItem !== SIMChatInputBarItem.defaultCenterBarItem)
-        _textView.resignFirstResponder()
         
         if _isInitBarItemLayouts {
             _updateBarItemLayouts(true)
+            
+            if editItem === SIMChatInputBarItem.defaultCenterBarItem {
+                self._textView.hidden = false
+//                UIView.animateWithDuration(0.25, animations: {
+//                    self._textView.alpha = 1
+//                }, completion: { (f) in
+//                    self._textView.alpha = 1
+//                    self._textView.hidde = true
+//                })
+            } else {
+                
+                UIView.animateWithDuration(0.25, animations: {
+                    self._textView.alpha = 0
+                }, completion: { (f) in
+                    self._textView.alpha = 1
+                    self._textView.hidden = true
+                })
+            }
+            
         }
     }
     
@@ -1789,6 +1811,12 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
         cell.delegate = self
         cell.item = item
         cell.setSelected(_selectedBarItems.contains(item), animated: false)
+        
+        if item === _centerBarItem && item == SIMChatInputBarItem.defaultCenterBarItem {
+            cell.hidden = true
+        } else {
+            cell.hidden = false
+        }
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
@@ -2142,6 +2170,12 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
         _cacheContentSize = nil
         
         if animated {
+            
+            let cell = _collectionView.cellForItemAtIndexPath(_centerIndexPath)
+            let size = _sizeForItem(_centerBarItem)
+            
+            Log.trace("\(cell?.bounds) => \(_textView.bounds) => \(size)")
+            
             UIView.animateWithDuration(0.25) {
                 self._textView.layoutIfNeeded()
                 self.invalidateIntrinsicContentSize()
@@ -2155,7 +2189,9 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
             self._textView.layoutIfNeeded()
             self.invalidateIntrinsicContentSize()
             //self._collectionView.layoutIfNeeded()
-            self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+            UIView.performWithoutAnimation{
+                self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+            }
             // 强制更新
             self.superview?.setNeedsLayout()
             self.superview?.layoutIfNeeded()

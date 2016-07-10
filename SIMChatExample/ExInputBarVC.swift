@@ -290,7 +290,9 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     lazy var _customCenterBarItem: SIMChatInputBarItem = {
-        return TestBarItem(size: CGSizeMake(22, 34), alignment: .Automatic)
+        let t = TestBarItem(size: CGSizeMake(22, 36), alignment: .Automatic)
+        t.setBackgroundImage(UIImage(named:"t2.jpg"), forState: .Normal)
+        return t
     }()
 
     func inputBar(inputBar: SIMChatInputBar, shouldDeselectItem item: SIMChatInputBarItem) -> Bool {
