@@ -25,16 +25,23 @@ import UIKit
 
 // TODO: add landscape support
 // TODO: add `init(coder: aDecoder)` support
+// TODO: check memory circ
 
 /// 输入栏大小发生改变
 public let SIMChatInputBarFrameDidChangeNotification = "SIMChatInputBarFrameDidChangeNotification"
 
-///
-/// item alignment
-///
 @objc
 @available(iOS 7.0, *)
-public enum SIMChatInputAlignment: Int {
+public enum SIMChatInputBarPosition: Int {
+    case Top
+    case Left
+    case Right
+    case Bottom
+}
+
+@objc
+@available(iOS 7.0, *)
+public enum SIMChatInputBarAlignment: Int {
                         //0xvvhh
     case Top            = 0x0104 // Top + Center(H)
     case Bottom         = 0x0204 // Bottom + Center(H)
@@ -48,9 +55,7 @@ public enum SIMChatInputAlignment: Int {
     
     case Automatic      = 0x0000
 }
-///
-/// item
-///
+
 @objc
 @available(iOS 7.0, *)
 public class SIMChatInputBarItem: NSObject {
@@ -75,6 +80,11 @@ public class SIMChatInputBarItem: NSObject {
         self.init()
         self.customView = customView
     }
+    
+    public static var defaultCenterBarItem: SIMChatInputBarItem = {
+        let item = SIMChatInputBarItem()
+        return item
+    }()
 
     // MARK: property
     
@@ -82,15 +92,18 @@ public class SIMChatInputBarItem: NSObject {
     public var image: UIImage? // default is nil
     public var customView: UIView? // default is nil
     
+    
     public var tag: Int = 0 // default is 0
     public var title: String? // default is nil
     public var enabled: Bool = true // default is YES
+    
+    public var font: UIFont? // default is nil
     
     public var action: Selector = nil // default is nil
     weak public var target: AnyObject? // default is nil
     
     public var tintColor: UIColor?
-    public var alignment: SIMChatInputAlignment = .Automatic
+    public var alignment: SIMChatInputBarAlignment = .Automatic
     public var imageInsets: UIEdgeInsets = UIEdgeInsetsZero // default is UIEdgeInsetsZero
     
     // MARK: setter
@@ -311,7 +324,7 @@ public class SIMChatInputBar: UIView {
         _addKeyboardNotification()
     }
     /// extension deinit
-    @inline(__always) func _deinit() {
+    @inline(__always) private func _deinit() {
         
         // events
         _removeKeyboardNotification()
@@ -572,8 +585,8 @@ public class SIMChatInputBar: UIView {
     }()
     private lazy var _inputAccessoryView: SIMChatInputAccessoryView = {
         let view = SIMChatInputAccessoryView(frame: CGRect.zero)
+        view.inputBar = self
         view.backgroundColor = nil
-        view.placeholderView.inputBar = self
         return view
     }()
     private lazy var _inputBackgroundView: SIMChatInputBackgroundView = {
@@ -620,10 +633,15 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
             return size
         }
         // Calculate intrinsicContentSize that will fit all the text
-        let textSize = _textView.sizeThatFits(CGSize(width: _textView.frame.width, height: CGFloat.max))
+        //let mWidth = frame.width - _leftBarItemSize.width - _rightBarItemSize.width
+        let centerBarItemSize = _sizeForItem(_centerBarItem)
+//        let textSize = _textView.sizeThatFits(CGSize(width: _textView.frame.width, height: CGFloat.max))
+//                let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.max))
+//                return CGSizeMake(_textView.bounds.width, textSize.height + 0.5)
+        
         let mHeight = max(_leftBarItemSize.height, _rightBarItemSize.height)
-        let height = _textViewTop.constant + max(textSize.height, mHeight) + _textViewBottom.constant
-        Log.trace("\(textSize) => \(height)")
+        let height = _textViewTop.constant + max(centerBarItemSize.height, mHeight) + _textViewBottom.constant
+        Log.trace("\(centerBarItemSize) => \(height)")
         
         let size = CGSize(width: frame.width, height: height + 0.5)
         _cacheIntrinsicContentSize = size
@@ -643,13 +661,20 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         // when the frame stability calculation again
         if !_isInitBarItemLayouts {
             _isInitBarItemLayouts = true
-            _updateBarItemLayouts()
+            _updateBarItemLayouts(false)
         }
     }
     
     /// A `placeholderView` for system `inputAccessoryView`
     var placeholderView: SIMChatInputPlaceholderView {
         return _placeholderView
+    }
+    
+    // set
+    weak var inputBar: SIMChatInputBar? {
+        willSet {
+            placeholderView.inputBar = newValue
+        }
     }
     
 //    override func canResignFirstResponder() -> Bool {
@@ -673,6 +698,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
     func textViewDidChange(textView: UITextView) {
         _layoutIfNeeded(true)
     }
+    
     
     @inline(__always) private func _init() {
         
@@ -700,86 +726,6 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         ])
         
         
-        class TestBarItem:SIMChatInputBarItem {
-            
-            init(n: UIImage?, h: UIImage? = nil, s: UIImage? = nil, d: UIImage? = nil, sh: UIImage? = nil, alignment: SIMChatInputAlignment = .Automatic) {
-                super.init()
-                self.size = n?.size ?? CGSizeMake(34, 3)
-                self.alignment = alignment
-                
-                self.setImage(n, forState: .Normal)
-                self.setImage(h, forState: .Highlighted)
-                self.setImage(d, forState: .Disabled)
-                self.setImage(s,  forState: [.Selected, .Normal])
-                self.setImage(sh, forState: [.Selected, .Highlighted])
-            }
-            
-            init(size: CGSize, alignment: SIMChatInputAlignment) {
-                super.init()
-                self.size = size
-                self.alignment = alignment
-            }
-            
-            required init?(coder aDecoder: NSCoder) {
-                fatalError("init(coder:) has not been implemented")
-            }
-        }
-        
-        // 对齐测试
-        // _topBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(132, 34), alignment: .Right),
-        // ]
-        // _leftBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Bottom),
-        // ]
-        // _rightBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Top),
-        // ]
-        // _bottomBarItems = [
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopLeft),
-        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomLeft),
-        //     TestBarItem(size: CGSizeMake(64, 64), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomRight),
-        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopRight),
-        // ]
-        
-        // 图标测试
-        // qqzone
-        // _topBarItems = [
-        //     TestBarItem(image: UIImage(named:"mqz_input_atFriend"), alignment: .Left),
-        //     TestBarItem(image: UIImage(named:"mqz_ugc_inputCell_face_icon"), alignment: .Left),
-        //     TestBarItem(image: UIImage(named:"mqz_ugc_inputCell_pic_icon"), alignment: .Left),
-        //     TestBarItem(image: UIImage(named:"mqz_ugc_inputCell_private_icon"), alignment: .Right),
-        // ]
-        // wexin
-        _leftBarItems = [
-            TestBarItem(n: UIImage(named:"chat_bottom_PTT_nor"), alignment: .BottomLeft),
-        ]
-        _rightBarItems = [
-            TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press"), s: UIImage(named:"chat_bottom_more_nor"), sh: UIImage(named:"chat_bottom_more_press"), alignment: .BottomRight),
-            TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), alignment: .BottomRight),
-        ]
-        // // qq
-        // _bottomBarItems = [
-        //     TestBarItem(image: UIImage(named:"chat_bottom_PTT_nor"), alignment: .Left),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_PTV_nor")),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_photo_nor")),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_Camera_nor")),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_red_pack_nor")),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_emotion_nor")),
-        //     TestBarItem(image: UIImage(named:"chat_bottom_more_nor"), alignment: .Right),
-        //     //TestBarItem(image: UIImage(named:"chat_bottom_file_nor")),
-        //     //TestBarItem(image: UIImage(named:"chat_bottom_keyboard_nor")),
-        //     //TestBarItem(image: UIImage(named:"chat_bottom_location_nor")),
-        //     //TestBarItem(image: UIImage(named:"chat_bottom_mypc_nor")),
-        //     //TestBarItem(image: UIImage(named:"chat_bottom_shake_nor")),
-        // ]
         
 //         bar.bottomBarButtonItems = [
 //             SIMChatInputPanelAudioView.inputPanelItem(),
@@ -801,16 +747,17 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         let newValue = _textView.contentSize
         let oldValue = _cacheContentSize ?? CGSizeZero
         
+        Log.trace("\(newValue) => \(oldValue)")
+        
         guard newValue.height != oldValue.height else {
             return
         }
-        
-        Log.trace("\(newValue) => \(oldValue)")
         
         _cacheContentSize = newValue
         invalidateIntrinsicContentSize()
         
         UIView.animateWithDuration(0.25) {
+            self._textView.setNeedsLayout()
             self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
             // 强制更新
             self.superview?.setNeedsLayout()
@@ -820,19 +767,21 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         _textView.setContentOffset(CGPoint.zero, animated: animated)
     }
     
-    // MARK: Items
+    //  Items
     
-    var _topBarItems: [SIMChatInputBarItem] = []
-    var _leftBarItems: [SIMChatInputBarItem] = []
-    var _rightBarItems: [SIMChatInputBarItem] = []
-    var _bottomBarItems: [SIMChatInputBarItem] = []
+    private var _topBarItems: [SIMChatInputBarItem] = []
+    private var _leftBarItems: [SIMChatInputBarItem] = []
+    private var _rightBarItems: [SIMChatInputBarItem] = []
+    private var _bottomBarItems: [SIMChatInputBarItem] = []
     
-    var _centerBarItem: SIMChatInputBarItem = SIMChatInputBarItem()
-    var _centerIndexPath: NSIndexPath {
+    private var _centerBarItem: SIMChatInputBarItem = .defaultCenterBarItem
+    private var _centerIndexPath: NSIndexPath {
         return NSIndexPath(forItem: _leftBarItems.count, inSection: 1)
     }
     
-    // MARK: Subview
+    private var _selectedBarItems: Set<SIMChatInputBarItem> = []
+    
+    //  Subview
     
     private lazy var _textView: UITextView = {
         let view = UITextView()
@@ -843,14 +792,14 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         //view.backgroundColor = UIColor.clearColor()
         view.backgroundColor = UIColor.grayColor()
         view.scrollIndicatorInsets = UIEdgeInsetsMake(2, 0, 2, 0)
-        view.enablesReturnKeyAutomatically = true
+        //view.enablesReturnKeyAutomatically = true
         view.delegate = self
         
         return view
     }()
     
     private lazy var _collectionView: UICollectionView = {
-        let layout = SIMChatInputAlignmentFlowLayout()
+        let layout = SIMChatInputBarAlignmentFlowLayout()
         let view = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         
         layout.minimumLineSpacing = 8
@@ -858,7 +807,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         
         view.delegate = self
         view.dataSource = self
-        view.backgroundColor = nil
+        view.backgroundColor = UIColor.orangeColor().colorWithAlphaComponent(0.2)
         view.bounces = false
         view.scrollsToTop = false
         view.scrollEnabled = false
@@ -882,7 +831,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         return view
     }()
     
-    // MARK: Layout
+    // Layout
    
     private lazy var _textViewTop: NSLayoutConstraint = {
         return NSLayoutConstraintMake(self._textView, .Top, .Equal, self, .Top)
@@ -897,7 +846,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         return NSLayoutConstraintMake(self, .Bottom, .Equal, self._textView, .Bottom)
     }()
     
-    // MARK: Cache
+    //  Cache
     
     private var _cacheContentSize: CGSize?
     private var _cacheIntrinsicContentSize: CGSize?
@@ -957,7 +906,7 @@ internal class SIMChatInputPlaceholderView: UIView {
 }
 
 /// a alignment flow collection view layout
-internal class SIMChatInputAlignmentFlowLayout: UICollectionViewFlowLayout {
+internal class SIMChatInputBarAlignmentFlowLayout: UICollectionViewFlowLayout {
     /// rewrite
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let attributes = super.layoutAttributesForElementsInRect(rect) else {
@@ -966,7 +915,7 @@ internal class SIMChatInputAlignmentFlowLayout: UICollectionViewFlowLayout {
         guard let collectionView = collectionView else {
             return attributes
         }
-        guard let delegate = collectionView.delegate as? SIMChatInputAlignmentDelegateFlowLayout else {
+        guard let delegate = collectionView.delegate as? SIMChatInputBarAlignmentDelegateFlowLayout else {
             return attributes
         }
         // process
@@ -975,8 +924,8 @@ internal class SIMChatInputAlignmentFlowLayout: UICollectionViewFlowLayout {
 }
 
 
-/// use in SIMChatInputAlignmentFlowLayout
-internal protocol SIMChatInputAlignmentDelegateFlowLayout: UICollectionViewDelegateFlowLayout {
+/// use in SIMChatInputBarAlignmentFlowLayout
+internal protocol SIMChatInputBarAlignmentDelegateFlowLayout: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, layoutAttributesForElements: [UICollectionViewLayoutAttributes], inRect rect: CGRect) -> [UICollectionViewLayoutAttributes]
 }
 
@@ -1230,10 +1179,22 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
         }
     }
     
-    @inline(__always) func _init() {
-        backgroundColor = UIColor.clearColor()
+    func setSelected(selected: Bool, animated: Bool) {
+        _button.selected = selected
+//        if !animated {
+//            _button.layer.removeAllAnimations()
+//        }
     }
     
+    weak var delegate: SIMChatInputBarItemButtonDelegate? {
+        set { return _button.delegate = newValue }
+        get { return _button.delegate }
+    }
+    
+    @inline(__always) func _init() {
+        //backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
+    }
     @inline(__always) func _updateItem(newValue: SIMChatInputBarItem?) {
         guard let newValue = newValue else {
             // clear on nil
@@ -1257,78 +1218,13 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
             }
             // 更新按钮属性
             _button.barItem = newValue
-//            let image1 = UIImage(named: "chat_bottom_emotion_nor")
-//            let image2 = UIImage(named: "chat_bottom_emotion_press")
-//            
-////            _button.setImage(_convert(toTemplate: image1), forState: .Normal)
-////            _button.setImage(_convert(toTemplate: image2), forState: .Highlighted)
-//            
-//            _button.setBackgroundImage(_convert(toTemplate: image1), forState: .Normal)
-//            _button.setBackgroundImage(_convert(toTemplate: image2), forState: .Highlighted)
         }
-        //backgroundColor = UIColor.purpleColor()
-        //self.contentView.layer.contentsGravity = kCAGravityCenter
-        //self.contentView.layer.contents = item?.image?.CGImage
-        
         // 更新视图
         if let view = _contentView where view.superview != contentView {
             view.frame = contentView.bounds
             view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
             contentView.addSubview(view)
         }
-    }
-    
-    /// 转换图片
-    @inline(__always) func _convert(toTemplate image: UIImage?) -> UIImage? {
-        if image?.renderingMode != .Automatic {
-            return image
-        }
-        return image?.imageWithRenderingMode(.AlwaysTemplate)
-    }
-    
-//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-//        super.touchesBegan(touches, withEvent: event)
-//        Log.trace()
-//    }
-    
-    func _shouldHighlight() -> Bool {
-        return true
-    }
-    func _shouldSelect() -> Bool {
-        return true
-    }
-    func _shouldDeselect() -> Bool {
-        return true
-    }
-    
-//    optional func inputBar(inputBar: SIMChatInputBar, shouldHighlightItem item: SIMChatInputBarItem) -> Bool
-//    optional func inputBar(inputBar: SIMChatInputBar, didHighlightItem item: SIMChatInputBarItem)
-//    
-//    optional func inputBar(inputBar: SIMChatInputBar, shouldSelectItem item: SIMChatInputBarItem) -> Bool
-//    optional func inputBar(inputBar: SIMChatInputBar, didSelectItem item: SIMChatInputBarItem)
-//
-//    optional func inputBar(inputBar: SIMChatInputBar, shouldDeselectItem item: SIMChatInputBarItem) -> Bool
-//    optional func inputBar(inputBar: SIMChatInputBar, didDeselectItem item: SIMChatInputBarItem)
-    
-    // canHighlighte
-    // canSelecte
-    
-    override var highlighted: Bool {
-        willSet {
-            Log.trace(newValue)
-//            _button.highlighted = newValue
-        }
-    }
-    override var selected: Bool {
-        willSet {
-            Log.trace(newValue)
-//            _button.selected = newValue
-        }
-    }
-    
-    weak var delegate: SIMChatInputBarItemButtonDelegate? {
-        set { return _button.delegate = newValue }
-        get { return _button.delegate }
     }
     
     private var _contentView: UIView?
@@ -1350,32 +1246,17 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
 }
 
 internal protocol SIMChatInputBarItemButtonDelegate: class {
+    
     func barItemButton(shouldHighlight barItemButton: SIMChatInputBarItemButton) -> Bool
     func barItemButton(didHighlight barItemButton: SIMChatInputBarItemButton)
     func barItemButton(shouldSelect barItemButton: SIMChatInputBarItemButton) -> Bool
     func barItemButton(didSelect barItemButton: SIMChatInputBarItemButton)
     func barItemButton(shouldDeselect barItemButton: SIMChatInputBarItemButton) -> Bool
     func barItemButton(didDeselect barItemButton: SIMChatInputBarItemButton)
+    
 }
 
 internal class SIMChatInputBarItemButton: UIButton {
-    
-    override var highlighted: Bool {
-        set {
-            super.highlighted = newValue
-            
-//            let ani = CATransition()
-//            
-//            ani.duration = 0.35
-//            ani.fillMode = kCAFillModeBackwards
-//            ani.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-//            ani.type = kCATransitionFade
-//            ani.subtype = kCATransitionFromTop
-//            
-//            layer.addAnimation(ani, forKey: "highlighted")
-        }
-        get { return _allowsHighlight && super.highlighted }
-    }
     
     override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
         if delegate?.barItemButton(shouldHighlight: self) ?? true {
@@ -1386,26 +1267,29 @@ internal class SIMChatInputBarItemButton: UIButton {
         }
         return super.beginTrackingWithTouch(touch, withEvent: event)
     }
-//    override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-//        return super.continueTrackingWithTouch(touch, withEvent: event)
-//    }
     
-    var _selected = false
-    var _allowsHighlight = true
-    
-    
-    func _touchHandler() {
-        guard delegate?.barItemButton(shouldSelect: self) ?? true else {
-            return
+    override var selected: Bool {
+        willSet {
+            _setSelected(newValue, animated: true)
         }
-        //selected = !_selected
-        //_selected = !_selected
-        delegate?.barItemButton(didSelect: self)
+    }
+    override var highlighted: Bool {
+        set {
+            guard _allowsHighlight else {
+                return
+            }
+            super.highlighted = newValue
+            _setHighlighted(newValue, animated: true)
+        }
+        get { return super.highlighted }
     }
     
-    @inline(__always) func _init() {
-        addTarget(self, action: #selector(_touchHandler), forControlEvents: .TouchUpInside)
+    override var state: UIControlState {
+        // 永远禁止系统的选中
+        return super.state.subtract(.Selected)
     }
+    
+    weak var delegate: SIMChatInputBarItemButtonDelegate?
     
     var barItem: SIMChatInputBarItem? {
         willSet {
@@ -1416,7 +1300,65 @@ internal class SIMChatInputBarItemButton: UIButton {
         }
     }
     
-    weak var delegate: SIMChatInputBarItemButtonDelegate?
+    @inline(__always) private func _init() {
+        addTarget(self, action: #selector(_touchHandler), forControlEvents: .TouchUpInside)
+    }
+    
+    @inline(__always) private func _addAnimation(key: String) {
+        let ani = CATransition()
+        
+        ani.duration = 0.35
+        ani.fillMode = kCAFillModeBackwards
+        ani.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        ani.type = kCATransitionFade
+        ani.subtype = kCATransitionFromTop
+        
+        layer.addAnimation(ani, forKey: key)
+    }
+    
+    @inline(__always) private func _setSelected(selected: Bool, animated: Bool) {
+        //Log.trace(selected)
+        let op1: UIControlState = [(selected ? .Selected : .Normal), .Normal]
+        let op2: UIControlState = [(selected ? .Selected : .Normal), .Highlighted]
+        
+        let n = barItem?.imageForState(op1) ?? barItem?.imageForState(.Normal)
+        let h = barItem?.imageForState(op2)
+        
+        setImage(n, forState: .Normal)
+        setImage(h, forState: .Highlighted)
+        
+        _addAnimation("selected")
+    }
+    
+    @inline(__always) private func _setHighlighted(highlighted: Bool, animated: Bool) {
+        //Log.trace(highlighted)
+        // 检查高亮的时候有没有设置图片, 如果有关闭系统的变透明效果
+        if barItem?.imageForState([(selected ? .Selected : .Normal), .Highlighted]) != nil {
+            imageView?.alpha = 1
+        }
+        _addAnimation("highlighted")
+    }
+    
+    @objc private func _touchHandler() {
+        if let target = barItem?.target, action = barItem?.action {
+            sendAction(action, to: target, forEvent: nil)
+        }
+        if !selected {
+            guard delegate?.barItemButton(shouldSelect: self) ?? true else {
+                return
+            }
+            selected = true
+            delegate?.barItemButton(didSelect: self)
+        } else {
+            guard delegate?.barItemButton(shouldDeselect: self) ?? true else {
+                return
+            }
+            selected = false
+            delegate?.barItemButton(didDeselect: self)
+        }
+    }
+    
+    private var _allowsHighlight = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -1665,10 +1607,152 @@ internal class SIMChatInputBarTextView: UITextView {
 
 // MARK:
 
-///
-/// Accessory Item Support
-///
-extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SIMChatInputAlignmentDelegateFlowLayout, SIMChatInputBarItemButtonDelegate {
+extension SIMChatInputBar {
+    
+    // MARK: barItem
+    
+    public func setCenterBarItem(editItem: SIMChatInputBarItem) {
+        return _inputAccessoryView.setCenterBarItem(editItem)
+    }
+    
+    public func setBarItems(barItems: [SIMChatInputBarItem], atPosition position: SIMChatInputBarPosition, animated: Bool) {
+        return _inputAccessoryView.setBarItems(barItems, atPosition: position, animated: animated)
+    }
+    public func barItemsForPosition(position: SIMChatInputBarPosition) -> [SIMChatInputBarItem] {
+        return _inputAccessoryView.barItemsForPosition(position)
+    }
+    
+    public func canSelectBarItem(barItem: SIMChatInputBarItem) -> Bool {
+        return _inputAccessoryView.canSelectBarItem(barItem)
+    }
+    public func canDeselectBarItem(barItem: SIMChatInputBarItem) -> Bool {
+        return _inputAccessoryView.canDeselectBarItem(barItem)
+    }
+    
+    public func selectBarItem(barItem: SIMChatInputBarItem, animated: Bool) {
+        return _inputAccessoryView.selectBarItem(barItem, animated: animated)
+    }
+    public func deselectBarItem(barItem: SIMChatInputBarItem, animated: Bool) {
+        return _inputAccessoryView.deselectBarItem(barItem, animated: animated)
+    }
+}
+
+extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBarAlignmentDelegateFlowLayout, SIMChatInputBarItemButtonDelegate {
+    
+    func selectBarItem(barItem: SIMChatInputBarItem, animated: Bool) {
+        
+        _selectedBarItems.insert(barItem)
+        _collectionView.visibleCells().forEach {
+            guard let cell = $0 as? SIMChatInputBarItemView where cell.item === barItem else {
+                return
+            }
+            cell.setSelected(true, animated: animated)
+        }
+    }
+    func deselectBarItem(barItem: SIMChatInputBarItem, animated: Bool) {
+        
+        _selectedBarItems.remove(barItem)
+        _collectionView.visibleCells().forEach {
+            guard let cell = $0 as? SIMChatInputBarItemView where cell.item === barItem else {
+                return
+            }
+            cell.setSelected(false, animated: animated)
+        }
+    }
+    func canSelectBarItem(barItem: SIMChatInputBarItem) -> Bool {
+        return !_selectedBarItems.contains(barItem)
+    }
+    func canDeselectBarItem(barItem: SIMChatInputBarItem) -> Bool {
+        return _selectedBarItems.contains(barItem)
+    }
+    
+    func setCenterBarItem(editItem: SIMChatInputBarItem) {
+        _centerBarItem = editItem
+        
+        _textView.hidden = (editItem !== SIMChatInputBarItem.defaultCenterBarItem)
+        _textView.resignFirstResponder()
+        
+        if _isInitBarItemLayouts {
+            _updateBarItemLayouts(true)
+        }
+    }
+    
+    func setBarItems(barItems: [SIMChatInputBarItem], atPosition position: SIMChatInputBarPosition, animated: Bool) {
+        Log.trace()
+        
+        // TODO: 清除没有显示的item
+        
+        // 计算出, insert/delete/reload的数量
+        
+        switch position {
+        case .Top:
+            
+            _topBarItems = barItems
+            _cacheTopBarItemSize = nil
+        case .Left:
+            _leftBarItems = barItems
+            _cacheLeftBarItemSize = nil
+        case .Right:
+            _rightBarItems = barItems
+            _cacheRightBarItemSize = nil
+        case .Bottom:
+            _bottomBarItems = barItems
+            _cacheBottomBarItemSize = nil
+        }
+        if _isInitBarItemLayouts {
+            _updateBarItemLayouts(animated)
+        }
+    }
+    
+    func barItemsForPosition(position: SIMChatInputBarPosition) -> [SIMChatInputBarItem] {
+        switch position {
+        case .Top: return _topBarItems
+        case .Left: return _leftBarItems
+        case .Right: return _rightBarItems
+        case .Bottom: return _bottomBarItems
+        }
+    }
+    
+    // MARK: SIMChatInputBarItemButtonDelegate
+    
+    func barItemButton(shouldHighlight barItemButton: SIMChatInputBarItemButton) -> Bool {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return false
+        }
+        return ib.delegate?.inputBar?(ib, shouldHighlightItem: barItem) ?? true
+    }
+    func barItemButton(didHighlight barItemButton: SIMChatInputBarItemButton) {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return
+        }
+        ib.delegate?.inputBar?(ib, didHighlightItem: barItem)
+    }
+    func barItemButton(shouldSelect barItemButton: SIMChatInputBarItemButton) -> Bool {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return false
+        }
+        return ib.delegate?.inputBar?(ib, shouldSelectItem: barItem) ?? true
+    }
+    func barItemButton(didSelect barItemButton: SIMChatInputBarItemButton) {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return
+        }
+        _selectedBarItems.insert(barItem)
+        ib.delegate?.inputBar?(ib, didSelectItem: barItem)
+    }
+    func barItemButton(shouldDeselect barItemButton: SIMChatInputBarItemButton) -> Bool {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return false
+        }
+        return ib.delegate?.inputBar?(ib, shouldDeselectItem: barItem) ?? true
+    }
+    func barItemButton(didDeselect barItemButton: SIMChatInputBarItemButton) {
+        guard let ib = inputBar, barItem = barItemButton.barItem else {
+            return
+        }
+        _selectedBarItems.remove(barItem)
+        ib.delegate?.inputBar?(ib, didDeselectItem: barItem)
+    }
     
     // MARK: UICollectionViewDataSource
     
@@ -1701,12 +1785,10 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         guard let cell = cell as? SIMChatInputBarItemView else {
             return
         }
+        let item = _barItem(at: indexPath)
         cell.delegate = self
-        cell.item = _barItem(at: indexPath)
-    }
-    
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        Log.trace(indexPath)
+        cell.item = item
+        cell.setSelected(_selectedBarItems.contains(item), animated: false)
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
@@ -1718,7 +1800,7 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         return _sizeForItem(_barItem(at: indexPath))
     }
     
-    // MARK: SIMChatInputAlignmentDelegateFlowLayout
+    // MARK: SIMChatInputBarAlignmentDelegateFlowLayout
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, layoutAttributesForElements attributes: [UICollectionViewLayoutAttributes], inRect rect: CGRect) -> [UICollectionViewLayoutAttributes] {
         Log.trace()
@@ -1860,30 +1942,6 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         return newAttributes
     }
     
-    // MARK: SIMChatInputBarItemButtonDelegate
-    
-    func barItemButton(shouldHighlight barItemButton: SIMChatInputBarItemButton) -> Bool {
-        Log.trace()
-        return true
-    }
-    func barItemButton(didHighlight barItemButton: SIMChatInputBarItemButton) {
-        Log.trace()
-    }
-    func barItemButton(shouldSelect barItemButton: SIMChatInputBarItemButton) -> Bool {
-        Log.trace()
-        return true
-    }
-    func barItemButton(didSelect barItemButton: SIMChatInputBarItemButton) {
-        Log.trace()
-    }
-    func barItemButton(shouldDeselect barItemButton: SIMChatInputBarItemButton) -> Bool {
-        Log.trace()
-        return true
-    }
-    func barItemButton(didDeselect barItemButton: SIMChatInputBarItemButton) {
-        Log.trace()
-    }
-    
     // MARK: config data
     
     @inline(__always) private func _barItem(at indexPath: NSIndexPath) -> SIMChatInputBarItem {
@@ -1911,7 +1969,7 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         }
         fatalError("barItem not found at \(indexPath)")
     }
-    @inline(__always) private func _barItemAlginment(at indexPath: NSIndexPath) -> SIMChatInputAlignment {
+    @inline(__always) private func _barItemAlginment(at indexPath: NSIndexPath) -> SIMChatInputBarAlignment {
         let item = _barItem(at: indexPath)
         if item.alignment == .Automatic {
             // in automatic mode, the section will have different performance
@@ -1927,11 +1985,16 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
     
     @inline(__always) private func _sizeForItem(item: SIMChatInputBarItem) -> CGSize {
         if item === _centerBarItem {
-            // width = left - right
-            // height = sizeThatFits
-            // - _ -
-            let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.max))
-            return CGSizeMake(_textView.bounds.width, textSize.height + 0.5)
+            // TODO: no imp
+            if item === SIMChatInputBarItem.defaultCenterBarItem {
+                // width = left - right
+                // height = sizeThatFits
+                // - _ -
+                let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.max))
+                return CGSizeMake(_textView.bounds.width, textSize.height + 0.5)
+            } else {
+                return CGSizeMake(_textView.bounds.width, item.size.height)
+            }
         }
         return item.size
     }
@@ -2067,7 +2130,7 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         return newSize
     }
     
-    @inline(__always) private func _updateBarItemLayouts() {
+    @inline(__always) private func _updateBarItemLayouts(animated: Bool) {
         Log.trace()
         
         _textViewTop.constant = _sectionInset(0).top + _topBarItemSize.height + _sectionInset(1).top
@@ -2075,8 +2138,28 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, UICollectionVie
         _textViewRight.constant = _sectionInset(1).right + _rightBarItemSize.width
         _textViewBottom.constant = _sectionInset(2).bottom + _bottomBarItemSize.height + _sectionInset(1).bottom
         
-        invalidateIntrinsicContentSize()
-        _textView.layoutIfNeeded()
+        // 清除textview的缓存
+        _cacheContentSize = nil
+        
+        if animated {
+            UIView.animateWithDuration(0.25) {
+                self._textView.layoutIfNeeded()
+                self.invalidateIntrinsicContentSize()
+                //self._collectionView.layoutIfNeeded()
+                self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+                // 强制更新
+                self.superview?.setNeedsLayout()
+                self.superview?.layoutIfNeeded()
+            }
+        } else {
+            self._textView.layoutIfNeeded()
+            self.invalidateIntrinsicContentSize()
+            //self._collectionView.layoutIfNeeded()
+            self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+            // 强制更新
+            self.superview?.setNeedsLayout()
+            self.superview?.layoutIfNeeded()
+        }
     }
 }
 

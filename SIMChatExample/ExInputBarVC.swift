@@ -81,8 +81,34 @@ import UIKit
 //    }
 //}
 
+        
+class TestBarItem:SIMChatInputBarItem {
+    
+    init(n: UIImage?, h: UIImage? = nil, s: UIImage? = nil, d: UIImage? = nil, sh: UIImage? = nil, alignment: SIMChatInputBarAlignment = .Automatic) {
+        super.init()
+        self.size = n?.size ?? CGSizeMake(34, 3)
+        self.alignment = alignment
+        
+        self.setImage(n, forState: .Normal)
+        self.setImage(h, forState: .Highlighted)
+        self.setImage(d, forState: .Disabled)
+        self.setImage(s ?? h,  forState: [.Selected, .Normal])
+        self.setImage(sh, forState: [.Selected, .Highlighted])
+    }
+    
+    init(size: CGSize, alignment: SIMChatInputBarAlignment) {
+        super.init()
+        self.size = size
+        self.alignment = alignment
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// 输入框测试
-class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate, SIMChatInputBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +117,86 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         self.view.layer.contentsGravity = kCAGravityResizeAspectFill
         self.view.layer.masksToBounds = true
         
-        self.inputBar2 = SIMChatInputBar()
+        
+        let ib = SIMChatInputBar()
+        
+        // 对齐测试
+        // _topBarItems = [
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+        //     TestBarItem(size: CGSizeMake(132, 34), alignment: .Right),
+        // ]
+        // _leftBarItems = [
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Bottom),
+        // ]
+        // _rightBarItems = [
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Center),
+        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Top),
+        // ]
+        // _bottomBarItems = [
+        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopLeft),
+        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
+        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomLeft),
+        //     TestBarItem(size: CGSizeMake(64, 64), alignment: .Center),
+        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomRight),
+        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
+        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopRight),
+        // ]
+        
+        // 图标测试
+        // qqzone
+        let topBarItems: [TestBarItem] = [
+            TestBarItem(n: UIImage(named:"mqz_input_atFriend"), alignment: .Left),
+            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_face_icon"), alignment: .Left),
+            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_pic_icon"), alignment: .Left),
+            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_private_icon"), alignment: .Right),
+        ]
+        // wexin
+        let leftBarItems: [TestBarItem] = [
+            TestBarItem(n: UIImage(named:"chat_bottom_PTT_nor"), h: UIImage(named:"chat_bottom_PTT_press")),
+        ]
+        let rightBarItems: [TestBarItem] = [
+            TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press")),
+        ]
+        // qq
+        let bottomBarItems: [TestBarItem] = [
+            TestBarItem(n: UIImage(named:"chat_bottom_PTT_nor"), h: UIImage(named:"chat_bottom_PTT_press"), alignment: .Left),
+            TestBarItem(n: UIImage(named:"chat_bottom_PTV_nor"), h: UIImage(named:"chat_bottom_PTV_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_photo_nor"), h: UIImage(named:"chat_bottom_photo_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_Camera_nor"), h: UIImage(named:"chat_bottom_Camera_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_red_pack_nor"), h: UIImage(named:"chat_bottom_red_pack_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
+            TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press"), alignment: .Right),
+            
+            // TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
+            // TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
+            // TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
+            // TestBarItem(n: UIImage(named:"chat_bottom_mypc_nor")),
+            // TestBarItem(n: UIImage(named:"chat_bottom_shake_nor")),
+        ]
+        
+        self.navigationItem
+        
+        ib.setBarItems(topBarItems, atPosition: .Top, animated: false)
+        ib.setBarItems(leftBarItems, atPosition: .Left, animated: false)
+        ib.setBarItems(rightBarItems, atPosition: .Right, animated: false)
+        ib.setBarItems(bottomBarItems, atPosition: .Bottom, animated: false)
+        ib.delegate = self
+        
+        self.inputBar2 = ib
+        
+        self.leftBarItems1 = [
+            TestBarItem(size: CGSizeMake(34,34), alignment: .Automatic)
+            //TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
+        ]
+        self.leftBarItems2 = [
+            TestBarItem(size: CGSizeMake(88,34), alignment: .Automatic)
+            //TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press")),
+            //TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press")),
+        ]
+        
         //self.inputBar.shadowImage = UIImage(named: "t2.jpg")
         //self.inputBar2?.translucent = false
         //self.inputBar2?.barTintColor = UIColor(argb: 0xFFECEDF1)
@@ -114,6 +219,13 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         
         print(#function)
     }
+    
+    var vs = 0
+    
+    var leftBarItems1: [SIMChatInputBarItem] = []
+    var leftBarItems2: [SIMChatInputBarItem] = []
+    
+    var selectedItem: SIMChatInputBarItem?
     
     var tb:UIView?//UIToolbar?
     
@@ -144,6 +256,48 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func inputBar(inputBar: SIMChatInputBar, shouldHighlightItem item: SIMChatInputBarItem) -> Bool {
+        if selectedItem === item {
+            return false
+        }
+        return true
+    }
+    
+    func inputBar(inputBar: SIMChatInputBar, shouldSelectItem item: SIMChatInputBarItem) -> Bool {
+        if let sitem = selectedItem {
+            guard inputBar.canDeselectBarItem(sitem) else {
+                return false
+            }
+            inputBar.deselectBarItem(sitem, animated: true)
+        }
+        return true
+    }
+    func inputBar(inputBar: SIMChatInputBar, didSelectItem item: SIMChatInputBarItem) {
+        Log.trace()
+        selectedItem = item
+        
+        if vs == 1 {
+            vs = 0
+            inputBar.setCenterBarItem(.defaultCenterBarItem)
+            //inputBar.setBarItems(self.leftBarItems1, atPosition: .Left, animated: true)
+        } else {
+            vs = 1
+            inputBar.setCenterBarItem(_customCenterBarItem)
+            //inputBar.setBarItems(self.leftBarItems2, atPosition: .Left, animated: true)
+        }
+    }
+    
+    lazy var _customCenterBarItem: SIMChatInputBarItem = {
+        return TestBarItem(size: CGSizeMake(22, 34), alignment: .Automatic)
+    }()
+
+    func inputBar(inputBar: SIMChatInputBar, shouldDeselectItem item: SIMChatInputBarItem) -> Bool {
+        if selectedItem === item {
+            return false
+        }
+        return true
     }
     
 //    lazy var _inputBar = SIMChatInputBar(frame:CGRectMake(0, 0, 320, 44))
