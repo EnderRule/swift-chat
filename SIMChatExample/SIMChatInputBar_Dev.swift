@@ -703,9 +703,12 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
     @inline(__always) private func _init() {
         
         addSubview(_collectionView)
+        addSubview(_backgroundView)
         addSubview(_textView)
         
         _textView.translatesAutoresizingMaskIntoConstraints = false
+        
+        _backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         _collectionView.translatesAutoresizingMaskIntoConstraints = false
         _collectionView.setContentHuggingPriority(700, forAxis: .Horizontal)
@@ -718,6 +721,11 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
             NSLayoutConstraintMake(_collectionView, .Left, .Equal, self, .Left),
             NSLayoutConstraintMake(_collectionView, .Right, .Equal, self, .Right),
             NSLayoutConstraintMake(_collectionView, .Bottom, .Equal, self, .Bottom),
+            
+            NSLayoutConstraintMake(_backgroundView, .Top, .Equal, _textView, .Top),
+            NSLayoutConstraintMake(_backgroundView, .Left, .Equal, _textView, .Left),
+            NSLayoutConstraintMake(_backgroundView, .Right, .Equal, _textView, .Right),
+            NSLayoutConstraintMake(_backgroundView, .Bottom, .Equal, _textView, .Bottom),
             
             _textViewTop,
             _textViewLeft,
@@ -783,14 +791,26 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
     
     //  Subview
     
+    private lazy var _backgroundView: UIView = {
+        let view = UIView()
+        
+        view.backgroundColor = UIColor.clearColor()
+        view.layer.borderWidth = 0.5
+        view.layer.borderColor = UIColor.grayColor().CGColor
+        view.layer.cornerRadius = 4
+        view.layer.masksToBounds = true
+        
+        return view
+    }()
+    
     private lazy var _textView: UITextView = {
         let view = UITextView()
         
         view.font = UIFont.systemFontOfSize(15)
         view.scrollsToTop = false
         view.returnKeyType = .Send
-        //view.backgroundColor = UIColor.clearColor()
-        view.backgroundColor = UIColor.grayColor()
+        view.backgroundColor = UIColor.clearColor()
+        //view.backgroundColor = UIColor.grayColor()
         view.scrollIndicatorInsets = UIEdgeInsetsMake(2, 0, 2, 0)
         //view.enablesReturnKeyAutomatically = true
         view.delegate = self
@@ -1181,7 +1201,8 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
     }
     
     func setSelected(selected: Bool, animated: Bool) {
-        _button.selected = selected
+        _button.setSelected(selected, animated: animated)
+        //_button.selected = selected
 //        if !animated {
 //            _button.layer.removeAllAnimations()
 //        }
@@ -1271,11 +1292,11 @@ internal class SIMChatInputBarItemButton: UIButton {
         return super.beginTrackingWithTouch(touch, withEvent: event)
     }
     
-    override var selected: Bool {
-        willSet {
-            _setSelected(newValue, animated: true)
-        }
-    }
+//    override var selected: Bool {
+//        willSet {
+//            _setSelected(newValue, animated: true)
+//        }
+//    }
     override var highlighted: Bool {
         set {
             guard _allowsHighlight else {
@@ -1321,7 +1342,7 @@ internal class SIMChatInputBarItemButton: UIButton {
         layer.addAnimation(ani, forKey: key)
     }
     
-    @inline(__always) private func _setSelected(selected: Bool, animated: Bool) {
+    func setSelected(selected: Bool, animated: Bool) {
         //Log.trace(selected)
         let op1: UIControlState = [(selected ? .Selected : .Normal), .Normal]
         let op2: UIControlState = [(selected ? .Selected : .Normal), .Highlighted]
@@ -1332,7 +1353,9 @@ internal class SIMChatInputBarItemButton: UIButton {
         setImage(n, forState: .Normal)
         setImage(h, forState: .Highlighted)
         
-        //_addAnimation("selected")
+        if animated {
+            _addAnimation("selected")
+        }
     }
     
     @inline(__always) private func _setHighlighted(highlighted: Bool, animated: Bool) {
@@ -1341,7 +1364,9 @@ internal class SIMChatInputBarItemButton: UIButton {
         if barItem?.imageForState([(selected ? .Selected : .Normal), .Highlighted]) != nil {
             imageView?.alpha = 1
         }
-        //_addAnimation("highlighted")
+        if animated {
+            _addAnimation("highlighted")
+        }
     }
     
     @objc private func _touchHandler() {
@@ -1352,13 +1377,13 @@ internal class SIMChatInputBarItemButton: UIButton {
             guard delegate?.barItemButton(shouldSelect: self) ?? true else {
                 return
             }
-            selected = true
+            setSelected(true, animated: true)
             delegate?.barItemButton(didSelect: self)
         } else {
             guard delegate?.barItemButton(shouldDeselect: self) ?? true else {
                 return
             }
-            selected = false
+            setSelected(false, animated: true)
             delegate?.barItemButton(didDeselect: self)
         }
     }
@@ -1680,13 +1705,9 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
             
             if editItem === SIMChatInputBarItem.defaultCenterBarItem {
                 self._textView.hidden = false
-//                UIView.animateWithDuration(0.25, animations: {
-//                    self._textView.alpha = 1
-//                }, completion: { (f) in
-//                    self._textView.alpha = 1
-//                    self._textView.hidde = true
-//                })
+                self._textView.becomeFirstResponder()
             } else {
+                self._textView.resignFirstResponder()
                 
                 UIView.animateWithDuration(0.25, animations: {
                     self._textView.alpha = 0

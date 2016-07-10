@@ -291,7 +291,7 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     
     lazy var _customCenterBarItem: SIMChatInputBarItem = {
         let t = TestBarItem(size: CGSizeMake(22, 36), alignment: .Automatic)
-        t.setBackgroundImage(UIImage(named:"t2.jpg"), forState: .Normal)
+        //t.setBackgroundImage(UIImage(named:"t2.jpg"), forState: .Normal)
         return t
     }()
 
