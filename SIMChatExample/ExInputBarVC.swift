@@ -117,7 +117,6 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         self.view.layer.contentsGravity = kCAGravityResizeAspectFill
         self.view.layer.masksToBounds = true
         
-        
         let ib = SIMChatInputBar()
         
         // 对齐测试
@@ -192,10 +191,15 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             //TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
         ]
         self.leftBarItems2 = [
-            TestBarItem(size: CGSizeMake(88,34), alignment: .Automatic)
+            //TestBarItem(size: CGSizeMake(88,34), alignment: .Automatic)
+            TestBarItem(size: CGSizeMake(88,88), alignment: .Automatic)
             //TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press")),
             //TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press")),
         ]
+        
+        self.leftBarItems1.first?.setBackgroundImage(UIImage(named: "simchat_portrait_default1"), forState: .Normal)
+        self.leftBarItems2.first?.setBackgroundImage(UIImage(named: "simchat_portrait_default2"), forState: .Normal)
+        
         
         //self.inputBar.shadowImage = UIImage(named: "t2.jpg")
         //self.inputBar2?.translucent = false
@@ -290,8 +294,27 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     lazy var _customCenterBarItem: SIMChatInputBarItem = {
-        let t = TestBarItem(size: CGSizeMake(22, 36), alignment: .Automatic)
+        let t = TestBarItem(size: CGSizeMake(22, 34.5), alignment: .Automatic)
+        //let view = UIView(frame: CGRectMake(0, 0, 22, t.size.height))
+        let button = UIButton(frame: CGRectMake(0, 0, 22, t.size.height))
+        
+        button.setTitle("Hold to Talk", forState: .Normal)
+        button.setTitle("Release to Send", forState: .Highlighted)
+        button.setTitleColor(UIColor.darkTextColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont.systemFontOfSize(15)
+        button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        button.backgroundColor = UIColor.clearColor()//UIColor.greenColor().colorWithAlphaComponent(0.2)
+        
+//        view.layer.borderWidth = 0.5
+//        view.layer.borderColor = UIColor.grayColor().CGColor
+//        view.layer.cornerRadius = 4
+//        view.layer.masksToBounds = true
+//        view.backgroundColor = UIColor.clearColor()
         //t.setBackgroundImage(UIImage(named:"t2.jpg"), forState: .Normal)
+        button.setBackgroundImage(UIImage(named: "chat_bottom_textfield"), forState: .Normal)
+        
+        //view.addSubview(button)
+        t.customView = button
         return t
     }()
 

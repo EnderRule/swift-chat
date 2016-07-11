@@ -83,6 +83,7 @@ public class SIMChatInputBarItem: NSObject {
     
     public static var defaultCenterBarItem: SIMChatInputBarItem = {
         let item = SIMChatInputBarItem()
+        item.setBackgroundImage(UIImage(named: "chat_bottom_textfield"), forState: .Normal)
         return item
     }()
 
@@ -639,11 +640,10 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
 //                let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.max))
 //                return CGSizeMake(_textView.bounds.width, textSize.height + 0.5)
         
-        let mHeight = max(_leftBarItemSize.height, _rightBarItemSize.height)
-        let height = _textViewTop.constant + max(centerBarItemSize.height, mHeight) + _textViewBottom.constant
+        let height = _textViewTop.constant + centerBarItemSize.height + _textViewBottom.constant
         Log.trace("\(centerBarItemSize) => \(height)")
         
-        let size = CGSize(width: frame.width, height: height + 0.5)
+        let size = CGSize(width: frame.width, height: height)
         _cacheIntrinsicContentSize = size
         return size
     }
@@ -791,14 +791,14 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
     
     //  Subview
     
-    private lazy var _backgroundView: UIView = {
-        let view = UIView()
+    private lazy var _backgroundView: UIImageView = {
+        let view = UIImageView()
         
-        view.backgroundColor = UIColor.clearColor()
-        view.layer.borderWidth = 0.5
-        view.layer.borderColor = UIColor.grayColor().CGColor
-        view.layer.cornerRadius = 4
-        view.layer.masksToBounds = true
+//        view.backgroundColor = UIColor.clearColor()
+//        view.layer.borderWidth = 0.5
+//        view.layer.borderColor = UIColor.grayColor().CGColor
+//        view.layer.cornerRadius = 4
+//        view.layer.masksToBounds = true
         
         return view
     }()
@@ -810,7 +810,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         view.scrollsToTop = false
         view.returnKeyType = .Send
         view.backgroundColor = UIColor.clearColor()
-        //view.backgroundColor = UIColor.grayColor()
+        //view.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
         view.scrollIndicatorInsets = UIEdgeInsetsMake(2, 0, 2, 0)
         //view.enablesReturnKeyAutomatically = true
         view.delegate = self
@@ -848,7 +848,8 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
         let view = SIMChatInputPlaceholderView(view: self)
         // This is required to make the view grow vertically
         view.autoresizingMask = .FlexibleHeight
-        view.backgroundColor = nil//UIColor(white: 0, alpha: 0.2)
+        view.backgroundColor = UIColor.clearColor()
+        //view.backgroundColor = UIColor(white: 0, alpha: 0.2)
         return view
     }()
     
@@ -877,6 +878,7 @@ internal class SIMChatInputAccessoryView: UIView, UITextViewDelegate {
     private var _cacheRightBarItemSize: CGSize?
     private var _cacheBottomBarItemSize: CGSize?
     
+    private var _cacheCenterBarItem: SIMChatInputBarItem?
     private var _cacheBarItemContainer: UICollectionViewCell?
     
     // MARK: Init
@@ -1196,7 +1198,9 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
     
     var item: SIMChatInputBarItem? {
         willSet {
-            _updateItem(newValue)
+            UIView.performWithoutAnimation {
+                self._updateItem(newValue)
+            }
         }
     }
     
@@ -1214,6 +1218,7 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
     }
     
     @inline(__always) func _init() {
+        clipsToBounds = true
         backgroundColor = UIColor.clearColor()
         //backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
     }
@@ -1255,7 +1260,6 @@ internal class SIMChatInputBarItemView: UICollectionViewCell {
         let view = SIMChatInputBarItemButton(type: .System)
         view.multipleTouchEnabled = false
         view.exclusiveTouch = true
-        view.clipsToBounds = true
         return view
     }()
     
@@ -1698,25 +1702,36 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
     
     func setCenterBarItem(editItem: SIMChatInputBarItem) {
         _centerBarItem = editItem
+        _cacheCenterBarItem = nil
         
         
         if _isInitBarItemLayouts {
             _updateBarItemLayouts(true)
-            
             if editItem === SIMChatInputBarItem.defaultCenterBarItem {
+                self._textView.alpha = 0
                 self._textView.hidden = false
-                self._textView.becomeFirstResponder()
+                self._backgroundView.hidden = false
+                self._backgroundView.alpha = 0
+                
+                UIView.animateWithDuration(0.25, animations: {
+                    self._textView.alpha = 1
+                    self._backgroundView.alpha = 1
+                }, completion: { (f) in
+                })
+                //self._textView.becomeFirstResponder()
             } else {
-                self._textView.resignFirstResponder()
+                //self._textView.resignFirstResponder()
                 
                 UIView.animateWithDuration(0.25, animations: {
                     self._textView.alpha = 0
+                    self._backgroundView.alpha = 0
                 }, completion: { (f) in
                     self._textView.alpha = 1
                     self._textView.hidden = true
+                    self._backgroundView.alpha = 1
+                    self._backgroundView.hidden = true
                 })
             }
-            
         }
     }
     
@@ -1729,7 +1744,6 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
         
         switch position {
         case .Top:
-            
             _topBarItems = barItems
             _cacheTopBarItemSize = nil
         case .Left:
@@ -1812,11 +1826,11 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         if _centerIndexPath == indexPath {
-            if let cell = _cacheBarItemContainer {
-                return cell
-            }
+            //if let cell = _cacheBarItemContainer {
+            //    return cell
+            //}
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier("SIMChatInputItemContainer", forIndexPath: indexPath)
-            _cacheBarItemContainer = cell
+            //_cacheBarItemContainer = cell
             return cell
         }
         return collectionView.dequeueReusableCellWithReuseIdentifier("SIMChatInputItemButton", forIndexPath: indexPath)
@@ -2034,15 +2048,15 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
     
     @inline(__always) private func _sizeForItem(item: SIMChatInputBarItem) -> CGSize {
         if item === _centerBarItem {
-            // TODO: no imp
+            let mHeight = max(_leftBarItemSize.height, _rightBarItemSize.height)
             if item === SIMChatInputBarItem.defaultCenterBarItem {
                 // width = left - right
                 // height = sizeThatFits
                 // - _ -
                 let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.max))
-                return CGSizeMake(_textView.bounds.width, textSize.height + 0.5)
+                return CGSizeMake(_textView.bounds.width, max(textSize.height + 0.5, mHeight))
             } else {
-                return CGSizeMake(_textView.bounds.width, item.size.height)
+                return CGSizeMake(_textView.bounds.width, max(item.size.height, mHeight))
             }
         }
         return item.size
@@ -2179,6 +2193,75 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
         return newSize
     }
     
+    @inline(__always) func _reloadBarItemsAtIndexPaths(indexPaths: [NSIndexPath], animated: Bool) {
+        class OState {
+            var view: UIView
+            var frame: CGRect
+            //var alpha: CGFloat
+            //var hidden: Bool
+            init(view: UIView) {
+                self.view = view
+                self.frame = view.frame
+                //self.alpha = view.alpha
+                //self.hidden = view.hidden
+            }
+        }
+        
+        Log.trace()
+        
+        // frame, hidden
+        
+        let oldCellFrames: [NSIndexPath: OState] = indexPaths.reduce([:]) {
+            guard let cell = self._collectionView.cellForItemAtIndexPath($1) else {
+                return $0
+            }
+            var rx = $0
+            Log.trace("old frame: \(cell.frame), at indexPath: \($1)")
+            rx[$1] = OState(view: cell)
+            return rx
+        }
+        
+        // 真正的更新操作.
+        self._collectionView.reloadItemsAtIndexPaths(indexPaths)
+        
+        let newCellFrames: [NSIndexPath: OState] = indexPaths.reduce([:]) {
+            guard let cell = self._collectionView.cellForItemAtIndexPath($1) else {
+                return $0
+            }
+            var rx = $0
+            Log.trace("new frame: \(cell.frame), at indexPath: \($1)")
+            rx[$1] = OState(view: cell)
+            return rx
+        }
+        
+        // 更新完成之后进行动画恢复
+        
+        // 更新为旧frame, 禁止动画的
+        UIView.performWithoutAnimation {
+            oldCellFrames.forEach {
+                // 读取旧的状态
+                // 把新的cell移到旧的cell的位置
+                if let n = newCellFrames[$0] {
+                    n.view.frame = $1.frame
+                    n.view.layoutIfNeeded()
+                    n.view.layer.removeAllAnimations()
+                }
+                // 清除所有动画(no need)
+                //$1.view.layer.removeAllAnimations()
+            }
+        }
+        // 更新为新的frame
+        newCellFrames.forEach {
+            if let o = oldCellFrames[$0] {
+                o.view.frame = $1.frame
+                o.view.layoutIfNeeded()
+            }
+            $1.view.frame = $1.frame
+            $1.view.layoutIfNeeded()
+        }
+        
+    }
+    
     @inline(__always) private func _updateBarItemLayouts(animated: Bool) {
         Log.trace()
         
@@ -2190,6 +2273,9 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
         // 清除textview的缓存
         _cacheContentSize = nil
         
+        // ..
+        _backgroundView.image = SIMChatInputBarItem.defaultCenterBarItem.backgroundImageForState(.Normal)
+        
         if animated {
             
             let cell = _collectionView.cellForItemAtIndexPath(_centerIndexPath)
@@ -2197,25 +2283,34 @@ extension SIMChatInputAccessoryView: UICollectionViewDataSource, SIMChatInputBar
             
             Log.trace("\(cell?.bounds) => \(_textView.bounds) => \(size)")
             
+            // 记录所有cell的位置
+            
+            //print(self._collectionView.visibleCells().first?.layer.animationForKey("position"))
+            
+            let idxs = [
+                NSIndexPath(forItem:0, inSection:1),
+                self._centerIndexPath
+            ]
+            
             UIView.animateWithDuration(0.25) {
                 self._textView.layoutIfNeeded()
                 self.invalidateIntrinsicContentSize()
-                //self._collectionView.layoutIfNeeded()
-                self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+                
+                self._reloadBarItemsAtIndexPaths(idxs, animated: false)
+                
                 // 强制更新
                 self.superview?.setNeedsLayout()
                 self.superview?.layoutIfNeeded()
             }
+            
         } else {
             self._textView.layoutIfNeeded()
             self.invalidateIntrinsicContentSize()
             //self._collectionView.layoutIfNeeded()
-            UIView.performWithoutAnimation{
-                self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
-            }
-            // 强制更新
-            self.superview?.setNeedsLayout()
-            self.superview?.layoutIfNeeded()
+//            self._collectionView.reloadItemsAtIndexPaths([self._centerIndexPath])
+//            // 强制更新
+//            self.superview?.setNeedsLayout()
+//            self.superview?.layoutIfNeeded()
         }
     }
 }
