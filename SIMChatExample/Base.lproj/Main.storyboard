@@ -75,7 +75,7 @@
         <!--Title-->
         <scene sceneID="2xe-jr-3TF">
             <objects>
-                <viewController id="ZWq-0K-mQW" customClass="ExInputBarVC" customModule="TTTTT" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ZWq-0K-mQW" customClass="ExInputBarVC" customModule="SIMChatExample" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="G4p-Dp-gcF"/>
                         <viewControllerLayoutGuide type="bottom" id="VGq-Ic-Jch"/>
