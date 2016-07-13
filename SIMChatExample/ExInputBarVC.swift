@@ -169,11 +169,11 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
             TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press"), alignment: .Right),
             
-//             TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
-//             TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
-//             TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
-//             TestBarItem(n: UIImage(named:"chat_bottom_mypc_nor")),
-//             TestBarItem(n: UIImage(named:"chat_bottom_shake_nor")),
+            TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
+            TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
+            TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
+            TestBarItem(n: UIImage(named:"chat_bottom_mypc_nor")),
+            TestBarItem(n: UIImage(named:"chat_bottom_shake_nor")),
         ]
         
         self.navigationItem
