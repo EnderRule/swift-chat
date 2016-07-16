@@ -25,7 +25,7 @@
 		0C4C0C9D1C89D3DC00DC3D56 /* MMProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C9C1C89D3DC00DC3D56 /* MMProgressHUD.framework */; };
 		0C5A2CAA1D31129C003EE2E1 /* SIMChatInputBar_Dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5A2CA91D31129C003EE2E1 /* SIMChatInputBar_Dev.swift */; };
 		0C5A2CAE1D3112E2003EE2E1 /* ExInputBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5A2CAD1D3112E2003EE2E1 /* ExInputBarVC.swift */; };
-		0C5A2CB01D311305003EE2E1 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5A2CAF1D311305003EE2E1 /* Log.swift */; };
+		0C5A2CB01D311305003EE2E1 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5A2CAF1D311305003EE2E1 /* Logger.swift */; };
 		0C5A2CCE1D31142E003EE2E1 /* chat_bottom_Camera_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C5A2CB21D31142E003EE2E1 /* chat_bottom_Camera_nor@3x.png */; };
 		0C5A2CCF1D31142E003EE2E1 /* chat_bottom_Camera_press@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C5A2CB31D31142E003EE2E1 /* chat_bottom_Camera_press@3x.png */; };
 		0C5A2CD01D31142E003EE2E1 /* chat_bottom_emotion_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C5A2CB41D31142E003EE2E1 /* chat_bottom_emotion_nor@3x.png */; };
@@ -152,7 +152,7 @@
 		0C4C0C9C1C89D3DC00DC3D56 /* MMProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MMProgressHUD.framework; sourceTree = "<group>"; };
 		0C5A2CA91D31129C003EE2E1 /* SIMChatInputBar_Dev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatInputBar_Dev.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C5A2CAD1D3112E2003EE2E1 /* ExInputBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExInputBarVC.swift; sourceTree = "<group>"; wrapsLines = 0; };
-		0C5A2CAF1D311305003EE2E1 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		0C5A2CAF1D311305003EE2E1 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		0C5A2CB21D31142E003EE2E1 /* chat_bottom_Camera_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_Camera_nor@3x.png"; sourceTree = "<group>"; };
 		0C5A2CB31D31142E003EE2E1 /* chat_bottom_Camera_press@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_Camera_press@3x.png"; sourceTree = "<group>"; };
 		0C5A2CB41D31142E003EE2E1 /* chat_bottom_emotion_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_emotion_nor@3x.png"; sourceTree = "<group>"; };
@@ -252,7 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				0C5A2CB11D31142E003EE2E1 /* InputBar */,
-				0C5A2CAF1D311305003EE2E1 /* Log.swift */,
+				0C5A2CAF1D311305003EE2E1 /* Logger.swift */,
 				0C5A2CAC1D3112C7003EE2E1 /* InputBar */,
 				0C4C0C881C89C5DA00DC3D56 /* Frameworks */,
 				0C2475741C87E073003077B2 /* t2_t.jpg */,
@@ -553,7 +553,7 @@
 			files = (
 				0C5A2CAA1D31129C003EE2E1 /* SIMChatInputBar_Dev.swift in Sources */,
 				0C6755131C89E62700435FFB /* ExMessage.swift in Sources */,
-				0C5A2CB01D311305003EE2E1 /* Log.swift in Sources */,
+				0C5A2CB01D311305003EE2E1 /* Logger.swift in Sources */,
 				0C0DD6A71C60B65D00AEC8C4 /* ExConversationViewController.swift in Sources */,
 				0C0DD6A51C60B65D00AEC8C4 /* AppDelegate.swift in Sources */,
 				0C4C0C9B1C89D0D900DC3D56 /* ExUser.swift in Sources */,

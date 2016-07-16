@@ -83,7 +83,11 @@ import UIKit
 
 class InputPanel: UIView {
     override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(320, 240)
+        if UIDevice.currentDevice().orientation.isLandscape {
+            return CGSizeMake(568, 193)
+        } else {
+            return CGSizeMake(320, 253)
+        }
     }
 }
 
@@ -152,10 +156,10 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         // 图标测试
         // qqzone
         let topBarItems: [TestBarItem] = [
-            TestBarItem(n: UIImage(named:"mqz_input_atFriend"), alignment: .Left),
-            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_face_icon"), alignment: .Left),
-            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_pic_icon"), alignment: .Left),
-            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_private_icon"), alignment: .Right),
+//            TestBarItem(n: UIImage(named:"mqz_input_atFriend"), alignment: .Left),
+//            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_face_icon"), alignment: .Left),
+//            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_pic_icon"), alignment: .Left),
+//            TestBarItem(n: UIImage(named:"mqz_ugc_inputCell_private_icon"), alignment: .Right),
         ]
         // wexin
         let leftBarItems: [TestBarItem] = [
@@ -167,14 +171,14 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         ]
         // qq
         let bottomBarItems: [TestBarItem] = [
-            TestBarItem(n: UIImage(named:"chat_bottom_PTT_nor"), h: UIImage(named:"chat_bottom_PTT_press"), alignment: .Left),
-            TestBarItem(n: UIImage(named:"chat_bottom_PTV_nor"), h: UIImage(named:"chat_bottom_PTV_press")),
-            TestBarItem(n: UIImage(named:"chat_bottom_photo_nor"), h: UIImage(named:"chat_bottom_photo_press")),
-            TestBarItem(n: UIImage(named:"chat_bottom_Camera_nor"), h: UIImage(named:"chat_bottom_Camera_press")),
-            TestBarItem(n: UIImage(named:"chat_bottom_red_pack_nor"), h: UIImage(named:"chat_bottom_red_pack_press")),
-            TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
-            TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press"), alignment: .Right),
-            
+//            TestBarItem(n: UIImage(named:"chat_bottom_PTT_nor"), h: UIImage(named:"chat_bottom_PTT_press"), alignment: .Left),
+//            TestBarItem(n: UIImage(named:"chat_bottom_PTV_nor"), h: UIImage(named:"chat_bottom_PTV_press")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_photo_nor"), h: UIImage(named:"chat_bottom_photo_press")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_Camera_nor"), h: UIImage(named:"chat_bottom_Camera_press")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_red_pack_nor"), h: UIImage(named:"chat_bottom_red_pack_press")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press"), alignment: .Right),
+//            
 //            TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
 //            TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
 //            TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
@@ -278,8 +282,8 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
         //if selectedItem === item {
         
         
-        if inputBar.barItemsForPosition(.Left).first == item {
-            if inputBar.barItemsForPosition(.Center).first == _customCenterBarItem {
+        if inputBar.barItems(atPosition: .Left).first == item {
+            if inputBar.barItems(atPosition: .Center).first == _customCenterBarItem {
                 inputBar.setBarItem(inputBar.editItem, atPosition: .Center, animated: true)
                 inputBar.state = .Editing(keyboard: nil)
             } else {
@@ -287,7 +291,7 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
                 inputBar.state = .None
             }
         } else {
-            if inputBar.barItemsForPosition(.Center).first != inputBar.editItem {
+            if inputBar.barItems(atPosition: .Center).first != inputBar.editItem {
                 inputBar.setBarItem(inputBar.editItem, atPosition: .Center, animated: true)
             }
             
@@ -334,7 +338,8 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 //        return true
     }
     func inputBar(inputBar: SIMChatInputBar, didSelectItem item: SIMChatInputBarItem) {
-        Log.trace()
+        self.logger.trace()
+        
         selectedItem = item
     }
     
