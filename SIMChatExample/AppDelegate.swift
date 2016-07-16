@@ -394,6 +394,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print(dic.count)
         
+        
+        
         //-(BOOL)_canOpenURL:(id)url publicURLsOnly:(BOOL)only;
         //SBSCopyLocalizedApplicationNameForDisplayIdentifier
         

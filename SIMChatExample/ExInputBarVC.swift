@@ -81,7 +81,13 @@ import UIKit
 //    }
 //}
 
-        
+class InputPanel: UIView {
+    override func intrinsicContentSize() -> CGSize {
+        return CGSizeMake(320, 240)
+    }
+}
+
+
 class TestBarItem:SIMChatInputBarItem {
     
     init(n: UIImage?, h: UIImage? = nil, s: UIImage? = nil, d: UIImage? = nil, sh: UIImage? = nil, alignment: SIMChatInputBarAlignment = .Automatic) {
@@ -113,35 +119,35 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.layer.contents = UIImage(named: "t1.jpg")?.CGImage
+        self.view.layer.contents = UIImage(named: "t2.jpg")?.CGImage
         self.view.layer.contentsGravity = kCAGravityResizeAspectFill
         self.view.layer.masksToBounds = true
         
         let ib = SIMChatInputBar()
         
-        // 对齐测试
-        // _topBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
-        //     TestBarItem(size: CGSizeMake(132, 34), alignment: .Right),
-        // ]
-        // _leftBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Bottom),
-        // ]
-        // _rightBarItems = [
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(34, 34), alignment: .Top),
-        // ]
-        // _bottomBarItems = [
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopLeft),
-        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomLeft),
-        //     TestBarItem(size: CGSizeMake(64, 64), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomRight),
-        //     TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
-        //     TestBarItem(size: CGSizeMake(32, 32), alignment: .TopRight),
-        // ]
+//        // 对齐测试
+//        let topBarItems: [TestBarItem] = [
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Left),
+//             TestBarItem(size: CGSizeMake(132, 34), alignment: .Right),
+//         ]
+//        let leftBarItems: [TestBarItem] = [
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Bottom),
+//         ]
+//        let rightBarItems: [TestBarItem] = [
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Center),
+//             TestBarItem(size: CGSizeMake(34, 34), alignment: .Top),
+//         ]
+//        let bottomBarItems: [TestBarItem] = [
+//             TestBarItem(size: CGSizeMake(32, 32), alignment: .TopLeft),
+//             TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
+//             TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomLeft),
+//             TestBarItem(size: CGSizeMake(64, 64), alignment: .Center),
+//             TestBarItem(size: CGSizeMake(32, 32), alignment: .BottomRight),
+//             TestBarItem(size: CGSizeMake(24, 24), alignment: .Center),
+//             TestBarItem(size: CGSizeMake(32, 32), alignment: .TopRight),
+//         ]
         
         // 图标测试
         // qqzone
@@ -169,20 +175,18 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
             TestBarItem(n: UIImage(named:"chat_bottom_emotion_nor"), h: UIImage(named:"chat_bottom_emotion_press")),
             TestBarItem(n: UIImage(named:"chat_bottom_more_nor"), h: UIImage(named:"chat_bottom_more_press"), alignment: .Right),
             
-            TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
-            TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
-            TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
-            TestBarItem(n: UIImage(named:"chat_bottom_mypc_nor")),
-            TestBarItem(n: UIImage(named:"chat_bottom_shake_nor")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_file_nor")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_keyboard_nor")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_location_nor")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_mypc_nor")),
+//            TestBarItem(n: UIImage(named:"chat_bottom_shake_nor"), alignment: .Right),
         ]
         
-        self.navigationItem
-        
+        ib.delegate = self
         ib.setBarItems(topBarItems, atPosition: .Top, animated: false)
         ib.setBarItems(leftBarItems, atPosition: .Left, animated: false)
         ib.setBarItems(rightBarItems, atPosition: .Right, animated: false)
         ib.setBarItems(bottomBarItems, atPosition: .Bottom, animated: false)
-        ib.delegate = self
         
         self.inputBar2 = ib
         
@@ -273,16 +277,53 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
     func inputBar(inputBar: SIMChatInputBar, shouldSelectItem item: SIMChatInputBarItem) -> Bool {
         //if selectedItem === item {
         
-        if vs == 1 {
-            vs = 0
-            //inputBar.setCenterBarItem(.defaultCenterBarItem)
-            inputBar.setBarItems(self.leftBarItems1, atPosition: .Left, animated: true)
+        
+        if inputBar.barItemsForPosition(.Left).first == item {
+            if inputBar.barItemsForPosition(.Center).first == _customCenterBarItem {
+                inputBar.setBarItem(inputBar.editItem, atPosition: .Center, animated: true)
+                inputBar.state = .Editing(keyboard: nil)
+            } else {
+                inputBar.setBarItem(_customCenterBarItem, atPosition: .Center, animated: true)
+                inputBar.state = .None
+            }
         } else {
-            vs = 1
-            //inputBar.setCenterBarItem(_customCenterBarItem)
-            inputBar.setBarItems(self.leftBarItems2, atPosition: .Left, animated: true)
+            if inputBar.barItemsForPosition(.Center).first != inputBar.editItem {
+                inputBar.setBarItem(inputBar.editItem, atPosition: .Center, animated: true)
+            }
+            
+            if vs == 1 {
+                let v = InputPanel()
+                v.backgroundColor = UIColor.orangeColor()
+                inputBar.state = .Selecting(keyboard: v)
+                vs = 0
+            } else {
+                let v = InputPanel()
+                v.backgroundColor = UIColor.greenColor()
+                inputBar.state = .Selecting(keyboard: v)
+                vs = 1
+            }
+//            if !inputBar.state.isSelecting {
+//                let v = InputPanel()
+//                v.backgroundColor = UIColor.orangeColor()
+//                inputBar.state = .Selecting(keyboard: v)
+//            } else {
+//                inputBar.state = .None
+//            }
+                //inputBar.state = .Editing(keyboard: InputPanel())
+//            } else {
+//                inputBar.state = .Editing(keyboard: nil)
+//            }
+//            if vs == 1 {
+//                vs = 0
+//                inputBar.setInputPanel(, animated: true)
+////                inputBar.setBarItems(self.leftBarItems1, atPosition: .Left, animated: true)
+//            } else {
+//                vs = 1
+//                inputBar.becomeFirstResponder()
+////                inputBar.setBarItems(self.leftBarItems2, atPosition: .Left, animated: true)
+//            }
         }
-            return false
+        return false
         //}
 //        if let sitem = selectedItem {
 //            guard inputBar.canDeselectBarItem(sitem) else {
@@ -316,6 +357,7 @@ class ExInputBarVC: UIViewController, UITableViewDataSource, UITableViewDelegate
 //        view.backgroundColor = UIColor.clearColor()
         //t.setBackgroundImage(UIImage(named:"t2.jpg"), forState: .Normal)
         button.setBackgroundImage(UIImage(named: "chat_bottom_textfield2"), forState: .Normal)
+        button.setBackgroundImage(UIImage(named: "chat_bottom_textfield2"), forState: .Highlighted)
         
         //view.addSubview(button)
         t.customView = button
