@@ -695,7 +695,6 @@ extension SIMChatInputBar: UITextViewDelegate, UIKeyInput {
         get { return _inputAccessoryView.textView.enablesReturnKeyAutomatically }
     }
     public var secureTextEntry: Bool {
-        set { return _inputAccessoryView.textView.secureTextEntry = newValue }
         get { return _inputAccessoryView.textView.secureTextEntry }
     }
     
