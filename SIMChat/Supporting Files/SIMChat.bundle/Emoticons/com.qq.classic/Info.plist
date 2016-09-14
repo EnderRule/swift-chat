@@ -4,6 +4,8 @@
 <dict>
 	<key>type</key>
 	<integer>0</integer>
+	<key>image</key>
+	<string>thumbnail.png</string>
 	<key>row</key>
 	<integer>3</integer>
 	<key>column</key>

@@ -445,7 +445,6 @@
 		0C0DD61F1C60B4A900AEC8C4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0C0DD6241C60B4A900AEC8C4 /* InputPanel */,
 				0C0DD62C1C60B4A900AEC8C4 /* Other */,
 			);
 			path = Views;
@@ -464,7 +463,7 @@
 				0C0DD6291C60B4A900AEC8C4 /* SIMChatInputPanelToolBoxView.swift */,
 			);
 			name = InputPanel;
-			path = Input;
+			path = ../Views/Input;
 			sourceTree = "<group>";
 		};
 		0C0DD62C1C60B4A900AEC8C4 /* Other */ = {
@@ -495,8 +494,9 @@
 		0C1A17001D7721220093EE12 /* Librarys */ = {
 			isa = PBXGroup;
 			children = (
-				0C1A17681D7723CA0093EE12 /* Logger */,
+				0C0DD6241C60B4A900AEC8C4 /* InputPanel */,
 				0C1A176B1D7724880093EE12 /* InputBar */,
+				0C1A17681D7723CA0093EE12 /* Logger */,
 			);
 			path = Librarys;
 			sourceTree = "<group>";

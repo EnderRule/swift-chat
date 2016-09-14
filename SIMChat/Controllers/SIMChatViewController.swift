@@ -275,42 +275,11 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
     public func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
         return _emotionGroups.count
     }
-    
-    public func emotion(_ emotion: SAEmotionPanel, itemsAt group: Int) -> [SAEmotion] {
-        return _emotionGroups[group].emotions
-    }
-    public func emotion(_ emotion: SAEmotionPanel, typeForItemAt group: Int) -> SAEmotionType {
-        return _emotionGroups[group].type
+    public func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup {
+        return _emotionGroups[index]
     }
     
     // SAEmotionPanelDelegate
-    
-    public func emotion(_ emotion: SAEmotionPanel, sizeForItemAt group: Int) -> CGSize {
-        let eg = _emotionGroups[group]
-        let edg = self.emotion(emotion, insetForPageAt: group)
-        
-        let width = emotion.contentView.frame.width - edg.left - edg.right
-        let height = emotion.contentView.frame.height - edg.top - edg.bottom
-        
-        let row = CGFloat(eg.row)
-        let col = CGFloat(eg.column)
-        
-        eg.size = CGSize(width: (width - 8 * col) / col, height: (height - 8 * row) / row)
-        eg.minimumLineSpacing = (height / row) - eg.size.height
-        eg.minimumInteritemSpacing = (width / col) - eg.size.width
-        
-        return eg.size
-    }
-    public func emotion(_ emotion: SAEmotionPanel, insetForPageAt group: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(12, 10, 12 + 30, 10)
-    }
-    
-    public func emotion(_ emotion: SAEmotionPanel, minimumLineSpacingAt group: Int) -> CGFloat {
-        return _emotionGroups[group].minimumLineSpacing
-    }
-    public func emotion(_ emotion: SAEmotionPanel, minimumInteritemSpacingAt group: Int) -> CGFloat {
-        return _emotionGroups[group].minimumInteritemSpacing
-    }
     
     public func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {
         return true

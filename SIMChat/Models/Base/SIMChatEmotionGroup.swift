@@ -87,18 +87,23 @@ open class SIMChatLargeEmotion: SIMChatEmotion {
     
 }
 
-open class SIMChatEmotionGroup {
+open class SIMChatEmotionGroup: SAEmotionGroup {
     
     init?(contentsOfFile: String) {
         guard let dic = NSDictionary(contentsOfFile: contentsOfFile), let arr = dic["emotions"] as? NSArray else {
             return nil
         }
+        let directory = URL(fileURLWithPath: contentsOfFile).deletingLastPathComponent().path
+        
+        super.init()
         
         type = SAEmotionType(rawValue: dic["type"] as? Int ?? 0) ?? .small
         row = dic["row"] as? Int ?? 3
         column = dic["column"] as? Int ?? 7
         
-        let directory = URL(fileURLWithPath: contentsOfFile).deletingLastPathComponent().path
+        if let img = dic["image"] as? String {
+            thumbnail = UIImage(contentsOfFile: "\(directory)/\(img)")
+        }
         
         if type.isSmall {
             emotions = SIMChatEmotion.emotions(with: arr, at: directory)
@@ -106,15 +111,4 @@ open class SIMChatEmotionGroup {
             emotions = SIMChatLargeEmotion.emotions(with: arr, at: directory)
         }
     }
-    
-    open var row: Int
-    open var column: Int
-    
-    open var type: SAEmotionType
-    open var emotions: [SAEmotion]
-    
-    open var size: CGSize = .zero
-    
-    open var minimumLineSpacing: CGFloat = 0
-    open var minimumInteritemSpacing: CGFloat = 0
 }

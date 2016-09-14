@@ -16,6 +16,7 @@ import CoreGraphics
 // [x] SAEmotionPanel - 自定义大小/间距/缩进
 // [ ] SAEmotionPanel - 动态图片支持
 // [ ] SAEmotionPanel - Tabbar支持
+// [x] SAEmotionPanel - 更新page
 // [ ] SAEmotion - UIView支持
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
@@ -88,6 +89,45 @@ import CoreGraphics
     // 目前只支持UIImage/NSString/NSAttributedString
     open var contents: Any?
 }
+@objc open class SAEmotionGroup: NSObject {
+    
+    open lazy var id: String = UUID().uuidString
+    
+    open var row: Int = 3
+    open var column: Int = 7
+    
+    open var title: String?
+    open var thumbnail: UIImage?
+    
+    open var type: SAEmotionType = .small
+    open var emotions: [SAEmotion] = []
+    
+    open func sizeThatFits(_ size: CGSize) -> CGSize {
+        guard _size?.width != size.width else {
+            return _size ?? .zero
+        }
+        let edg = _contentInset
+        
+        let width = size.width - edg.left - edg.right
+        let height = size.height - edg.top - edg.bottom
+        
+        let row = CGFloat(self.row)
+        let col = CGFloat(self.column)
+        
+        let tmp = CGSize(width: (width - 8 * col) / col, height: (height - 8 * row) / row)
+        
+        _size = tmp
+        _minimumLineSpacing = (height / row) - tmp.height
+        _minimumInteritemSpacing = (width / col) - tmp.width
+        
+        return tmp
+    }
+    
+    fileprivate var _size: CGSize?
+    fileprivate var _contentInset: UIEdgeInsets = UIEdgeInsetsMake(12, 10, 42, 10)
+    fileprivate var _minimumLineSpacing: CGFloat = 0
+    fileprivate var _minimumInteritemSpacing: CGFloat = 0
+}
 
 @objc public enum SAEmotionType: Int {
     
@@ -101,17 +141,9 @@ import CoreGraphics
 @objc public protocol SAEmotionPanelDataSource: NSObjectProtocol {
     
     func numberOfGroups(in emotion: SAEmotionPanel) -> Int
-    func emotion(_ emotion: SAEmotionPanel, itemsAt group: Int) -> [SAEmotion]
-    
-    @objc optional func emotion(_ emotion: SAEmotionPanel, typeForItemAt group: Int) -> SAEmotionType
+    func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup
 }
 @objc public protocol SAEmotionPanelDelegate: NSObjectProtocol {
-    
-    @objc optional func emotion(_ emotion: SAEmotionPanel, sizeForItemAt group: Int) -> CGSize
-    @objc optional func emotion(_ emotion: SAEmotionPanel, insetForPageAt group: Int) -> UIEdgeInsets
-    
-    @objc optional func emotion(_ emotion: SAEmotionPanel, minimumLineSpacingAt group: Int) -> CGFloat
-    @objc optional func emotion(_ emotion: SAEmotionPanel, minimumInteritemSpacingAt group: Int) -> CGFloat
     
     @objc optional func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool
     @objc optional func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion)
@@ -150,31 +182,78 @@ import CoreGraphics
         delegate?.emotion?(self, didPreviewFor: emotion) 
     }
     
+    // MARK: UIScrollViewDelegate
+    
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView === _tabbar {
+            return
+        }
+        if scrollView === _contentView {
+            guard let idx = _contentView.indexPathForItem(at: targetContentOffset.move()) else {
+                return
+            }
+            _pageControl.numberOfPages = _contentView.numberOfItems(inSection: idx.section)
+            _pageControl.currentPage = idx.item
+        }
+    }
+    
     // MARK: UICollectionViewDataSource & UICollectionViewDelegate
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return dataSource?.numberOfGroups(in: self) ?? 0
+        if collectionView === _tabbar {
+            return 1
+        }
+        if collectionView === _contentView {
+            return dataSource?.numberOfGroups(in: self) ?? 0
+        }
+        return 0
     }
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return _contentViewLayout.numberOfPages(in: section) {
-            dataSource?.emotion(self, itemsAt: section) ?? []
+        if collectionView === _tabbar {
+            //return dataSource?.numberOfGroups(in: self) ?? 0
+            return 20
         }
+        if collectionView === _contentView {
+            guard let ds = dataSource else {
+                return 0
+            }
+            let pageCount = _contentViewLayout.numberOfPages(in: section) {
+                ds.emotion(self, groupAt: section)
+            }
+            if !_pageControlIsInit {
+                _pageControlIsInit = true
+                _pageControl.numberOfPages = pageCount
+                _pageControl.currentPage = 0
+            }
+            return pageCount
+        }
+        return 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Page", for: indexPath)
     }
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAEmotionPageView else {
+        if let cell = cell as? SAEmotionPageView {
+            cell.page = _contentViewLayout.page(at: indexPath)
+            cell.delegate = self
+            cell.previewer = _previewer
+            return
+        } 
+        if let cell = cell as? SAEmotionTabbarItemView {
+            cell.group = dataSource?.emotion(self, groupAt: indexPath.item % 2)
             return
         }
-        cell.page = _contentViewLayout.page(at: indexPath)
-        cell.delegate = self
-        cell.previewer = _previewer
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return collectionView.frame.size
+        if collectionView === _tabbar {
+            return CGSize(width: 45, height: collectionView.frame.height)
+        }
+        if collectionView === _contentView {
+            return collectionView.frame.size
+        }
+        return .zero
     }
     
     private func _init() {
@@ -188,6 +267,7 @@ import CoreGraphics
         _pageControl.currentPageIndicatorTintColor = UIColor.darkGray
         _pageControl.translatesAutoresizingMaskIntoConstraints = false
         _pageControl.backgroundColor = .clear
+        _pageControl.isUserInteractionEnabled = false
         //_pageControl.addTarget(self, action: #selector(onPageChanged(_:)), for: .valueChanged)
         
         _contentViewLayout.scrollDirection = .horizontal
@@ -208,8 +288,20 @@ import CoreGraphics
         _previewer.isHidden = true
         _previewer.isUserInteractionEnabled = false
         
+        _tabbar.register(SAEmotionTabbarItemView.self, forCellWithReuseIdentifier: "Page")
+        _tabbar.translatesAutoresizingMaskIntoConstraints = false
+        _tabbar.dataSource = self
+        _tabbar.backgroundColor = .white
+        _tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, 45)
+        _tabbar.delegate = self
+        _tabbar.scrollsToTop = false
+        _tabbar.showsVerticalScrollIndicator = false
+        _tabbar.showsHorizontalScrollIndicator = false
+        //_tabbar.alwaysBounceHorizontal = true
+        
         addSubview(_contentView)
         addSubview(_pageControl)
+        addSubview(_tabbar)
         addSubview(_previewer)
         
         addConstraints([
@@ -218,19 +310,25 @@ import CoreGraphics
             _SALayoutConstraintMake(_contentView, .left, .equal, self, .left),
             _SALayoutConstraintMake(_contentView, .right, .equal, self, .right),
             
-            _SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom, -20),
-            
             _SALayoutConstraintMake(_pageControl, .left, .equal, self, .left),
             _SALayoutConstraintMake(_pageControl, .right, .equal, self, .right),
+            _SALayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10),
             
-            _SALayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -5),
-            _SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 37)
+            _SALayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom),
+            _SALayoutConstraintMake(_tabbar, .left, .equal, self, .left),
+            _SALayoutConstraintMake(_tabbar, .right, .equal, self, .right),
+            _SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom),
             
+            _SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37),
+            _SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20)
         ])
     }
     
+    private var _pageControlIsInit: Bool = false
+    
     private lazy var _pageControl: UIPageControl = UIPageControl()
     private lazy var _previewer: SAEmotionPreviewer = SAEmotionPreviewer()
+    private lazy var _tabbar: SAEmotionTabbar = SAEmotionTabbar(frame: .zero)
     
     private lazy var _contentViewLayout: SAEmotionPanelLayout = SAEmotionPanelLayout()
     private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
@@ -250,7 +348,7 @@ internal class SAEmotionPanelLayout: UICollectionViewFlowLayout {
     func page(at indexPath: IndexPath) -> SAEmotionPage {
         return _allPages[indexPath.section]![indexPath.row]
     }
-    func pages(in section: Int, fetch: (Void) -> [SAEmotion]) -> [SAEmotionPage] {
+    func pages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> [SAEmotionPage] {
         if let pages = _allPages[section] {
             return pages
         }
@@ -259,30 +357,26 @@ internal class SAEmotionPanelLayout: UICollectionViewFlowLayout {
         return pages
     }
     
-    func numberOfPages(in section: Int, fetch: (Void) -> [SAEmotion]) -> Int {
+    func numberOfPages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> Int {
         if let count = _allPages[section]?.count {
             return count
         }
         return pages(in: section, fetch: fetch).count
     }
     
-    func _makePages(in section: Int, with emotions: [SAEmotion]) -> [SAEmotionPage] {
-        guard let p = collectionView?.delegate as? SAEmotionPanel else {
-            return []
-        }
+    func _makePages(in section: Int, with group: SAEmotionGroup) -> [SAEmotionPage] {
         
-        let itemType = p.dataSource?.emotion?(p, typeForItemAt: section) ?? .small
+        let itemType = group.type
+        let itemSize = group.sizeThatFits(collectionView?.frame.size ?? .zero)
         
-        let itemSize = p.delegate?.emotion?(p, sizeForItemAt: section) ?? CGSize(width: 34, height: 34)
-        let contentInset = p.delegate?.emotion?(p, insetForPageAt: section) ?? .zero
-        
-        let nlsp = p.delegate?.emotion?(p, minimumLineSpacingAt: section) ?? 8
-        let nisp = p.delegate?.emotion?(p, minimumInteritemSpacingAt: section) ?? 8
+        let nlsp = group._minimumLineSpacing
+        let nisp = group._minimumInteritemSpacing
+        let inset = group._contentInset
         
         let bounds = collectionView?.bounds ?? .zero
-        let rect = UIEdgeInsetsInsetRect(bounds, contentInset)
+        let rect = UIEdgeInsetsInsetRect(bounds, inset)
         
-        return emotions.reduce([]) { 
+        return group.emotions.reduce([]) { 
             if let page = $0.last, page.addEmotion($1) {
                 return $0
             }
@@ -670,6 +764,48 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         _init()
     }
 }
+internal class SAEmotionTabbar: UICollectionView, UICollectionViewDelegateFlowLayout {
+    
+    init(frame: CGRect) {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        super.init(frame: frame, collectionViewLayout: layout)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+internal class SAEmotionTabbarItemView: UICollectionViewCell {
+    
+    
+    var group: SAEmotionGroup? {
+        willSet {
+            guard group !== newValue else {
+                return
+            }
+            
+            _imageView.image = newValue?.thumbnail
+            
+            if _imageView.superview == nil {
+                _line.backgroundColor = UIColor(white: 0.9, alpha: 1.0).cgColor
+                _imageView.contentMode = .scaleAspectFit
+                _imageView.bounds = CGRect(x: 0, y: 0, width: 25, height: 25)
+                contentView.addSubview(_imageView)
+                contentView.layer.addSublayer(_line)
+            }
+        }
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _imageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        _line.frame = CGRect(x: bounds.maxX - 0.5, y: 8, width: 0.5, height: bounds.height - 16)
+    }
+    
+    private lazy var _imageView: UIImageView = UIImageView()
+    private lazy var _line: CALayer = CALayer()
+}
 internal class SAEmotionPreviewer: UIView {
     
     func preview(_ emotion: SAEmotion?, _ itemType: SAEmotionType, in rect: CGRect) {
@@ -866,6 +1002,7 @@ internal protocol SAEmotionDelegate: class {
     func emotion(didPreviewFor emotion: SAEmotion?)
     
 }
+    
 
 private var _SAEmotionPanelBackspaceImage: UIImage? = {
     let png = "iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAbFBMVEUAAACfn5+YmJibm5uYmJiYmJidnZ2Xl5eYmJiXl5eYmJiampqgoKCoqKiYmJiYmJiYmJiXl5eZmZmYmJiYmJiYmJiampqYmJidnZ2YmJiYmJiYmJiYmJiYmJiYmJiZmZmYmJiYmJiYmJiXl5dyF2b0AAAAI3RSTlMAFdQZ18kS86tmWiAKBeTbz7597OfhLicO+cS7tJtPPaaKco/AGfEAAAEUSURBVEjH7dXLroMgFAVQEHxUe321Vav31e7//8dOmuyYcjCYtCP2CHJcCcEDqJiYmM9kPMOZPD1s2uoCMYvxW9NgProrZY3Fa3WCdJKKWQ3fyqcWSSaXS6Ry8TijMUqOQS7bDpdK+QJIla9vnJ9WF3q1Ez2xYAucxue4QKJXu9hv4B+cBn5OzQnxq83/OCPgUMY3XGlJOPDgHtdfzohoZXynXWtaER+A0tmq1tIKuIS7Z7UFLK0b/yMfdmC2xxC8bDYmdciGsa3H0F9FvVAHNAmPY13taU8e5tCDQT1TBx9JNaVozK7LgFoIsZCshd1xAVInOvzq5d60WeilT22pX5+bTvljLMR0Rm3pRn5iY2Ji3pcHZE4k/ix2A/EAAAAASUVORK5CYII="
