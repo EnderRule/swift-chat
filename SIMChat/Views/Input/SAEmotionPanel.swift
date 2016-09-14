@@ -28,9 +28,16 @@ import CoreGraphics
 // [x] SAEmotionPageView - 长按预览
 // [ ] SAEmotionPageView - 横屏支持
 
-@objc public class SAEmotion: NSObject {
+@objc open class SAEmotion: NSObject {
     
-    public func draw(in rect: CGRect, in ctx: CGContext) {
+    /// 退格
+    open static let backspace: SAEmotion = {
+        let em = SAEmotion()
+        em.contents = "⌫"
+        return em
+    }()
+    
+    open func draw(in rect: CGRect, in ctx: CGContext) {
         
         //ctx.setFillColor(UIColor.red.withAlphaComponent(0.2).cgColor)
         //ctx.fill(rect)
@@ -60,7 +67,7 @@ import CoreGraphics
         }
     }
     
-    public func show(in view: UIView) {
+    open func show(in view: UIView) {
         let imageView = view.subviews.first as? UIImageView ?? {
             let imageView = UIImageView()
             view.subviews.forEach{
@@ -79,13 +86,7 @@ import CoreGraphics
     }
     
     // 目前只支持UIImage/NSString/NSAttributedString
-    public var contents: Any?
-    
-    public static let backspace: SAEmotion = {
-        let em = SAEmotion()
-        em.contents = "⌫"
-        return em
-    }()
+    open var contents: Any?
 }
 
 @objc public enum SAEmotionType: Int {
@@ -217,13 +218,13 @@ import CoreGraphics
             _SALayoutConstraintMake(_contentView, .left, .equal, self, .left),
             _SALayoutConstraintMake(_contentView, .right, .equal, self, .right),
             
-            _SALayoutConstraintMake(_contentView, .bottom, .equal, _pageControl, .top),
+            _SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom, -20),
             
             _SALayoutConstraintMake(_pageControl, .left, .equal, self, .left),
             _SALayoutConstraintMake(_pageControl, .right, .equal, self, .right),
-            _SALayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15),
             
-            _SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20)
+            _SALayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -5),
+            _SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 37)
             
         ])
     }
