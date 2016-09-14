@@ -91,8 +91,8 @@ import CoreGraphics
 
 @objc public enum SAEmotionType: Int {
     
-    case small
-    case large
+    case small = 0
+    case large = 1
     
     public var isSmall: Bool { return self == .small }
     public var isLarge: Bool { return self == .large }
@@ -751,8 +751,8 @@ internal class SAEmotionBackgroundView: UIView {
         let rect = bounds(for: type)
         
         switch type {
-        case .small: return CGRect(x: 0, y: 0, width: rect.width, height: rect.width)
-        case .large: return rect
+        case .small: return CGRect(x: 4, y: 4, width: rect.width - 4 * 2, height: rect.width - 4 * 2)
+        case .large: return UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(8, 8, 8 + 12, 8))
         }
     }
    

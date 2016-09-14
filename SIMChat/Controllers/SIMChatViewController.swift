@@ -9,8 +9,10 @@
 import UIKit
 
 
-/// [ ] 更新InputPanel
-/// [ ] SAEmotionPanel - 加载默认表情
+// [ ] SIMChatViewController - 更新InputPanel
+// [x] SAEmotionPanel - 加载默认表情
+// [x] SAEmotionPanel - 加载大表情
+// [ ] SAEmotionPanel - 异步加载和同步
 
 
 class SIMEmotionGroup {
@@ -92,6 +94,9 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         
         
         if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.qq.classic/Info.plist")!) {
+            _emotionGroups.append(group)
+        }
+        if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/cn.com.a-li/Info.plist")!) {
             _emotionGroups.append(group)
         }
     }
