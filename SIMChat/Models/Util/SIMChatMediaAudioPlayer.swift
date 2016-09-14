@@ -15,9 +15,9 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         _resource = resource
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(self.dynamicType.audioPlayerDidInterruption(_:)),
-            name: AVAudioSessionInterruptionNotification,
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(type(of: self).audioPlayerDidInterruption(_:)),
+            name: NSNotification.Name.AVAudioSessionInterruption,
             object: nil)
         
         SIMLog.trace()
@@ -29,14 +29,14 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         if _isStarted || _isPlaying {
             _clear()
         }
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     public var resource: SIMChatResourceProtocol { return _resource }
     
     public var playing: Bool { return _isPlaying }
-    public var duration: NSTimeInterval { return _player?.duration ?? 0 }
-    public var currentTime: NSTimeInterval { return _player?.currentTime ?? 0 }
+    public var duration: TimeInterval { return _player?.duration ?? 0 }
+    public var currentTime: TimeInterval { return _player?.currentTime ?? 0 }
     
     public weak var delegate: SIMChatMediaPlayerDelegate?
     
@@ -53,9 +53,9 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         _isStarted = false
     }
    
-    public func meter(channel: Int) -> Float {
+    public func meter(_ channel: Int) -> Float {
         _player?.updateMeters()
-        return _player?.averagePowerForChannel(channel) ?? -60
+        return _player?.averagePower(forChannel: channel) ?? -60
     }
     
     private var _resource: SIMChatResourceProtocol
@@ -64,7 +64,7 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
     private var _isActive: Bool = false
     private var _isStarted: Bool = false
     
-    private var _isPlaying: Bool { return _player?.playing ?? false }
+    private var _isPlaying: Bool { return _player?.isPlaying ?? false }
     private var _isPrepared: Bool { return _player != nil }
     private var _isPrepareing: Bool = false
     
@@ -79,39 +79,39 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         _isPrepareing = true
         // 进入.
         SIMChatMediaAudioPlayer.retainInstance = self
-        // 下载文件.
-        SIMChatFileProvider.sharedInstance().loadResource(_resource, canCache: false) { [weak self] in
-            do {
-                guard let value = $0.value else {
-                    throw $0.error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil)
-                }
-                // 创建真实现的播放器
-                let player: AVAudioPlayer = try {
-                    switch value {
-                    case let data as NSData:
-                        return try AVAudioPlayer(data: data)
-                    case let url as NSURL:
-                        return try AVAudioPlayer(contentsOfURL: url)
-                    default:
-                        throw NSError(domain: "Unsupport Content \(value)", code: -1, userInfo: nil)
-                    }
-                }()
-                player.delegate = self
-                player.meteringEnabled = true
-                // 真正的准备~
-                if !player.prepareToPlay() {
-                    throw NSError(domain: "Prepare Play Fail", code: -1, userInfo: nil)
-                }
-                dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
-                    self?._player = player
-                    self?._isPrepareing = false
-                    self?._didPrepare()
-                }
-            } catch let error as NSError {
-                self?._isPrepareing = false
-                self?._didErrorOccur(error)
-            }
-        }
+//        // 下载文件.
+//        SIMChatFileProvider.sharedInstance().loadResource(_resource, canCache: false) { [weak self] in
+//            do {
+//                guard let value = $0.value else {
+//                    throw $0.error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil)
+//                }
+//                // 创建真实现的播放器
+//                let player: AVAudioPlayer = try {
+//                    switch value {
+//                    case let data as Data:
+//                        return try AVAudioPlayer(data: data)
+//                    case let url as URL:
+//                        return try AVAudioPlayer(contentsOf: url)
+//                    default:
+//                        throw NSError(domain: "Unsupport Content \(value)", code: -1, userInfo: nil)
+//                    }
+//                }()
+//                player.delegate = self
+//                player.isMeteringEnabled = true
+//                // 真正的准备~
+//                if !player.prepareToPlay() {
+//                    throw NSError(domain: "Prepare Play Fail", code: -1, userInfo: nil)
+//                }
+//                dispatch_after_at_now(0.5, DispatchQueue.main) {
+//                    self?._player = player
+//                    self?._isPrepareing = false
+//                    self?._didPrepare()
+//                }
+//            } catch let error as NSError {
+//                self?._isPrepareing = false
+//                self?._didErrorOccur(error)
+//            }
+//        }
     }
     @inline(__always) private func _active() throws {
         guard !_isActive else {
@@ -131,7 +131,7 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         let session = AVAudioSession.sharedInstance()
         let category = session.category
         // 延迟0.5s再恢复, 不然给人一种毛燥的感觉
-        dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
+        dispatch_after_at_now(0.5, DispatchQueue.main) {
             guard session.category == category else {
                 return // 别人使用了
             }
@@ -139,7 +139,7 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
                 return // 正在播放
             }
             SIMLog.trace()
-            let _ = try? AVAudioSession.sharedInstance().setActive(false, withOptions: .NotifyOthersOnDeactivation)
+            let _ = try? AVAudioSession.sharedInstance().setActive(false, with: .notifyOthersOnDeactivation)
         }
         _isActive = false
     }
@@ -231,26 +231,26 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         delegate?.playerDidFinish(self)
         SIMChatNotificationCenter.postNotificationName(SIMChatMediaPlayerDidFinsh, object: self)
     }
-    @inline(__always) private func _didErrorOccur(error: NSError) {
+    @inline(__always) private func _didErrorOccur(_ error: NSError) {
         SIMLog.error(error)
         delegate?.playerDidErrorOccur(self, error: error)
-        SIMChatNotificationCenter.postNotificationName(SIMChatMediaPlayerDidErrorOccur, object: self, userInfo: ["Error": error])
+        SIMChatNotificationCenter.postNotificationName(SIMChatMediaPlayerDidErrorOccur, object: self, userInfo: ["Error" as NSObject: error])
         // 释放资源
         _isStarted = false
         _clear()
     }
     
-    public func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         SIMLog.trace()
         _stop()
         _didFinish()
     }
-    public func audioPlayerDecodeErrorDidOccur(player: AVAudioPlayer, error: NSError?) {
+    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: NSError?) {
         SIMLog.trace()
         _stop()
         _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
     }
-    public func audioPlayerDidInterruption(sender: NSNotification) {
+    public func audioPlayerDidInterruption(_ sender: Notification) {
         SIMLog.trace()
         guard _isPlaying else {
             return

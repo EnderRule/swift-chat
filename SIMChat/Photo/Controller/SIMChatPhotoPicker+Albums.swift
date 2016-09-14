@@ -27,46 +27,46 @@ internal class SIMChatPhotoPickerAlbums : UITableViewController {
         super.viewDidLoad()
         
         title = "Albums"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(self.dynamicType.onCancel(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(type(of: self).onCancel(_:)))
         
-        tableView.registerClass(AlbumCell.self, forCellReuseIdentifier: "Album")
-        tableView.separatorStyle = .None
+        tableView.register(AlbumCell.self, forCellReuseIdentifier: "Album")
+        tableView.separatorStyle = .none
         
         // 监听
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.dynamicType.onLibraryDidChanged(_:)), name: SIMChatPhotoLibraryDidChangedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(type(of: self).onLibraryDidChanged(_:)), name: NSNotification.Name(rawValue: SIMChatPhotoLibraryDidChangedNotification), object: nil)
         
         // 默认, 未加载的页面显示
         onRefresh(self)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         SIMLog.trace()
         navigationController?.setToolbarHidden(true, animated: animated)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         SIMLog.trace()
     }
     
     /// 行数
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return albums.count
     }
     /// 行高
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 88
     }
     /// 内容
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Album", forIndexPath: indexPath) as! AlbumCell
-        cell.album = albums[indexPath.row]
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Album", for: indexPath) as! AlbumCell
+        cell.album = albums[(indexPath as NSIndexPath).row]
         return cell
     }
     /// 选中
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let vc = SIMChatPhotoPickerAssets(albums[indexPath.row], picker)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = SIMChatPhotoPickerAssets(albums[(indexPath as NSIndexPath).row], picker)
         // 显示
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -91,28 +91,28 @@ extension SIMChatPhotoPickerAlbums {
         }
         private func build() {
             stackView.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.font = UIFont.systemFontOfSize(18)
+            titleLabel.font = UIFont.systemFont(ofSize: 18)
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            detailLabel.font = UIFont.systemFontOfSize(12)
+            detailLabel.font = UIFont.systemFont(ofSize: 12)
             detailLabel.translatesAutoresizingMaskIntoConstraints = false
             
-            accessoryType = .DisclosureIndicator
+            accessoryType = .disclosureIndicator
             contentView.addSubview(stackView)
             contentView.addSubview(titleLabel)
             contentView.addSubview(detailLabel)
             
-            addConstraint(NSLayoutConstraintMake(stackView, .Width,   .Equal, nil,         .Width,  86))
-            addConstraint(NSLayoutConstraintMake(stackView, .Height,  .Equal, stackView,   .Width))
-            addConstraint(NSLayoutConstraintMake(stackView, .Left,    .Equal, contentView, .Left,   0))
-            addConstraint(NSLayoutConstraintMake(stackView, .CenterY, .Equal, contentView, .CenterY))
+            addConstraint(NSLayoutConstraintMake(stackView, .width,   .equal, nil,         .width,  86))
+            addConstraint(NSLayoutConstraintMake(stackView, .height,  .equal, stackView,   .width))
+            addConstraint(NSLayoutConstraintMake(stackView, .left,    .equal, contentView, .left,   0))
+            addConstraint(NSLayoutConstraintMake(stackView, .centerY, .equal, contentView, .centerY))
             
-            addConstraint(NSLayoutConstraintMake(titleLabel,  .Left,    .Equal, stackView,   .Right,  8))
-            addConstraint(NSLayoutConstraintMake(titleLabel,  .Right,   .Equal, contentView, .Right,  0))
-            addConstraint(NSLayoutConstraintMake(detailLabel, .Left,    .Equal, stackView,   .Right,  8))
-            addConstraint(NSLayoutConstraintMake(detailLabel, .Right,   .Equal, contentView, .Right,  0))
+            addConstraint(NSLayoutConstraintMake(titleLabel,  .left,    .equal, stackView,   .right,  8))
+            addConstraint(NSLayoutConstraintMake(titleLabel,  .right,   .equal, contentView, .right,  0))
+            addConstraint(NSLayoutConstraintMake(detailLabel, .left,    .equal, stackView,   .right,  8))
+            addConstraint(NSLayoutConstraintMake(detailLabel, .right,   .equal, contentView, .right,  0))
             
-            addConstraint(NSLayoutConstraintMake(titleLabel,  .Bottom,  .Equal, contentView, .CenterY, 0))
-            addConstraint(NSLayoutConstraintMake(detailLabel, .Top,     .Equal, contentView, .CenterY, 0))
+            addConstraint(NSLayoutConstraintMake(titleLabel,  .bottom,  .equal, contentView, .centerY, 0))
+            addConstraint(NSLayoutConstraintMake(detailLabel, .top,     .equal, contentView, .centerY, 0))
         }
         
         var album: SIMChatPhotoAlbum? {
@@ -123,7 +123,7 @@ extension SIMChatPhotoPickerAlbums {
             }
         }
         
-        private lazy var stackView = SIMChatPhotoAlbumView(frame: CGRectMake(0, 0, 86, 86))
+        private lazy var stackView = SIMChatPhotoAlbumView(frame: CGRect(x: 0, y: 0, width: 86, height: 86))
         private lazy var titleLabel = UILabel()
         private lazy var detailLabel = UILabel()
     }
@@ -132,12 +132,12 @@ extension SIMChatPhotoPickerAlbums {
 // MARK: - Event
 extension SIMChatPhotoPickerAlbums {
     /// 取消
-    private dynamic func onCancel(sender: AnyObject) {
+    private dynamic func onCancel(_ sender: AnyObject) {
         SIMLog.trace()
         picker?.cancel()
     }
     /// 加载数据
-    private dynamic func onRefresh(sender: AnyObject) {
+    private dynamic func onRefresh(_ sender: AnyObject) {
         SIMLog.trace()
         
         SIMChatPhotoLibrary.sharedLibrary().albums { a in
@@ -146,7 +146,7 @@ extension SIMChatPhotoPickerAlbums {
         }
     }
     /// 图库发生改变
-    private dynamic func onLibraryDidChanged(sender: NSNotification) {
-        onRefresh(sender)
+    private dynamic func onLibraryDidChanged(_ sender: Notification) {
+        onRefresh(sender as AnyObject)
     }
 }

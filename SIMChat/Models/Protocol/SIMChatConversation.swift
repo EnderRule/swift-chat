@@ -9,8 +9,8 @@
 import Foundation
 
 /// 消息处理者
-public typealias SIMChatMessageHandler = SIMChatResult<SIMChatMessage, NSError> -> Void
-public typealias SIMChatMessagesHandler = SIMChatResult<Array<SIMChatMessage>, NSError> -> Void
+public typealias SIMChatMessageHandler = (SIMChatResult<SIMChatMessage, NSError>) -> Void
+public typealias SIMChatMessagesHandler = (SIMChatResult<Array<SIMChatMessage>, NSError>) -> Void
 
 ///
 /// 抽象的聊天会话协议.
@@ -64,14 +64,14 @@ public protocol SIMChatConversation: class {
     /// - parameter message: 需要发送的消息
     /// - parameter closure: 执行结果
     ///
-    func sendMessage(message: SIMChatMessage, closure: SIMChatMessageHandler?)
+    func sendMessage(_ message: SIMChatMessage, closure: SIMChatMessageHandler?)
     ///
     /// 发送一条消息(新建)
     ///
     /// - parameter content: 消息内容
     /// - returns: 新建的消息
     ///
-    func sendMessage(content: SIMChatMessageBody, closure: SIMChatMessageHandler?) -> SIMChatMessage
+    func sendMessage(_ content: SIMChatMessageBody, closure: SIMChatMessageHandler?) -> SIMChatMessage
     ///
     /// 更新消息状态
     ///
@@ -79,7 +79,7 @@ public protocol SIMChatConversation: class {
     /// - parameter status:  新的状态, 一般检查该状态来决定是否需要访问网络
     /// - parameter closure: 执行结果
     ///
-    func updateMessage(message: SIMChatMessage, status: SIMChatMessageStatus, closure: SIMChatMessageHandler?)
+    func updateMessage(_ message: SIMChatMessage, status: SIMChatMessageStatus, closure: SIMChatMessageHandler?)
     ///
     /// 加载(历史)消息
     ///
@@ -87,7 +87,7 @@ public protocol SIMChatConversation: class {
     /// - parameter count: 容量
     /// - parameter closure: 执行结果
     ///
-    func loadHistoryMessages(last: SIMChatMessage?, count: Int, closure: SIMChatMessagesHandler?)
+    func loadHistoryMessages(_ last: SIMChatMessage?, count: Int, closure: SIMChatMessagesHandler?)
     
     
     ///
@@ -96,7 +96,7 @@ public protocol SIMChatConversation: class {
     /// - parameter message: 需要删除的消息
     /// - parameter closure: 执行结果
     ///
-    func removeMessage(message: SIMChatMessage, closure: SIMChatMessageHandler?)
+    func removeMessage(_ message: SIMChatMessage, closure: SIMChatMessageHandler?)
     
     // MARK: Message Of Remote
     
@@ -105,19 +105,19 @@ public protocol SIMChatConversation: class {
     ///
     /// - parameter message: 被操作的消息
     ///
-    func updateMessageFromRemote(message: SIMChatMessage)
+    func updateMessageFromRemote(_ message: SIMChatMessage)
     ///
     /// 接收到来自服务端的消息(被动)
     ///
     /// - parameter message: 被操作的消息
     ///
-    func receiveMessageFromRemote(message: SIMChatMessage)
+    func receiveMessageFromRemote(_ message: SIMChatMessage)
     ///
     /// 服务端要求更删除消息(被动)
     ///
     /// - parameter message: 被操作的消息
     ///
-    func removeMessageFromRemote(message: SIMChatMessage)
+    func removeMessageFromRemote(_ message: SIMChatMessage)
     
     // MARK: Generate
     
@@ -126,7 +126,7 @@ public protocol SIMChatConversation: class {
     ///
     /// - parameter receiver: 会话的接收者
     ///
-    static func conversation(receiver: SIMChatUserProtocol, manager: SIMChatManager) -> SIMChatConversation
+    static func conversation(_ receiver: SIMChatUserProtocol, manager: SIMChatManager) -> SIMChatConversation
 }
 
 // MARK: - Convenience
@@ -137,9 +137,9 @@ extension SIMChatConversation {
     ///
     public var type: SIMChatConversationType {
         switch receiver.type {
-        case .User:     return .C2C
-        case .System:   return .C2C
-        case .Group:    return .Group
+        case .user:     return .c2c
+        case .system:   return .c2c
+        case .group:    return .group
         }
     }
     ///
@@ -149,7 +149,7 @@ extension SIMChatConversation {
     /// - parameter count: 容量
     /// - parameter closure: 执行结果
     ///
-    public func loadHistoryMessages(count: Int, closure: SIMChatMessagesHandler?) {
+    public func loadHistoryMessages(_ count: Int, closure: SIMChatMessagesHandler?) {
         loadHistoryMessages(nil, count: count, closure: closure)
     }
 }
@@ -162,29 +162,29 @@ public protocol SIMChatConversationDelegate: class {
     /// - parameter conversation: 发生事件的会话
     /// - parameter message: 接收到的消息
     ///
-    func conversation(conversation: SIMChatConversation, didReciveMessage message: SIMChatMessage)
+    func conversation(_ conversation: SIMChatConversation, didReciveMessage message: SIMChatMessage)
     ///
     /// 删除消息通知
     ///
     /// - parameter conversation: 发生事件的会话
     /// - parameter message: 接收到的消息
     ///
-    func conversation(conversation: SIMChatConversation, didRemoveMessage message: SIMChatMessage)
+    func conversation(_ conversation: SIMChatConversation, didRemoveMessage message: SIMChatMessage)
     ///
     /// 更新消息通知
     ///
     /// - parameter conversation: 发生事件的会话
     /// - parameter message: 接收到的消息
     ///
-    func conversation(conversation: SIMChatConversation, didUpdateMessage message: SIMChatMessage)
+    func conversation(_ conversation: SIMChatConversation, didUpdateMessage message: SIMChatMessage)
 }
 
 ///
 /// 会话类型
 ///
 public enum SIMChatConversationType: Int {
-    case C2C
-    case Group
+    case c2c
+    case group
 }
 
 // MARK: - User compare

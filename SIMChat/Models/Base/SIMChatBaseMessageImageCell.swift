@@ -26,7 +26,7 @@ public class SIMChatBaseMessageImageCell: SIMChatBaseMessageBubbleCell {
         
         
         _imageView.clipsToBounds = true
-        _imageView.contentMode = .ScaleAspectFill
+        _imageView.contentMode = .scaleAspectFill
         _imageView.translatesAutoresizingMaskIntoConstraints = false
         
         // add views
@@ -39,12 +39,12 @@ public class SIMChatBaseMessageImageCell: SIMChatBaseMessageBubbleCell {
             .bottom.equ(bubbleView.contentView).bottom
             .width.equ(0).priority(751)
             .height.equ(0).priority(751)
-            .submit()
+            .submit2()
     }
     /// 消息
     public override var model: SIMChatMessage? {
         didSet {
-            guard let message = model, content = content where message != oldValue else {
+            guard let message = model, let content = content , message != oldValue else {
                 return
             }
             let width = max(content.size.width, 32)
@@ -60,10 +60,10 @@ public class SIMChatBaseMessageImageCell: SIMChatBaseMessageBubbleCell {
             
             /// 默认
             isLoaded = false
-            imageView?.image = self.dynamicType.defaultImage
+            imageView?.image = type(of: self).defaultImage
             // 加载
             SIMChatFileProvider.sharedInstance().loadResource(content.thumbnail) { [weak self] in
-                guard let image = $0.value as? UIImage where message == self?.model else {
+                guard let image = $0.value as? UIImage , message == self?.model else {
                     return
                 }
                 self?.isLoaded = true

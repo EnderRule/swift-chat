@@ -31,15 +31,15 @@ public class SIMChatFPSLabel: UILabel {
         SIMLog.trace()
     }
     
-    public override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(55, 20)
+    public override var intrinsicContentSize: CGSize {
+        return CGSize(width: 55, height: 20)
     }
-    public override func willMoveToWindow(newWindow: UIWindow?) {
-        super.willMoveToWindow(newWindow)
+    public override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
         if newWindow == nil {
             _link.invalidate()
         } else {
-            _link.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            _link.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
         }
     }
     
@@ -47,16 +47,16 @@ public class SIMChatFPSLabel: UILabel {
         SIMLog.trace()
         
         text = "calc..."
-        font = UIFont.systemFontOfSize(14)
-        textColor = UIColor.whiteColor()
-        textAlignment = .Center
+        font = UIFont.systemFont(ofSize: 14)
+        textColor = UIColor.white
+        textAlignment = .center
         backgroundColor = UIColor(white: 0, alpha: 0.7)
         
         layer.cornerRadius = 5
         layer.masksToBounds = true
     }
     
-    private dynamic func tack(link: CADisplayLink) {
+    private dynamic func tack(_ link: CADisplayLink) {
         guard let lastTime = _lastTime else {
             _lastTime = link.timestamp
             return
@@ -79,9 +79,9 @@ public class SIMChatFPSLabel: UILabel {
     }
     
     private var _count: Int = 0
-    private var _lastTime: NSTimeInterval?
+    private var _lastTime: TimeInterval?
     
     private lazy var _link: CADisplayLink = {
-        return CADisplayLink(target: self, selector: #selector(self.dynamicType.tack(_:)))
+        return CADisplayLink(target: self, selector: #selector(type(of: self).tack(_:)))
     }()
 }

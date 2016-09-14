@@ -57,184 +57,184 @@ import UIKit
 ///
 /// 文件请求
 ///
-public class SIMChatFileRequest {
-    ///
-    /// 操作返回结果
-    ///
-    public typealias Result = SIMChatResult<AnyObject, NSError>
-    
-    /// 响应
-    public func response(completionHandler: (Result -> Void)) -> Self {
-        responseClouser = completionHandler
-        return self
-    }
-    
-    /// 响应图片
-    public func responseImage(completionHandler: (SIMChatResult<UIImage?, NSError> -> Void)) -> Self {
-        return response {
-                do {
-                    guard !self._isCancel else {
-                        throw NSError(domain: "Use Cancel", code: -1, userInfo: nil)
-                    }
-                    guard let value = $0.value else {
-                        throw $0.error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil)
-                    }
-                    let completion = { (img: UIImage?) in
-                        dispatch_async(dispatch_get_main_queue()) {
-                            completionHandler(.Success(img))
-                        }
-                    }
-                    switch value {
-                    case let path as String:
-                        dispatch_async(dispatch_get_global_queue(0, 0)) {
-                            let img = UIImage(contentsOfFile: path)
-                            completion(img)
-                        }
-                    case let URL as NSURL:
-                        dispatch_async(dispatch_get_global_queue(0, 0)) {
-                            if let path = URL.path where URL.scheme == "file" {
-                                let img = UIImage(contentsOfFile: path)
-                                completion(img)
-                            } else {
-                                let data = NSData(contentsOfURL: URL)
-                                let img = UIImage(data: data!)
-                                completion(img)
-                            }
-                        }
-                    default:
-                            completionHandler(.Success(nil))
-                        throw NSError(domain: "unsupport type", code: -1, userInfo: nil)
-                    }
-                } catch let error as NSError {
-                    completionHandler(.Failure(error))
-                }
-            // clear
-            self.responseClouser = nil
-        }
-    }
-    
-    public func cancel() {
-        SIMLog.trace()
-        _isCancel = true
-    }
-    
-    private var _isCancel: Bool = false
-    
-    private var responseClouser: (Result -> Void)?
-}
-
-///
-/// 文件提供者. <br>
-/// 提供关于url的一些操作
-///
-public class SIMChatFileProvider {
-    public static func sharedInstance() -> SIMChatFileProvider {
-        return _sharedInstance
-    }
-    
-    ///
-    /// 注册解释器
-    ///
-//    public func register(parser: SIMChatParserProtocol) {
-//        SIMLog.debug("\(parser.identifier) => \(parser.dynamicType)")
-//        _parsers[parser.identifier] = parser
+//public class SIMChatFileRequest {
+//    ///
+//    /// 操作返回结果
+//    ///
+//    public typealias Result = SIMChatResult<AnyObject, NSError>
+//    
+//    /// 响应
+//    public func response(_ completionHandler: @escaping ((Result) -> Void)) -> Self {
+//        responseClouser = completionHandler
+//        return self
 //    }
-    
-    /// 解释URL
-    private func _parseURL(URL: NSURL, success: (AnyObject -> Void)?, fail: (NSError -> Void)?) {
-//        // 读取
-//        let parser: SIMChatParserProtocol = {
-//            let p = SIMChatBaseFileParser.sharedInstance()
-//            guard let key = URL.user where URL.scheme == "simchat" else {
-//                return p
-//            }
-//            return _parsers[key] ?? p
-//        }()
-//        // 解释
-//        parser.decode(URL, success: success, fail: fail)
-        
-    }
-    
-    func cached(url: NSURL) -> Bool {
-        return false
-    }
-    
-    var c: UIImage?
-    
-    /// 加载资源
-    public func loadResource(resource: SIMChatResourceProtocol, canCache: Bool = true, closure: SIMChatResult<AnyObject, NSError> -> Void) {
-        let identifier = resource.identifier
-        // 读取缓存
-        if let value = _cache.objectForKey(identifier) {
-            SIMLog.debug("\(identifier) hit cache")
-            // 直接完成
-            closure(.Success(value))
-        } else {
-            SIMLog.debug("\(identifier) load resouce")
-            // 真实的加载
-            resource.resource { [weak self] result in
-                // 只缓存成功
-                if let value = result.value where canCache {
-                    self?._cache.setObject(value, forKey: identifier)
-                }
-                guard !NSThread.isMainThread() else {
-                    closure(result)
-                    return
-                }
-                dispatch_async(dispatch_get_main_queue()) {
-                    closure(result)
-                }
-            }
-        }
-    }
-    
-    /// 缓存.
-    private let _cache = NSCache()
-    
-    func download(URL: NSURL) -> SIMChatFileRequest {
-        let request = SIMChatFileRequest()
-        SIMChatRequest<Void>.request { op in
-            
-            
-////            self._parseURL(URL,
-////                success: { v in
-////                    if let path = v as? String {
-                        request.responseClouser?(.Success(URL))
-////                    } else {
-////                        request.responseClouser?(.Success(v))
-////                    }
-////                },
-////                fail: {
-////                    request.responseClouser?(.Failure($0))
-////                })
-        }
-        return request
-        
-//        return SIMChatRequest.request { op in
+//    
+//    /// 响应图片
+//    public func responseImage(_ completionHandler: @escaping ((SIMChatResult<UIImage?, NSError>) -> Void)) -> Self {
+//        return response {
+//                do {
+//                    guard !self._isCancel else {
+//                        throw NSError(domain: "Use Cancel", code: -1, userInfo: nil)
+//                    }
+//                    guard let value = $0.value else {
+//                        throw $0.error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil)
+//                    }
+//                    let completion = { (img: UIImage?) in
+//                        DispatchQueue.main.async {
+//                            completionHandler(.success(img))
+//                        }
+//                    }
+//                    switch value {
+//                    case let path as String:
+//                        DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async {
+//                            let img = UIImage(contentsOfFile: path)
+//                            completion(img)
+//                        }
+//                    case let URL as URL:
+//                        DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes(rawValue: UInt64(0))).async {
+//                            if let path = URL.path , URL.scheme == "file" {
+//                                let img = UIImage(contentsOfFile: path)
+//                                completion(img)
+//                            } else {
+//                                let data = try? Data(contentsOf: URL)
+//                                let img = UIImage(data: data!)
+//                                completion(img)
+//                            }
+//                        }
+//                    default:
+//                            completionHandler(.success(nil))
+//                        throw NSError(domain: "unsupport type", code: -1, userInfo: nil)
+//                    }
+//                } catch let error as NSError {
+//                    completionHandler(.failure(error))
+//                }
+//            // clear
+//            self.responseClouser = nil
 //        }
-    }
-    
-    //    func request(url: NSURL) -> SIMChatRequest<UIImage> {
-    //        return SIMChatRequest<UIImage>.request { v in
-    //            
-    //            let path = url.absoluteString.substringFromIndex(url.absoluteString.startIndex.advancedBy(7))
-    //                dispatch_async(dispatch_get_main_queue()) {
-    //                    v.success(image)
-    //                }
-    //            } else {
-    //                v.failure(NSError(domain: "Load Image Fail!", code: -1, userInfo: nil))
-    //            }
-    //        }
-    //    }
-    
-//    private lazy var _parsers: Dictionary<String, SIMChatParserProtocol> = [:]
-    
-    private static var _sharedInstance = SIMChatFileProvider()
-}
-
-
-
-public let SIMChatFileProviderWillLoad = "SIMChatFileProviderWillLoad"
-public let SIMChatFileProviderDidLoad = "SIMChatFileProviderDidLoad"
-public let SIMChatFileProviderWillDownload = "SIMChatFileProviderWillDownload"
-public let SIMChatFileProviderDidDownload = "SIMChatFileProviderDidDownload"
+//    }
+//    
+//    public func cancel() {
+//        SIMLog.trace()
+//        _isCancel = true
+//    }
+//    
+//    private var _isCancel: Bool = false
+//    
+//    private var responseClouser: ((Result) -> Void)?
+//}
+//
+/////
+///// 文件提供者. <br>
+///// 提供关于url的一些操作
+/////
+//public class SIMChatFileProvider {
+//    public static func sharedInstance() -> SIMChatFileProvider {
+//        return _sharedInstance
+//    }
+//    
+//    ///
+//    /// 注册解释器
+//    ///
+////    public func register(parser: SIMChatParserProtocol) {
+////        SIMLog.debug("\(parser.identifier) => \(parser.dynamicType)")
+////        _parsers[parser.identifier] = parser
+////    }
+//    
+//    /// 解释URL
+//    private func _parseURL(_ URL: Foundation.URL, success: ((AnyObject) -> Void)?, fail: ((NSError) -> Void)?) {
+////        // 读取
+////        let parser: SIMChatParserProtocol = {
+////            let p = SIMChatBaseFileParser.sharedInstance()
+////            guard let key = URL.user where URL.scheme == "simchat" else {
+////                return p
+////            }
+////            return _parsers[key] ?? p
+////        }()
+////        // 解释
+////        parser.decode(URL, success: success, fail: fail)
+//        
+//    }
+//    
+//    func cached(_ url: URL) -> Bool {
+//        return false
+//    }
+//    
+//    var c: UIImage?
+//    
+//    /// 加载资源
+//    public func loadResource(_ resource: SIMChatResourceProtocol, canCache: Bool = true, closure: @escaping (SIMChatResult<AnyObject, NSError>) -> Void) {
+//        let identifier = resource.identifier
+//        // 读取缓存
+//        if let value = _cache.object(forKey: identifier) {
+//            SIMLog.debug("\(identifier) hit cache")
+//            // 直接完成
+//            closure(.success(value))
+//        } else {
+//            SIMLog.debug("\(identifier) load resouce")
+//            // 真实的加载
+//            resource.resource { [weak self] result in
+//                // 只缓存成功
+//                if let value = result.value , canCache {
+//                    self?._cache.setObject(value, forKey: identifier)
+//                }
+//                guard !Thread.isMainThread else {
+//                    closure(result)
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    closure(result)
+//                }
+//            }
+//        }
+//    }
+//    
+//    /// 缓存.
+//    private let _cache = Cache<AnyObject, AnyObject>()
+//    
+//    func download(_ URL: Foundation.URL) -> SIMChatFileRequest {
+//        let request = SIMChatFileRequest()
+//        SIMChatRequest<Void>.request { op in
+//            
+//            
+//////            self._parseURL(URL,
+//////                success: { v in
+//////                    if let path = v as? String {
+//                        request.responseClouser?(.success(URL))
+//////                    } else {
+//////                        request.responseClouser?(.Success(v))
+//////                    }
+//////                },
+//////                fail: {
+//////                    request.responseClouser?(.Failure($0))
+//////                })
+//        }
+//        return request
+//        
+////        return SIMChatRequest.request { op in
+////        }
+//    }
+//    
+//    //    func request(url: NSURL) -> SIMChatRequest<UIImage> {
+//    //        return SIMChatRequest<UIImage>.request { v in
+//    //            
+//    //            let path = url.absoluteString.substringFromIndex(url.absoluteString.startIndex.advancedBy(7))
+//    //                dispatch_async(dispatch_get_main_queue()) {
+//    //                    v.success(image)
+//    //                }
+//    //            } else {
+//    //                v.failure(NSError(domain: "Load Image Fail!", code: -1, userInfo: nil))
+//    //            }
+//    //        }
+//    //    }
+//    
+////    private lazy var _parsers: Dictionary<String, SIMChatParserProtocol> = [:]
+//    
+//    private static var _sharedInstance = SIMChatFileProvider()
+//}
+//
+//
+//
+//public let SIMChatFileProviderWillLoad = "SIMChatFileProviderWillLoad"
+//public let SIMChatFileProviderDidLoad = "SIMChatFileProviderDidLoad"
+//public let SIMChatFileProviderWillDownload = "SIMChatFileProviderWillDownload"
+//public let SIMChatFileProviderDidDownload = "SIMChatFileProviderDidDownload"

@@ -18,23 +18,23 @@ extension UITextView {
     
     // custom
     
-    public func insertAttributedText(attributedText: NSAttributedString) {
+    public func insertAttributedText(_ attributedText: NSAttributedString) {
         let currnetTextRange = selectedTextRange ?? UITextRange()
         let newTextLength = attributedText.length
         
         // read postion
-        let location = offsetFromPosition(beginningOfDocument, toPosition: currnetTextRange.start)
-        let length = offsetFromPosition(currnetTextRange.start, toPosition: currnetTextRange.end)
+        let location = offset(from: beginningOfDocument, to: currnetTextRange.start)
+        let length = offset(from: currnetTextRange.start, to: currnetTextRange.end)
         let newRange = NSMakeRange(location, newTextLength)
         
         // update text
         let att = typingAttributes
-        textStorage.replaceCharactersInRange(NSMakeRange(location, length), withAttributedString: attributedText)
+        textStorage.replaceCharacters(in: NSMakeRange(location, length), with: attributedText)
         textStorage.addAttributes(att, range: newRange)
         
         // update new text range
-        let newPosition = positionFromPosition(beginningOfDocument, offset: location + newTextLength) ?? UITextPosition()
-        selectedTextRange = textRangeFromPosition(newPosition, toPosition: newPosition)
+        let newPosition = position(from: beginningOfDocument, offset: location + newTextLength) ?? UITextPosition()
+        selectedTextRange = textRange(from: newPosition, to: newPosition)
     }
     
     public func clearText() {

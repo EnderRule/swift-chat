@@ -8,71 +8,71 @@
 
 import UIKit
 
-///
-/// 抽象一个菜单, 实际上还是使用UIMenuController
-///
-public class SIMChatMenuController: NSObject {
-    public override init() {
-        super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(self.dynamicType.onMenuWillHide(_:)),
-            name: UIMenuControllerWillHideMenuNotification,
-            object: nil)
-    }
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    public class func sharedMenuController() -> SIMChatMenuController {
-        return _sharedMenuController
-    }
-    
-    private weak var target: UIResponder?
-    private static var _sharedMenuController: SIMChatMenuController = SIMChatMenuController()
-}
-
-// MARK: - Forward to UIMenuController
-
-extension SIMChatMenuController {
-    public var menuItems: [UIMenuItem]? {
-        set { return UIMenuController.sharedMenuController().menuItems = newValue }
-        get { return UIMenuController.sharedMenuController().menuItems }
-    }
-}
-
-// MARK: - Public Method 
-extension SIMChatMenuController {
-    /// 显示的是否为自定义菜单
-    public func isCustomMenu() -> Bool {
-        return target != nil
-    }
-    /// 显示菜单
-    public func showMenu(target: UIResponder, withRect targetRect: CGRect, inView targetView: UIView, animated: Bool = true) {
-        self.target = target
-        UIMenuController.sharedMenuController().setTargetRect(targetRect, inView: targetView)
-        UIMenuController.sharedMenuController().setMenuVisible(true, animated: animated)
-    }
-    /// 隐藏菜单
-    public func hideMenu(animated: Bool = true) {
-        UIMenuController.sharedMenuController().setMenuVisible(false, animated: animated)
-    }
-}
-
-// MARK: - Event
-
-extension SIMChatMenuController {
-    /// 检查方法是否可用
-    public func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        return target?.canPerformAction(action, withSender: sender) ?? false
-    }
-    /// 转发方法
-    public override func forwardingTargetForSelector(aSelector: Selector) -> AnyObject? {
-        return target
-    }
-    /// 菜单隐藏.
-    private dynamic func onMenuWillHide(sender: NSNotification) {
-        // 隐藏的时候必须把target清空
-        target = nil
-    }
-}
-
+/////
+///// 抽象一个菜单, 实际上还是使用UIMenuController
+/////
+//public class SIMChatMenuController: NSObject {
+//    public override init() {
+//        super.init()
+//        NotificationCenter.default.addObserver(self,
+//            selector: #selector(type(of: self).onMenuWillHide(_:)),
+//            name: NSNotification.Name.UIMenuControllerWillHideMenu,
+//            object: nil)
+//    }
+//    deinit {
+//        NotificationCenter.default.removeObserver(self)
+//    }
+//    
+//    public class func sharedMenuController() -> SIMChatMenuController {
+//        return _sharedMenuController
+//    }
+//    
+//    private weak var target: UIResponder?
+//    private static var _sharedMenuController: SIMChatMenuController = SIMChatMenuController()
+//}
+//
+//// MARK: - Forward to UIMenuController
+//
+//extension SIMChatMenuController {
+//    public var menuItems: [UIMenuItem]? {
+//        set { return UIMenuController.shared.menuItems = newValue }
+//        get { return UIMenuController.shared.menuItems }
+//    }
+//}
+//
+//// MARK: - Public Method 
+//extension SIMChatMenuController {
+//    /// 显示的是否为自定义菜单
+//    public func isCustomMenu() -> Bool {
+//        return target != nil
+//    }
+//    /// 显示菜单
+//    public func showMenu(_ target: UIResponder, withRect targetRect: CGRect, inView targetView: UIView, animated: Bool = true) {
+//        self.target = target
+//        UIMenuController.shared.setTargetRect(targetRect, in: targetView)
+//        UIMenuController.shared.setMenuVisible(true, animated: animated)
+//    }
+//    /// 隐藏菜单
+//    public func hideMenu(_ animated: Bool = true) {
+//        UIMenuController.shared.setMenuVisible(false, animated: animated)
+//    }
+//}
+//
+//// MARK: - Event
+//
+//extension SIMChatMenuController {
+//    /// 检查方法是否可用
+//    public func canPerformAction(_ action: Selector, withSender sender: AnyObject?) -> Bool {
+//        return target?.canPerformAction(action, withSender: sender) ?? false
+//    }
+//    /// 转发方法
+//    public override func forwardingTarget(for aSelector: Selector) -> AnyObject? {
+//        return target
+//    }
+//    /// 菜单隐藏.
+//    private dynamic func onMenuWillHide(_ sender: Notification) {
+//        // 隐藏的时候必须把target清空
+//        target = nil
+//    }
+//}
+//

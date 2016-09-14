@@ -30,14 +30,14 @@ public class SIMChatBaseEmoticon: NSObject, SIMChatEmoticon {
     
     /// 关联的静态图
     public var png: UIImage? {
-        guard let image = image, identifier = group?.identifier where !image.isEmpty else {
+        guard let image = image, let identifier = group?.identifier , !image.isEmpty else {
             return nil
         }
         return SIMChatBundle.imageWithResource("Emoticons/\(identifier)/\(image)")
     }
     /// 关联的动态图
     public var gif: UIImage? {
-        guard let image = image_gif, identifier = group?.identifier where !image.isEmpty else {
+        guard let image = image_gif, let identifier = group?.identifier , !image.isEmpty else {
             return nil
         }
         return SIMChatBundle.imageWithResource("Emoticons/\(identifier)/\(image)")

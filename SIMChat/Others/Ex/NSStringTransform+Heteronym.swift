@@ -8,7 +8,7 @@
 
 import Foundation
 
-public func NSStringTransformOfHeteronyms(string: NSString, _ range: NSRange?, _ transform: CFString, _ reverse: Bool) -> NSArray {
+public func NSStringTransformOfHeteronyms(_ string: NSString, _ range: NSRange?, _ transform: CFString, _ reverse: Bool) -> NSArray {
     let convert = { (value: String) -> String in
         let ms = NSMutableString(string: value)
         CFStringTransform(ms, nil, transform, reverse)
@@ -18,16 +18,16 @@ public func NSStringTransformOfHeteronyms(string: NSString, _ range: NSRange?, _
         return [convert(string as String)]
     }
     return (0 ..< string.length).reduce((NSMutableArray(), 0)) {
-        let ch = string.substringWithRange(NSMakeRange($1, 1)) as String
+        let ch = string.substring(with: NSMakeRange($1, 1)) as String
         if let ms = _heteronyms[ch] {
             if $0.1 < $1 {
-                $0.0.addObject(convert(string.substringWithRange(NSMakeRange($0.1, $1 - $0.1))))
+                $0.0.add(convert(string.substring(with: NSMakeRange($0.1, $1 - $0.1))))
             }
-            $0.0.addObject(ms)
+            $0.0.add(ms)
             return ($0.0, $1 + 1)
         }
         if $1 + 1 == string.length {
-            $0.0.addObject(convert(string.substringWithRange(NSMakeRange($0.1, $1 - $0.1 + 1))))
+            $0.0.add(convert(string.substring(with: NSMakeRange($0.1, $1 - $0.1 + 1))))
         }
         return ($0.0, $0.1)
     }.0

@@ -10,22 +10,22 @@ import UIKit
 
 class SIMChatLine : UIView {
     /// 自定义子层布局
-    override func layoutSublayersOfLayer(layer: CALayer) {
-        super.layoutSublayersOfLayer(layer)
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
         
         var nframe = bounds
         
         switch contentMode {
-        case .Left:
+        case .left:
             nframe.size.width = lineWith
             nframe.origin.x = 0
-        case .Right:
+        case .right:
             nframe.origin.x = bounds.size.width - lineWith
             nframe.size.width = lineWith
-        case .Top:
+        case .top:
             nframe.size.height = lineWith
             nframe.origin.y = 0
-        case .Bottom:
+        case .bottom:
             nframe.origin.y = bounds.size.height - lineWith
             nframe.size.height = lineWith
         default:
@@ -38,8 +38,8 @@ class SIMChatLine : UIView {
     lazy var lineLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         
-        layer.anchorPoint = CGPointZero
-        layer.backgroundColor = self.tintColor.CGColor
+        layer.anchorPoint = CGPoint.zero
+        layer.backgroundColor = self.tintColor.cgColor
         
         self.layer.addSublayer(layer)
         
@@ -53,8 +53,8 @@ class SIMChatLine : UIView {
     }
     /// 线的颜色
     @IBInspectable var lineColor: UIColor? {
-        set { return lineLayer.backgroundColor = newValue?.CGColor }
-        get { return lineLayer.backgroundColor == nil ? nil : UIColor(CGColor: lineLayer.backgroundColor!) }
+        set { return lineLayer.backgroundColor = newValue?.cgColor }
+        get { return lineLayer.backgroundColor == nil ? nil : UIColor(cgColor: lineLayer.backgroundColor!) }
     }
     ///      Top
     ///      +--+

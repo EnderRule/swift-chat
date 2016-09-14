@@ -24,7 +24,7 @@ public class SIMChatBaseMessage: SIMChatMessage {
         content: SIMChatMessageBody,
         receiver: SIMChatUserProtocol,
         sender: SIMChatUserProtocol,
-        identifier: String = NSUUID().UUIDString) {
+        identifier: String = UUID().uuidString) {
             self.sender = sender
             self.receiver = receiver
             self.content = content
@@ -50,7 +50,7 @@ public class SIMChatBaseMessage: SIMChatMessage {
     ///
     /// 消息发生时间(发送/接收)
     ///
-    public lazy var timestamp: NSDate = NSDate()
+    public lazy var timestamp: Date = Date()
     ///
     /// 消息是否是自己发送的
     ///
@@ -58,7 +58,7 @@ public class SIMChatBaseMessage: SIMChatMessage {
     ///
     /// 消息状态(发送/接收)
     ///
-    public lazy var status: SIMChatMessageStatus = .Unknow
+    public lazy var status: SIMChatMessageStatus = .unknow
     ///
     /// 消息的一些选项, 默认None
     ///
@@ -74,7 +74,7 @@ public class SIMChatBaseMessage: SIMChatMessage {
     /// - returns:  消息
     ///
     public class func messageWithContent(
-        content: SIMChatMessageBody,
+        _ content: SIMChatMessageBody,
         receiver: SIMChatUserProtocol,
         sender: SIMChatUserProtocol,
         identifier: String) -> SIMChatMessage {

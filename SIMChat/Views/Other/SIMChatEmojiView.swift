@@ -13,8 +13,8 @@ import UIKit
 ///
 class SIMChatFaceView: SIMView {
     /// 最合适的大小
-    override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(36, 36)
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 36, height: 36)
     }
     /// 表情
     var face: String? {
@@ -34,9 +34,9 @@ class SIMChatFaceView: SIMView {
                     let btn = showView as? UIButton ?? UIButton()
                     // :)
                     btn.frame = bounds
-                    btn.setImage(SIMChatImageManager.images_face_delete_nor, forState: .Normal)
-                    btn.setImage(SIMChatImageManager.images_face_delete_press, forState: .Highlighted)
-                    btn.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+                    btn.setImage(SIMChatImageManager.images_face_delete_nor, for: UIControlState())
+                    btn.setImage(SIMChatImageManager.images_face_delete_press, for: .highlighted)
+                    btn.autoresizingMask = .flexibleWidth | .flexibleHeight
                     // ok
                     view = btn
                 } else if em.hasPrefix("{") && em.hasSuffix("}") {
@@ -52,9 +52,9 @@ class SIMChatFaceView: SIMView {
                     // config
                     lb.frame = bounds
                     lb.text = em
-                    lb.font = UIFont.systemFontOfSize(28)
-                    lb.textAlignment = .Center
-                    lb.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+                    lb.font = UIFont.systemFont(ofSize: 28)
+                    lb.textAlignment = .center
+                    lb.autoresizingMask = .flexibleWidth | .flexibleHeight
                     // ok
                     view = lb
                 }

@@ -14,23 +14,23 @@ public class SIMChatMediaPhotoBrowser: UIViewController, SIMChatMediaBrowserProt
         super.viewDidLoad()
         
         _collectionView.frame = view.bounds
-        _collectionView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        _collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = UIColor.black
         view.addSubview(_collectionView)
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         SIMLog.trace()
     }
     
-    public override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         SIMLog.trace()
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
     
@@ -73,20 +73,20 @@ public class SIMChatMediaPhotoBrowser: UIViewController, SIMChatMediaBrowserProt
     
     // MARK: SIMChatMediaBrowserProtocol
     
-    public func browse(media: SIMChatMediaProtocol, withTarget: SIMChatBrowseAnimatedTransitioningTarget) {
+    public func browse(_ media: SIMChatMediaProtocol, withTarget: SIMChatBrowseAnimatedTransitioningTarget) {
         SIMLog.trace()
         
         _datas.append(media)
         _collectionView.reloadData()
         
-        let indexPath = NSIndexPath(forItem: 0, inSection: 0)
+        let indexPath = IndexPath(item: 0, section: 0)
         
         _defaultIndexPath = indexPath
-        _collectionView.scrollToItemAtIndexPath(indexPath,
-            atScrollPosition: .None,
+        _collectionView.scrollToItem(at: indexPath,
+            at: UICollectionViewScrollPosition(),
             animated: false)
         
-        guard let window = withTarget.targetView?.window, rootViewController = window.rootViewController else {
+        guard let window = withTarget.targetView?.window, let rootViewController = window.rootViewController else {
             return // 并没有显示
         }
         
@@ -95,57 +95,61 @@ public class SIMChatMediaPhotoBrowser: UIViewController, SIMChatMediaBrowserProt
         _browseTransitioning = SIMChatBrowseAnimatedTransitioning(from: withTarget, to: self)
         
         transitioningDelegate = _browseTransitioning
-        modalPresentationStyle = .Custom
+        modalPresentationStyle = .custom
         
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             // 不允许为空
             self.targetView?.image = self.targetView?.image ?? withTarget.targetView?.image
-            // 弹出
-            rootViewController.presentViewController(self, animated: true, completion: nil)
+            
+//            if let nav = rootViewController as? UINavigationController, let top = nav.topViewController {
+//                top.present(self, animated: true, completion: nil)
+//            } else {
+                rootViewController.present(self, animated: true, completion: nil)
+//            }
         }
     }
     
     // MARK: UICollectionViewDataSource
     
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        if let cell = _defaultCell where indexPath.row == _defaultIndexPath?.row {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = _defaultCell , (indexPath as NSIndexPath).row == _defaultIndexPath?.row {
             return cell
         }
-        return collectionView.dequeueReusableCellWithReuseIdentifier("Image", forIndexPath: indexPath)
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Image", for: indexPath)
     }
     
-    public func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? SIMChatMediaPhotoBrowserView {
-            cell.media = _datas[indexPath.row]
+            cell.media = _datas[(indexPath as NSIndexPath).row]
         }
     }
     
     // MARK: UICollectionViewDelegateFlowLayout
     
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return view.bounds.size
     }
     
     /// 获取当前
     private func _currentDisplayCell() -> UICollectionViewCell? {
-        guard let indexPath = _collectionView.indexPathsForVisibleItems().first ?? _defaultIndexPath else {
+        guard let indexPath = _collectionView.indexPathsForVisibleItems.first ?? _defaultIndexPath else {
             return nil
         }
-        return _collectionView.cellForItemAtIndexPath(indexPath) ?? _defaultCell ?? {
-            let cell = _collectionView.dequeueReusableCellWithReuseIdentifier("Image", forIndexPath: indexPath)
+        return _collectionView.cellForItem(at: indexPath) ?? _defaultCell ?? {
+            let cell = _collectionView.dequeueReusableCell(withReuseIdentifier: "Image", for: indexPath)
             cell.frame = view.bounds
-            collectionView(_collectionView, willDisplayCell: cell, forItemAtIndexPath: indexPath)
+            collectionView(_collectionView, willDisplay: cell, forItemAt: indexPath)
             _defaultCell = cell
             return cell
         }()
     }
     
     private var _defaultCell: UICollectionViewCell?
-    private var _defaultIndexPath: NSIndexPath?
+    private var _defaultIndexPath: IndexPath?
     
     private var _browseTransitioning: SIMChatBrowseAnimatedTransitioning?
     
@@ -153,17 +157,17 @@ public class SIMChatMediaPhotoBrowser: UIViewController, SIMChatMediaBrowserProt
     
     private lazy var _collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .Horizontal
+        layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        let view = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+        let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         //view.delaysContentTouches = false
         view.scrollsToTop = false
         view.dataSource = self
         view.delegate = self
-        view.pagingEnabled = true
-        view.registerClass(SIMChatMediaPhotoBrowserView.self, forCellWithReuseIdentifier: "Image")
-        view.backgroundColor = UIColor.blackColor()
+        view.isPagingEnabled = true
+        view.register(SIMChatMediaPhotoBrowserView.self, forCellWithReuseIdentifier: "Image")
+        view.backgroundColor = UIColor.black
         return view
     }()
 }
@@ -187,7 +191,7 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
         _scrollView.addGestureRecognizer(_tapGestureRecognizer)
         _scrollView.addGestureRecognizer(_doubleTapGestureRecognizer)
         
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         contentView.addSubview(_scrollView)
     }
     
@@ -199,14 +203,14 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
     
     private func _resetZoomScale() {
         let from = _imageView.bounds.size
-        var to = media?.size ?? _imageView.image?.size ?? CGSizeZero
+        var to = media?.size ?? _imageView.image?.size ?? CGSize.zero
         
         to.width = max(to.width, 1)
         to.height = max(to.height, 1)
         
         // 计算出最小的.
         let scale = min(min(bounds.width, to.width) / to.width, min(bounds.height, to.height) / to.height)
-        let fit = CGRectMake(0, 0, scale * to.width, scale * to.height)
+        let fit = CGRect(x: 0, y: 0, width: scale * to.width, height: scale * to.height)
         
         _scrollView.zoomScale = 1
         _scrollView.minimumZoomScale = 1
@@ -215,32 +219,32 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
         SIMLog.trace("from: \(from), to: \(to), scale: \(_scrollView.maximumZoomScale)")
         
         _imageView.bounds = fit
-        _imageView.center = CGPointMake(
-            max(fit.width, _scrollView.bounds.width) / 2,
-            max(fit.height, _scrollView.bounds.height) / 2)
+        _imageView.center = CGPoint(
+            x: max(fit.width, _scrollView.bounds.width) / 2,
+            y: max(fit.height, _scrollView.bounds.height) / 2)
     }
     
     /// 单击退出
-    private dynamic func _tap(sender: UIGestureRecognizer) {
+    private dynamic func _tap(_ sender: UIGestureRecognizer) {
         SIMLog.trace()
-        if sender.state == .Ended {
-            viewController()?.dismissViewControllerAnimated(true, completion: nil)
+        if sender.state == .ended {
+            viewController()?.dismiss(animated: true, completion: nil)
 //            if let view = delegate as? SIMChatPhotoBrowseView {
 //                delegate?.browseViewDidClick?(view)
 //            }
         }
     }
     /// 旋转
-    private dynamic func _rotation(recognizer: UIRotationGestureRecognizer) {
+    private dynamic func _rotation(_ recognizer: UIRotationGestureRecognizer) {
         SIMLog.debug("\(recognizer.rotation) => \(recognizer.velocity)")
         
-        _scrollView.panGestureRecognizer.enabled = false
+        _scrollView.panGestureRecognizer.isEnabled = false
         
-        let t = CGAffineTransformMakeScale(_scrollView.zoomScale, _scrollView.zoomScale)
-        _imageView.transform = CGAffineTransformRotate(t, recognizer.rotation)
+        let t = CGAffineTransform(scaleX: _scrollView.zoomScale, y: _scrollView.zoomScale)
+        _imageView.transform = t.rotated(by: recognizer.rotation)
     }
     /// 双击
-    private dynamic func _doubleTap(sender: AnyObject) {
+    private dynamic func _doubleTap(_ sender: AnyObject) {
         SIMLog.trace()
 //        if sender.state == .Ended {
 //            if let view = delegate as? SIMChatPhotoBrowseView {
@@ -256,24 +260,24 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
     
     // MARK: UIGestureRecognizerDelegate
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
     // MARK: UIScrollViewDelegate
     
     /// yp
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return _imageView
     }
     /// xp
-    func scrollViewDidZoom(scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         let size = scrollView.bounds.size
         let contentSize = scrollView.contentSize
         
-        _imageView.center = CGPointMake(
-            contentSize.width / 2 + max((size.width - contentSize.width) / 2, 0),
-            contentSize.height / 2 + max((size.height - contentSize.height) / 2, 0))
+        _imageView.center = CGPoint(
+            x: contentSize.width / 2 + max((size.width - contentSize.width) / 2, 0),
+            y: contentSize.height / 2 + max((size.height - contentSize.height) / 2, 0))
     }
     
     /// 准备复用
@@ -291,12 +295,12 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
         let width = max(_scrollView.contentSize.width, _scrollView.bounds.width)
         let height = max(_scrollView.contentSize.height, _scrollView.bounds.height)
         
-        _imageView.center = CGPointMake(width / 2, height / 2)
+        _imageView.center = CGPoint(x: width / 2, y: height / 2)
     }
     
     var media: SIMChatMediaProtocol? {
         didSet {
-            guard let media = media where media !== oldValue else {
+            guard let media = media , media !== oldValue else {
                 return
             }
             
@@ -305,26 +309,27 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
             _resetFrame()
             _resetZoomScale()
             
-            let fp = SIMChatFileProvider.sharedInstance()
-            
-            // 加载缩略图
-            fp.loadResource(media.thumbnail) { [weak self] in
-                guard let image = $0.value as? UIImage
-                    where media === self?.media
-                        && !(self?._isLoadOrigin ?? false) else {
-                            return
-                }
-                self?._imageView.image = image
-            }
-            // 加载原图
-            fp.loadResource(media.origin, canCache: false) { [weak self] in
-                guard let image = $0.value as? UIImage
-                    where media === self?.media else {
-                        return
-                }
-                self?._isLoadOrigin = true
-                self?._imageView.image = image
-            }
+            // TODO: no imp
+//            let fp = SIMChatFileProvider.sharedInstance()
+//            
+//            // 加载缩略图
+//            fp.loadResource(media.thumbnail) { [weak self] in
+//                guard let image = $0.value as? UIImage
+//                    , media === self?.media
+//                        && !(self?._isLoadOrigin ?? false) else {
+//                            return
+//                }
+//                self?._imageView.image = image
+//            }
+//            // 加载原图
+//            fp.loadResource(media.origin, canCache: false) { [weak self] in
+//                guard let image = $0.value as? UIImage
+//                    , media === self?.media else {
+//                        return
+//                }
+//                self?._isLoadOrigin = true
+//                self?._imageView.image = image
+//            }
         }
     }
     
@@ -352,17 +357,17 @@ internal class SIMChatMediaPhotoBrowserView: UICollectionViewCell, UIScrollViewD
     
     // 手势
     private lazy var _tapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType._tap(_:)))
-        tap.requireGestureRecognizerToFail(self._doubleTapGestureRecognizer)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(type(of: self)._tap(_:)))
+        tap.require(toFail: self._doubleTapGestureRecognizer)
         return tap
     }()
     private lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType._doubleTap(_:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(type(of: self)._doubleTap(_:)))
         tap.numberOfTapsRequired = 2
         return tap
     }()
     private lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = {
-        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(self.dynamicType._rotation(_:)))
+        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(type(of: self)._rotation(_:)))
         rotation.delegate = self
         return rotation
     }()

@@ -44,22 +44,22 @@ public class SIMChatBaseManager: SIMChatManager {
     /// - parameter user: 用户信息
     /// - parameter closure: 执行结果
     ///
-    public func login(user: SIMChatUserProtocol, closure: SIMChatResult<Void, NSError> -> Void) {
+    public func login(_ user: SIMChatUserProtocol, closure: (SIMChatResult<Void, NSError>) -> Void) {
         SIMLog.trace()
         
         self.user = user
-        closure(.Success())
+        closure(.success())
     }
     ///
     /// 登出用户
     ///
     /// - parameter closure: 执行结果
     ///
-    public func logout(closure: SIMChatResult<Void, NSError> -> Void) {
+    public func logout(_ closure: (SIMChatResult<Void, NSError>) -> Void) {
         SIMLog.trace()
         
         self.user = nil
-        closure(.Success())
+        closure(.success())
     }
     
     // MARK: - Conversation Method
@@ -77,7 +77,7 @@ public class SIMChatBaseManager: SIMChatManager {
     /// - parameter receiver: 接收者信息
     /// - returns: 会话信息
     ///
-    public func conversation(receiver: SIMChatUserProtocol) -> SIMChatConversation {
+    public func conversation(_ receiver: SIMChatUserProtocol) -> SIMChatConversation {
         SIMLog.trace()
         return conversations[receiver.identifier] ?? {
             let conversation = SIMChatBaseConversation(receiver: receiver, manager: self)
@@ -90,10 +90,10 @@ public class SIMChatBaseManager: SIMChatManager {
     ///
     /// - parameter receiver: 被删除会放的接收者信息
     ///
-    public func removeConversation(receiver: SIMChatUserProtocol) {
+    public func removeConversation(_ receiver: SIMChatUserProtocol) {
         SIMLog.trace()
-        if let index = conversations.indexOf({ receiver == $1.receiver }) {
-            conversations.removeAtIndex(index)
+        if let index = conversations.index(where: { receiver == $1.receiver }) {
+            conversations.remove(at: index)
         }
     }
 }

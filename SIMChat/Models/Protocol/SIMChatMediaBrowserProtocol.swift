@@ -30,5 +30,5 @@ public protocol SIMChatMediaBrowserDelegate: class {
 /// 媒体浏览器协议
 ///
 public protocol SIMChatMediaBrowserProtocol: class {
-    func browse(media:SIMChatMediaProtocol, withTarget: SIMChatBrowseAnimatedTransitioningTarget)
+    func browse(_ media:SIMChatMediaProtocol, withTarget: SIMChatBrowseAnimatedTransitioningTarget)
 }

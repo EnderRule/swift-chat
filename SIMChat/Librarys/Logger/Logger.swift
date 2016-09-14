@@ -18,7 +18,7 @@ public class Logger {
     
     /// trace level
     public func trace(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -28,7 +28,7 @@ public class Logger {
     }
     /// debug level
     public func debug(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -38,7 +38,7 @@ public class Logger {
     }
     /// info level
     public func info(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -48,7 +48,7 @@ public class Logger {
     }
     /// warning level
     public func warning(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -58,7 +58,7 @@ public class Logger {
     }
     /// error level
     public func error(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -71,7 +71,7 @@ public class Logger {
     }
     /// fatal level
     public func fatal(
-        message: Any = "",
+        _ message: Any = "",
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line)
@@ -81,7 +81,7 @@ public class Logger {
     }
     /// out
     public func log(
-        level: StaticString,
+        _ level: StaticString,
         message: Any,
         function: StaticString = #function,
         file: String = #file,
@@ -95,7 +95,7 @@ public class Logger {
             
             objc_sync_exit(Logger._queue)
         #else
-            dispatch_async(Logger._queue) {
+            Logger._queue.async {
                 //[%-5p](%d{yyyy-MM-dd HH:mm:ss}) %M - %m%n
                 print("[\(level)] \(self._name).\(function): \(message)")
             }
@@ -103,13 +103,13 @@ public class Logger {
     }
     
     private var _name: String
-    private static var _queue = dispatch_queue_create("log.queue", nil)
+    private static var _queue = DispatchQueue(label: "log.queue", attributes: [])
 }
 
-extension NSObject {
+extension NSObjectProtocol {
     public var _logger: Logger {
         return objc_getAssociatedObject(self, &__LOGGER) as? Logger ?? {
-            let logger = Logger(name: "\(self.dynamicType)")
+            let logger = Logger(name: "\(type(of: self))")
             objc_setAssociatedObject(self, &__LOGGER, logger, .OBJC_ASSOCIATION_RETAIN)
             return logger
         }()

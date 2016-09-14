@@ -13,7 +13,7 @@ public class SIMChatMediaProvider {
     private weak var _player: SIMChatMediaPlayerProtocol?
     private weak var _recorder: SIMChatMediaRecorderProtocol?
     
-    private func _reusePlayer(resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol? {
+    private func _reusePlayer(_ resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol? {
         _recorder?.stop()
         if let player = _player {
             // 一样的.
@@ -24,7 +24,7 @@ public class SIMChatMediaProvider {
         }
         return nil
     }
-    private func _reuseRecorder(resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol? {
+    private func _reuseRecorder(_ resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol? {
         _recorder?.stop()
         if let recorder = _recorder {
             // 一样的.
@@ -47,14 +47,14 @@ public class SIMChatMediaProvider {
         return _recorder
     }
     
-    public func audioPlayer(resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol {
+    public func audioPlayer(_ resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol {
         return _reusePlayer(resource) ?? {
             let player = SIMChatMediaAudioPlayer(resource)
             _player = player
             return player
         }()
     }
-    public func audioRecorder(resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol {
+    public func audioRecorder(_ resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol {
         return _reuseRecorder(resource) ?? {
             let recorder = SIMChatMediaAudioRecorder(resource)
             _recorder = recorder
@@ -62,14 +62,14 @@ public class SIMChatMediaProvider {
         }()
     }
     
-    public func videoPlayer(resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol {
+    public func videoPlayer(_ resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol {
         return _reusePlayer(resource) ?? {
             let player = SIMChatMediaAudioPlayer(resource)
             _player = player
             return player
         }()
     }
-    public func videoRecorder(resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol {
+    public func videoRecorder(_ resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol {
         return _reuseRecorder(resource) ?? {
             let recorder = SIMChatMediaAudioRecorder(resource)
             _recorder = recorder

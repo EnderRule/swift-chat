@@ -10,16 +10,16 @@ import Foundation
 
 public protocol SIMChatMediaRecorderDelegate: class {
     
-    func recorderShouldPrepare(recorder: SIMChatMediaRecorderProtocol) -> Bool
-    func recorderDidPrepare(recorder: SIMChatMediaRecorderProtocol)
+    func recorderShouldPrepare(_ recorder: SIMChatMediaRecorderProtocol) -> Bool
+    func recorderDidPrepare(_ recorder: SIMChatMediaRecorderProtocol)
     
-    func recorderShouldRecord(recorder: SIMChatMediaRecorderProtocol) -> Bool
-    func recorderDidRecord(recorder: SIMChatMediaRecorderProtocol)
+    func recorderShouldRecord(_ recorder: SIMChatMediaRecorderProtocol) -> Bool
+    func recorderDidRecord(_ recorder: SIMChatMediaRecorderProtocol)
     
-    func recorderDidStop(recorder: SIMChatMediaRecorderProtocol)
-    func recorderDidCancel(recorder: SIMChatMediaRecorderProtocol)
-    func recorderDidFinish(recorder: SIMChatMediaRecorderProtocol)
-    func recorderDidErrorOccur(recorder: SIMChatMediaRecorderProtocol, error: NSError)
+    func recorderDidStop(_ recorder: SIMChatMediaRecorderProtocol)
+    func recorderDidCancel(_ recorder: SIMChatMediaRecorderProtocol)
+    func recorderDidFinish(_ recorder: SIMChatMediaRecorderProtocol)
+    func recorderDidErrorOccur(_ recorder: SIMChatMediaRecorderProtocol, error: NSError)
 }
 
 public protocol SIMChatMediaRecorderProtocol: class {
@@ -27,7 +27,7 @@ public protocol SIMChatMediaRecorderProtocol: class {
     var resource: SIMChatResourceProtocol { get }
     
     var recording: Bool { get }
-    var currentTime: NSTimeInterval { get }
+    var currentTime: TimeInterval { get }
     
     weak var delegate: SIMChatMediaRecorderDelegate? { set get }
     
@@ -36,7 +36,7 @@ public protocol SIMChatMediaRecorderProtocol: class {
     func stop()
     func cancel()
     
-    func meter(channel: Int) -> Float
+    func meter(_ channel: Int) -> Float
 }
 
 public let SIMChatMediaRecorderWillPrepare = "SIMChatMediaRecorderWillPrepare"

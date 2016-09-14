@@ -16,19 +16,19 @@ class SIMChatSpectrumView: SIMView {
     override func build() {
         super.build()
    
-        let x = intrinsicContentSize().width / 2
-        let y = intrinsicContentSize().height / 2
+        let x = intrinsicContentSize.width / 2
+        let y = intrinsicContentSize.height / 2
         
         for i in 0 ..< 10 {
             let l = CALayer()
             let r = CALayer()
             
-            l.anchorPoint = CGPointMake(0.5, 0.5)
-            r.anchorPoint = CGPointMake(0.5, 0.5)
-            l.position = CGPointMake((x - CGFloat(i * (2 + 2)) - 24), y)
-            r.position = CGPointMake((x + CGFloat(i * (2 + 2)) + 24), y)
-            l.bounds = CGRectMake(0, 0, 2, 3)
-            r.bounds = CGRectMake(0, 0, 2, 3)
+            l.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            r.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            l.position = CGPoint(x: (x - CGFloat(i * (2 + 2)) - 24), y: y)
+            r.position = CGPoint(x: (x + CGFloat(i * (2 + 2)) + 24), y: y)
+            l.bounds = CGRect(x: 0, y: 0, width: 2, height: 3)
+            r.bounds = CGRect(x: 0, y: 0, width: 2, height: 3)
             
             leftLayers.append(l)
             rightLayers.append(r)
@@ -38,23 +38,23 @@ class SIMChatSpectrumView: SIMView {
         }
     }
     /// 大小
-    override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(120, 24)
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 120, height: 24)
     }
     
     /// 频谱颜色
     var color: UIColor? {
         didSet {
             (leftLayers + rightLayers).forEach {
-                $0.backgroundColor = self.color?.CGColor
+                $0.backgroundColor = self.color?.cgColor
             }
         }
     }
     /// 代理
     weak var delegate: SIMChatSpectrumViewDelegate?
     
-    override func willMoveToWindow(newWindow: UIWindow?) {
-        super.willMoveToWindow(newWindow)
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
         if newWindow == nil && isAnimating() {
             stopAnimating()
         }
@@ -67,8 +67,8 @@ class SIMChatSpectrumView: SIMView {
             return
         }
         // 启动停止器
-        dispatch_async(dispatch_get_main_queue()) {
-            self.timer = NSTimer.scheduledTimerWithTimeInterval2(0.1, self, #selector(self.dynamicType.onTimer(_:)))
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimerWithTimeInterval2(0.1, self, #selector(type(of: self).onTimer(_:)))
         }
     }
     /// 停止
@@ -84,7 +84,7 @@ class SIMChatSpectrumView: SIMView {
         CATransaction.begin()
         
         (leftLayers + rightLayers).forEach {
-            $0.bounds = CGRectMake(0, 0, 2, 2)
+            $0.bounds = CGRect(x: 0, y: 0, width: 2, height: 2)
         }
         
         CATransaction.commit()
@@ -95,7 +95,7 @@ class SIMChatSpectrumView: SIMView {
     }
    
     /// 定时事件
-    private dynamic func onTimer(sender: AnyObject) {
+    private dynamic func onTimer(_ sender: AnyObject) {
         // 更新波形
         let wl = self.delegate?.chatSpectrumViewWaveOfLeft?(self)
         let wr = self.delegate?.chatSpectrumViewWaveOfRight?(self)
@@ -113,8 +113,8 @@ class SIMChatSpectrumView: SIMView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         
-        var pbl = CGRectMake(0, 0, 2, 2 + round(sl * 8) * 2)
-        var pbr = CGRectMake(0, 0, 2, 2 + round(sr * 8) * 2)
+        var pbl = CGRect(x: 0, y: 0, width: 2, height: 2 + round(sl * 8) * 2)
+        var pbr = CGRect(x: 0, y: 0, width: 2, height: 2 + round(sr * 8) * 2)
         
         leftLayers.forEach {
             swap(&$0.bounds, &pbl)
@@ -127,7 +127,7 @@ class SIMChatSpectrumView: SIMView {
     }
     
     /// 分贝转为等级
-    func decibelsToLevel(decibels: Double) -> Double {
+    func decibelsToLevel(_ decibels: Double) -> Double {
         // Link: http://stackoverflow.com/questions/9247255/am-i-doing-the-right-thing-to-convert-decibel-from-120-0-to-0-120/16192481#16192481
         
         var level = 0.0 // The linear 0.0 .. 1.0 value we need.
@@ -149,7 +149,7 @@ class SIMChatSpectrumView: SIMView {
         return level
     }
     
-    private var timer: NSTimer?
+    private var timer: Timer?
     
     private lazy var leftLayers = [CALayer]()
     private lazy var rightLayers = [CALayer]()
@@ -157,7 +157,7 @@ class SIMChatSpectrumView: SIMView {
 
 @objc protocol SIMChatSpectrumViewDelegate : NSObjectProtocol {
     
-   optional func chatSpectrumViewWaveOfLeft(chatSpectrumView: SIMChatSpectrumView) -> Float
-   optional func chatSpectrumViewWaveOfRight(chatSpectrumView: SIMChatSpectrumView) -> Float
+   @objc optional func chatSpectrumViewWaveOfLeft(_ chatSpectrumView: SIMChatSpectrumView) -> Float
+   @objc optional func chatSpectrumViewWaveOfRight(_ chatSpectrumView: SIMChatSpectrumView) -> Float
     
 }

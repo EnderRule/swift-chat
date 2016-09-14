@@ -15,14 +15,14 @@ public protocol SIMChatResourceProtocol: class {
     /// 资源id
     var identifier: String { get }
     /// 资源链接
-    var resourceURL: NSURL { get }
+    var resourceURL: URL { get }
     
     ///
     /// 获取资源
     ///
     /// - parameter closure: 结果回调
     ///
-    func resource(closure: SIMChatResult<AnyObject, NSError> -> Void)
+    func resource(_ closure: (SIMChatResult<AnyObject, NSError>) -> Void)
 }
 
 /// 比较

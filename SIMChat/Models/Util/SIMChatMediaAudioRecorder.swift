@@ -16,9 +16,9 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         super.init()
         
         SIMChatMediaAudioRecorder.retainInstance = self
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: #selector(self.dynamicType.audioRecorderDidInterruption(_:)),
-            name: AVAudioSessionInterruptionNotification,
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(type(of: self).audioRecorderDidInterruption(_:)),
+            name: NSNotification.Name.AVAudioSessionInterruption,
             object: nil)
         
         SIMLog.trace()
@@ -30,14 +30,14 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         if _isStarted || _isRecording {
             _clear()
         }
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     public var resource: SIMChatResourceProtocol { return _resource }
     
     public var recording: Bool { return false }
-    public var currentTime: NSTimeInterval {
-        if let time = _recorder?.currentTime where _recorder?.recording ?? false {
+    public var currentTime: TimeInterval {
+        if let time = _recorder?.currentTime , _recorder?.isRecording ?? false {
            _currentTime = time
         }
         return _currentTime
@@ -62,27 +62,27 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         _isStarted = false
     }
     
-    public func meter(channel: Int) -> Float {
+    public func meter(_ channel: Int) -> Float {
         _recorder?.updateMeters()
-        return _recorder?.averagePowerForChannel(channel) ?? -60
+        return _recorder?.averagePower(forChannel: channel) ?? -60
     }
     
     private var _resource: SIMChatResourceProtocol
     private var _recorder: AVAudioRecorder?
-    private var _currentTime: NSTimeInterval = 0
+    private var _currentTime: TimeInterval = 0
     
     private static let _settings: Dictionary<String, AnyObject> = [
-        AVFormatIDKey: Int(kAudioFormatLinearPCM),               // 设置录音格式: kAudioFormatLinearPCM
-        AVSampleRateKey: 44100,                                  // 设置录音采样率(Hz): 8000/44100/96000(影响音频的质量)
-        AVNumberOfChannelsKey: 1,                                // 录音通道数: 1/2
-        AVLinearPCMBitDepthKey: 16,                              // 线性采样位数: 8/16/24/32
-        AVEncoderAudioQualityKey: AVAudioQuality.High.rawValue   // 录音的质量
+        AVFormatIDKey: Int(kAudioFormatLinearPCM) as AnyObject,               // 设置录音格式: kAudioFormatLinearPCM
+        AVSampleRateKey: 44100 as AnyObject,                                  // 设置录音采样率(Hz): 8000/44100/96000(影响音频的质量)
+        AVNumberOfChannelsKey: 1 as AnyObject,                                // 录音通道数: 1/2
+        AVLinearPCMBitDepthKey: 16 as AnyObject,                              // 线性采样位数: 8/16/24/32
+        AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue as AnyObject   // 录音的质量
     ]
     
     private var _isActive: Bool = false
     private var _isStarted: Bool = false
     
-    private var _isRecording: Bool { return _recorder?.recording ?? false }
+    private var _isRecording: Bool { return _recorder?.isRecording ?? false }
     private var _isPrepared: Bool { return _recorder != nil }
     private var _isPrepareing: Bool = false
     
@@ -104,15 +104,15 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
                     throw NSError(domain: "record permission fail!", code: -1, userInfo: nil)
                 }
                 // 删除旧的文件
-                let _ = try? NSFileManager.defaultManager().removeItemAtURL(url)
-                let recorder = try AVAudioRecorder(URL: url, settings: SIMChatMediaAudioRecorder._settings)
+                let _ = try? FileManager.default.removeItem(at: url as URL)
+                let recorder = try AVAudioRecorder(url: url as URL, settings: SIMChatMediaAudioRecorder._settings)
                 recorder.delegate = self
-                recorder.meteringEnabled = true
+                recorder.isMeteringEnabled = true
                 
                 if !recorder.prepareToRecord() {
                     throw NSError(domain: "Prepare Record Fail!", code: -1, userInfo: nil)
                 }
-                dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
+                dispatch_after_at_now(0.5, DispatchQueue.main) {
                     self?._recorder = recorder
                     self?._isPrepareing = false
                     self?._didPrepare()
@@ -141,7 +141,7 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         let session = AVAudioSession.sharedInstance()
         let category = session.category
         // 延迟0.5s再恢复, 不然给人一种毛燥的感觉
-        dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
+        dispatch_after_at_now(0.5, DispatchQueue.main) {
             guard session.category == category else {
                 return // 别人使用了
             }
@@ -149,7 +149,7 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
                 return // 正在播放
             }
             SIMLog.trace()
-            let _ = try? AVAudioSession.sharedInstance().setActive(false, withOptions: .NotifyOthersOnDeactivation)
+            let _ = try? AVAudioSession.sharedInstance().setActive(false, with: .notifyOthersOnDeactivation)
         }
         _isActive = false
     }
@@ -176,7 +176,7 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
             _didErrorOccur(error)
         }
     }
-    @inline(__always) private func _stop(isCancel: Bool) {
+    @inline(__always) private func _stop(_ isCancel: Bool) {
         guard _isPrepared else {
             return // 并没有启动
         }
@@ -259,28 +259,28 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         delegate?.recorderDidFinish(self)
         SIMChatNotificationCenter.postNotificationName(SIMChatMediaRecorderDidCancel, object: self)
     }
-    @inline(__always) private func _didErrorOccur(error: NSError) {
+    @inline(__always) private func _didErrorOccur(_ error: NSError) {
         SIMLog.error(error)
         delegate?.recorderDidErrorOccur(self, error: error)
-        SIMChatNotificationCenter.postNotificationName(SIMChatMediaRecorderDidErrorOccur, object: self, userInfo: ["Error": error])
+        SIMChatNotificationCenter.postNotificationName(SIMChatMediaRecorderDidErrorOccur, object: self, userInfo: ["Error" as NSObject: error])
         // 释放资源
         _isStarted = false
         _clear()
     }
     
-    public func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
-        dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
+    public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        dispatch_after_at_now(0.5, DispatchQueue.main) {
             SIMLog.trace()
             self._didFinish()
             self._clear()
         }
     }
-    public func audioRecorderEncodeErrorDidOccur(recorder: AVAudioRecorder, error: NSError?) {
+    public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: NSError?) {
         SIMLog.trace()
         _stop(true)
         _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
     }
-    public func audioRecorderDidInterruption(sender: NSNotification) {
+    public func audioRecorderDidInterruption(_ sender: Notification) {
         SIMLog.trace()
         guard _isRecording else {
             return

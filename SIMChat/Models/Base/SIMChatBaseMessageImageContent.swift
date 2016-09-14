@@ -30,7 +30,7 @@ public class SIMChatBaseMessageImageContent: SIMChatMessageBody, SIMChatMediaPro
     }
     
     /// 图片在本地的路径, 只有在需要上传的时候这个值才会存在
-    public var localURL: NSURL?
+    public var localURL: URL?
     
     /// 实际大小
     public let size: CGSize

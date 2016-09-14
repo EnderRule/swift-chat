@@ -51,7 +51,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter manager:  关联的管理器
     ///
     public class func conversation(
-        receiver: SIMChatUserProtocol,
+        _ receiver: SIMChatUserProtocol,
         manager: SIMChatManager) -> SIMChatConversation {
             return self.init(
                 receiver: receiver,
@@ -90,7 +90,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter content: 消息内容
     /// - returns: 新建的消息
     ///
-    private func _makeMessage(content: SIMChatMessageBody) -> SIMChatMessage {
+    private func _makeMessage(_ content: SIMChatMessageBody) -> SIMChatMessage {
         return SIMChatBaseMessage(content: content, receiver: receiver, sender: sender)
     }
     
@@ -99,9 +99,9 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter message: 需要发送的消息
     /// - parameter closure: 执行结果
     ///
-    public func sendMessage(message: SIMChatMessage, closure: SIMChatMessageHandler?) {
+    public func sendMessage(_ message: SIMChatMessage, closure: SIMChatMessageHandler?) {
         SIMLog.trace("\(message.identifier) => ReSend")
-        closure?(.Success(message))
+        closure?(.success(message))
     }
     ///
     /// 发送一条消息(新建)
@@ -109,10 +109,10 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter content: 消息内容
     /// - returns: 新建的消息
     ///
-    public func sendMessage(content: SIMChatMessageBody, closure: SIMChatMessageHandler?) -> SIMChatMessage {
+    public func sendMessage(_ content: SIMChatMessageBody, closure: SIMChatMessageHandler?) -> SIMChatMessage {
         let message = _makeMessage(content)
         SIMLog.trace("\(message.identifier)")
-        closure?(.Success(message))
+        closure?(.success(message))
         return message
     }
     
@@ -123,7 +123,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter isResend: 是否是重发消息
     /// - returns: 返回结果是SIMChatMessage
     ///
-    public func sendMessage(message: SIMChatMessage, isResend: Bool, closure: SIMChatMessageHandler?) {
+    public func sendMessage(_ message: SIMChatMessage, isResend: Bool, closure: SIMChatMessageHandler?) {
     }
     
     ///
@@ -133,9 +133,9 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter count: 容量
     /// - returns: 返回结果是Array<SIMChatMessage>
     ///
-    public func loadHistoryMessages(last: SIMChatMessage?, count: Int, closure: SIMChatMessagesHandler?) {
+    public func loadHistoryMessages(_ last: SIMChatMessage?, count: Int, closure: SIMChatMessagesHandler?) {
         SIMLog.trace(count)
-        closure?(.Success(self.messages))
+        closure?(.success(self.messages))
     }
     ///
     /// 更新消息状态
@@ -144,10 +144,10 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter status: 新的状态
     /// - returns: 返回结果是SIMChatMessage
     ///
-    public func updateMessage(message: SIMChatMessage, status: SIMChatMessageStatus, closure: SIMChatMessageHandler?) {
+    public func updateMessage(_ message: SIMChatMessage, status: SIMChatMessageStatus, closure: SIMChatMessageHandler?) {
         SIMLog.trace(message.identifier)
         message.status = status
-        closure?(.Success(message))
+        closure?(.success(message))
     }
     ///
     /// 删除消息
@@ -155,9 +155,9 @@ public class SIMChatBaseConversation: SIMChatConversation {
     /// - parameter message: 需要删除的消息
     /// - returns: 返回结果是Void
     ///
-    public func removeMessage(message: SIMChatMessage, closure: SIMChatMessageHandler?) {
+    public func removeMessage(_ message: SIMChatMessage, closure: SIMChatMessageHandler?) {
         SIMLog.trace(message.identifier)
-        closure?(.Success(message))
+        closure?(.success(message))
     }
     
     // MARK: Message Of Remote
@@ -167,7 +167,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     ///
     /// - parameter message: 被操作的消息
     ///
-    public func updateMessageFromRemote(message: SIMChatMessage) {
+    public func updateMessageFromRemote(_ message: SIMChatMessage) {
         SIMLog.trace(message.identifier)
         delegate?.conversation(self, didUpdateMessage: message)
     }
@@ -176,7 +176,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     ///
     /// - parameter message: 被操作的消息
     ///
-    public func receiveMessageFromRemote(message: SIMChatMessage) {
+    public func receiveMessageFromRemote(_ message: SIMChatMessage) {
         SIMLog.trace(message.identifier)
         delegate?.conversation(self, didReciveMessage: message)
     }
@@ -185,7 +185,7 @@ public class SIMChatBaseConversation: SIMChatConversation {
     ///
     /// - parameter message: 被操作的消息
     ///
-    public func removeMessageFromRemote(message: SIMChatMessage) {
+    public func removeMessageFromRemote(_ message: SIMChatMessage) {
         SIMLog.trace(message.identifier)
         delegate?.conversation(self, didRemoveMessage: message)
     }

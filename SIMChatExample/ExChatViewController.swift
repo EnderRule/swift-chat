@@ -10,16 +10,16 @@ import UIKit
 import SIMChat
 
 
-class ExChatViewController: SIMChatViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-    }
-    
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-}
+//class ExChatViewController: SIMChatViewController {
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//
+//    }
+//    
+//
+//    override func didReceiveMemoryWarning() {
+//        super.didReceiveMemoryWarning()
+//        // Dispose of any resources that can be recreated.
+//    }
+//}

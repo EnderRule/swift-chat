@@ -40,7 +40,7 @@ public class SIMChatBaseEmoticonGroup: NSObject, SIMChatEmoticonGroup {
         didSet {
             groups = sub_groups?.flatMap {
                 let g = SIMChatBaseEmoticonGroup()
-                g.setValuesForKeysWithDictionary($0 as! [String : AnyObject])
+                g.setValuesForKeys($0 as! [String : AnyObject])
                 return g
             }
         }
@@ -52,7 +52,7 @@ public class SIMChatBaseEmoticonGroup: NSObject, SIMChatEmoticonGroup {
         if let subgroups = groups {
             var nemoticons: Array<SIMChatEmoticon> = []
             subgroups.forEach {
-                nemoticons.appendContentsOf($0.emoticons)
+                nemoticons.append(contentsOf: $0.emoticons)
             }
             return nemoticons
         }
@@ -63,7 +63,7 @@ public class SIMChatBaseEmoticonGroup: NSObject, SIMChatEmoticonGroup {
         
         return emoticons.map {
             let em = SIMChatBaseEmoticon()
-            em.setValuesForKeysWithDictionary($0 as! [String : AnyObject])
+            em.setValuesForKeys($0 as! [String : AnyObject])
             em.group = self
             return em
         }
@@ -78,7 +78,7 @@ public class SIMChatBaseEmoticonGroup: NSObject, SIMChatEmoticonGroup {
         }
         return packages.map {
             let group = SIMChatBaseEmoticonGroup()
-            group.setValuesForKeysWithDictionary($0 as! [String : AnyObject])
+            group.setValuesForKeys($0 as! [String : AnyObject])
             return group
         }
     }

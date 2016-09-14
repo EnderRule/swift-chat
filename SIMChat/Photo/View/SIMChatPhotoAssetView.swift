@@ -14,17 +14,17 @@ internal class SIMChatPhotoAssetView: SIMView {
         
         contentLayer.frame = bounds
         contentLayer.contentsGravity = kCAGravityResizeAspectFill
-        contentLayer.backgroundColor = UIColor.whiteColor().CGColor
+        contentLayer.backgroundColor = UIColor.white.cgColor
         
         layer.addSublayer(contentLayer)
         
-        badgeView.frame = CGRectMake(0, bounds.height - 20, bounds.width, 20)
+        badgeView.frame = CGRect(x: 0, y: bounds.height - 20, width: bounds.width, height: 20)
     }
     override func layoutSubviews() {
         super.layoutSubviews()
         contentLayer.frame = bounds
         if badgeView.superview != nil {
-            badgeView.frame = CGRectMake(0, bounds.height - 20, bounds.width, 20)
+            badgeView.frame = CGRect(x: 0, y: bounds.height - 20, width: bounds.width, height: 20)
         }
     }
     
@@ -41,7 +41,7 @@ internal class SIMChatPhotoAssetView: SIMView {
                 // 必须关闭动画, 否则会卡顿
                 CATransaction.setDisableActions(true)
                 // 更新内容(图片)
-                self.contentLayer.contents = img?.CGImage
+                self.contentLayer.contents = img?.cgImage
                 
                 CATransaction.setDisableActions(false)
             }
@@ -57,7 +57,7 @@ internal class SIMChatPhotoAssetView: SIMView {
                 return
             }
             // 检查是否是需要显示
-            if newValue == .None {
+            if newValue == .none {
                 if badgeView.superview != nil {
                     badgeView.removeFromSuperview()
                 }
@@ -77,6 +77,6 @@ internal class SIMChatPhotoAssetView: SIMView {
         get { return badgeView.content }
     }
     
-    private lazy var badgeView = SIMChatPhotoAssetBadgeView(frame: CGRectZero)
+    private lazy var badgeView = SIMChatPhotoAssetBadgeView(frame: CGRect.zero)
     private lazy var contentLayer = CALayer()
 }

@@ -12,7 +12,7 @@ import Foundation
 public class SIMLog : NSObject {
     
     /// trace level
-    public class func trace(message: Any = "",
+    public class func trace(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -21,7 +21,7 @@ public class SIMLog : NSObject {
         log("TRACE", message, function, file, line)
     }
     /// debug level
-    public class func debug(message: Any = "",
+    public class func debug(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -30,7 +30,7 @@ public class SIMLog : NSObject {
         log("DEBUG", message, function, file, line)
     }
     /// info level
-    public class func info(message: Any = "",
+    public class func info(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -39,7 +39,7 @@ public class SIMLog : NSObject {
         log("INFO", message, function, file, line)
     }
     /// warning level
-    public class func warning(message: Any = "",
+    public class func warning(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -48,7 +48,7 @@ public class SIMLog : NSObject {
         log("WARN", message, function, file, line)
     }
     /// error level
-    public class func error(message: Any = "",
+    public class func error(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -57,7 +57,7 @@ public class SIMLog : NSObject {
         log("ERROR", message, function, file, line)
     }
     /// fatal level
-    public class func fatal(message: Any = "",
+    public class func fatal(_ message: Any = "",
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
@@ -66,13 +66,13 @@ public class SIMLog : NSObject {
         log("FATAL", message, function, file, line)
     }
     /// out
-    public class func log(level: StaticString,
+    public class func log(_ level: StaticString,
         _ message: Any, 
         _ function: StaticString = #function,
         _ file: String = #file,
         _ line: Int = #line)
     {
-        let fname = ((file as NSString).lastPathComponent as NSString).stringByDeletingPathExtension
+        let fname = ((file as NSString).lastPathComponent as NSString).deletingPathExtension
         #if DEBUG
             objc_sync_enter(self.queue)
             
@@ -81,12 +81,12 @@ public class SIMLog : NSObject {
             
             objc_sync_exit(self.queue)
         #else
-            dispatch_async(self.queue) {
+            self.queue.async {
                 //[%-5p](%d{yyyy-MM-dd HH:mm:ss}) %M - %m%n
                 print("[\(level)] \(fname).\(function): \(message)")
             }
         #endif
     }
     
-    private(set) static var queue = dispatch_queue_create("log.queue", nil)
+    private(set) static var queue = DispatchQueue(label: "log.queue", attributes: [])
 }

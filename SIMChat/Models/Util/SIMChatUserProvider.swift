@@ -20,22 +20,22 @@ public class SIMChatUserProvider {
     
     private var users: Dictionary<String, SIMChatUserProtocol>
     private weak var manager: SIMChatManager?
-}
-
-extension SIMChatUserProvider {
+//}
+//
+//extension SIMChatUserProvider {
     ///
     /// 更新用户信息
     ///
     /// - parameter user: 新的用户信息
     ///
-    func updateUser(user: SIMChatUserProtocol) {
+    func updateUser(_ user: SIMChatUserProtocol) {
     }
     ///
     /// 获取用户信息
     ///
     /// - parameter identifier: 用户的唯一标识
     ///
-    func userWithIdentifier(identifier: String) -> SIMChatUserProtocol {
+    func userWithIdentifier(_ identifier: String) -> SIMChatUserProtocol {
         if let user = users[identifier] {
             return user
         }
@@ -50,7 +50,7 @@ extension SIMChatUserProvider {
     ///
     /// - parameter identifier: 用户的唯一标识
     ///
-    func userDetailWithIdentifier(identifier: String) -> SIMChatUserProtocol {
+    func userDetailWithIdentifier(_ identifier: String) -> SIMChatUserProtocol {
         let user = userWithIdentifier(identifier)
         // 如果详情没有加载. 继续加载.
         if true {

@@ -41,7 +41,7 @@ public class SIMChatBaseMessageTipsCell: SIMChatBaseMessageBaseCell {
     /// 关联的消息
     public override var model: SIMChatMessage? {
         didSet {
-            guard let message = model where message !== oldValue else {
+            guard let message = model , message !== oldValue else {
                 return
             }
             
@@ -63,9 +63,9 @@ public class SIMChatBaseMessageTipsCell: SIMChatBaseMessageBaseCell {
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
-        view.font = UIFont.systemFontOfSize(12)
+        view.font = UIFont.systemFont(ofSize: 12)
         view.textColor = UIColor(argb: 0xFF7B7B7B)
-        view.textAlignment = NSTextAlignment.Center
+        view.textAlignment = NSTextAlignment.center
         return view
     }()
     private lazy var bubbleImageView: UIImageView = {

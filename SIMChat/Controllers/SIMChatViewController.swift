@@ -8,10 +8,33 @@
 
 import UIKit
 
+
+/// [ ] 更新InputPanel
+/// [ ] SAEmotionPanel - 加载默认表情
+
+
+class SIMEmotionGroup {
+    
+    init(row: Int, column: Int, type: SAEmotionType = .small) {
+        self.row = row
+        self.column = column
+        self.type = type
+    }
+    
+    var row: Int
+    var column: Int
+    
+    var type: SAEmotionType
+   
+    var size: CGSize = .zero
+    var minimumLineSpacing: CGFloat = 0
+    var minimumInteritemSpacing: CGFloat = 0
+}
+
 ///
 /// 聊天控制器
 ///
-public class SIMChatViewController: UIViewController {
+public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInputBarDisplayable, SAEmotionPanelDataSource, SAEmotionPanelDelegate, SAToolboxPanelDataSource, SAToolboxPanelDelegate {
     
     ///
     /// 初始化
@@ -22,311 +45,460 @@ public class SIMChatViewController: UIViewController {
     /// 初始化
     public required init(conversation: SIMChatConversation) {
         _conversation = conversation
-        _messageManager = MessageManager(conversation: conversation)
+//        _messageManager = MessageManager(conversation: conversation)
         super.init(nibName: nil, bundle: nil)
-        
-        _messageManager.contentView = contentView
+//        _messageManager.contentView = contentView
         
         hidesBottomBarWhenPushed = true
         
         let name = conversation.receiver.name ?? conversation.receiver.identifier
-        if conversation.receiver.type == .User {
+        if conversation.receiver.type == .user {
             title = "正在和\(name)聊天"
         } else {
             title = name
         }
     }
     deinit {
-        contentView.removeObserver(self, forKeyPath: SIMChatViewContentViewPanStateKeyPath)
-        SIMChatNotificationCenter.removeObserver(self)
+//        SIMChatNotificationCenter.removeObserver(self)
         SIMLog.trace()
     }
-    
-    private var _contentViewLayout: SIMChatLayout?
-    private var _inputBarLayout: SIMChatLayout?
-    private var _inputPanelContainerLayout: SIMChatLayout?
-    
-    private var _lastKeyboardFrame: CGRect = CGRectZero
-    
-    private lazy var _contentView: UITableView = {
-        let view = UITableView()
-        return view
-    }()
-    private lazy var _inputPanelContainer: SIMChatInputPanelContainer = {
-        let view = SIMChatInputPanelContainer(frame: CGRectZero)
-        view.delegate = self
-        return view
-    }()
-    private lazy var _inputBar: SIMChatInputBar = {
-        let bar = SIMChatInputBar(frame: CGRectZero)
-        let R = { (name: String) -> UIImage? in
-            return SIMChatBundle.imageWithResource("InputBar/\(name).png")
-        }
-        bar.delegate = self
-        bar.leftBarButtonItems = [
-            SIMChatInputPanelAudioView.inputPanelItem()
-        ]
-        bar.rightBarButtonItems = [
-            SIMChatInputPanelEmoticonView.inputPanelItem(),
-            SIMChatInputPanelToolBoxView.inputPanelItem()
-        ]
-//         bar.bottomBarButtonItems = [
-//             SIMChatInputPanelAudioView.inputPanelItem(),
-//            SIMChatBaseInputItem("", R("chat_bottom_PTV_nor"), R("chat_bottom_PTV_press")),
-//            SIMChatBaseInputItem("kb:photo", R("chat_bottom_photo_nor"), R("chat_bottom_photo_press")),
-//            SIMChatBaseInputItem("kb:camera", R("chat_bottom_Camera_nor"), R("chat_bottom_Camera_press")),
-//            SIMChatBaseInputItem("", R("chat_bottom_red_pack_nor"), R("chat_bottom_red_pack_press")),
-//            SIMChatInputPanelEmoticonView.inputPanelItem(),
-//            SIMChatInputPanelToolBoxView.inputPanelItem()
-//         ]
-        return bar
-    }()
-    
-    private var _forwarder: UIGestureRecognizerDelegateForwarder?
-    private lazy var _backgroundView: UIImageView = {
-        let view = UIImageView()
-        return view
-    }()
-    private lazy var _tapGestureRecognizer: UITapGestureRecognizer = {
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onResignKeyboard(_:)))
-        recognizer.delegate = self
-        return recognizer
-    }()
-    
-    private lazy var _inputPanelToolItems: [SIMChatInputItemProtocol] = {
-        let R = { (n:String) -> UIImage? in
-            SIMChatBundle.imageWithResource("InputPanel/\(n).png")
-        }
-        return [
-            SIMChatInputToolBoxItem("page:voip", "网络电话", R("tool_voip")),
-            SIMChatInputToolBoxItem("page:video", "视频电话", R("tool_video")),
-            SIMChatInputToolBoxItem("page:video_s", "短视频", R("tool_video_short")),
-            SIMChatInputToolBoxItem("page:favorite", "收藏", R("tool_favorite")),
-            SIMChatInputToolBoxItem("page:red_pack", "发红包", R("tool_red_pack")),
-            SIMChatInputToolBoxItem("page:transfer", "转帐", R("tool_transfer")),
-            SIMChatInputToolBoxItem("page:shake", "抖一抖", R("tool_shake")),
-            SIMChatInputToolBoxItem("page:file", "文件", R("tool_folder")),
-            SIMChatInputToolBoxItem("page:camera", "照相机", R("tool_camera")),
-            SIMChatInputToolBoxItem("page:pic", "相册", R("tool_pic")),
-            SIMChatInputToolBoxItem("page:ptt", "录音", R("tool_ptt")),
-            SIMChatInputToolBoxItem("page:music", "音乐", R("tool_music")),
-            SIMChatInputToolBoxItem("page:location", "位置", R("tool_location")),
-            SIMChatInputToolBoxItem("page:nameplate", "名片",   R("tool_share_nameplate")),
-            SIMChatInputToolBoxItem("page:aa", "AA制", R("tool_aa_collection")),
-            SIMChatInputToolBoxItem("page:gapp", "群应用", R("tool_group_app")),
-            SIMChatInputToolBoxItem("page:gvote", "群投票", R("tool_group_vote")),
-            SIMChatInputToolBoxItem("page:gvideo", "群视频", R("tool_group_video")),
-            SIMChatInputToolBoxItem("page:gtopic", "群话题", R("tool_group_topic")),
-            SIMChatInputToolBoxItem("page:gactivity", "群活动", R("tool_group_activity"))
-        ]
-    }()
-    
-    private var _conversation: SIMChatConversation
-    private var _messageManager: MessageManager
-    
-    internal var messageManager: MessageManager { return _messageManager }
-}
-
-// MARK: - Public Propertys
-
-extension SIMChatViewController {
-    ///
-    /// 聊天会话
-    ///
-    public var conversation: SIMChatConversation { return _conversation }
-    public var manager: SIMChatManager {
-        guard let manager = conversation.manager else {
-            fatalError("Must provider manager")
-        }
-        return manager
-    }
-    ///
-    /// 内容
-    ///
-    public var contentView: UITableView { return _contentView }
-    public var contentViewLayout: SIMChatLayout? { return _contentViewLayout }
-    ///
-    /// 输入栏
-    ///
-    public var inputBar: SIMChatInputBar { return _inputBar }
-    public var inputBarLayout: SIMChatLayout? { return _inputBarLayout }
-    ///
-    /// 输入面板(选择表情之类的)
-    ///
-    public var inputPanelContainer: SIMChatInputPanelContainer { return _inputPanelContainer }
-    public var inputPanelContainerLayout: SIMChatLayout? { return _inputPanelContainerLayout }
-    ///
-    /// 聊天背景
-    ///
-    public var backgroundView: UIImageView { return _backgroundView }
-    
-}
-
-extension SIMChatViewController {
-    
-    ///
-    /// 输入面板
-    ///
-    public var inputPanelToolItems: Array<SIMChatInputItemProtocol> {
-        return _inputPanelToolItems
-    }
-    
-    ///
-    /// 系统当前的键盘大小
-    ///
-    public var systemKeyboardFrame: CGRect {
-        set { return _lastKeyboardFrame = newValue }
-        get { return _lastKeyboardFrame }
-    }
-}
-
-// MARK: - Life Cycle
-
-extension SIMChatViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         SIMLog.trace()
         
-        // 背景
-        backgroundView.accessibilityLabel = "聊天背景"
+        view.backgroundColor = .white
+        
+        toolbar.delegate = self
+        
         backgroundView.frame = view.bounds
+        backgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         backgroundView.image = SIMChatImageManager.defaultBackground
-        backgroundView.contentMode = .ScaleToFill
-        backgroundView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        // 内容
-        contentView.accessibilityLabel = "聊天内容"
-        contentView.backgroundColor = .clearColor()
-        contentView.showsHorizontalScrollIndicator = false
+        backgroundView.contentMode = .scaleToFill
+        
+        contentView.frame = view.bounds
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentView.scrollsToTop = true
-        //contentView.showsVerticalScrollIndicator = false
-        contentView.separatorStyle = .None
-        
-        inputBar.accessibilityLabel = "底部输入栏"
-        inputPanelContainer.accessibilityLabel = "底部输入面板"
-        
-        // add event
-        contentView.addGestureRecognizer(_tapGestureRecognizer)
+        contentView.keyboardDismissMode = .interactive
+        contentView.alwaysBounceVertical = true
+        contentView.separatorStyle = .none
+        //contentView.showsHorizontalScrollIndicator = false
+        contentView.showsVerticalScrollIndicator = false
+        contentView.backgroundColor = .clear
         
         view.addSubview(backgroundView)
         view.addSubview(contentView)
-        view.addSubview(inputBar)
-        view.addSubview(inputPanelContainer)
         
-        contentView.addObserver(self,
-            forKeyPath: SIMChatViewContentViewPanStateKeyPath,
-            options: [.New],
-            context: nil)
-        
-        // 添加布局
-        _contentViewLayout = SIMChatLayout.make(contentView)
-            .top.equ(view).top
-            .left.equ(view).left
-            .right.equ(view).right
-            .bottom.equ(view).bottom
-            .submit()
-        
-        _inputBarLayout = SIMChatLayout.make(inputBar)
-            .top.gte(view).top
-            .left.equ(view).left
-            .right.equ(view).right
-            .bottom.equ(view).bottom
-            .submit()
-        
-        _inputPanelContainerLayout = SIMChatLayout.make(inputPanelContainer)
-            .top.equ(view).bottom
-            .left.equ(view).left
-            .right.equ(view).right
-            .submit()
-        
-        SIMChatNotificationCenter.addObserver(
-            self,
-            selector: #selector(self.dynamicType.onInputBarChangeNtf(_:)),
-            name: SIMChatInputBarFrameDidChangeNotification)
-        
-        // 初始化工作
-        view.layoutIfNeeded()
-        setKeyboardHeight(0, animated: false)
-        
-        _messageManager.prepare()
+//        _messageManager.prepare()
     }
     
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(
-            self,
-            selector: #selector(self.dynamicType.onKeyboardShowNtf(_:)),
-            name: UIKeyboardWillShowNotification,
-            object: nil)
-        center.addObserver(
-            self,
-            selector: #selector(self.dynamicType.onKeyboardHideNtf(_:)),
-            name: UIKeyboardWillHideNotification,
-            object: nil)
-        
-        // 添加转发
-        if let recognizer = navigationController?.interactivePopGestureRecognizer {
-            _forwarder = UIGestureRecognizerDelegateForwarder(recognizer.delegate, to: [self])
-            recognizer.delegate = _forwarder
+    public override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    private lazy var _panels: [String: UIView] = [:]
+    
+    private lazy var _toolbar: SAInputBar = SAInputBar(type: .value1)
+    private lazy var _contentView: UITableView = UITableView(frame: .zero)
+    private lazy var _backgroundView: UIImageView = UIImageView()
+    
+    private lazy var _toolboxItems: [SAToolboxItem] = {
+        let R = { (n:String) -> UIImage? in
+            SIMChatBundle.imageWithResource("InputPanel/\(n).png")
+        }
+        return [
+            SAToolboxItem("page:voip", "网络电话", R("tool_voip")),
+            SAToolboxItem("page:video", "视频电话", R("tool_video")),
+            SAToolboxItem("page:video_s", "短视频", R("tool_video_short")),
+            SAToolboxItem("page:favorite", "收藏", R("tool_favorite")),
+            SAToolboxItem("page:red_pack", "发红包", R("tool_red_pack")),
+            SAToolboxItem("page:transfer", "转帐", R("tool_transfer")),
+            SAToolboxItem("page:shake", "抖一抖", R("tool_shake")),
+            SAToolboxItem("page:file", "文件", R("tool_folder")),
+            SAToolboxItem("page:camera", "照相机", R("tool_camera")),
+            SAToolboxItem("page:pic", "相册", R("tool_pic")),
+            SAToolboxItem("page:ptt", "录音", R("tool_ptt")),
+            SAToolboxItem("page:music", "音乐", R("tool_music")),
+            SAToolboxItem("page:location", "位置", R("tool_location")),
+            SAToolboxItem("page:nameplate", "名片",   R("tool_share_nameplate")),
+            SAToolboxItem("page:aa", "AA制", R("tool_aa_collection")),
+            SAToolboxItem("page:gapp", "群应用", R("tool_group_app")),
+            SAToolboxItem("page:gvote", "群投票", R("tool_group_vote")),
+            SAToolboxItem("page:gvideo", "群视频", R("tool_group_video")),
+            SAToolboxItem("page:gtopic", "群话题", R("tool_group_topic")),
+            SAToolboxItem("page:gactivity", "群活动", R("tool_group_activity"))
+        ]
+    }()
+    
+    private lazy var _emotionGroups: [SIMEmotionGroup] = [
+        SIMEmotionGroup(row: 3, column: 7),
+        SIMEmotionGroup(row: 2, column: 4, type: .large),
+    ]
+    
+    
+    private var _activedItem: SAInputItem?
+    private var _activedPanel: UIView?
+    
+    private var _conversation: SIMChatConversation
+//    private var _messageManager: MessageManager
+//    
+//    internal var messageManager: MessageManager { return _messageManager }
+//}
+//
+//// MARK: - Public Propertys
+//
+//extension SIMChatViewController {
+    ///
+    /// 聊天会话
+    ///
+    public var conversation: SIMChatConversation {
+        return _conversation 
+    }
+    public var manager: SIMChatManager {
+        guard let manager = conversation.manager else {
+            fatalError("Must provider manager")
+        }
+        return manager
+    }
+    
+    public var toolbar: SAInputBar {
+        return _toolbar
+    }
+    public var contentView: UITableView {
+        return _contentView 
+    }
+    public var backgroundView: UIImageView { 
+        return _backgroundView 
+    }
+    
+    public override var inputAccessoryView: UIView? {
+        return toolbar
+    }
+    
+    // MARK: SAInputBarDisplayable
+    
+    public var scrollView: UIScrollView {
+        return contentView
+    }
+    
+    // MARK: SAInputBarDelegate
+    
+    public func inputView(with item: SAInputItem) -> UIView? {
+        if let view = _panels[item.identifier] {
+            return view
+        }
+        switch item.identifier {
+        case "kb:audio":
+            let panel = SAAudioPanel()
+            _panels[item.identifier] = panel
+            return panel
+            
+        case "kb:photo":
+            let panel = SAPhotoPanel()
+            _panels[item.identifier] = panel
+            return panel
+            
+        case "kb:emotion":
+            let panel = SAEmotionPanel()
+            panel.delegate = self
+            panel.dataSource = self
+            _panels[item.identifier] = panel
+            return panel
+            
+        case "kb:toolbox":
+            let panel = SAToolboxPanel()
+            panel.delegate = self
+            panel.dataSource = self
+            _panels[item.identifier] = panel
+            return panel
+            
+        default:
+            return nil
         }
     }
     
-    public override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
+    public func inputBar(_ inputBar: SAInputBar, shouldSelectItem item: SAInputItem) -> Bool {
         
-        let center = NSNotificationCenter.defaultCenter()
-        center.removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-        center.removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
-        
-        // 恢复原样
-        if let recognizer = navigationController?.interactivePopGestureRecognizer {
-            recognizer.delegate = _forwarder?.orign
-            _forwarder = nil
-        }
-    }
-    
-    public override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-//        // 切换页面的时候停止播放
-//        manager.mediaProvider.stop()
-    }
-    
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    
-        // 更新inset, 否则tableView显示区域错误
-        // TODO: 转屏之后这里好像有bug
-        var edg = contentView.contentInset
-        edg.top = topLayoutGuide.length + -(contentViewLayout?.top ?? 0)
-        contentView.contentInset = edg
-        contentView.scrollIndicatorInsets = contentView.contentInset
-    }
-    
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if keyPath == SIMChatViewContentViewPanStateKeyPath && contentView.panGestureRecognizer.state == .Began {
-            if inputBar.canResignFirstResponder() {
-                inputBar.resignFirstResponder()
-            }
-        }
-    }
-}
-
-extension SIMChatViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        if gestureRecognizer == _tapGestureRecognizer {
-            return !SIMChatMenuController.sharedMenuController().isCustomMenu()
-        }
-        if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
-            let pt = touch.locationInView(view)
-            return !inputBar.frame.contains(pt) && !inputPanelContainer.frame.contains(pt)
+        guard let _ = inputView(with: item) else {
+            return false
         }
         return true
     }
+    public func inputBar(_ inputBar: SAInputBar, didSelectItem item: SAInputItem) {
+        logger.debug(item.identifier)
+        
+        _activedItem = item
+        
+        if let kb = inputView(with: item) {
+            inputBar.setInputMode(.selecting(kb), animated: true)
+        }
+    }
+    
+    public func inputBar(didChangeMode inputBar: SAInputBar) {
+        logger.debug(inputBar.inputMode)
+        
+        if let item = _activedItem, !inputBar.inputMode.isSelecting {
+            inputBar.deselectBarItem(item, animated: true)
+        } 
+    }
+    
+    // SAToolboxPanelDataSource
+    
+    public func numberOfItems(in toolbox: SAToolboxPanel) -> Int {
+        return _toolboxItems.count
+    }
+    
+    public func toolbox(_ toolbox: SAToolboxPanel, toolboxItemAt index: Int) -> SAToolboxItem? {
+        guard index < _toolboxItems.count else {
+            return nil
+        }
+        return _toolboxItems[index]
+    }
+    
+    //  SAToolboxPanelDelegate
+    
+    public func toolbox(_ toolbox: SAToolboxPanel, shouldSelectItem item: SAToolboxItem) -> Bool {
+        return true
+    }
+    public func toolbox(_ toolbox: SAToolboxPanel, didSelectItem item: SAToolboxItem) {
+        _logger.debug(item.identifier)
+    }
+    
+    // SAEmotionPanelDataSource
+    
+    public func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
+        return _emotionGroups.count
+    }
+    
+    public func emotion(_ emotion: SAEmotionPanel, itemsAt group: Int) -> [SAEmotion] {
+        //let eg = _emotionGroups[group]
+        let image = SIMChatBundle.imageWithResource("Emoticons/com.qq.classic/001@2x.png")
+        
+        return (0 ..< 99).map { _ in
+            let e = SAEmotion()
+            e.contents = image
+            return e
+        }
+    }
+    public func emotion(_ emotion: SAEmotionPanel, typeForItemAt group: Int) -> SAEmotionType {
+        return _emotionGroups[group].type
+    }
+    
+    // SAEmotionPanelDelegate
+    
+    public func emotion(_ emotion: SAEmotionPanel, sizeForItemAt group: Int) -> CGSize {
+        let eg = _emotionGroups[group]
+        let edg = self.emotion(emotion, insetForPageAt: group)
+        
+        let width = emotion.contentView.frame.width - edg.left - edg.right
+        let height = emotion.contentView.frame.height - edg.top - edg.bottom
+        
+        let row = CGFloat(eg.row)
+        let col = CGFloat(eg.column)
+        
+        eg.size = CGSize(width: (width - 8 * col) / col, height: (height - 8 * row) / row)
+        eg.minimumLineSpacing = (height / row) - eg.size.height
+        eg.minimumInteritemSpacing = (width / col) - eg.size.width
+        
+        return eg.size
+    }
+    public func emotion(_ emotion: SAEmotionPanel, insetForPageAt group: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(12, 10, 12 + 30, 10)
+    }
+    
+    public func emotion(_ emotion: SAEmotionPanel, minimumLineSpacingAt group: Int) -> CGFloat {
+        return _emotionGroups[group].minimumLineSpacing
+    }
+    public func emotion(_ emotion: SAEmotionPanel, minimumInteritemSpacingAt group: Int) -> CGFloat {
+        return _emotionGroups[group].minimumInteritemSpacing
+    }
+    
+    public func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {
+        return true
+    }
+    public func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion) {
+        _logger.debug(item)
+    }
+    
+    public func emotion(_ emotion: SAEmotionPanel, shouldPreviewFor item: SAEmotion?) -> Bool {
+        return true
+    }
+    public func emotion(_ emotion: SAEmotionPanel, didPreviewFor item: SAEmotion?) {
+        _logger.debug(item)
+    }
 }
+
+// MARK: - Life Cycle
+
+//extension SIMChatViewController {
+//    
+//    public override func viewDidLoad() {
+//        super.viewDidLoad()
+//        
+//        SIMLog.trace()
+//        
+//        // 背景
+//        backgroundView.accessibilityLabel = "聊天背景"
+//        backgroundView.frame = view.bounds
+//        backgroundView.image = SIMChatImageManager.defaultBackground
+//        backgroundView.contentMode = .scaleToFill
+//        backgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        // 内容
+//        contentView.accessibilityLabel = "聊天内容"
+//        contentView.backgroundColor = .clear()
+//        contentView.showsHorizontalScrollIndicator = false
+//        contentView.scrollsToTop = true
+//        contentView.keyboardDismissMode = .interactive
+//        //contentView.showsVerticalScrollIndicator = false
+//        contentView.separatorStyle = .none
+//        
+//        // add event
+////        contentView.addGestureRecognizer(_tapGestureRecognizer)
+//        
+//        view.addSubview(backgroundView)
+//        view.addSubview(contentView)
+////        view.addSubview(inputBar)
+////        view.addSubview(inputPanelContainer)
+//        
+////        contentView.addObserver(self,
+////            forKeyPath: SIMChatViewContentViewPanStateKeyPath,
+////            options: [.New],
+////            context: nil)
+//        
+//        // 添加布局
+//        _contentViewLayout = SIMChatLayout.make(contentView)
+//            .top.equ(view).top
+//            .left.equ(view).left
+//            .right.equ(view).right
+//            .bottom.equ(view).bottom
+//            .submit()
+//        
+//        
+////        SIMChatNotificationCenter.addObserver(
+////            self,
+////            selector: #selector(self.dynamicType.onInputBarChangeNtf(_:)),
+////            name: SIMChatInputBarFrameDidChangeNotification)
+//        
+//        // 初始化工作
+////        view.layoutIfNeeded()
+////        setKeyboardHeight(0, animated: false)
+//        
+//        //inputBar = _inputBar
+//        
+//        _messageManager.prepare()
+//    }
+//    
+//    public override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+////        let center = NSNotificationCenter.defaultCenter()
+////        center.addObserver(
+////            self,
+////            selector: #selector(self.dynamicType.onKeyboardShowNtf(_:)),
+////            name: UIKeyboardWillShowNotification,
+////            object: nil)
+////        center.addObserver(
+////            self,
+////            selector: #selector(self.dynamicType.onKeyboardHideNtf(_:)),
+////            name: UIKeyboardWillHideNotification,
+////            object: nil)
+////        
+////        // 添加转发
+////        if let recognizer = navigationController?.interactivePopGestureRecognizer {
+////            _forwarder = UIGestureRecognizerDelegateForwarder(recognizer.delegate, to: [self])
+////            recognizer.delegate = _forwarder
+////        }
+//    }
+//    
+//    public override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+////        
+////        let center = NSNotificationCenter.defaultCenter()
+////        center.removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+////        center.removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+//        
+////        // 恢复原样
+////        if let recognizer = navigationController?.interactivePopGestureRecognizer {
+////            recognizer.delegate = _forwarder?.orign
+////            _forwarder = nil
+////        }
+////        if inputBar.state.isEditingWithSystemKeyboard {
+////            inputBar.state = .None
+////        }
+//    }
+//    
+//    public override func viewDidDisappear(_ animated: Bool) {
+//        super.viewDidDisappear(animated)
+//        
+////        // 切换页面的时候停止播放
+////        manager.mediaProvider.stop()
+//    }
+//    
+//    public override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        
+//        _updateKeyboardSize()
+//    }
+//    
+//    @inline(__always) private func _updateKeyboardSize() {
+//        _logger.trace()
+//        
+//        
+////        var curve = UIViewAnimationCurve.EaseInOut
+////        
+////        (7 as NSNumber).getValue(&curve)
+////        
+////        UIView.beginAnimations(nil, context: nil)
+////        UIView.setAnimationDuration(0.25)
+////        UIView.setAnimationCurve(curve)
+//        // UIView.animateWithDuration(duration, delay:0, options:options, animations: handler, completion: nil)
+////        UIView.animateWithDuration(0.25) {
+////            let size = self.inputBar.intrinsicContentSize
+////            let keyboardSize = self.inputBar.keyboardSize
+//            
+////            // 更新inset, 否则显示区域错误
+////            var edg = self.contentView.contentInset
+////        edg.top = self.topLayoutGuide.length;// + size.height;
+////            edg.bottom = size.height
+////            self.contentView.contentInset = edg
+////            self.contentView.scrollIndicatorInsets = edg
+//            
+////            // 必须同时更新
+////        self.contentViewLayout?.top = -size.height//keyboardSize.height
+////        //self.contentViewLayout?.bottom = keyboardSize.height
+////        self.contentView.layoutIfNeeded()
+//        
+////            // 必须先更新inset, 否则如果offset在0的位置时会产生肉眼可见的抖动
+////            var edg = contentView.contentInset
+////            edg.top = topLayoutGuide.length + newValue + inputBar.frame.height
+////            contentView.contentInset = edg
+////            contentView.scrollIndicatorInsets = edg
+////            
+////            // 必须同时更新
+////            contentViewLayout?.top = -(newValue + inputBar.frame.height)
+////            contentViewLayout?.bottom = newValue + inputBar.frame.height
+////            contentView.layoutIfNeeded()
+////            
+////            inputBarLayout?.bottom = newValue
+////            inputBar.layoutIfNeeded()
+////        }
+////        UIView.commitAnimations()
+//    }
+//}
+
+//extension SIMChatViewController: UIGestureRecognizerDelegate {
+//    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+//        if gestureRecognizer == _tapGestureRecognizer {
+//            return !SIMChatMenuController.sharedMenuController().isCustomMenu()
+//        }
+//        if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
+//            let pt = touch.locationInView(view)
+//            return !inputBar.frame.contains(pt) && !inputPanelContainer.frame.contains(pt)
+//        }
+//        return true
+//    }
+//}
 
 ////    init(conversation: SIMChatConversation) {
 ////        super.init(nibName: nil, bundle: nil)
@@ -551,7 +723,3 @@ extension SIMChatViewController: UIGestureRecognizerDelegate {
 //        }
 //    }
 //}
-
-
-/// 内容拖动手势状态改变
-private let SIMChatViewContentViewPanStateKeyPath: String = "panGestureRecognizer.state"

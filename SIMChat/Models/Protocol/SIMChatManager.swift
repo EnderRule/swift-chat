@@ -22,13 +22,13 @@ public protocol SIMChatManager: class {
     /// - parameter user: 用户信息
     /// - parameter closure: 执行结果
     ///
-    func login(user: SIMChatUserProtocol, closure: SIMChatResult<Void, NSError> -> Void)
+    func login(_ user: SIMChatUserProtocol, closure: (SIMChatResult<Void, NSError>) -> Void)
     ///
     /// 登出用户
     ///
     /// - parameter closure: 执行结果
     ///
-    func logout(closure: SIMChatResult<Void, NSError> -> Void)
+    func logout(_ closure: (SIMChatResult<Void, NSError>) -> Void)
     
     ///
     /// 获取当前登录的用户
@@ -43,7 +43,7 @@ public protocol SIMChatManager: class {
     /// - parameter receiver: 接收者信息
     /// - returns: 会话信息
     ///
-    func conversation(receiver: SIMChatUserProtocol) -> SIMChatConversation
+    func conversation(_ receiver: SIMChatUserProtocol) -> SIMChatConversation
     ///
     /// 获取所有的会话
     ///
@@ -55,7 +55,7 @@ public protocol SIMChatManager: class {
     ///
     /// - parameter receiver: 被删除会放的接收者信息
     ///
-    func removeConversation(receiver: SIMChatUserProtocol)
+    func removeConversation(_ receiver: SIMChatUserProtocol)
 }
 
 ///
@@ -67,7 +67,7 @@ extension SIMChatManager {
     ///
     /// - parameter user: 用户信息
     ///
-    public func login(user: SIMChatUserProtocol) {
+    public func login(_ user: SIMChatUserProtocol) {
         return login(user) { _ in }
     }
     ///

@@ -19,7 +19,7 @@ extension UIView {
         // prepare
         UIGraphicsBeginImageContext(bounds.size)
         // draw
-        layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        layer.render(in: UIGraphicsGetCurrentContext()!)
         // get result
         let image = UIGraphicsGetImageFromCurrentImageContext()
         // close
@@ -40,7 +40,7 @@ extension UIViewController {
     ///
     /// 显示(ios7未测试)
     ///
-    func presentViewController(viewControllerToPresent: UIViewController, animated flag: Bool, fromView: UIView?, completion: (() -> Void)?) {
+    func presentViewController(_ viewControllerToPresent: UIViewController, animated flag: Bool, fromView: UIView?, completion: (() -> Void)?) {
         SIMLog.trace()
         
         // TODO: 还有一个未处理的情况
@@ -64,10 +64,10 @@ extension UIViewController {
         
         mask.frame = window.bounds
         mask.backgroundColor = dest.view.backgroundColor
-        mask.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+        mask.autoresizingMask = UIViewAutoresizing.flexibleWidth | UIViewAutoresizing.flexibleHeight
         
         tp.image = context.fromViewSnapshoot
-        tp.backgroundColor = UIColor.clearColor()
+        tp.backgroundColor = UIColor.clear
         
         window.rootViewController = nil
         window.addSubview(mask)
@@ -75,8 +75,8 @@ extension UIViewController {
         window.makeKeyAndVisible()
         
         // 计算位置
-        let from = context.fromView!.convertRect(context.fromView!.bounds, toView: context.fromView?.window)
-        let to = context.toView!.convertRect(context.toView!.bounds, toView: dest.view)
+        let from = context.fromView!.convert(context.fromView!.bounds, to: context.fromView?.window)
+        let to = context.toView!.convert(context.toView!.bounds, to: dest.view)
         
         //SIMLog.debug("will present view controller, from: \(from) to: \(to)")
         
@@ -85,22 +85,22 @@ extension UIViewController {
         mask.alpha = 0
         
         //
-        UIView.animateWithDuration(context.duration, delay: 0, options: UIViewAnimationOptions.CurveLinear, animations: {
+        UIView.animate(withDuration: context.duration, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
             
             tp.frame = to
             mask.alpha = 1
             
         }, completion: { s in
             // 不能在这里弹出, 会导致动画栈失衡
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 // continue
-                self.presentViewController(dest, animated: false, completion: {
+                self.present(dest, animated: false, completion: {
                     // finsh, clean
                     //Log.debug("did present view controller")
                     
                     tp.removeFromSuperview()
                     mask.removeFromSuperview()
-                    window.hidden = true
+                    window.isHidden = true
                     
                     // end
                     completion?()
@@ -111,7 +111,7 @@ extension UIViewController {
     ///
     /// 消失(ios7未测试)
     ///
-    func dismissViewControllerAnimated(flag: Bool, fromView: UIView?, completion: (() -> Void)?) {
+    func dismissViewControllerAnimated(_ flag: Bool, fromView: UIView?, completion: (() -> Void)?) {
         SIMLog.trace()
         
         // TODO: 还有一个未处理的情况
@@ -125,30 +125,30 @@ extension UIViewController {
         //window.frame = UIScreen.mainScreen().bounds
         mask.frame = window.bounds
         mask.backgroundColor = src.view.backgroundColor
-        mask.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+        mask.autoresizingMask = UIViewAutoresizing.flexibleWidth | UIViewAutoresizing.flexibleHeight
         
-        tp.image = context.toViewSnapshoot
-        tp.backgroundColor = UIColor.clearColor()
+        tp.image = context?.toViewSnapshoot
+        tp.backgroundColor = UIColor.clear
         
         window.addSubview(mask)
         window.addSubview(tp)
         window.makeKeyAndVisible()
         // 计算位置
-        let to = context.toView!.convertRect(context.toView!.bounds, toView: context.toView?.window)
+        let to = context?.toView!.convert((context?.toView!.bounds)!, to: context?.toView?.window)
         // 直接显示遮罩层
-        tp.frame = to
+        tp.frame = to!
         mask.alpha = 1
         // 直接关闭他
-        self.dismissViewControllerAnimated(false, completion: {
+        self.dismiss(animated: false, completion: {
             // 理由同上
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 // next
-                let from = context.fromView!.convertRect(context.fromView!.bounds, toView: context.fromView?.window)
+                let from = context?.fromView!.convert((context?.fromView!.bounds)!, to: context?.fromView?.window)
                 //SIMLog.debug("will dismiss view controller, from: \(to), to: \(from)")
                 // 动画淡出
-                UIView.animateWithDuration(context.duration, delay: 0, options: UIViewAnimationOptions.CurveLinear, animations: {
+                UIView.animate(withDuration: (context?.duration)!, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
                     
-                    tp.frame = from
+                    tp.frame = from!
                     mask.alpha = 0
                     
                 }, completion: { s in
@@ -156,7 +156,7 @@ extension UIViewController {
                     //Log.debug("did dismiss view controller")
                     tp.removeFromSuperview()
                     mask.removeFromSuperview()
-                    window.hidden = true
+                    window.isHidden = true
                     // end
                     completion?()
                 })
@@ -168,9 +168,9 @@ extension UIViewController {
     ///
     var modalTransitionContext: TransitionContext! {
         set {
-            self.willChangeValueForKey("modalTransitionContext")
+            self.willChangeValue(forKey: "modalTransitionContext")
             objc_setAssociatedObject(self, modalTransitionContextKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            self.didChangeValueForKey("modalTransitionContext")
+            self.didChangeValue(forKey: "modalTransitionContext")
         }
         get {
             return objc_getAssociatedObject(self, modalTransitionContextKey) as? TransitionContext
@@ -183,7 +183,7 @@ extension UIViewController {
 ///
 class TransitionContext : NSObject {
     
-    var duration: NSTimeInterval = 0.25
+    var duration: TimeInterval = 0.25
     
     weak var fromView: UIView?
     weak var toView: UIView?
@@ -210,7 +210,7 @@ class TransitionContext : NSObject {
     
     // TOOD: 因为是直接使用addSubview到window, 所以转屏有问题. 有时间再处理他吧
     static var window: UIWindow = {
-        let w = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let w = UIWindow(frame: UIScreen.main.bounds)
         
         w.windowLevel = UIWindowLevelStatusBar + 10
         
@@ -219,4 +219,4 @@ class TransitionContext : NSObject {
 }
 
 ///
-let modalTransitionContextKey = unsafeAddressOf("modalTransitionContextKey")
+private var modalTransitionContextKey = "modalTransitionContextKey"

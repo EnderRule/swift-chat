@@ -10,20 +10,24 @@ import UIKit
 
 public final class SIMChatLayout {
     public class Config: FirstAttribute {
-        public func priority(v: CGFloat) -> Self {
+        public func priority(_ v: CGFloat) -> Self {
             context?.priority = UILayoutPriority(v)
             return self
         }
-        public func multiplier(v: CGFloat) -> Self {
+        public func multiplier(_ v: CGFloat) -> Self {
             context?.multiplier = v
             return self
         }
-        public func submit() -> SIMChatLayout {
+        
+        public func submit() {
+            layout.submit()
+        }
+        public func submit2() -> SIMChatLayout {
             layout.submit()
             return layout
         }
         
-        private override init(_ layout: SIMChatLayout, _ context: Context?) {
+        override init(_ layout: SIMChatLayout, _ context: Context?) {
             super.init(layout, context)
             if let context = context {
                 layout.contexts.append(context)
@@ -31,46 +35,47 @@ public final class SIMChatLayout {
         }
     }
     public class Relation {
-        func equ(v: AnyObject) -> SecondAttribute {
-            context.relation = .Equal
+        func equ(_ v: AnyObject) -> SecondAttribute {
+            context.relation = .equal
             context.secondItem = v
             return SecondAttribute(layout, context)
         }
-        func lte(v: AnyObject) -> SecondAttribute {
-            context.relation = .LessThanOrEqual
+        func lte(_ v: AnyObject) -> SecondAttribute {
+            context.relation = .lessThanOrEqual
             context.secondItem = v
             return SecondAttribute(layout, context)
         }
-        func gte(v: AnyObject) -> SecondAttribute {
-            context.relation = .GreaterThanOrEqual
+        func gte(_ v: AnyObject) -> SecondAttribute {
+            context.relation = .greaterThanOrEqual
             context.secondItem = v
             return SecondAttribute(layout, context)
         }
         
-        private var layout: SIMChatLayout
-        private var context: Context
-        private init(_ layout: SIMChatLayout, _ context: Context) {
+        var layout: SIMChatLayout
+        var context: Context
+        
+        init(_ layout: SIMChatLayout, _ context: Context) {
             self.layout = layout
             self.context = context
         }
     }
     public class RelationOfConst: Relation {
-        public func equ(v: CGFloat) -> Config {
-            context.relation = .Equal
+        public func equ(_ v: CGFloat) -> Config {
+            context.relation = .equal
             context.secondItem = nil
             context.secondAttribute = context.firstAttribute
             context.constant = v
             return Config(layout, context)
         }
-        public func lte(v: CGFloat) -> Config {
-            context.relation = .LessThanOrEqual
+        public func lte(_ v: CGFloat) -> Config {
+            context.relation = .lessThanOrEqual
             context.secondItem = nil
             context.secondAttribute = context.firstAttribute
             context.constant = v
             return Config(layout, context)
         }
-        public func gte(v: CGFloat) -> Config {
-            context.relation = .GreaterThanOrEqual
+        public func gte(_ v: CGFloat) -> Config {
+            context.relation = .greaterThanOrEqual
             context.secondItem = nil
             context.secondAttribute = context.firstAttribute
             context.constant = v
@@ -79,38 +84,38 @@ public final class SIMChatLayout {
     }
     public class FirstAttribute {
         
-        public var top: Relation { return set(.Top) }
-        public var left: Relation { return set(.Left) }
-        public var right: Relation { return set(.Right) }
-        public var bottom: Relation { return set(.Bottom) }
+        public var top: Relation { return set(.top) }
+        public var left: Relation { return set(.left) }
+        public var right: Relation { return set(.right) }
+        public var bottom: Relation { return set(.bottom) }
         
-        public var leading: Relation { return set(.Leading) }
-        public var trailing: Relation { return set(.Trailing) }
+        public var leading: Relation { return set(.leading) }
+        public var trailing: Relation { return set(.trailing) }
         
-        public var centerX: Relation { return set(.CenterX) }
-        public var centerY: Relation { return set(.CenterY) }
-        public var baseline: Relation { return set(.Baseline) }
+        public var centerX: Relation { return set(.centerX) }
+        public var centerY: Relation { return set(.centerY) }
+//        public var baseline: Relation { return set(.Baseline) }
         
-        public var width: RelationOfConst { return setV2(.Width) }
-        public var height: RelationOfConst { return setV2(.Height) }
+        public var width: RelationOfConst { return setV2(.width) }
+        public var height: RelationOfConst { return setV2(.height) }
         
-        private func set(att: NSLayoutAttribute) -> Relation {
+        private func set(_ att: NSLayoutAttribute) -> Relation {
             let context = Context()
             context.firstAttribute = att
             return Relation(layout, context)
         }
-        private func setV2(att: NSLayoutAttribute) -> RelationOfConst {
+        private func setV2(_ att: NSLayoutAttribute) -> RelationOfConst {
             let context = Context()
             context.firstAttribute = att
             return RelationOfConst(layout, context)
         }
-        private init(_ layout: SIMChatLayout, _ context: Context? = nil) {
+        init(_ layout: SIMChatLayout, _ context: Context? = nil) {
             self.layout = layout
             self.context = context
         }
         
-        private var layout: SIMChatLayout
-        private var context: Context?
+        var layout: SIMChatLayout
+        var context: Context?
     }
     public class SecondAttribute {
         public var top:         Config { return top(0) }
@@ -121,34 +126,34 @@ public final class SIMChatLayout {
         public var trailing:    Config { return trailing(0) }
         public var centerX:     Config { return centerX(0) }
         public var centerY:     Config { return centerY(0) }
-        public var baseline:    Config { return baseline(0) }
+//        public var baseline:    Config { return baseline(0) }
         public var width:       Config { return width(0) }
         public var height:      Config { return height(0) }
         
-        public func top(v:CGFloat)      -> Config { return set(.Top, v) }
-        public func left(v:CGFloat)     -> Config { return set(.Left, v) }
-        public func right(v:CGFloat)    -> Config { return set(.Right, -v) }
-        public func bottom(v:CGFloat)   -> Config { return set(.Bottom, -v) }
-        public func leading(v:CGFloat)  -> Config { return set(.Leading, v) }
-        public func trailing(v:CGFloat) -> Config { return set(.Trailing, v) }
-        public func centerX(v:CGFloat)  -> Config { return set(.CenterX, v) }
-        public func centerY(v:CGFloat)  -> Config { return set(.CenterY, v) }
-        public func baseline(v:CGFloat) -> Config { return set(.Baseline, v) }
-        public func width(v:CGFloat)    -> Config { return set(.Width, v) }
-        public func height(v:CGFloat)   -> Config { return set(.Height, v) }
+        public func top(_ v:CGFloat)      -> Config { return set(.top, v) }
+        public func left(_ v:CGFloat)     -> Config { return set(.left, v) }
+        public func right(_ v:CGFloat)    -> Config { return set(.right, -v) }
+        public func bottom(_ v:CGFloat)   -> Config { return set(.bottom, -v) }
+        public func leading(_ v:CGFloat)  -> Config { return set(.leading, v) }
+        public func trailing(_ v:CGFloat) -> Config { return set(.trailing, v) }
+        public func centerX(_ v:CGFloat)  -> Config { return set(.centerX, v) }
+        public func centerY(_ v:CGFloat)  -> Config { return set(.centerY, v) }
+//        public func baseline(v:CGFloat) -> Config { return set(.Baseline, v) }
+        public func width(_ v:CGFloat)    -> Config { return set(.width, v) }
+        public func height(_ v:CGFloat)   -> Config { return set(.height, v) }
         
-        private func set(att: NSLayoutAttribute, _ v: CGFloat) -> Config {
+        private func set(_ att: NSLayoutAttribute, _ v: CGFloat) -> Config {
             context.secondAttribute = att
             context.constant = v
             return Config(layout, context)
         }
-        private init(_ layout: SIMChatLayout, _ context: Context) {
+        init(_ layout: SIMChatLayout, _ context: Context) {
             self.layout = layout
             self.context = context
         }
         
-        private var layout: SIMChatLayout
-        private var context: Context
+        var layout: SIMChatLayout
+        var context: Context
     }
     
     public var top: CGFloat {
@@ -199,7 +204,7 @@ public final class SIMChatLayout {
         get { return _height?.constant ?? 0 }
     }
     
-    static func make(v: UIView) -> Config {
+    static func make(_ v: UIView) -> Config {
         if v.translatesAutoresizingMaskIntoConstraints {
             v.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -208,23 +213,23 @@ public final class SIMChatLayout {
         return Config(layout, nil)
     }
     
-    private class Context {
+    class Context {
         
-        private var constant: CGFloat?
-        private var multiplier: CGFloat?
-        private var priority: UILayoutPriority?
+        var constant: CGFloat?
+        var multiplier: CGFloat?
+        var priority: UILayoutPriority?
         
-        private var shouldBeArchived: Bool?
+        var shouldBeArchived: Bool?
         
         // firstItem.firstAttribute {==,<=,>=} secondItem.secondAttribute * multiplier + constant
         
-        private var firstItem: UIView?
-        private var firstAttribute: NSLayoutAttribute?
-        private var relation: NSLayoutRelation?
-        private var secondItem: AnyObject?
-        private var secondAttribute: NSLayoutAttribute?
+        var firstItem: UIView?
+        var firstAttribute: NSLayoutAttribute?
+        var relation: NSLayoutRelation?
+        var secondItem: AnyObject?
+        var secondAttribute: NSLayoutAttribute?
         
-        private var constraint: NSLayoutConstraint?
+        var constraint: NSLayoutConstraint?
     }
     
     /// 提交
@@ -283,17 +288,17 @@ public final class SIMChatLayout {
             }
             context.constraint = constraint
             switch firstAttribute {
-            case .Top:      _top = constraint
-            case .Left:     _left = constraint
-            case .Right:    _right = constraint
-            case .Bottom:   _bottom = constraint
-            case .Leading:  _leading = constraint
-            case .Trailing: _trailing = constraint
-            case .CenterX:  _centerX = constraint
-            case .CenterY:  _centerY = constraint
-            case .Baseline: _baseline = constraint
-            case .Width:    _width = constraint
-            case .Height:   _height = constraint
+            case .top:      _top = constraint
+            case .left:     _left = constraint
+            case .right:    _right = constraint
+            case .bottom:   _bottom = constraint
+            case .leading:  _leading = constraint
+            case .trailing: _trailing = constraint
+            case .centerX:  _centerX = constraint
+            case .centerY:  _centerY = constraint
+            case .lastBaseline: _baseline = constraint
+            case .width:    _width = constraint
+            case .height:   _height = constraint
             default : break
             }
         }

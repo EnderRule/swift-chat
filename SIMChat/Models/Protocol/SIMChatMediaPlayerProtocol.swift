@@ -10,16 +10,16 @@ import Foundation
 
 public protocol SIMChatMediaPlayerDelegate: class {
     
-    func playerShouldPrepare(player: SIMChatMediaPlayerProtocol) -> Bool
-    func playerDidPrepare(player: SIMChatMediaPlayerProtocol)
+    func playerShouldPrepare(_ player: SIMChatMediaPlayerProtocol) -> Bool
+    func playerDidPrepare(_ player: SIMChatMediaPlayerProtocol)
     
-    func playerShouldPlay(player: SIMChatMediaPlayerProtocol) -> Bool
-    func playerDidPlay(player: SIMChatMediaPlayerProtocol)
+    func playerShouldPlay(_ player: SIMChatMediaPlayerProtocol) -> Bool
+    func playerDidPlay(_ player: SIMChatMediaPlayerProtocol)
     
-    func playerDidStop(player: SIMChatMediaPlayerProtocol)
+    func playerDidStop(_ player: SIMChatMediaPlayerProtocol)
     
-    func playerDidFinish(player: SIMChatMediaPlayerProtocol)
-    func playerDidErrorOccur(player: SIMChatMediaPlayerProtocol, error: NSError)
+    func playerDidFinish(_ player: SIMChatMediaPlayerProtocol)
+    func playerDidErrorOccur(_ player: SIMChatMediaPlayerProtocol, error: NSError)
 }
 
 public protocol SIMChatMediaPlayerProtocol: class {
@@ -27,8 +27,8 @@ public protocol SIMChatMediaPlayerProtocol: class {
     var resource: SIMChatResourceProtocol { get }
     
     var playing: Bool { get }
-    var duration: NSTimeInterval { get }
-    var currentTime: NSTimeInterval { get }
+    var duration: TimeInterval { get }
+    var currentTime: TimeInterval { get }
     
     weak var delegate: SIMChatMediaPlayerDelegate? { set get }
     
@@ -36,7 +36,7 @@ public protocol SIMChatMediaPlayerProtocol: class {
     func play()
     func stop()
     
-    func meter(channel: Int) -> Float
+    func meter(_ channel: Int) -> Float
 }
 
 public let SIMChatMediaPlayerWillPrepare = "SIMChatMediaPlayerWillPrepare"

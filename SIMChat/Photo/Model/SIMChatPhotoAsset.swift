@@ -14,10 +14,10 @@ import AssetsLibrary
 /// 媒体类型
 ///
 public enum SIMChatPhotoType : Int {
-    case Unknown = 0
-    case Image
-    case Video
-    case Audio
+    case unknown = 0
+    case image
+    case video
+    case audio
 }
 
 ///
@@ -34,14 +34,14 @@ public class SIMChatPhotoAsset: NSObject {
     /// 获取原图
     /// - parameter block 结果
     ///
-    public func original(block: UIImage? -> Void) {
+    public func original(_ block: (UIImage?) -> Void) {
         block(nil)
     }
     ///
     /// 获取屏幕大小的图片
     /// - parameter block 结果
     ///
-    public func fullscreen(block: UIImage? -> Void) {
+    public func fullscreen(_ block: @escaping (UIImage?) -> Void) {
         fullscreen(false, block: block)
     }
     ///
@@ -49,7 +49,7 @@ public class SIMChatPhotoAsset: NSObject {
     /// - parameter synchronous 是否等待(true只有一次结果)
     /// - parameter block 结果
     ///
-    public func fullscreen(synchronous: Bool, block: UIImage? -> Void) {
+    public func fullscreen(_ synchronous: Bool, block: @escaping (UIImage?) -> Void) {
         // 如果己经加载了
         if let img = fullscreenCache {
             block(img)
@@ -58,7 +58,7 @@ public class SIMChatPhotoAsset: NSObject {
         // 检查cache
         let lib = SIMChatPhotoLibrary.sharedLibrary()
         let imgKey = "\(identifier).fullscreen"
-        if let img = lib.caches.objectForKey(imgKey) as? UIImage {
+        if let img = lib.caches.object(forKey: imgKey) as? UIImage {
             // 预读
             fullscreenCache = img
             block(img)
@@ -68,15 +68,15 @@ public class SIMChatPhotoAsset: NSObject {
         if #available(iOS 9.0, *) {
             if let v = self.data as? PHAsset {
                 let op = PHImageRequestOptions()
-                let size = CGSizeMake(UIScreen.mainScreen().bounds.size, scale: UIScreen.mainScreen().scale)
+                let size = CGSizeMake(UIScreen.main.bounds.size, scale: UIScreen.main.scale)
                 
                 if synchronous {
-                    op.deliveryMode = .HighQualityFormat
+                    op.deliveryMode = .highQualityFormat
                 }
-                op.synchronous = synchronous
-                op.resizeMode = .Fast
+                op.isSynchronous = synchronous
+                op.resizeMode = .fast
                 
-                lib.manager.requestImageForAsset(v, targetSize: size, contentMode: .AspectFill, options: op) { [weak self]img, info in
+                lib.manager.requestImage(for: v, targetSize: size, contentMode: .aspectFill, options: op) { [weak self]img, info in
                     if let img = img {
                         // 加载成功, 计算价值
                         let cost = Int(img.size.width * img.size.height)
@@ -89,7 +89,7 @@ public class SIMChatPhotoAsset: NSObject {
             }
         } else {
             if let v = self.data as? ALAsset {
-                let img = UIImage(CGImage: v.defaultRepresentation().fullResolutionImage().takeUnretainedValue())
+                let img = UIImage(cgImage: v.defaultRepresentation().fullResolutionImage().takeUnretainedValue())
                 // 加载成功, 计算价值
                 let cost = Int(img.size.width * img.size.height)
                 // 缓存
@@ -104,7 +104,7 @@ public class SIMChatPhotoAsset: NSObject {
     /// - parameter targetSize 目标
     /// - parameter block 结果
     ///
-    public func thumbnail(targetSize: CGSize, block: UIImage? -> Void) {
+    public func thumbnail(_ targetSize: CGSize, block: @escaping (UIImage?) -> Void) {
         // 如果己经预读了
         if let img = thumbnailCache {
             block(img)
@@ -113,7 +113,7 @@ public class SIMChatPhotoAsset: NSObject {
         // 检查cache
         let lib = SIMChatPhotoLibrary.sharedLibrary()
         let imgKey = "\(identifier).thumbnail"
-        if let img = lib.caches.objectForKey(imgKey) as? UIImage {
+        if let img = lib.caches.object(forKey: imgKey) as? UIImage {
             // 预读
             thumbnailCache = img
             block(img)
@@ -122,8 +122,8 @@ public class SIMChatPhotoAsset: NSObject {
         /// 开始加载
         if #available(iOS 9.0, *) {
             if let v = self.data as? PHAsset {
-                let size = CGSizeMake(targetSize, scale: UIScreen.mainScreen().scale)
-                lib.manager.requestImageForAsset(v, targetSize: size, contentMode: .AspectFill, options: nil) { [weak self]img, info in
+                let size = CGSizeMake(targetSize, scale: UIScreen.main.scale)
+                lib.manager.requestImage(for: v, targetSize: size, contentMode: .aspectFill, options: nil) { [weak self]img, info in
                     if let img = img {
                         // 加载成功, 计算价值
                         let cost = Int(img.size.width * img.size.height)
@@ -136,7 +136,7 @@ public class SIMChatPhotoAsset: NSObject {
             }
         } else {
             if let v = self.data as? ALAsset {
-                let img = UIImage(CGImage: v.thumbnail().takeUnretainedValue())
+                let img = UIImage(cgImage: v.thumbnail().takeUnretainedValue())
                 // 加载成功, 计算价值
                 let cost = Int(img.size.width * img.size.height)
                 // 缓存
@@ -162,18 +162,18 @@ public class SIMChatPhotoAsset: NSObject {
         if #available(iOS 9.0, *) {
             if let v = self.data as? PHAsset {
                 switch v.mediaType {
-                case .Unknown:  return .Unknown
-                case .Image:    return .Image
-                case .Video:    return .Video
-                case .Audio:    return .Audio
+                case .unknown:  return .unknown
+                case .image:    return .image
+                case .video:    return .video
+                case .audio:    return .audio
                 }
             }
         }
-        return .Unknown
+        return .unknown
     }
     
     /// 媒体持续时间, 针对Video/Audio
-    public var mediaDuration: NSTimeInterval {
+    public var mediaDuration: TimeInterval {
         if #available(iOS 9.0, *) {
             if let v = self.data as? PHAsset {
                 return v.duration
@@ -182,13 +182,14 @@ public class SIMChatPhotoAsset: NSObject {
         return 0
     }
     
-    /// 比较
-    public override func isEqual(object: AnyObject?) -> Bool {
-        if let object = object as? SIMChatPhotoAsset {
-            return object.identifier == identifier
-        }
-        return super.isEqual(object)
-    }
+            // TODO: no imp
+//    /// 比较
+//    public override func isEqual(_ object: AnyObject?) -> Bool {
+//        if let object = object as? SIMChatPhotoAsset {
+//            return object.identifier == identifier
+//        }
+//        return super.isEqual(object)
+//    }
     
     /// 提供一个唯一标识, 用于NSSet
     public private(set) lazy var identifier: String = {
@@ -198,12 +199,12 @@ public class SIMChatPhotoAsset: NSObject {
             }
         } else {
             if let v = self.data as? ALAsset {
-                if let url = v.valueForProperty(ALAssetPropertyAssetURL) as? NSURL {
+                if let url = v.value(forProperty: ALAssetPropertyAssetURL) as? URL {
                     return url.absoluteString
                 }
             }
         }
-        return NSUUID().UUIDString
+        return UUID().uuidString
     }()
     
     public override var hash: Int { return identifier.hashValue }
@@ -217,7 +218,7 @@ public class SIMChatPhotoAsset: NSObject {
     private var data: AnyObject
 }
 
-func CGSizeMake(size: CGSize, scale: CGFloat) -> CGSize {
-    return CGSizeMake(size.width * scale, size.height * scale)
+func CGSizeMake(_ size: CGSize, scale: CGFloat) -> CGSize {
+    return CGSize(width: size.width * scale, height: size.height * scale)
 }
 

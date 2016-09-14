@@ -34,7 +34,7 @@ class SIMChatBubbleView : SIMView {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         // 关于背景直接使用am
         backgroundView.frame = bounds
-        backgroundView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+        backgroundView.autoresizingMask = .flexibleWidth | .flexibleHeight
         
         // add views
         
@@ -61,13 +61,13 @@ extension SIMChatBubbleView {
         set { return contentView.gestureRecognizers = newValue }
         get { return contentView.gestureRecognizers }
     }
-    override func addGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
+    override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         return contentView.addGestureRecognizer(gestureRecognizer)
     }
-    override func removeGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
+    override func removeGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         return contentView.removeGestureRecognizer(gestureRecognizer)
     }
-    override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return contentView.gestureRecognizerShouldBegin(gestureRecognizer)
     }
 }

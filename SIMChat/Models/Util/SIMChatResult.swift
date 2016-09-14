@@ -9,16 +9,16 @@
 ///
 /// 结果
 ///
-public enum SIMChatResult<Value, Error: ErrorType> {
-    case Success(Value)
-    case Failure(Error)
+public enum SIMChatResult<ValueType, ErrorType: Error> {
+    case success(ValueType)
+    case failure(ErrorType)
 
     /// Returns `true` if the result is a success, `false` otherwise.
     public var isSuccess: Bool {
         switch self {
-        case .Success:
+        case .success:
             return true
-        case .Failure:
+        case .failure:
             return false
         }
     }
@@ -29,21 +29,21 @@ public enum SIMChatResult<Value, Error: ErrorType> {
     }
 
     /// Returns the associated value if the result is a success, `nil` otherwise.
-    public var value: Value? {
+    public var value: ValueType? {
         switch self {
-        case .Success(let value):
+        case .success(let value):
             return value
-        case .Failure:
+        case .failure:
             return nil
         }
     }
 
     /// Returns the associated error value if the result is a failure, `nil` otherwise.
-    public var error: Error? {
+    public var error: ErrorType? {
         switch self {
-        case .Success:
+        case .success:
             return nil
-        case .Failure(let error):
+        case .failure(let error):
             return error
         }
     }

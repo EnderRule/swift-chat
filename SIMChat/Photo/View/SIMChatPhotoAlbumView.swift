@@ -15,12 +15,12 @@ internal class SIMChatPhotoAlbumView: SIMView {
             let s = CGFloat(i)
             let photo = SIMChatPhotoAssetView()
             
-            photo.frame = CGRectMake(0, 0, 70 - 4 * s, 70 - 4 * s)
-            photo.center = CGPointMake(center.x, center.y - 4 * s)
+            photo.frame = CGRect(x: 0, y: 0, width: 70 - 4 * s, height: 70 - 4 * s)
+            photo.center = CGPoint(x: center.x, y: center.y - 4 * s)
             photo.layer.borderWidth = 0.5
-            photo.layer.borderColor = UIColor.whiteColor().CGColor
+            photo.layer.borderColor = UIColor.white.cgColor
             photo.layer.masksToBounds = true
-            photo.userInteractionEnabled = false
+            photo.isUserInteractionEnabled = false
             
             photos.append(photo)
         }
@@ -35,11 +35,11 @@ internal class SIMChatPhotoAlbumView: SIMView {
                     album?.asset((album?.count ?? 0) - i - 1) { asset in
                         photo.asset = asset
                         // 检查集合的类型
-                        photo.badgeStyle = .None //(i == 0) ? .Simple : .None
+                        photo.badgeStyle = .none //(i == 0) ? .Simple : .None
                     }
                     // 显示
                     if photo.superview != self {
-                        insertSubview(photo, atIndex: 0)
+                        insertSubview(photo, at: 0)
                     }
                 } else {
                     // 直接移除.

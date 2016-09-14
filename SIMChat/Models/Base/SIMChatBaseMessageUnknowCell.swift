@@ -12,6 +12,7 @@ import UIKit
 /// 未知的信息
 ///
 public class SIMChatBaseMessageUnknowCell: SIMChatBaseMessageBaseCell {
+    
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -41,10 +42,10 @@ public class SIMChatBaseMessageUnknowCell: SIMChatBaseMessageBaseCell {
     private lazy var titleLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
-        view.font = UIFont.systemFontOfSize(12)
+        view.font = UIFont.systemFont(ofSize: 12)
         view.text = "未知的消息类型"
         view.textColor = UIColor(argb: 0xFF7B7B7B)
-        view.textAlignment = NSTextAlignment.Center
+        view.textAlignment = NSTextAlignment.center
         return view
     }()
     private lazy var bubbleImageView: UIImageView = {

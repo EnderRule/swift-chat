@@ -10,32 +10,54 @@ import UIKit
 
 
 /// 提供 | 操作支持
-func |<T : OptionSetType>(lhs: T, rhs: T) -> T {
+func |<T : OptionSet>(lhs: T, rhs: T) -> T {
     return lhs.union(rhs)
 }
 
 /// 为时间提供 - 操作支持
-func -(lhs: NSDate, rhs: NSDate) -> NSTimeInterval {
+func -(lhs: Date, rhs: Date) -> TimeInterval {
     return lhs.timeIntervalSince1970 - rhs.timeIntervalSince1970
 }
 
 /// 让枚举支持 allZeros
-extension OptionSetType where RawValue : BitwiseOperationsType {
+extension OptionSet where RawValue : BitwiseOperations {
     static var allZeros: Self {
         return self.init()
     }
 }
 
+// create an `UIImage` with base64 string
+extension UIImage {
+    public convenience init?(base64Encoded base64String: String, scale: CGFloat = 1) {
+        guard let data = Data(base64Encoded: base64String, options: .allZeros) else {
+            return nil
+        }
+        self.init(data: data, scale: scale)
+    }
+}
+
+/// Cretae an `NSLayoutConstraint`
+internal func _SALayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
+    
+    let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
+    c.priority = priority
+    if output != nil {
+        output?.pointee = c
+    }
+    
+    return c
+}
+
 /// 生成约束
-func NSLayoutConstraintMake(item: AnyObject, _ attribute: NSLayoutAttribute, _ relatedBy: NSLayoutRelation, _ toItem: AnyObject?, _ attribute2: NSLayoutAttribute, _ constant: CGFloat = 0, _ priority: CGFloat = 1000, _ multiplier: CGFloat = 1) -> NSLayoutConstraint {
+func NSLayoutConstraintMake(_ item: AnyObject, _ attribute: NSLayoutAttribute, _ relatedBy: NSLayoutRelation, _ toItem: AnyObject?, _ attribute2: NSLayoutAttribute, _ constant: CGFloat = 0, _ priority: CGFloat = 1000, _ multiplier: CGFloat = 1) -> NSLayoutConstraint {
     let c = NSLayoutConstraint(item: item, attribute: attribute, relatedBy: relatedBy, toItem: toItem, attribute: attribute2, multiplier: multiplier, constant: constant)
     c.priority = UILayoutPriority(priority)
     return c
 }
 
 /// 生成约束, 用vfl
-func NSLayoutConstraintMake(format: String, views: [String : AnyObject], options opts: NSLayoutFormatOptions = .allZeros, metrics: [String : AnyObject]? = nil) -> [NSLayoutConstraint] {
-    return NSLayoutConstraint.constraintsWithVisualFormat(format, options: opts, metrics: metrics, views: views)
+func NSLayoutConstraintMake(_ format: String, views: [String : AnyObject], options opts: NSLayoutFormatOptions = .allZeros, metrics: [String : AnyObject]? = nil) -> [NSLayoutConstraint] {
+    return NSLayoutConstraint.constraints(withVisualFormat: format, options: opts, metrics: metrics, views: views)
 }
 
 /// 添加build
@@ -124,7 +146,7 @@ class SIMViewController : UIViewController {
         self.build()
     }
     /// 初始化
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.build()
     }
@@ -133,49 +155,49 @@ class SIMViewController : UIViewController {
     }
 }
 
-extension NSDate {
+extension Date {
     /// 零
-    class var zero: NSDate {
-        return NSDate(timeIntervalSince1970: 0)
+    static var zero: Date {
+        return Date(timeIntervalSince1970: 0)
     }
     /// 现在
-    class var now: NSDate {
-        return NSDate()
+    static var now: Date {
+        return Date()
     }
     /// 友好的显示
     var visual: String {
-        let df = NSDateFormatter()
+        let df = DateFormatter()
         // format
-        df.dateStyle = .MediumStyle
-        df.timeStyle = .ShortStyle
+        df.dateStyle = .medium
+        df.timeStyle = .short
         // ok
-        return df.stringFromDate(self)
+        return df.string(from: self)
     }
 }
 
-extension NSTimer {
-    class func scheduledTimerWithTimeInterval2(ti: NSTimeInterval, _ aTarget: AnyObject, _ aSelector: Selector, _ userInfo: AnyObject? = nil) -> NSTimer {
-        return self.scheduledTimerWithTimeInterval(ti, target: aTarget, selector: aSelector, userInfo: userInfo, repeats: true)
+extension Timer {
+    class func scheduledTimerWithTimeInterval2(_ ti: TimeInterval, _ aTarget: AnyObject, _ aSelector: Selector, _ userInfo: AnyObject? = nil) -> Timer {
+        return self.scheduledTimer(timeInterval: ti, target: aTarget, selector: aSelector, userInfo: userInfo, repeats: true)
     }
 }
 
-public func dispatch_after_at_now(interval: NSTimeInterval, _ queue: dispatch_queue_t, _ block: dispatch_block_t) {
-    return dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(interval * NSTimeInterval(NSEC_PER_SEC))), queue, block)
+public func dispatch_after_at_now(_ interval: TimeInterval, _ queue: DispatchQueue, _ block: ()->()) {
+//    return queue.after(when: DispatchTime.now() + Double(Int64(interval * TimeInterval(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
 }
 
-extension CollectionType {
+extension Collection {
     /// 分隔成组
-    @warn_unused_result
-    public func splitInGroup(@noescape compare: (Generator.Element, Generator.Element) throws -> Bool) rethrows -> [SubSequence] {
+    public func splitInGroup(compare: (Iterator.Element, Iterator.Element) throws -> Bool) rethrows -> [SubSequence] {
         var result = Array<SubSequence>()
         var begin = startIndex
         while begin != endIndex {
-            var end = begin.advancedBy(1)
+            var end = self.index(begin, offsetBy: 1)
+            
             while end != endIndex {
-                if try !compare(self[end.advancedBy(-1)], self[end]) {
+                if try !compare(self[self.index(end, offsetBy: -1)], self[end]) {
                     break
                 }
-                end = end.advancedBy(1)
+                end = self.index(end, offsetBy: 1)
             }
             result.append(self[begin ..< end])
             begin = end

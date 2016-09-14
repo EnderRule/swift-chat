@@ -25,7 +25,7 @@ class SIMChatPortraitView: SIMView {
         super.build()
         
         contentView.frame = bounds
-        contentView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         // add views
         addSubview(contentView)
@@ -47,11 +47,11 @@ class SIMChatPortraitView: SIMView {
     /// 
     private var defaultPortrait: UIImage? {
         // 如果性别为女, 显示2号头像
-        if user?.gender == .Female {
+        if user?.gender == .female {
             return SIMChatImageManager.defaultPortrait2
         }
         /// 如果性别为男, 显示1号头像
-        if user?.gender == .Male {
+        if user?.gender == .male {
             return SIMChatImageManager.defaultPortrait1
         }
         // 否则.. 显示未

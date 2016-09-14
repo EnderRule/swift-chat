@@ -29,19 +29,19 @@ extension UITableView {
     ///
     /// - parameter identifier: Reuse identifier for cell which must be registered.
     ///
-    private func fd_templateReusableCellForIdentifier(identifier: String) -> UITableViewCell {
-        let reusableCells = (objc_getAssociatedObject(self, self.dynamicType.fd_templateReusableCellForIdentifierKey) as? NSCache) ?? {
-            let dic = NSCache()
-            objc_setAssociatedObject(self, self.dynamicType.fd_templateReusableCellForIdentifierKey, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    private func fd_templateReusableCellForIdentifier(_ identifier: String) -> UITableViewCell {
+        let reusableCells = (objc_getAssociatedObject(self, &_UITableViewTemplateReusableCellForIdentifierKey) as? NSCache<NSString, AnyObject>) ?? {
+            let dic = NSCache<NSString, AnyObject>()
+            objc_setAssociatedObject(self, &_UITableViewTemplateReusableCellForIdentifierKey, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return dic
         }()
-        return (reusableCells.objectForKey(identifier) as? UITableViewCell) ?? {
-            guard let templateCell = dequeueReusableCellWithIdentifier(identifier) else {
+        return (reusableCells.object(forKey: identifier as NSString) as? UITableViewCell) ?? {
+            guard let templateCell = dequeueReusableCell(withIdentifier: identifier) else {
                 fatalError("Cell must be registered to table view for identifier - \(identifier)")
             }
             templateCell.fd_isTemplateLayoutCell = true
             templateCell.contentView.translatesAutoresizingMaskIntoConstraints = false
-            reusableCells.setObject(templateCell, forKey: identifier)
+            reusableCells.setObject(templateCell, forKey: identifier as NSString)
             fd_debugLog("template cell created - \(identifier)")
             return templateCell
         }()
@@ -62,7 +62,7 @@ extension UITableView {
     ///             to the template cell. The configuration should be minimal for scrolling
     ///             performance yet sufficient for calculating cell's height.
     ///
-    public func fd_heightForCellWithIdentifier(identifier: String, configuration: (UITableViewCell -> Void)? = nil) -> CGFloat {
+    public func fd_heightForCellWithIdentifier(_ identifier: String, configuration: ((UITableViewCell) -> Void)? = nil) -> CGFloat {
         let templateLayoutCell = fd_templateReusableCellForIdentifier(identifier)
         
         // Manually calls to ensure consistent behavior with actual cells (that are displayed on screen).
@@ -79,50 +79,50 @@ extension UITableView {
             contentViewWidth -= 16 + view.frame.width
         } else {
             switch templateLayoutCell.accessoryType {
-            case .None:                     contentViewWidth -= 0
-            case .DisclosureIndicator:      contentViewWidth -= 34
-            case .DetailDisclosureButton:   contentViewWidth -= 68
-            case .Checkmark:                contentViewWidth -= 40
-            case .DetailButton:             contentViewWidth -= 48
+            case .none:                     contentViewWidth -= 0
+            case .disclosureIndicator:      contentViewWidth -= 34
+            case .detailDisclosureButton:   contentViewWidth -= 68
+            case .checkmark:                contentViewWidth -= 40
+            case .detailButton:             contentViewWidth -= 48
             }
         }
         
-        var fittingSize = CGSizeZero
+        var fittingSize = CGSize.zero
         if (templateLayoutCell.fd_enforceFrameLayout) {
             // If not using auto layout, you have to override "-sizeThatFits:" to provide a fitting size by yourself.
             // This is the same method used in iOS8 self-sizing cell's implementation.
             // Note: fitting height should not include separator view.
             let selector = #selector(UIView.sizeThatFits(_:))
-            let inherited = templateLayoutCell.isMemberOfClass(UITableViewCell.self)
-            let overrided = templateLayoutCell.dynamicType.instanceMethodForSelector(selector) != UITableViewCell.instanceMethodForSelector(selector)
+            let inherited = templateLayoutCell.isMember(of: UITableViewCell.self)
+            let overrided = type(of: templateLayoutCell).instanceMethod(for: selector) != UITableViewCell.instanceMethod(for: selector)
             if (inherited && !overrided) {
                 fatalError("Customized cell must override '-sizeThatFits:' method if not using auto layout.")
             }
-            fittingSize = templateLayoutCell.sizeThatFits(CGSizeMake(contentViewWidth, 0))
+            fittingSize = templateLayoutCell.sizeThatFits(CGSize(width: contentViewWidth, height: 0))
         } else {
             // Add a hard width constraint to make dynamic content views (like labels) expand vertically instead
             // of growing horizontally, in a flow-layout manner.
             if (contentViewWidth > 0) {
                 let widthFenceConstraint = NSLayoutConstraint(
                     item: templateLayoutCell.contentView,
-                    attribute: .Width,
-                    relatedBy: .Equal,
+                    attribute: .width,
+                    relatedBy: .equal,
                     toItem: nil,
-                    attribute: .NotAnAttribute,
+                    attribute: .notAnAttribute,
                     multiplier: 1,
                     constant: contentViewWidth)
                 templateLayoutCell.contentView.addConstraint(widthFenceConstraint)
                 
                 // Auto layout engine does its math
-                fittingSize = templateLayoutCell.contentView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+                fittingSize = templateLayoutCell.contentView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
                 
                 templateLayoutCell.contentView.removeConstraint(widthFenceConstraint)
             }
         }
         
         // Add 1px extra space for separator line if needed, simulating default UITableViewCell.
-        if self.separatorStyle != .None {
-            fittingSize.height += 1.0 / UIScreen.mainScreen().scale
+        if self.separatorStyle != .none {
+            fittingSize.height += 1.0 / UIScreen.main.scale
         }
 
         if (templateLayoutCell.fd_enforceFrameLayout) {
@@ -139,7 +139,7 @@ extension UITableView {
     ///
     /// - parameter key: model entity's identifier whose data configures a cell.
     ///
-    public func fd_heightForCellWithIdentifier(identifier: String, cacheByKey key: String, configuration: (UITableViewCell -> Void)? = nil) -> CGFloat {
+    public func fd_heightForCellWithIdentifier(_ identifier: String, cacheByKey key: String, configuration: ((UITableViewCell) -> Void)? = nil) -> CGFloat {
         
         // Hit cache
         if let cachedHeight = fd_keyedHeightCache[key] {
@@ -155,16 +155,14 @@ extension UITableView {
         return height
     }
     /// recalculate cahce height for key
-    public func fd_invalidateHeightForKey(key: String) {
+    public func fd_invalidateHeightForKey(_ key: String) {
         fd_keyedHeightCache.invalidateForKey(key)
     }
     /// recalculate all cache height
     public func fd_invalidateHeights() {
         fd_keyedHeightCache.invalidate()
     }
-}
-
-extension UITableView {
+    
     /// tmp
     private class HeightCache: NSObject {
         
@@ -173,9 +171,9 @@ extension UITableView {
             get { return heightsForDeviceOrientation[key] as? CGFloat }
         }
         
-        func invalidateForKey(key: String) {
-            heightsForPortrait.removeObjectForKey(key)
-            heightsForLandscape.removeObjectForKey(key)
+        func invalidateForKey(_ key: String) {
+            heightsForPortrait.removeObject(forKey: key)
+            heightsForLandscape.removeObject(forKey: key)
         }
         func invalidate() {
             heightsForPortrait.removeAllObjects()
@@ -185,7 +183,7 @@ extension UITableView {
         private var heightsForPortrait: NSMutableDictionary = [:]
         private var heightsForLandscape: NSMutableDictionary = [:]
         private var heightsForDeviceOrientation: NSMutableDictionary {
-            if UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation) {
+            if UIDeviceOrientationIsPortrait(UIDevice.current.orientation) {
                 return heightsForPortrait
             } else {
                 return heightsForLandscape
@@ -195,20 +193,17 @@ extension UITableView {
     
     /// Height cache by key. Generally, you don't need to use it directly.
     private var fd_keyedHeightCache: HeightCache {
-        return (objc_getAssociatedObject(self, self.dynamicType.fd_keyedHeightCacheKey) as? HeightCache) ?? {
+        return (objc_getAssociatedObject(self, &_UITableViewKeyedHeightCacheKey) as? HeightCache) ?? {
             let cache = HeightCache()
-            objc_setAssociatedObject(self, self.dynamicType.fd_keyedHeightCacheKey, cache, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &_UITableViewKeyedHeightCacheKey, cache, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return cache
         }()
     }
     /// some log
-    private func fd_debugLog(log: String) {
+    private func fd_debugLog(_ log: String) {
         //print(log)
     }
     
-    // some key
-    private static let fd_keyedHeightCacheKey = unsafeAddressOf("fd_keyedHeightCacheKey")
-    private static let fd_templateReusableCellForIdentifierKey = unsafeAddressOf("fd_templateReusableCellForIdentifierKey")
 }
 
 extension UITableViewCell {
@@ -224,8 +219,8 @@ extension UITableViewCell {
     ///   }
     ///
     public var fd_isTemplateLayoutCell: Bool {
-        set { objc_setAssociatedObject(self, self.dynamicType.fd_isTemplateLayoutCellKey, newValue, .OBJC_ASSOCIATION_ASSIGN) }
-        get { return (objc_getAssociatedObject(self, self.dynamicType.fd_isTemplateLayoutCellKey) as? Bool) ?? false }
+        set { objc_setAssociatedObject(self, &_UITableViewCellIsTemplateLayoutCellKey, newValue, .OBJC_ASSOCIATION_ASSIGN) }
+        get { return (objc_getAssociatedObject(self, &_UITableViewCellIsTemplateLayoutCellKey) as? Bool) ?? false }
     }
     ///
     /// Enable to enforce this template layout cell to use "frame layout" rather than "auto layout",
@@ -234,11 +229,14 @@ extension UITableViewCell {
     /// calculation mode, default to NO.
     ///
     public var fd_enforceFrameLayout: Bool {
-        set { objc_setAssociatedObject(self, self.dynamicType.fd_enforceFrameLayoutKey, newValue, .OBJC_ASSOCIATION_ASSIGN) }
-        get { return (objc_getAssociatedObject(self, self.dynamicType.fd_enforceFrameLayoutKey) as? Bool) ?? false }
+        set { objc_setAssociatedObject(self, &_UITableViewCellEnforceFrameLayoutKey, newValue, .OBJC_ASSOCIATION_ASSIGN) }
+        get { return (objc_getAssociatedObject(self, &_UITableViewCellIsTemplateLayoutCellKey) as? Bool) ?? false }
     }
-    
-    // some key
-    private static var fd_enforceFrameLayoutKey = unsafeAddressOf("fd_enforceFrameLayoutKey")
-    private static var fd_isTemplateLayoutCellKey = unsafeAddressOf("fd_isTemplateLayoutCellKey")
 }
+
+private var _UITableViewKeyedHeightCacheKey = "_UITableViewKeyedHeightCacheKey"
+private var _UITableViewTemplateReusableCellForIdentifierKey = "_UITableViewTemplateReusableCellForIdentifierKey"
+
+private var _UITableViewCellEnforceFrameLayoutKey = "_UITableViewCellEnforceFrameLayoutKey"
+private var _UITableViewCellIsTemplateLayoutCellKey = "_UITableViewCellIsTemplateLayoutCellKey"
+

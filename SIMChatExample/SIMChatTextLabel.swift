@@ -18,38 +18,38 @@ public let SIMChatTextAttachmentAttributeName = "SIMChatTextAttachment"
 public let SIMChatTextAttachmentToken = "\u{fffc}"
 public let SIMChatTextTruncationToken = "\u{2026}"
 
-private func _SIMChatTextDebug(path: CGPath?, _ size: CGSize) {
+private func _SIMChatTextDebug(_ path: CGPath?, _ size: CGSize) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    context?.saveGState()
     
 //    CGContextTranslateCTM(context, 0, size.height)
-    CGContextScaleCTM(context, 1.0, -1.0)
+    context?.scale(x: 1.0, y: -1.0)
     
     // set attrib
-    UIColor.redColor().setStroke()
-    CGContextSetLineWidth(context, 2)
+    UIColor.red().setStroke()
+    context?.setLineWidth(2)
     // draw
-    CGContextAddPath(context, path)
-    CGContextStrokePath(context)
+    context?.addPath(path!)
+    context?.strokePath()
     
-    CGContextRestoreGState(context)
+    context?.restoreGState()
     
 }
 
-private func _SIMChatTextDraw(frame: CTFrame, _ size: CGSize) {
+private func _SIMChatTextDraw(_ frame: CTFrame, _ size: CGSize) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    context?.saveGState()
     
-    UIColor.purpleColor().setStroke()
+    UIColor.purple().setStroke()
     
 //    CGContextTranslateCTM(context, 0, size.height)
-    CGContextScaleCTM(context, 1.0, -1.0)
+    context?.scale(x: 1.0, y: -1.0)
     
     CTFrameDraw(frame, context!)
     
-    CGContextRestoreGState(context)
+    context?.restoreGState()
 }
 //private func _SIMChatTextDraw(line: CTLine, _ size: CGSize) {
 //    let context = UIGraphicsGetCurrentContext()
@@ -66,59 +66,64 @@ private func _SIMChatTextDraw(frame: CTFrame, _ size: CGSize) {
 //    CGContextRestoreGState(context)
 //}
 
-private func _SIMChatTextDebug(rect: CGRect) {
+private func _SIMChatTextDebug(_ rect: CGRect) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    context?.saveGState()
     
 //    CGContextTranslateCTM(context, 0, size.height)
 //    CGContextScaleCTM(context, 1.0, -1.0)
     
     // set attrib
-    UIColor.redColor().setStroke()
-    CGContextSetLineWidth(context, 1)
+    UIColor.red().setStroke()
+    context?.setLineWidth(1)
     // draw
-    CGContextAddRect(context, rect)
+    context?.addRect(rect)
 //    CGContextAddPath(context, path)
-    CGContextStrokePath(context)
+    context?.strokePath()
     
-    CGContextRestoreGState(context)
+    context?.restoreGState()
     
 }
 
-private func _SIMChatTextAttachmentRelease(ref: UnsafeMutablePointer<Void>) {
-    let _: AnyObject = Unmanaged.fromOpaque(COpaquePointer(ref)).takeRetainedValue()
+private func _SIMChatTextAttachmentRelease(_ ref: UnsafeMutablePointer<Void>) {
+//    let _: AnyObject = Unmanaged.fromOpaque(OpaquePointer(ref)).takeRetainedValue()
 }
-private func _SIMChatTextAttachmentRetain(obj: AnyObject) -> UnsafeMutablePointer<Void> {
-    return UnsafeMutablePointer<Void>(Unmanaged.passRetained(obj).toOpaque())
-}
-
-private func _SIMChatTextAttachmentGetWidth(ref: UnsafeMutablePointer<Void>) -> CGFloat {
-    return Unmanaged<SIMChatTextAttachment>.fromOpaque(COpaquePointer(ref)).takeUnretainedValue().width
-}
-private func _SIMChatTextAttachmentGetAscent(ref: UnsafeMutablePointer<Void>) -> CGFloat {
-    return Unmanaged<SIMChatTextAttachment>.fromOpaque(COpaquePointer(ref)).takeUnretainedValue().ascent
-}
-private func _SIMChatTextAttachmentGetDescent(ref: UnsafeMutablePointer<Void>) -> CGFloat {
-    return Unmanaged<SIMChatTextAttachment>.fromOpaque(COpaquePointer(ref)).takeUnretainedValue().descent
+private func _SIMChatTextAttachmentRetain(_ obj: AnyObject) -> UnsafeMutablePointer<Void> {
+//    return UnsafeMutablePointer<Void>(Unmanaged.passRetained(obj).toOpaque())
+    let x: UnsafeMutablePointer<Void>? = nil
+    return x!
 }
 
-private func _SIMChatTextDraw(line: SIMChatTextLine, context: CGContext?, size: CGSize) {
+private func _SIMChatTextAttachmentGetWidth(_ ref: UnsafeMutablePointer<Void>) -> CGFloat {
+//    return Unmanaged<SIMChatTextAttachment>.fromOpaque(OpaquePointer(ref)).takeUnretainedValue().width
+    return 0
+}
+private func _SIMChatTextAttachmentGetAscent(_ ref: UnsafeMutablePointer<Void>) -> CGFloat {
+//    return Unmanaged<SIMChatTextAttachment>.fromOpaque(OpaquePointer(ref)).takeUnretainedValue().ascent
+    return 0
+}
+private func _SIMChatTextAttachmentGetDescent(_ ref: UnsafeMutablePointer<Void>) -> CGFloat {
+//    return Unmanaged<SIMChatTextAttachment>.fromOpaque(OpaquePointer(ref)).takeUnretainedValue().descent
+    return 0
+}
+
+private func _SIMChatTextDraw(_ line: SIMChatTextLine, context: CGContext?, size: CGSize) {
     (CTLineGetGlyphRuns(line.line) as NSArray).forEach {
         let run = $0 as! CTRun
         let attrs = CTRunGetAttributes(run) as NSDictionary
         let textMatrix = CTRunGetTextMatrix(run)
-        let textMatrixIsId = CGAffineTransformIsIdentity(textMatrix)
+        let textMatrixIsId = textMatrix.isIdentity
         
         if !textMatrixIsId {
-            CGContextSaveGState(context)
-            CGContextSetTextMatrix(context, CGAffineTransformConcat(CGContextGetTextMatrix(context), textMatrix))
+            context?.saveGState()
+            context?.textMatrix = (context?.textMatrix.concat(textMatrix))!
         }
         
         CTRunDraw(run, context!, CFRangeMake(0, 0))
         
         if !textMatrixIsId {
-            CGContextRestoreGState(context)
+            context?.restoreGState()
         }
     }
 }
@@ -269,7 +274,7 @@ private func _SIMChatTextDraw(line: SIMChatTextLine, context: CGContext?, size: 
 //    }
 //}
 
-private func _SIMChatTextDraw(layout: SIMChatTextLayout, context: CGContextRef?, rect: CGRect) {
+private func _SIMChatTextDraw(_ layout: SIMChatTextLayout, context: CGContext?, rect: CGRect) {
 }
 //static void YYTextDrawText(YYTextLayout *layout, CGContextRef context, CGSize size, CGPoint point, BOOL (^cancel)(void)) {
 //    CGContextSaveGState(context); {
@@ -351,13 +356,13 @@ public class SIMChatTextContainer {
     }
     
     /// The constrained size. (if the size is larger than CGRectMake(CGFloat.max, CGFloat.max), it will be clipped)
-    public lazy var size: CGSize = CGSizeMake(CGFloat.max, CGFloat.max)
+    public lazy var size: CGSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
     
     /// The insets for constrained size. The inset value should not be negative. Default is UIEdgeInsetsZero.
     public lazy var insets: UIEdgeInsets = UIEdgeInsetsZero
     
     /// Default value: NSLineBreakByWordWrapping  The line break mode defines the behavior of the last line inside the text container.
-    public lazy var lineBreakMode: NSLineBreakMode = .ByWordWrapping
+    public lazy var lineBreakMode: NSLineBreakMode = .byWordWrapping
     
     /// Maximum number of rows, 0 means no limit. Default is 0.
     public lazy var maximumNumberOfLines: Int = 0
@@ -369,7 +374,7 @@ public class SIMChatTextContainer {
     @NSCopying public var path: UIBezierPath?
     
     /// The truncation token. If nil, the layout will use "…" instead. Default is nil.
-    @NSCopying public var truncationToken: NSAttributedString?
+    @NSCopying public var truncationToken: AttributedString?
 }
 
 ///
@@ -391,7 +396,7 @@ public class SIMChatTextContainer {
 ///
 public class SIMChatTextLayout {
     
-    public let text: NSAttributedString
+    public let text: AttributedString
     public let range: NSRange
     public let container: SIMChatTextContainer
     
@@ -427,9 +432,9 @@ public class SIMChatTextLayout {
     
 //static void YYTextDrawBlockBorder(YYTextLayout *layout, CGContextRef context, CGSize size, CGPoint point, BOOL (^cancel)(void)) {
     
-    private func drawBlockBorder(context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: (Void -> Bool)) throws {
-        CGContextSaveGState(context)
-        CGContextTranslateCTM(context, position.x, position.y)
+    private func drawBlockBorder(_ context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: ((Void) -> Bool)) throws {
+        context.saveGState()
+        context.translate(x: position.x, y: position.y)
         
 //        for line in lines {
 //            guard !cancel() else {
@@ -446,7 +451,7 @@ public class SIMChatTextLayout {
 //            }
 //        }
         
-        CGContextRestoreGState(context)
+        context.restoreGState()
     }
     private func drawBorder() throws {
     }
@@ -456,21 +461,21 @@ public class SIMChatTextLayout {
     }
     
     
-    private func drawText(context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: (Void -> Bool)) throws {
-        CGContextSaveGState(context)
+    private func drawText(_ context: CGContext, _ size: CGSize, _ position: CGPoint, _ cancel: ((Void) -> Bool)) throws {
+        context.saveGState()
         
-        CGContextTranslateCTM(context, position.x, position.y)
-        CGContextTranslateCTM(context, 0, size.height)
-        CGContextScaleCTM(context, 1, -1)
-        CGContextSetShadow(context, CGSizeZero, 0)
+        context.translate(x: position.x, y: position.y)
+        context.translate(x: 0, y: size.height)
+        context.scale(x: 1, y: -1)
+        context.setShadow(offset: CGSize.zero, blur: 0)
         
         for line in lines {
             guard !cancel() else {
                 break
             }
             
-            CGContextSetTextMatrix(context, CGAffineTransformIdentity)
-            CGContextSetTextPosition(context, line.position.x, size.height - line.position.y)
+            context.textMatrix = CGAffineTransform.identity
+            context.setTextPosition(x: line.position.x, y: size.height - line.position.y)
             
             (CTLineGetGlyphRuns(line.line) as NSArray).forEach {
                 drawTextRun(context, $0 as! CTRun, line, size)
@@ -481,25 +486,25 @@ public class SIMChatTextLayout {
         // CGContextTranslateCTM(context, 0, size.height)
         // CTFrameDraw(frame, context)
         
-        CGContextRestoreGState(context)
+        context.restoreGState()
     }
-    private func drawTextRun(context: CGContext, _ run: CTRun, _ line: SIMChatTextLine, _ size: CGSize) {
+    private func drawTextRun(_ context: CGContext, _ run: CTRun, _ line: SIMChatTextLine, _ size: CGSize) {
         
         //let attrs = CTRunGetAttributes(run) as NSDictionary
         let textMatrix = CTRunGetTextMatrix(run)
-        let textMatrixIsId = CGAffineTransformIsIdentity(textMatrix)
+        let textMatrixIsId = textMatrix.isIdentity
         
 //        guard let transform = attrs["YYTextGlyphTransformAttributeName"] else {
             // draw run
             if !textMatrixIsId {
-                CGContextSaveGState(context)
-                CGContextSetTextMatrix(context, CGAffineTransformConcat(CGContextGetTextMatrix(context), textMatrix))
+                context.saveGState()
+                context.textMatrix = context.textMatrix.concat(textMatrix)
             }
             
             CTRunDraw(run, context, CFRangeMake(0, 0))
             
             if !textMatrixIsId {
-                CGContextRestoreGState(context)
+                context.restoreGState()
             }
 //            return
 //        }
@@ -625,7 +630,7 @@ public class SIMChatTextLayout {
     private func drawDebug() throws {
     }
     
-    private func drawInContext(context: CGContext, size: CGSize, position: CGPoint, view: UIView? = nil, layer: CALayer? = nil, cancel: (Void -> Bool)? = nil) {
+    private func drawInContext(_ context: CGContext, size: CGSize, position: CGPoint, view: UIView? = nil, layer: CALayer? = nil, cancel: ((Void) -> Bool)? = nil) {
         // generate test function
         let needDrawDebug = true
         let cancel = {
@@ -691,29 +696,29 @@ public class SIMChatTextLayout {
     /// - parameter container: The container.
     /// - parameter range: The range.
     ///
-    private init(text: NSAttributedString, container: SIMChatTextContainer, range: NSRange) {
+    private init(text: AttributedString, container: SIMChatTextContainer, range: NSRange) {
         
         let canvas: CGPath = {
             // generate of default canvas
-            var canvas = container.path?.CGPath ?? {
-                let rect = CGRect(origin: CGPointZero, size: container.size)
+            var canvas = container.path?.cgPath ?? {
+                let rect = CGRect(origin: CGPoint.zero, size: container.size)
                 let box = UIEdgeInsetsInsetRect(rect, container.insets)
-                return CGPathCreateWithRect(box, nil)
+                return CGPath(rect: box, transform: nil)
                 }()
             // add the exclusion path to canvas, if need
             if !container.exclusionPaths.isEmpty {
-                canvas = container.exclusionPaths.reduce(CGPathCreateMutableCopy(canvas)) {
-                    CGPathAddPath($0, nil, $1.CGPath)
+                canvas = container.exclusionPaths.reduce(canvas.mutableCopy()) {
+                    $0?.addPath(nil, path: $1.cgPath)
                     return $0
                     } ?? canvas
             }
             return canvas
         }()
         let canvasVirtual: CGPath = {
-            var trans = CGAffineTransformMakeScale(1, -1)
-            return CGPathCreateMutableCopyByTransformingPath(canvas, &trans)
+            var trans = CGAffineTransform(scaleX: 1, y: -1)
+            return canvas.mutableCopy(using: &trans)
         }() ?? canvas
-        let canvasRect = CGPathGetPathBoundingBox(canvas)
+        let canvasRect = canvas.boundingBoxOfPath
         
         // frame setter config
         let frameAttrs = NSMutableDictionary()
@@ -723,31 +728,31 @@ public class SIMChatTextLayout {
         let frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(range.location, range.length), canvasVirtual, frameAttrs)
        
         var row = 0
-        var last = (position: CGPoint, rect: CGRect)?()
+        var last: (position: CGPoint, rect: CGRect)? = nil
         var needTruncation = false
-        var textBoundingRect = CGRectZero
+        var textBoundingRect = CGRect.zero
         
         // calculate line frame
-        let lines: Array<SIMChatTextLine> = (CTFrameGetLines(frame) as NSArray).enumerate().flatMap { (i, e) in
+        let lines: Array<SIMChatTextLine> = (CTFrameGetLines(frame) as NSArray).enumerated().flatMap { (i, e) in
             let position: CGPoint = {
-                var origin = CGPointZero
+                var origin = CGPoint.zero
                 // read origin form frame
                 CTFrameGetLineOrigins(frame, CFRangeMake(i, 1), &origin)
                 // convert CoreText coordinate to UIKit coordinate
-                return CGPointMake(canvasRect.minX + origin.x, canvasRect.maxY - origin.y)
+                return CGPoint(x: canvasRect.minX + origin.x, y: canvasRect.maxY - origin.y)
             }()
             let line = SIMChatTextLine(line: e as! CTLine, position: position)
             let rect = line.frame
             
             // check the line is a new row
             if let last = last {
-                let pt = CGPointMake(
-                    last.rect.minX,
-                    position.y
+                let pt = CGPoint(
+                    x: last.rect.minX,
+                    y: position.y
                 )
-                let lpt = CGPointMake(
-                    rect.minX,
-                    last.position.y
+                let lpt = CGPoint(
+                    x: rect.minX,
+                    y: last.position.y
                 )
                 if !(last.rect.contains(pt) || rect.contains(lpt)) {
                     row += 1
@@ -763,7 +768,7 @@ public class SIMChatTextLayout {
             }
             
             last = (position, rect)
-            textBoundingRect = i != 0 ? CGRectUnion(textBoundingRect, rect) : rect
+            textBoundingRect = i != 0 ? textBoundingRect.union(rect) : rect
             
             // update line info
             line.row = row
@@ -794,7 +799,7 @@ public class SIMChatTextLayout {
             let width = rect.maxX
             let height = rect.maxY
             
-            return CGSizeMake(max(ceil(width), 0), max(ceil(height), 0))
+            return CGSize(width: max(ceil(width), 0), height: max(ceil(height), 0))
         }()
         
         self.textBoundingRect = textBoundingRect
@@ -896,7 +901,7 @@ public class SIMChatTextLayout {
         
         self.needDrawText = true
         
-        text.enumerateAttributesInRange(visibleRange, options: .LongestEffectiveRangeNotRequired, usingBlock: block)
+        text.enumerateAttributes(in: visibleRange, options: .longestEffectiveRangeNotRequired, using: block)
 //    if (visibleRange.length > 0) {
 //        layout.needDrawText = YES;
 //        
@@ -941,7 +946,7 @@ public class SIMChatTextLayout {
     ///
     /// - returns A new layout
     ///
-    public static func layout(text: NSAttributedString, size: CGSize) -> SIMChatTextLayout {
+    public static func layout(_ text: AttributedString, size: CGSize) -> SIMChatTextLayout {
         return layout(text, container: SIMChatTextContainer(size: size))
     }
     
@@ -954,7 +959,7 @@ public class SIMChatTextLayout {
     ///
     /// - returns: A new layout
     ///
-    public static func layout(text: NSAttributedString, container: SIMChatTextContainer, range: NSRange? = nil) -> SIMChatTextLayout {
+    public static func layout(_ text: AttributedString, container: SIMChatTextContainer, range: NSRange? = nil) -> SIMChatTextLayout {
         return SIMChatTextLayout(text: text, container: container, range: range ?? NSMakeRange(0, text.length))
     }
     
@@ -967,7 +972,7 @@ public class SIMChatTextLayout {
     ///
     /// - returns An array of SIMChatTextLayout object (the count is same as containers)
     ///
-    public static func layout(text: NSAttributedString, containers: [SIMChatTextContainer], range: NSRange? = nil) -> [SIMChatTextLayout] {
+    public static func layout(_ text: AttributedString, containers: [SIMChatTextContainer], range: NSRange? = nil) -> [SIMChatTextLayout] {
         var range = range ?? NSMakeRange(0, text.length)
         return containers.flatMap {
             guard range.location + range.length < text.length else {
@@ -989,13 +994,13 @@ public class SIMChatTextLayout {
 ///
 public class SIMChatTextLine {
     
-    public init(line: CTLine, position: CGPoint = CGPointZero) {
+    public init(line: CTLine, position: CGPoint = CGPoint.zero) {
         
         let firstOffset: CGPoint = {
             guard let run = (CTLineGetGlyphRuns(line) as NSArray).firstObject as! CTRun? else {
-                return CGPointZero
+                return CGPoint.zero
             }
-            var pos = CGPointZero
+            var pos = CGPoint.zero
             CTRunGetPositions(run, CFRangeMake(0, 1), &pos)
             return pos
         }()
@@ -1009,7 +1014,7 @@ public class SIMChatTextLine {
             return (CGFloat(width), CGFloat(twWidth), ascent, descent, leading)
             }()
         // generate the bounds
-        self.bounds = CGRectMake(0, 0 - ascent + firstOffset.x, lineWidth, ascent + descent + leading)
+        self.bounds = CGRect(x: 0, y: 0 - ascent + firstOffset.x, width: lineWidth, height: ascent + descent + leading)
         
         self.line = line
         self.position = position
@@ -1028,7 +1033,7 @@ public class SIMChatTextLine {
             
             let range: CFRange = CTRunGetStringRange(run)
             let rect: CGRect = {
-                var position = CGPointZero
+                var position = CGPoint.zero
                 // get the run origin position
                 CTRunGetPositions(run, CFRangeMake(0, 1), &position)
                 
@@ -1038,7 +1043,7 @@ public class SIMChatTextLine {
                 // get the run parameters
                 let width = CGFloat(CTRunGetTypographicBounds(run, CFRangeMake(0, 0), &ascent, &descent, &leading))
                 
-                return CGRectMake(position.x , -position.y - ascent, width, ascent + descent + leading)
+                return CGRect(x: position.x , y: -position.y - ascent, width: width, height: ascent + descent + leading)
             }()
 
             return (attachment, NSMakeRange(range.location, range.length), rect)
@@ -1046,11 +1051,11 @@ public class SIMChatTextLine {
     }
     
     /// enumerate all runs
-    public func enumerateRun(block: (Int, NSDictionary, CTRun) -> Void) {
-        (CTLineGetGlyphRuns(line) as NSArray).enumerate().forEach {
+    public func enumerateRun(_ block: (Int, NSDictionary, CTRun) -> Void) {
+        (CTLineGetGlyphRuns(line) as NSArray).enumerated().forEach {
             let run = $0.element as! CTRun
             let attrs = CTRunGetAttributes(run) as NSDictionary
-            block($0.index, attrs, run)
+            block($0.offset, attrs, run)
         }
     }
     
@@ -1059,7 +1064,7 @@ public class SIMChatTextLine {
     public var row: Int = 0
     
     public var frame: CGRect {
-        return CGRectMake(position.x + bounds.minX, position.y + bounds.minY, bounds.width, bounds.height)
+        return CGRect(x: position.x + bounds.minX, y: position.y + bounds.minY, width: bounds.width, height: bounds.height)
     }
     
     public let range: NSRange
@@ -1140,20 +1145,20 @@ public class SIMChatTextAttachment {
 
 public class SIMChatLabel: UIView {
 
-    public override func drawRect(rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         // Drawing code
         
-        let path = CGPathCreateMutable()
+        let path = CGMutablePath()
         
         
-        CGPathAddRect(path, nil, CGRectMake(0, 0, self.bounds.width, self.bounds.height))
+        path.addRect(nil, rect: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height))
         
         let ms = NSMutableAttributedString(string: "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc")
 //        let ms = NSMutableAttributedString(string: "abcabcabcabcabcabcabcabcabc")
         var attributes: [String: AnyObject] = [:]
         
-        attributes[String(kCTForegroundColorAttributeName)] = UIColor.purpleColor().CGColor
-        attributes[String(kCTFontAttributeName)] = CTFontCreateWithName(UIFont.italicSystemFontOfSize(20).fontName, 20, nil)
+        attributes[String(kCTForegroundColorAttributeName)] = UIColor.purple().cgColor
+        attributes[String(kCTFontAttributeName)] = CTFontCreateWithName(UIFont.italicSystemFont(ofSize: 20).fontName, 20, nil)
         //attributes[String(kCTUnderlineStyleAttributeName)] = 9//kCTUnderlineStyleDouble
         //kCTUnderlineStyleAttributeName
         
@@ -1167,7 +1172,7 @@ public class SIMChatLabel: UIView {
         ms.addAttributes(attributes, range: NSMakeRange(0, ms.length))
         
         var kk = NSMakeRange(0, ms.length)
-        print(ms.attributesAtIndex(0, effectiveRange: &kk))
+        print(ms.attributes(at: 0, effectiveRange: &kk))
         
 //        let att = SIMChatTextAttachment()
 //        
@@ -1185,9 +1190,9 @@ public class SIMChatLabel: UIView {
 //        let c1 = SIMChatTextContainer(path: UIBezierPath(roundedRect: CGRectMake(0, 0, 320, 320), cornerRadius: 20))
         let c1 = SIMChatTextContainer(size: CGSize(width: 320, height: 320), insets: UIEdgeInsetsMake(10, 10, 10, 10))
         c1.exclusionPaths = [
-            UIBezierPath(ovalInRect: CGRectMake((320 - 120) / 2 - 50, (320 - 120) / 2 - 50, 120, 120)),
-            UIBezierPath(ovalInRect: CGRectMake((320 - 120) / 2 + 50, (320 - 120) / 2 + 50, 120, 120)),
-            UIBezierPath(ovalInRect: CGRectMake((320 - 120) / 2, (320 - 120) / 2, 120, 120))
+            UIBezierPath(ovalIn: CGRect(x: (320 - 120) / 2 - 50, y: (320 - 120) / 2 - 50, width: 120, height: 120)),
+            UIBezierPath(ovalIn: CGRect(x: (320 - 120) / 2 + 50, y: (320 - 120) / 2 + 50, width: 120, height: 120)),
+            UIBezierPath(ovalIn: CGRect(x: (320 - 120) / 2, y: (320 - 120) / 2, width: 120, height: 120))
         ]
         
         c1.maximumNumberOfLines = 2
@@ -1195,7 +1200,7 @@ public class SIMChatLabel: UIView {
         let layout = SIMChatTextLayout.layout(ms, container: c1)
         
         
-        layout.drawInContext(UIGraphicsGetCurrentContext()!, size: CGSizeMake(320, 320), position: CGPointMake(0, 0))
+        layout.drawInContext(UIGraphicsGetCurrentContext()!, size: CGSize(width: 320, height: 320), position: CGPoint(x: 0, y: 0))
         //let zzz = TTT()
         
 //        //CTRunDelegateCreate

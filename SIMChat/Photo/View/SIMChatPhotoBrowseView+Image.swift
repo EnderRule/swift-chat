@@ -17,7 +17,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
         super.build()
         
         scrollView.frame = self.bounds
-        scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+        scrollView.autoresizingMask = UIViewAutoresizing.flexibleWidth | UIViewAutoresizing.flexibleHeight
         scrollView.zoomScale = 1.0
         scrollView.minimumZoomScale = 1.0
         scrollView.maximumZoomScale = 2.0
@@ -32,7 +32,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
         addGestureRecognizer(tapGestureRecognizer)
         addGestureRecognizer(doubleTapGestureRecognizer)
         
-        tapGestureRecognizer.requireGestureRecognizerToFail(doubleTapGestureRecognizer)
+        tapGestureRecognizer.require(toFail: doubleTapGestureRecognizer)
         
         // TODO: 旋转手势和scrollview有冲突, 先不处理
         //addGestureRecognizer(rotationGestureRecognizer)
@@ -43,17 +43,17 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
     ///
     func zoomToFit(animated flag: Bool) {
         let from = imageView.bounds.size
-        var to = imageView.image?.size ?? CGSizeZero
+        var to = imageView.image?.size ?? CGSize.zero
         
         to.width = max(to.width, 1)
         to.height = max(to.height, 1)
         
         // 计算出最小的.
         let scale = min(min(bounds.width, to.width) / to.width, min(bounds.height, to.height) / to.height)
-        let fit = CGRectMake(0, 0, scale * to.width, scale * to.height)
+        let fit = CGRect(x: 0, y: 0, width: scale * to.width, height: scale * to.height)
         
         // 还有中心点问题
-        let pt = CGPointMake(max(fit.width, scrollView.bounds.width) / 2, max(fit.height, scrollView.bounds.height) / 2)
+        let pt = CGPoint(x: max(fit.width, scrollView.bounds.width) / 2, y: max(fit.height, scrollView.bounds.height) / 2)
         
         scrollView.zoomScale = 1
         scrollView.minimumZoomScale = 1
@@ -63,7 +63,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
         SIMLog.trace("from: \(from), to: \(to), scale: \(scrollView.maximumZoomScale)")
         
         if flag {
-            UIView.animateWithDuration(0.25) {
+            UIView.animate(withDuration: 0.25) {
                 self.imageView.bounds = fit
                 self.imageView.center = pt
             }
@@ -79,7 +79,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
         let width = max(scrollView.contentSize.width, scrollView.bounds.width)
         let height = max(scrollView.contentSize.height, scrollView.bounds.height)
         
-        imageView.center = CGPointMake(width / 2, height / 2)
+        imageView.center = CGPoint(x: width / 2, y: height / 2)
     }
     
     // 需要显示的元素
@@ -94,7 +94,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
             // 需要加载缩略图?
             if !fullIsLoaded {
                 imageView.image = nil
-                element?.thumbnail(CGSizeMake(80, 80)) { [weak self] img in
+                element?.thumbnail(CGSize(width: 80, height: 80)) { [weak self] img in
                     guard self?.element !== oldValue else {
                         return
                     }
@@ -104,7 +104,7 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
             }
             // 需要加载大图?
             element?.fullscreen { [weak self] img in
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     guard self?.element !== oldValue else {
                         return
                     }
@@ -127,15 +127,15 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
     private(set) lazy var imageView = UIImageView()
     private(set) lazy var scrollView = UIScrollView()
     private(set) lazy var tapGestureRecognizer: UITapGestureRecognizer = {
-        return UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onTap(_:)))
+        return UITapGestureRecognizer(target: self, action: #selector(type(of: self).onTap(_:)))
     }()
     private(set) lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.dynamicType.onDoubleTap(_:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(type(of: self).onDoubleTap(_:)))
         tap.numberOfTapsRequired = 2
         return tap
     }()
     private(set) lazy var rotationGestureRecognizer: UIRotationGestureRecognizer = {
-        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(self.dynamicType.onRotation(_:)))
+        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(type(of: self).onRotation(_:)))
         rotation.delegate = self
         return rotation
     }()
@@ -147,15 +147,15 @@ internal class SIMChatPhotoBrowseViewImage: SIMView {
 // MARK: - Content
 extension SIMChatPhotoBrowseViewImage : UIScrollViewDelegate, UIGestureRecognizerDelegate {
     /// yp
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
     /// xp
-    func scrollViewDidZoom(scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         let x = (scrollView.bounds.size.width > scrollView.contentSize.width) ? (scrollView.bounds.size.width - scrollView.contentSize.width) / 2 : 0;
         let y = (scrollView.bounds.size.height > scrollView.contentSize.height) ? (scrollView.bounds.size.height - scrollView.contentSize.height) / 2 : 0;
         // 更新
-        self.imageView.center = CGPointMake(scrollView.contentSize.width / 2 + x, scrollView.contentSize.height / 2 + y)
+        self.imageView.center = CGPoint(x: scrollView.contentSize.width / 2 + x, y: scrollView.contentSize.height / 2 + y)
     }
     
 }
@@ -163,21 +163,21 @@ extension SIMChatPhotoBrowseViewImage : UIScrollViewDelegate, UIGestureRecognize
 // MARK: - Events
 extension SIMChatPhotoBrowseViewImage {
     /// 单击退出
-    private dynamic func onTap(sender: UIGestureRecognizer) {
+    private dynamic func onTap(_ sender: UIGestureRecognizer) {
         SIMLog.trace()
-        if sender.state == .Ended {
+        if sender.state == .ended {
             if let view = delegate as? SIMChatPhotoBrowseView {
                 delegate?.browseViewDidClick?(view)
             }
         }
     }
     /// 旋转
-    private dynamic func onRotation(recognizer: UIRotationGestureRecognizer) {
+    private dynamic func onRotation(_ recognizer: UIRotationGestureRecognizer) {
     }
     /// 双击
-    private dynamic func onDoubleTap(sender: AnyObject) {
+    private dynamic func onDoubleTap(_ sender: AnyObject) {
         SIMLog.trace()
-        if sender.state == .Ended {
+        if sender.state == .ended {
             if let view = delegate as? SIMChatPhotoBrowseView {
                 delegate?.browseViewDidDoubleClick?(view)
             }

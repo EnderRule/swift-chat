@@ -24,6 +24,6 @@ import UIKit
 /// 输入选项代理
 ///
 public protocol SIMChatInputItemProtocolDelegate: class {
-    func itemShouldSelect(item: SIMChatInputItemProtocol) -> Bool
-    func itemDidSelect(item: SIMChatInputItemProtocol)
+    func itemShouldSelect(_ item: SIMChatInputItemProtocol) -> Bool
+    func itemDidSelect(_ item: SIMChatInputItemProtocol)
 }

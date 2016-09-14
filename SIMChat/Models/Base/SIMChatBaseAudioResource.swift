@@ -8,24 +8,24 @@
 
 import UIKit
 
-public class SIMChatBaseAudioResource: SIMChatBaseFileResource {
-    ///
-    /// 获取资源
-    ///
-    /// - parameter closure: 结果回调
-    ///
-    public override func resource(closure: SIMChatResult<AnyObject, NSError> -> Void) {
-        switch value {
-        case .URL(let URL):
-            closure(.Success(URL))
-        case .Path(let path):
-            closure(.Success(NSURL(fileURLWithPath: path)))
-        case .Custom(let value):
-            if let value = value as? NSData {
-                closure(.Success(value))
-            } else {
-                closure(.Failure(NSError(domain: "Unsupport content", code: -1, userInfo: nil)))
-            }
-        }
-    }
-}
+//public class SIMChatBaseAudioResource: SIMChatBaseFileResource {
+//    ///
+//    /// 获取资源
+//    ///
+//    /// - parameter closure: 结果回调
+//    ///
+//    public override func resource(_ closure: (SIMChatResult<AnyObject, NSError>) -> Void) {
+//        switch value {
+//        case .url(let URL):
+//            closure(.success(URL))
+//        case .path(let path):
+//            closure(.success(URL(fileURLWithPath: path)))
+//        case .custom(let value):
+//            if let value = value as? Data {
+//                closure(.success(value))
+//            } else {
+//                closure(.failure(NSError(domain: "Unsupport content", code: -1, userInfo: nil)))
+//            }
+//        }
+//    }
+//}

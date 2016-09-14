@@ -25,7 +25,7 @@ public class SIMChatPhotoAlbum: NSObject {
         if #available(iOS 9.0, *) {
             return self.collection.localizedTitle
         } else {
-            return self.group.valueForProperty(ALAssetsGroupPropertyName) as? String
+            return self.group.value(forProperty: ALAssetsGroupPropertyName) as? String
         }
     }
     /// 图片数量
@@ -49,15 +49,15 @@ public class SIMChatPhotoAlbum: NSObject {
     }
     
     // iOS 8.x and later
-    @available(iOS, introduced=8.0) var collection: PHAssetCollection {
+    @available(iOS, introduced: 8.0) var collection: PHAssetCollection {
         return self.data as! PHAssetCollection
     }
     // iOS 6.x, iOS 7.x
-    @available(iOS, introduced=4.0, deprecated=9.0) var group: ALAssetsGroup {
+    @available(iOS, introduced: 4.0, deprecated: 9.0) var group: ALAssetsGroup {
         return self.data as! ALAssetsGroup
     }
     
-    public func asset(index: Int, complete: (SIMChatPhotoAsset? -> Void)?) {
+    public func asset(_ index: Int, complete: ((SIMChatPhotoAsset?) -> Void)?) {
         // 加锁， 防止修改assets
         objc_sync_enter(self)
         // 如果己经存在，直接回调
@@ -84,7 +84,7 @@ public class SIMChatPhotoAlbum: NSObject {
     }
     
     /// 加载
-    public func loadIfNeed(complete: (Void -> Void)?) {
+    public func loadIfNeed(_ complete: ((Void) -> Void)?) {
         objc_sync_enter(self)
         // 正在加载中?
         guard !isLoading && !isLoaded else {
@@ -101,8 +101,8 @@ public class SIMChatPhotoAlbum: NSObject {
         if #available(iOS 9.0, *) {
             // 查询图片
             let op = PHFetchOptions()
-            op.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-            let assets = PHAsset.fetchAssetsInAssetCollection(self.collection, options: op)
+            op.sortDescriptors = [SortDescriptor(key: "creationDate", ascending: true)]
+            let assets = PHAsset.fetchAssets(in: self.collection, options: op)
             
             // 加锁assets
             objc_sync_enter(self)
@@ -110,14 +110,14 @@ public class SIMChatPhotoAlbum: NSObject {
             // 处理
             for index in 0 ..< assets.count {
                 // 创建
-                let sa = assets[index] as! PHAsset
+                let sa = assets[index] 
                 let asset = self.assetMakeOrCache(sa)
                 
                 // 更新
                 self.assets.append(asset)
                 // 取出并清除正在等待的
                 let queue = self.waitQueues[index]
-                self.waitQueues.removeValueForKey(index)
+                self.waitQueues.removeValue(forKey: index)
                 
                 // 通知
                 queue?.forEach { $0(asset) }
@@ -133,42 +133,42 @@ public class SIMChatPhotoAlbum: NSObject {
             complete?()
         } else {
             // 这是异步的
-            self.group.enumerateAssetsUsingBlock { sa, index, stop in
-                // 创建
-                guard let sa = sa else {
-                    // 清空
-                    objc_sync_enter(self)
-                    self.waitQueues.removeAll()
-                    objc_sync_exit(self)
-                    // 完成
-                    complete?()
-                    return
-                }
-                let asset = self.assetMakeOrCache(sa)
-                
-                // 加锁assets
-                objc_sync_enter(self)
-                
-                // 更新
-                self.assets.append(asset)
-                // 取出并清除正在等待的
-                let queue = self.waitQueues[index]
-                self.waitQueues.removeValueForKey(index)
-                
-                self.isLoading = false
-                self.isLoaded = true
-                
-                // 解锁必须的。。
-                objc_sync_exit(self)
-                
-                // 通知
-                queue?.forEach { $0(asset) }
-            }
+//            self.group.enumerateAssets { sa, index, stop in
+//                // 创建
+//                guard let sa = sa else {
+//                    // 清空
+//                    objc_sync_enter(self)
+//                    self.waitQueues.removeAll()
+//                    objc_sync_exit(self)
+//                    // 完成
+//                    complete?()
+//                    return
+//                }
+//                let asset = self.assetMakeOrCache(sa)
+//                
+//                // 加锁assets
+//                objc_sync_enter(self)
+//                
+//                // 更新
+//                self.assets.append(asset)
+//                // 取出并清除正在等待的
+//                let queue = self.waitQueues[index]
+//                self.waitQueues.removeValue(forKey: index)
+//                
+//                self.isLoading = false
+//                self.isLoaded = true
+//                
+//                // 解锁必须的。。
+//                objc_sync_exit(self)
+//                
+//                // 通知
+//                queue?.forEach { $0(asset) }
+//            }
         }
     }
     
     /// 获取图片, 为了减少实例
-    private func assetMakeOrCache(data: AnyObject) -> SIMChatPhotoAsset {
+    private func assetMakeOrCache(_ data: AnyObject) -> SIMChatPhotoAsset {
         let lib = SIMChatPhotoLibrary.sharedLibrary()
         let asset = SIMChatPhotoAsset(data)
         // 检查有没有缓存
@@ -185,7 +185,7 @@ public class SIMChatPhotoAlbum: NSObject {
     private var data: AnyObject
     
     private lazy var assets = Array<SIMChatPhotoAsset>()
-    private lazy var waitQueues = Dictionary<Int, [SIMChatPhotoAsset? -> Void]>()
+    private lazy var waitQueues = Dictionary<Int, [(SIMChatPhotoAsset?) -> Void]>()
     private dynamic var isLoaded = false
     private dynamic var isLoading = false
 }

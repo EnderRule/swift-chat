@@ -8,9 +8,9 @@
 
 import UIKit
 
-class SIMChatNotificationCenter: NSNotificationCenter {
+class SIMChatNotificationCenter: NotificationCenter {
     // 默认的, 但不是系统的那个(不能用系统的那个. 严重影响效率)
-    override class func defaultCenter() -> SIMChatNotificationCenter {
+    override class var `default`: SIMChatNotificationCenter { 
         return self.sharedInstance
     }
     // 应该是自动lazy的
@@ -19,28 +19,28 @@ class SIMChatNotificationCenter: NSNotificationCenter {
 
 // MARK: - helper
 extension SIMChatNotificationCenter {
-    class func addObserver(observer: AnyObject, selector aSelector: Selector, name aName: String?, object anObject: AnyObject? = nil) {
-        return self.defaultCenter().addObserver(observer, selector: aSelector, name: aName, object: anObject)
+    class func addObserver(_ observer: AnyObject, selector aSelector: Selector, name aName: String?, object anObject: AnyObject? = nil) {
+        return self.default.addObserver(observer, selector: aSelector, name: aName.map { NSNotification.Name(rawValue: $0) }, object: anObject)
     }
-    class func addObserverForName(name: String?, object obj: AnyObject?, queue: NSOperationQueue?, usingBlock block: (NSNotification) -> Void) -> NSObjectProtocol {
-        return self.defaultCenter().addObserverForName(name, object: obj, queue: queue, usingBlock: block)
-    }
-    
-    class func removeObserver(observer: AnyObject) {
-        return self.defaultCenter().removeObserver(observer)
-    }
-    class func removeObserver(observer: AnyObject, name aName: String?, object anObject: AnyObject? = nil) {
-        return self.defaultCenter().removeObserver(observer, name: aName, object: anObject)
+    class func addObserverForName(_ name: String?, object obj: AnyObject?, queue: OperationQueue?, usingBlock block: @escaping (Notification) -> Void) -> NSObjectProtocol {
+        return self.default.addObserver(forName: name.map { NSNotification.Name(rawValue: $0) }, object: obj, queue: queue, using: block)
     }
     
-    class func postNotification(notification: NSNotification) {
-        return self.defaultCenter().postNotification(notification)
+    class func removeObserver(_ observer: AnyObject) {
+        return self.default.removeObserver(observer)
     }
-    class func postNotificationName(aName: String, object anObject: AnyObject?) {
-        return self.defaultCenter().postNotificationName(aName, object: anObject)
+    class func removeObserver(_ observer: AnyObject, name aName: String?, object anObject: AnyObject? = nil) {
+        return self.default.removeObserver(observer, name: aName.map { NSNotification.Name(rawValue: $0) }, object: anObject)
     }
-    class func postNotificationName(aName: String, object anObject: AnyObject?, userInfo aUserInfo: [NSObject : AnyObject]?) {
-        return self.defaultCenter().postNotificationName(aName, object: anObject, userInfo: aUserInfo)
+    
+    class func postNotification(_ notification: Notification) {
+        return self.default.post(notification)
+    }
+    class func postNotificationName(_ aName: String, object anObject: AnyObject?) {
+        return self.default.post(name: Notification.Name(rawValue: aName), object: anObject)
+    }
+    class func postNotificationName(_ aName: String, object anObject: AnyObject?, userInfo aUserInfo: [NSObject : AnyObject]?) {
+        return self.default.post(name: Notification.Name(rawValue: aName), object: anObject, userInfo: aUserInfo)
     }
 }
 

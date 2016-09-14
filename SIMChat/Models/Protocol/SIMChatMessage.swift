@@ -32,7 +32,7 @@ public protocol SIMChatMessage: class {
     ///
     /// 消息发生时间(发送/接收)
     ///
-    var timestamp: NSDate { get }
+    var timestamp: Date { get }
     ///
     /// 消息是否是自己发送的
     ///
@@ -55,7 +55,7 @@ extension SIMChatMessage {
     ///
     public var showsTimeLine: Bool {
         // 撤回的消息不显示timeline
-        if status == .Revoked || status == .Destroyed {
+        if status == .revoked || status == .destroyed {
             return false
         }
         // 检查选项
@@ -68,7 +68,7 @@ extension SIMChatMessage {
 ///
 /// 消息选项
 ///
-public struct SIMChatMessageOption: OptionSetType {
+public struct SIMChatMessageOption: OptionSet {
     public var rawValue: Int
     public init(rawValue: Int) {
         self.rawValue = rawValue
@@ -106,49 +106,49 @@ public struct SIMChatMessageOption: OptionSetType {
 ///
 public enum SIMChatMessageStatus: Int {
     /// SR: 未知
-    case Unknow
+    case unknow
     /// S: 正在发送中<br>
     /// R: 对方正在发送中(错误)
-    case Sending
+    case sending
     /// S: 己发送<br>
     /// R: 错误
-    case Sent
+    case sent
     /// S: 对方未读<br>
     /// R: 消息未读
-    case Unread
+    case unread
     /// S: 对方正在接收中, 包含未读, (图片/音频/视频)<br>
     /// R: 消息接收中, 包含未读, (图片/音频/视频)
-    case Receiving
+    case receiving
     /// S: 对方己接收, 包含未读<br>
     /// R: 消息己接收, 包含未读
-    case Received
+    case received
     /// S: 对方己读<br>
     /// R: 消息己读
-    case Read
+    case read
     /// S: 对方己播放(音频消息), 包含己读<br>
     /// R: 消息己播放(音频消息), 包含己读
-    case Played
+    case played
     /// S: 对方己销毁, 包含己读/己播放<br>
     /// R: 消息己销毁, 包含己读/己播放
-    case Destroyed
+    case destroyed
     /// S: 对方己撤回, 包含己读/己播放<br>
     /// R: 消息己撤回, 包含己读/己播放
-    case Revoked
+    case revoked
     /// S: 发送错误(图片/音频/视频)<br>
     /// R: 接收错误(图片/音频/视频)
-    case Error
+    case error
     
-    public func isUnknow()     -> Bool { return self == .Unknow }
-    public func isSending()    -> Bool { return self == .Sending  }
-    public func isSent()       -> Bool { return self == .Sent  }
-    public func isUnread()     -> Bool { return self == .Unread  }
-    public func isReceiving()  -> Bool { return self == .Receiving  }
-    public func isReceived()   -> Bool { return self == .Received  }
-    public func isRead()       -> Bool { return self == .Read  }
-    public func isPlayed()     -> Bool { return self == .Played  }
-    public func isDestroyed()  -> Bool { return self == .Destroyed  }
-    public func isRevoked()    -> Bool { return self == .Revoked  }
-    public func isError()      -> Bool { return self == .Error  }
+    public func isUnknow()     -> Bool { return self == .unknow }
+    public func isSending()    -> Bool { return self == .sending  }
+    public func isSent()       -> Bool { return self == .sent  }
+    public func isUnread()     -> Bool { return self == .unread  }
+    public func isReceiving()  -> Bool { return self == .receiving  }
+    public func isReceived()   -> Bool { return self == .received  }
+    public func isRead()       -> Bool { return self == .read  }
+    public func isPlayed()     -> Bool { return self == .played  }
+    public func isDestroyed()  -> Bool { return self == .destroyed  }
+    public func isRevoked()    -> Bool { return self == .revoked  }
+    public func isError()      -> Bool { return self == .error  }
 }
 
 // MARK: - Message compare

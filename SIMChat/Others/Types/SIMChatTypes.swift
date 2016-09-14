@@ -8,8 +8,8 @@
 
 import UIKit
 
-typealias SIMChatFailBlock = NSError -> Void
-typealias SIMChatFinishBlock = Void -> Void
+typealias SIMChatFailBlock = (NSError) -> Void
+typealias SIMChatFinishBlock = (Void) -> Void
 
 
 

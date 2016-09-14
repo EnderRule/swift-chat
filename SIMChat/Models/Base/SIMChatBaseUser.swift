@@ -41,11 +41,11 @@ public class SIMChatBaseUser: SIMChatUserProtocol {
     ///
     /// 用户类型, 默认为User
     ///
-    public var type: SIMChatUserType = .User
+    public var type: SIMChatUserType = .user
     ///
     /// 用户类型, 该属性只对User类型有效, 默认为Unknow
     ///
-    public var gender: SIMChatUserGender = .Unknow
+    public var gender: SIMChatUserGender = .unknow
     
     ///
     /// 创建一个新的用户
@@ -56,7 +56,7 @@ public class SIMChatBaseUser: SIMChatUserProtocol {
     /// - returns: 用户
     ///
     public class func user(
-        identifier: String,
+        _ identifier: String,
         name: String?,
         portrait: String?) -> SIMChatUserProtocol {
             return self.init(

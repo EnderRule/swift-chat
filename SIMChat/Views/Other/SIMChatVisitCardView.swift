@@ -26,7 +26,7 @@ class SIMChatVisitCardView: SIMView {
         let vs = ["t" : titleLabel]
         
         // config
-        titleLabel.font = UIFont.systemFontOfSize(14)
+        titleLabel.font = UIFont.systemFont(ofSize: 14)
         titleLabel.textColor = UIColor(argb: 0xFF7B7B7B)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         

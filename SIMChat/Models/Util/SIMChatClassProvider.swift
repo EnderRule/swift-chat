@@ -20,18 +20,18 @@ public class SIMChatClassProvider {
 //        message = SIMChatBaseMessage.self
 //        conversation = SIMChatBaseConversation.self
         
-        _allMessageCells = [
-            SIMChatUnknowMessageKey:     SIMChatUnknowMessageCell.self,
-            SIMChatTimeLineMessageKey:   SIMChatTimeLineMessageCell.self,
-            
-            SIMChatRevokedMessageKey:    SIMChatBaseMessageTipsCell.self,
-            SIMChatDestoryedMessageKey:  SIMChatBaseMessageTipsCell.self,
-            
-            NSStringFromClass(SIMChatBaseMessageTextContent.self):    SIMChatBaseMessageTextCell.self,
-            NSStringFromClass(SIMChatBaseMessageTipsContent.self):    SIMChatBaseMessageTipsCell.self,
-            NSStringFromClass(SIMChatBaseMessageAudioContent.self):   SIMChatBaseMessageAudioCell.self,
-            NSStringFromClass(SIMChatBaseMessageImageContent.self):   SIMChatBaseMessageImageCell.self
-        ]
+//        _allMessageCells = [
+//            SIMChatUnknowMessageKey:     SIMChatUnknowMessageCell.self,
+//            SIMChatTimeLineMessageKey:   SIMChatTimeLineMessageCell.self,
+//            
+////            SIMChatRevokedMessageKey:    SIMChatBaseMessageTipsCell.self,
+////            SIMChatDestoryedMessageKey:  SIMChatBaseMessageTipsCell.self,
+////            
+////            NSStringFromClass(SIMChatBaseMessageTextContent.self):    SIMChatBaseMessageTextCell.self,
+////            NSStringFromClass(SIMChatBaseMessageTipsContent.self):    SIMChatBaseMessageTipsCell.self,
+////            NSStringFromClass(SIMChatBaseMessageAudioContent.self):   SIMChatBaseMessageAudioCell.self,
+////            NSStringFromClass(SIMChatBaseMessageImageContent.self):   SIMChatBaseMessageImageCell.self
+//        ]
     }
     
     ///
@@ -43,11 +43,12 @@ public class SIMChatClassProvider {
     /// 单例
     ///
     public static let sharedInstance: SIMChatClassProvider = SIMChatClassProvider()
-}
-
-// MARK: - Register
-
-extension SIMChatClassProvider {
+    
+//}
+//
+//// MARK: - Register
+//
+//extension SIMChatClassProvider {
     
     ///
     /// 获取所有己经注册的Cell
@@ -59,21 +60,21 @@ extension SIMChatClassProvider {
     ///
     /// 注册显示内容时使用的类型
     ///
-    public func registerCell(contentType: SIMChatMessageBody.Type, viewType: SIMChatMessageCellProtocol.Type) {
+    public func registerCell(_ contentType: SIMChatMessageBody.Type, viewType: SIMChatMessageCellProtocol.Type) {
         return _allMessageCells[NSStringFromClass(contentType)] = viewType
     }
     ///
     /// 获取注册的Cell
     ///
-    public func registeredCell(content: SIMChatMessageBody) -> (String, SIMChatMessageCellProtocol.Type)? {
-        let type = content.dynamicType
+    public func registeredCell(_ content: SIMChatMessageBody) -> (String, SIMChatMessageCellProtocol.Type)? {
+        let type = type(of: content)
         let key = NSStringFromClass(type)
         // 获取己之兼容的类型
-        let idx = _allMessageCells.indexOf {
+        let idx = _allMessageCells.index {
             if $0.0 == key {
                 return true
             }
-            return (content as AnyObject).isKindOfClass($0.1)
+            return (content as AnyObject).isKind(of: $0.1)
         }
         if let idx = idx {
             return _allMessageCells[idx]
@@ -84,7 +85,7 @@ extension SIMChatClassProvider {
     ///
     /// 注册未知消息时显示的Cell
     ///
-    public func registerUnknowCell(viewType: SIMChatMessageCellProtocol.Type) {
+    public func registerUnknowCell(_ viewType: SIMChatMessageCellProtocol.Type) {
         return _allMessageCells[SIMChatUnknowMessageKey] = viewType
     }
     ///
@@ -97,7 +98,7 @@ extension SIMChatClassProvider {
     ///
     /// 注册撤销时显示的Cell
     ///
-    public func registerRevokedCell(viewType: SIMChatMessageCellProtocol.Type) {
+    public func registerRevokedCell(_ viewType: SIMChatMessageCellProtocol.Type) {
         return _allMessageCells[SIMChatRevokedMessageKey] = viewType
     }
     ///
@@ -110,7 +111,7 @@ extension SIMChatClassProvider {
     ///
     /// 注册销毁时显示的Cell
     ///
-    public func registerDestoryedCell(viewType: SIMChatMessageCellProtocol.Type) {
+    public func registerDestoryedCell(_ viewType: SIMChatMessageCellProtocol.Type) {
         return _allMessageCells[SIMChatDestoryedMessageKey] = viewType
     }
     ///

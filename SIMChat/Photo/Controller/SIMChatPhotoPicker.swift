@@ -20,37 +20,37 @@ import UIKit
     ///
     /// 是否取消选择
     ///
-    optional func pickerShouldCancel(picker: SIMChatPhotoPicker) -> Bool
+    @objc optional func pickerShouldCancel(_ picker: SIMChatPhotoPicker) -> Bool
     ///
     /// 取消选择
     ///
-    optional func pickerDidCancel(picker: SIMChatPhotoPicker)
+    @objc optional func pickerDidCancel(_ picker: SIMChatPhotoPicker)
     
     ///
     /// 是否选择完成
     ///
-    optional func picker(picker: SIMChatPhotoPicker, shouldFinishPickingAssets assets: [SIMChatPhotoAsset]) -> Bool
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, shouldFinishPickingAssets assets: [SIMChatPhotoAsset]) -> Bool
     ///
     /// 选择完成
     ///
-    optional func picker(picker: SIMChatPhotoPicker, didFinishPickingAssets assets: [SIMChatPhotoAsset])
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, didFinishPickingAssets assets: [SIMChatPhotoAsset])
     
     ///
     /// 是否允许选择图像
     ///
-    optional func picker(picker: SIMChatPhotoPicker, canSelectAsset asset: SIMChatPhotoAsset) -> Bool
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, canSelectAsset asset: SIMChatPhotoAsset) -> Bool
     ///
     /// 是否允许选择图像
     ///
-    optional func picker(picker: SIMChatPhotoPicker, shouldSelectAsset asset: SIMChatPhotoAsset) -> Bool
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, shouldSelectAsset asset: SIMChatPhotoAsset) -> Bool
     ///
     /// 选择图像
     ///
-    optional func picker(picker: SIMChatPhotoPicker, didSelectAsset asset: SIMChatPhotoAsset)
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, didSelectAsset asset: SIMChatPhotoAsset)
     ///
     /// 取消选择
     ///
-    optional func picker(picker: SIMChatPhotoPicker, didDeselectAsset asset: SIMChatPhotoAsset)
+    @objc optional func picker(_ picker: SIMChatPhotoPicker, didDeselectAsset asset: SIMChatPhotoAsset)
 }
 
 ///
@@ -86,7 +86,7 @@ public class SIMChatPhotoPicker: UINavigationController {
         self.init(nibName: nil, bundle: nil)
     }
     /// 初始化
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.rootViewController = SIMChatPhotoPickerAlbums(self)
         // 可能需要直接转到指定页面
@@ -114,12 +114,12 @@ public class SIMChatPhotoPicker: UINavigationController {
         assert(rootViewController != nil, "root must created!")
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         SIMLog.trace()
         super.viewWillAppear(animated)
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         SIMLog.trace()
         super.viewWillDisappear(animated)
         
@@ -138,7 +138,7 @@ public class SIMChatPhotoPicker: UINavigationController {
 extension SIMChatPhotoPicker {
     
     /// 选择图片
-    internal func selectItem(asset: SIMChatPhotoAsset?) -> Bool {
+    internal func selectItem(_ asset: SIMChatPhotoAsset?) -> Bool {
         guard let asset = asset else {
             return false
         }
@@ -148,12 +148,13 @@ extension SIMChatPhotoPicker {
             return false
         }
         let count = selectedItems.count
-        selectedItems.addObject(asset)
+        selectedItems.add(asset)
         // 检查数量是否有改变
         if count != selectedItems.count {
             // 减少调用数量
-            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(self.dynamicType.countDidChanged(_:)), object: self)
-            self.performSelector(#selector(self.dynamicType.countDidChanged(_:)), withObject: self, afterDelay: 0.1)
+            
+            type(of: self).cancelPreviousPerformRequests(withTarget: self, selector: #selector(countDidChanged(_:)), object: self)
+            self.perform(#selector(countDidChanged(_:)), with: self, afterDelay: 0.1)
         }
         // 通知
         delegate2?.picker?(self, didSelectAsset: asset)
@@ -162,26 +163,26 @@ extension SIMChatPhotoPicker {
     }
     
     /// 取消选择
-    internal func deselectItem(asset: SIMChatPhotoAsset?) {
+    internal func deselectItem(_ asset: SIMChatPhotoAsset?) {
         guard let asset = asset else {
             return
         }
         SIMLog.trace(asset.identifier)
         
         let count = selectedItems.count
-        selectedItems.removeObject(asset)
+        selectedItems.remove(asset)
         // 检查数量是否有改变
         if count != selectedItems.count {
             // 减少调用数量
-            self.dynamicType.cancelPreviousPerformRequestsWithTarget(self, selector: #selector(self.dynamicType.countDidChanged(_:)), object: self)
-            self.performSelector(#selector(self.dynamicType.countDidChanged(_:)), withObject: self, afterDelay: 0.01)
+            type(of: self).cancelPreviousPerformRequests(withTarget: self, selector: #selector(type(of: self).countDidChanged(_:)), object: self)
+            self.perform(#selector(type(of: self).countDidChanged(_:)), with: self, afterDelay: 0.01)
         }
         // 通知
         delegate2?.picker?(self, didDeselectAsset: asset)
     }
     
     /// 检查是否可以选择图片
-    internal func canSelectItem(asset: SIMChatPhotoAsset?) -> Bool {
+    internal func canSelectItem(_ asset: SIMChatPhotoAsset?) -> Bool {
         guard let asset = asset else {
             return false
         }
@@ -190,18 +191,18 @@ extension SIMChatPhotoPicker {
     }
     
     /// 检查是否是选择
-    internal func checkItem(asset: SIMChatPhotoAsset?) -> Bool {
+    internal func checkItem(_ asset: SIMChatPhotoAsset?) -> Bool {
         guard let asset = asset else {
             return false
         }
-        return selectedItems.containsObject(asset)
+        return selectedItems.contains(asset)
     }
     
     /// 数量改变
-    private dynamic func countDidChanged(sender: AnyObject) {
+    private dynamic func countDidChanged(_ sender: AnyObject) {
         let count = selectedItems.count
         SIMLog.trace("\(count)")
-        NSNotificationCenter.defaultCenter().postNotificationName(SIMChatPhotoPickerCountDidChangedNotification, object: count)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: SIMChatPhotoPickerCountDidChangedNotification), object: count)
     }
     
     ///
@@ -210,7 +211,7 @@ extension SIMChatPhotoPicker {
     public func cancel() {
         SIMLog.trace()
         if delegate2?.pickerShouldCancel?(self) ?? true {
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
             delegate2?.pickerDidCancel?(self)
         }
     }
@@ -226,7 +227,7 @@ extension SIMChatPhotoPicker {
         if delegate2?.picker?(self, shouldFinishPickingAssets: rs) ?? true {
             // 必须选回调, 再消失
             delegate2?.picker?(self, didFinishPickingAssets: rs)
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
         }
     }
 }

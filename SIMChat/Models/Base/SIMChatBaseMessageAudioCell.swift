@@ -25,7 +25,7 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
         // TODO: 有性能问题, 需要重新实现
         
         let vs = ["c": titleLabel,
-            "i": animationView]
+            "i": animationView] as [String : Any]
         
         let ms = ["s0": 20,
             "m0": 0,
@@ -43,11 +43,11 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
         bubbleView.contentView.addSubview(titleLabel)
         
         // add constraints
-        addConstraints(NSLayoutConstraintMake("H:|-12@hp1-[c]-10@hp1-[i]-10@hp1-|", views: vs, options: .AlignAllCenterY, metrics: ms))
-        addConstraints(NSLayoutConstraintMake("H:|-10@hp0-[i]-10@hp0-[c]-12@hp0-|", views: vs, options: .AlignAllCenterY, metrics: ms))
-        addConstraints(NSLayoutConstraintMake("V:|->=8-[i]->=8-|", views: vs))
-        addConstraints(NSLayoutConstraintMake("H:[i(s0)]", views: vs, metrics: ms))
-        addConstraints(NSLayoutConstraintMake("V:[i(s0)]", views: vs, metrics: ms))
+        addConstraints(NSLayoutConstraintMake("H:|-12@hp1-[c]-10@hp1-[i]-10@hp1-|", views: vs as [String : AnyObject], options: .alignAllCenterY, metrics: ms as [String : AnyObject]?))
+        addConstraints(NSLayoutConstraintMake("H:|-10@hp0-[i]-10@hp0-[c]-12@hp0-|", views: vs as [String : AnyObject], options: .alignAllCenterY, metrics: ms as [String : AnyObject]?))
+        addConstraints(NSLayoutConstraintMake("V:|->=8-[i]->=8-|", views: vs as [String : AnyObject]))
+        addConstraints(NSLayoutConstraintMake("H:[i(s0)]", views: vs as [String : AnyObject], metrics: ms as [String : AnyObject]?))
+        addConstraints(NSLayoutConstraintMake("V:[i(s0)]", views: vs as [String : AnyObject], metrics: ms as [String : AnyObject]?))
         
         // get constraints
         for c in bubbleView.contentView.constraints {
@@ -60,10 +60,10 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
     public override func initEvents() {
         super.initEvents()
         // add kvo
-        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidStop(_:)), name: SIMChatMediaPlayerDidStop)
-        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidPlay(_:)), name: SIMChatMediaPlayerDidPlay)
-        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioWillLoad(_:)), name: SIMChatFileProviderWillDownload)
-        SIMChatNotificationCenter.addObserver(self, selector: #selector(self.dynamicType.audioDidLoad(_:)), name: SIMChatFileProviderDidDownload)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(type(of: self).audioDidStop(_:)), name: SIMChatMediaPlayerDidStop)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(type(of: self).audioDidPlay(_:)), name: SIMChatMediaPlayerDidPlay)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(type(of: self).audioWillLoad(_:)), name: SIMChatFileProviderWillDownload)
+        SIMChatNotificationCenter.addObserver(self, selector: #selector(type(of: self).audioDidLoad(_:)), name: SIMChatFileProviderDidDownload)
     }
     
     /// 显示类型
@@ -75,25 +75,25 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
             }
             // 检查
             switch style {
-            case .Left:
+            case .left:
                 
                 animationView.animationDuration = 1
-                titleLabel.textColor = UIColor.blackColor()
-                (animationView.image, animationView.animationImages) = self.dynamicType.leftImages
+                titleLabel.textColor = UIColor.black
+                (animationView.image, animationView.animationImages) = type(of: self).leftImages
                 
-            case .Right:
+            case .right:
                 
-                titleLabel.textColor = UIColor.whiteColor()
+                titleLabel.textColor = UIColor.white
                 animationView.stopAnimating()
                 animationView.animationDuration = 1
-                (animationView.image, animationView.animationImages) = self.dynamicType.rightImages
+                (animationView.image, animationView.animationImages) = type(of: self).rightImages
                 
-            case .Unknow:
+            case .unknow:
                 break
             }
             
             for c in leftConstraints2 {
-                c.priority = style == .Left ? hPriority2 : 1
+                c.priority = style == .left ? hPriority2 : 1
             }
             
             setNeedsLayout()
@@ -132,11 +132,11 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
         return model?.content as? SIMChatBaseMessageAudioContent
     }
     
-    @inline(__always) private func _formatAudioDuration(duration: NSTimeInterval) -> String {
+    @inline(__always) private func _formatAudioDuration(_ duration: TimeInterval) -> String {
         if duration < 60 {
-            return String(format: "%d''", Int(duration % 60))
+            return String(format: "%d''", Int(duration.truncatingRemainder(dividingBy: 60)))
         }
-        return String(format: "%d'%02d''", Int(duration / 60), Int(duration % 60))
+        return String(format: "%d'%02d''", Int(duration / 60), Int(duration.truncatingRemainder(dividingBy: 60)))
     }
     
     private let hPriority2 = UILayoutPriority(750)
@@ -153,16 +153,16 @@ public class SIMChatBaseMessageAudioCell: SIMChatBaseMessageBubbleCell {
 extension SIMChatBaseMessageAudioCell {
     
     /// 检查是否是有效的通知
-    @inline(__always) private func _isValidNotification(sender: NSNotification) -> Bool {
-        guard let content = content, player = sender.object as? SIMChatMediaPlayerProtocol else {
+    @inline(__always) private func _isValidNotification(_ sender: Notification) -> Bool {
+        guard let content = content, let player = sender.object as? SIMChatMediaPlayerProtocol else {
             return false // 参数为空
         }
         return player.resource === content.origin
     }
     
     /// 音频开始播放
-    internal func audioDidPlay(sender: NSNotification) {
-        guard let message = model where _isValidNotification(sender) else {
+    internal func audioDidPlay(_ sender: Notification) {
+        guard let message = model , _isValidNotification(sender) else {
             return // 参数为空
         }
         SIMLog.trace(message.identifier)
@@ -172,7 +172,7 @@ extension SIMChatBaseMessageAudioCell {
             content.played = true
         }
         if !message.isSelf {
-            conversation?.updateMessage(message, status: .Played, closure: nil)
+            conversation?.updateMessage(message, status: .played, closure: nil)
             //conversation?.updateMessage(message, status: .Played)
         }
         // 更新UI
@@ -181,19 +181,19 @@ extension SIMChatBaseMessageAudioCell {
         }
     }
     /// 音频停止播放
-    internal func audioDidStop(sender: NSNotification) {
+    internal func audioDidStop(_ sender: Notification) {
         // 全部停止
         if animationView.isAnimating() {
             animationView.stopAnimating()
         }
-        guard let message = model where _isValidNotification(sender) else {
+        guard let message = model , _isValidNotification(sender) else {
             return // 参数为空
         }
         SIMLog.trace(message.identifier)
     }
     /// 音频加载开始
-    internal func audioWillLoad(sender: NSNotification) {
-        guard let message = model where !message.isSelf else {
+    internal func audioWillLoad(_ sender: Notification) {
+        guard let message = model , !message.isSelf else {
             return // 参数为空
         }
         guard content?.origin.resourceURL === sender.object else {
@@ -201,11 +201,11 @@ extension SIMChatBaseMessageAudioCell {
         }
         SIMLog.trace(message.identifier)
         // 更新状态
-        conversation?.updateMessage(message, status: .Receiving, closure: nil)
+        conversation?.updateMessage(message, status: .receiving, closure: nil)
     }
     /// 音频加载完成
-    internal func audioDidLoad(sender: NSNotification) {
-        guard let message = model where !message.isSelf else {
+    internal func audioDidLoad(_ sender: Notification) {
+        guard let message = model , !message.isSelf else {
             return // 参数为空, 不操作自己的消息
         }
         guard content?.origin.resourceURL === sender.object else {
@@ -213,7 +213,7 @@ extension SIMChatBaseMessageAudioCell {
         }
         SIMLog.trace(message.identifier)
         // 更新状态
-        conversation?.updateMessage(message, status: .Received, closure: nil)
+        conversation?.updateMessage(message, status: .received, closure: nil)
     }
 }
 
@@ -228,10 +228,10 @@ extension SIMChatBaseMessageAudioCell {
             "simchat_audio_receive_icon_2",
             "simchat_audio_receive_icon_3"] {
                 if let img = UIImage(named: n) {
-                    a.addObject(img)
+                    a.add(img)
                 }
         }
-        return (a[0] as? UIImage, a.subarrayWithRange(NSMakeRange(1, a.count - 1)) as? [UIImage])
+        return (a[0] as? UIImage, a.subarray(with: NSMakeRange(1, a.count - 1)) as? [UIImage])
     }()
     
     /// 右边
@@ -242,9 +242,9 @@ extension SIMChatBaseMessageAudioCell {
             "simchat_audio_send_icon_2",
             "simchat_audio_send_icon_3"] {
                 if let img = UIImage(named: n) {
-                    a.addObject(img)
+                    a.add(img)
                 }
         }
-        return (a[0] as? UIImage, a.subarrayWithRange(NSMakeRange(1, a.count - 1)) as? [UIImage])
+        return (a[0] as? UIImage, a.subarray(with: NSMakeRange(1, a.count - 1)) as? [UIImage])
     }()
 }

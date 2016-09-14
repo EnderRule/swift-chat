@@ -1,0 +1,267 @@
+//
+//  SAInputItemView.swift
+//  SAInputBar
+//
+//  Created by sagesse on 8/3/16.
+//  Copyright © 2016 sagesse. All rights reserved.
+//
+
+import UIKit
+
+internal class SAInputItemView: UICollectionViewCell {
+    
+    var item: SAInputItem? {
+        willSet {
+            UIView.performWithoutAnimation {
+                self._updateItem(newValue)
+            }
+        }
+    }
+    
+    weak var delegate: SAInputItemViewDelegate? {
+        set { return _button.delegate = newValue }
+        get { return _button.delegate }
+    }
+    
+    func setSelected(_ selected: Bool, animated: Bool) {
+        _button.setSelected(selected: selected, animated: animated)
+    }
+    
+    func _init() {
+        _logger.trace()
+        
+        clipsToBounds = true
+        backgroundColor = .clear
+        //backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
+    }
+    func _deinit() {
+        _logger.trace()
+    }
+    func _updateItem(_ newValue: SAInputItem?) {
+        //_logger.trace(newValue)
+        
+        guard let newValue = newValue else {
+            // clear on nil
+            _contentView?.removeFromSuperview()
+            _contentView = nil
+            return
+        }
+        
+        if let customView = newValue.customView {
+            // 需要显示自定义视图
+            _contentView?.removeFromSuperview()
+            _contentView = customView
+        } else {
+            // 显示普通按钮
+            if _contentView !== _button {
+                _contentView?.removeFromSuperview()
+                _contentView = _button
+            }
+            // 更新按钮属性
+            _button.barItem = newValue
+        }
+        // 更新视图
+        if let view = _contentView, view.superview != contentView {
+            view.frame = contentView.bounds
+            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            contentView.addSubview(view)
+        }
+    }
+    
+    private var _contentView: UIView?
+    private lazy var _button: SAInputItemButton = {
+        let view = SAInputItemButton(type: .custom)
+        //let view = SAInputItemButton(type: .System)
+        view.isMultipleTouchEnabled = false
+        view.isExclusiveTouch = true
+        return view
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+    deinit {
+        _deinit()
+    }
+}
+
+internal class SAInputItemButton: UIButton {
+    
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        guard let barItem = self.barItem else {
+            return super.beginTracking(touch, with: event)
+        }
+        if delegate?.barItem(shouldHighlight: barItem) ?? true {
+            allowsHighlight = true
+            delegate?.barItem(didHighlight: barItem)
+        } else {
+            allowsHighlight = false
+        }
+        return super.beginTracking(touch, with: event)
+    }
+    
+    var barItem: SAInputItem? {
+        willSet {
+            guard barItem !== newValue else {
+                return
+            }
+            UIView.performWithoutAnimation { 
+                guard let item = newValue else {
+                    return
+                }
+                self._updateBarItem(item)
+            }
+        }
+    }
+    weak var delegate: SAInputItemViewDelegate?
+    
+    var allowsHighlight = true
+    var _selected: Bool = false
+    
+    override var isHighlighted: Bool {
+        set {
+            guard allowsHighlight else {
+                return
+            }
+            super.isHighlighted = newValue
+            _setHighlighted(newValue, animated: true)
+        }
+        get { return super.isHighlighted }
+    }
+    override var state: UIControlState {
+        // 永远禁止系统的选中
+        return super.state.subtracting(.selected)
+    }
+    
+    func setSelected(selected: Bool, animated: Bool) {
+        //logger.trace(selected)
+        
+        let op1: UIControlState = [(selected ? .selected : .normal), .normal]
+        let op2: UIControlState = [(selected ? .selected : .normal), .highlighted]
+        
+        let n = barItem?.image(for: op1) ?? barItem?.image(for: .normal)
+        let h = barItem?.image(for: op2)
+        
+        setImage(n, for: .normal)
+        setImage(h, for: .highlighted)
+        
+        if animated {
+            _addAnimation("selected")
+        }
+        
+        _selected = selected
+    }
+    
+    private func _init() {
+        addTarget(self, action: #selector(_touchHandler), for: .touchUpInside)
+    }
+    
+    private func _addAnimation(_ key: String) {
+        let ani = CATransition()
+        
+        ani.duration = 0.35
+        ani.fillMode = kCAFillModeBackwards
+        ani.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        ani.type = kCATransitionFade
+        ani.subtype = kCATransitionFromTop
+        
+        layer.add(ani, forKey: key)
+    }
+    private func _setHighlighted(_ highlighted: Bool, animated: Bool) {
+        //logger.trace(highlighted)
+        // 检查高亮的时候有没有设置图片, 如果有关闭系统的变透明效果
+        if barItem?.image(for: [(isSelected ? .selected : .normal), .highlighted]) != nil {
+            imageView?.alpha = 1
+        }
+        if animated {
+            _addAnimation("highlighted")
+        }
+    }
+    
+    func _updateBarItem(_ item: SAInputItem) {
+        
+        let states: [UIControlState] = [
+            [.normal],
+            [.highlighted],
+            [.disabled],
+            [.selected, .normal],
+            [.selected, .highlighted],
+            [.selected, .disabled]
+        ]
+        
+        tag = item.tag
+        isEnabled = item.enabled
+        imageEdgeInsets = item.imageInsets
+        
+        tintColor = item.tintColor
+        backgroundColor = item.backgroundColor
+        
+        if let font = item.font  {
+            titleLabel?.font = font
+        }
+        
+        states.forEach {
+            setTitle(item.title(for: $0), for: $0)
+            setTitleColor(item.titleColor(for: $0), for: $0)
+            setTitleShadowColor(item.titleShadowColor(for: $0), for: $0)
+            setAttributedTitle(item.attributedTitle(for: $0), for: $0)
+            setImage(item.image(for: $0), for: $0)
+            setBackgroundImage(item.backgroundImage(for: $0), for: $0)
+        }
+        
+        setTitle(item.title, for: .normal)
+        setImage(item.image, for: .normal)
+    }
+
+    
+    @objc private func _touchHandler() {
+        guard let barItem = barItem else {
+            return
+        }
+        // delegate before the callback
+        barItem.handler?(barItem)
+        
+        if !_selected {
+            // select
+            guard delegate?.barItem(shouldSelect: barItem) ?? true else {
+                return
+            }
+            setSelected(selected: true, animated: true)
+            delegate?.barItem(didSelect: barItem)
+        } else {
+            // deselect
+            guard delegate?.barItem(shouldDeselect: barItem) ?? true else {
+                return
+            }
+            setSelected(selected: false, animated: true)
+            delegate?.barItem(didDeselect: barItem)
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+}
+
+
+internal protocol SAInputItemViewDelegate: class {
+    
+    func barItem(shouldHighlight barItem: SAInputItem) -> Bool
+    func barItem(shouldDeselect barItem: SAInputItem) -> Bool
+    func barItem(shouldSelect barItem: SAInputItem) -> Bool
+    
+    func barItem(didHighlight barItem: SAInputItem)
+    func barItem(didDeselect barItem: SAInputItem)
+    func barItem(didSelect barItem: SAInputItem)
+    
+}

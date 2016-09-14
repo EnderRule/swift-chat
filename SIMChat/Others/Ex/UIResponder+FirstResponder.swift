@@ -12,6 +12,6 @@ extension UIResponder {
     /// 活动的响应者
     public func findFirstResponder() -> UIResponder? {
         // 为了避免审核问题, 拆分他
-        return valueForKey("first" + "Responder") as? UIResponder
+        return value(forKey: "first" + "Responder") as? UIResponder
     }
 }

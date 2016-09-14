@@ -45,7 +45,7 @@ public protocol SIMChatUserProtocol: class {
     /// - parameter portrait:   头像
     /// - returns: 用户
     ///
-    static func user(identifier: String, name: String?, portrait: String?) -> SIMChatUserProtocol
+    static func user(_ identifier: String, name: String?, portrait: String?) -> SIMChatUserProtocol
 }
 
 // MARK: - Convenience
@@ -59,7 +59,7 @@ extension SIMChatUserProtocol {
     /// - parameter portrait:   头像
     /// - returns: 用户
     ///
-    public static func user(identifier: String) -> SIMChatUserProtocol {
+    public static func user(_ identifier: String) -> SIMChatUserProtocol {
         return user(identifier, name: nil)
     }
     ///
@@ -70,7 +70,7 @@ extension SIMChatUserProtocol {
     /// - parameter portrait:   头像
     /// - returns: 用户
     ///
-    public static func user(identifier: String, name: String?) -> SIMChatUserProtocol {
+    public static func user(_ identifier: String, name: String?) -> SIMChatUserProtocol {
         return user(identifier, name: nil, portrait: nil)
     }
 }
@@ -90,18 +90,18 @@ public func ==(lhs: SIMChatUserProtocol, rhs: SIMChatUserProtocol?) -> Bool {
 /// 用户性别
 ///
 public enum SIMChatUserGender: Int {
-    case Unknow
-    case Male
-    case Female
+    case unknow
+    case male
+    case female
 }
 
 ///
 /// 用户类型
 ///
 public enum SIMChatUserType: Int {
-    case User
-    case Group
-    case System
+    case user
+    case group
+    case system
 }
 
 

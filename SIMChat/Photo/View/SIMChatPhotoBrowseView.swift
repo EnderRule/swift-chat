@@ -14,18 +14,18 @@ import UIKit
     /// 获取原图
     /// - parameter block 结果
     ///
-    func original(block: UIImage? -> Void)
+    func original(_ block: (UIImage?) -> Void)
     ///
     /// 获取缩略图
     /// - parameter targetSize 目标, 如果为0自动获取(缓存)
     /// - parameter block 结果
     ///
-    func thumbnail(targetSize: CGSize, block: UIImage? -> Void)
+    func thumbnail(_ targetSize: CGSize, block: (UIImage?) -> Void)
     ///
     /// 获取屏幕大小的图片
     /// - parameter block 结果
     ///
-    func fullscreen(block: UIImage? -> Void)
+    func fullscreen(_ block: (UIImage?) -> Void)
    
     func originalIsLoaded() -> Bool
     func thumbnailIsLoaded() -> Bool
@@ -43,20 +43,20 @@ public protocol SIMChatPhotoBrowseDataSource : class {
     /// - parameter targetSize 目标
     /// - parameter block 结果
     ///
-    func fetch(index: Int, block: SIMChatPhotoBrowseElement? -> Void)
+    func fetch(_ index: Int, block: (SIMChatPhotoBrowseElement?) -> Void)
 }
 
 /// 图片浏览的代理
 @objc public protocol SIMChatPhotoBrowseDelegate : NSObjectProtocol {
     /// 单击
-    optional func browseViewDidClick(browseView: SIMChatPhotoBrowseView)
+    @objc optional func browseViewDidClick(_ browseView: SIMChatPhotoBrowseView)
     /// 双击
-    optional func browseViewDidDoubleClick(browseView: SIMChatPhotoBrowseView)
+    @objc optional func browseViewDidDoubleClick(_ browseView: SIMChatPhotoBrowseView)
     
     /// 将要显示
-    optional func browseView(browseView: SIMChatPhotoBrowseView, willDisplayElement element: SIMChatPhotoBrowseElement)
+    @objc optional func browseView(_ browseView: SIMChatPhotoBrowseView, willDisplayElement element: SIMChatPhotoBrowseElement)
     /// 完成显示
-    optional func browseView(browseView: SIMChatPhotoBrowseView, didDisplayElement element: SIMChatPhotoBrowseElement)
+    @objc optional func browseView(_ browseView: SIMChatPhotoBrowseView, didDisplayElement element: SIMChatPhotoBrowseElement)
 }
 
 ///
@@ -77,8 +77,8 @@ public class SIMChatPhotoBrowseView: UIView {
     func build() {
         let itemSpacing = SIMChatPhotoBrowseView.itemSpacing
         
-        collectionView.frame = CGRectMake(-itemSpacing, 0, bounds.width + itemSpacing * 2, bounds.height)
-        collectionView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        collectionView.frame = CGRect(x: -itemSpacing, y: 0, width: bounds.width + itemSpacing * 2, height: bounds.height)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         addSubview(collectionView)
     }
@@ -90,26 +90,26 @@ public class SIMChatPhotoBrowseView: UIView {
         collectionView.collectionViewLayout.invalidateLayout()
     }
     
-    func setCurrentIndex(index: Int, animated: Bool) {
-        collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0), atScrollPosition: .None, animated: false)
+    func setCurrentIndex(_ index: Int, animated: Bool) {
+        collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: UICollectionViewScrollPosition(), animated: false)
     }
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let collection = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+        let collection = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         
-        layout.scrollDirection = .Horizontal
+        layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = UIEdgeInsetsZero
         
         collection.delegate = self
         collection.dataSource = self
-        collection.pagingEnabled = true
-        collection.backgroundColor = UIColor.clearColor()
+        collection.isPagingEnabled = true
+        collection.backgroundColor = UIColor.clear
         collection.showsVerticalScrollIndicator = false
         collection.showsHorizontalScrollIndicator = false
-        collection.registerClass(ItemCellOfImage.self, forCellWithReuseIdentifier: "Image")
+        collection.register(ItemCellOfImage.self, forCellWithReuseIdentifier: "Image")
         
         return collection
     }()
@@ -124,11 +124,11 @@ public class SIMChatPhotoBrowseView: UIView {
 
 extension SIMChatPhotoBrowseView : SIMChatPhotoBrowseDelegate {
     
-    public func browseViewDidClick(browseView: SIMChatPhotoBrowseView) {
+    public func browseViewDidClick(_ browseView: SIMChatPhotoBrowseView) {
         delegate?.browseViewDidClick?(self)
     }
     
-    public func browseViewDidDoubleClick(browseView: SIMChatPhotoBrowseView) {
+    public func browseViewDidDoubleClick(_ browseView: SIMChatPhotoBrowseView) {
         delegate?.browseViewDidDoubleClick?(self)
     }
 }
@@ -137,22 +137,22 @@ extension SIMChatPhotoBrowseView : SIMChatPhotoBrowseDelegate {
 extension SIMChatPhotoBrowseView : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     /// Item数量
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource?.count ?? 0
     }
     
     /// Item的视图
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Image", forIndexPath: indexPath) as! ItemCellOfImage
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Image", for: indexPath) as! ItemCellOfImage
         
         // 打上标记
-        cell.tag = indexPath.row
+        cell.tag = (indexPath as NSIndexPath).row
         cell.element = nil
         cell.imageView.delegate = self
         
-        dataSource?.fetch(indexPath.row) { ele in
+        dataSource?.fetch((indexPath as NSIndexPath).row) { ele in
             // 检查标记
-            guard cell.tag == indexPath.row else {
+            guard cell.tag == (indexPath as NSIndexPath).row else {
                 return
             }
             cell.element = ele
@@ -164,21 +164,21 @@ extension SIMChatPhotoBrowseView : UICollectionViewDataSource, UICollectionViewD
     }
     
     /// 每个Item的大小
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // 减掉被自动缩进的值
         let width = collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right
         let height = collectionView.bounds.height - collectionView.contentInset.top - collectionView.contentInset.bottom
         //SIMLog.trace("\(width) => \(height)")
-        return CGSizeMake(width, height)
+        return CGSize(width: width, height: height)
     }
     
-    public func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         // 最新的位置
         let index = Int(round(collectionView.contentOffset.x / collectionView.bounds.width) + 0.1)
         
         // 通知.
         dataSource?.fetch(index) { [weak self] ele in
-            guard let view = self, let ele = ele where index == view.currentShowIndex else {
+            guard let view = self, let ele = ele , index == view.currentShowIndex else {
                 return
             }
             self?.delegate?.browseView?(view, didDisplayElement: ele)
@@ -186,7 +186,7 @@ extension SIMChatPhotoBrowseView : UICollectionViewDataSource, UICollectionViewD
     }
     
     /// 滚动
-    public func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // 最新的位置
         let index = Int(round(scrollView.contentOffset.x / scrollView.bounds.width) + 0.1)
 
@@ -197,7 +197,7 @@ extension SIMChatPhotoBrowseView : UICollectionViewDataSource, UICollectionViewD
         currentShowIndex = index
         // 通知.
         dataSource?.fetch(index) { [weak self] ele in
-            guard let view = self, let ele = ele where index == view.currentShowIndex else {
+            guard let view = self, let ele = ele , index == view.currentShowIndex else {
                 return
             }
             self?.delegate?.browseView?(view, willDisplayElement: ele)
@@ -219,8 +219,8 @@ extension SIMChatPhotoBrowseView {
         private func build() {
             let itemSpacing = SIMChatPhotoBrowseView.itemSpacing
             
-            imageView.frame = CGRectMake(itemSpacing, 0, bounds.width - itemSpacing * 2, bounds.height)
-            imageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+            imageView.frame = CGRect(x: itemSpacing, y: 0, width: bounds.width - itemSpacing * 2, height: bounds.height)
+            imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             
             contentView.addSubview(imageView)
         }
@@ -231,6 +231,6 @@ extension SIMChatPhotoBrowseView {
             get { return imageView.element }
         }
         
-        private let imageView = SIMChatPhotoBrowseViewImage(frame: CGRectZero)
+        private let imageView = SIMChatPhotoBrowseViewImage(frame: CGRect.zero)
     }
 }

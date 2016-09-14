@@ -29,7 +29,7 @@ private enum LazyElement<Element> {
 
 public class SIMChatUpdatesTransaction<Element> {
     /// 插入一行
-    public func insert(newElement: Element, atIndex: Int, withAnimation: UITableViewRowAnimation = .None) {
+    public func insert(_ newElement: Element, atIndex: Int, withAnimation: UITableViewRowAnimation = .none) {
         guard !checkIndexInCall || atIndex <= _count else {
             fatalError("index out of range")
         }
@@ -40,7 +40,7 @@ public class SIMChatUpdatesTransaction<Element> {
     }
     
     /// 重新加载一行
-    public func reloadAtIndex(index: Int, withAnimation: UITableViewRowAnimation = .None) {
+    public func reloadAtIndex(_ index: Int, withAnimation: UITableViewRowAnimation = .none) {
         guard !checkIndexInCall || index < _count else {
             fatalError("index out of range")
         }
@@ -48,7 +48,7 @@ public class SIMChatUpdatesTransaction<Element> {
     }
     
     /// 删除一行
-    public func removeAtIndex(index: Int, withAnimation: UITableViewRowAnimation = .None) {
+    public func removeAtIndex(_ index: Int, withAnimation: UITableViewRowAnimation = .none) {
         guard index < _count else {
             fatalError("index out of range")
         }
@@ -56,7 +56,7 @@ public class SIMChatUpdatesTransaction<Element> {
     }
     
     /// 移动一行
-    public func moveFromIndex(fromIndex: Int, toIndex: Int, withAnimation: UITableViewRowAnimation = .None) {
+    public func moveFromIndex(_ fromIndex: Int, toIndex: Int, withAnimation: UITableViewRowAnimation = .none) {
         guard fromIndex != toIndex else {
             return
         }
@@ -75,10 +75,10 @@ public class SIMChatUpdatesTransaction<Element> {
     }
     
     /// 应用修改
-    private func apply(tableView: UITableView, inout _ datas: Array<Element>, _ animated: Bool) {
+    func apply(_ tableView: UITableView, _ datas: inout Array<Element>, _ animated: Bool) {
         // 填充数据.
         _inserts.forEach { k, v in
-            v.enumerate().forEach {
+            v.enumerated().forEach {
                 guard let idx = $1.0.index else {
                     return
                 }
@@ -90,49 +90,49 @@ public class SIMChatUpdatesTransaction<Element> {
         var indexs = Set<Int>()
         var modifier = 0
         // 合并
-        indexs.unionInPlace(Array(_inserts.keys))
-        indexs.unionInPlace(Array(_removes.keys))
-        indexs.unionInPlace(Array(_reloads.keys))
+        indexs.formUnion(Array(_inserts.keys))
+        indexs.formUnion(Array(_removes.keys))
+        indexs.formUnion(Array(_reloads.keys))
         
-        var insertIndexPaths: Dictionary<UITableViewRowAnimation, Array<NSIndexPath>> = [:]
-        var reloadIndexPaths: Dictionary<UITableViewRowAnimation, Array<NSIndexPath>> = [:]
-        var removeIndexPaths: Dictionary<UITableViewRowAnimation, Array<NSIndexPath>> = [:]
+        var insertIndexPaths: Dictionary<UITableViewRowAnimation, Array<IndexPath>> = [:]
+        var reloadIndexPaths: Dictionary<UITableViewRowAnimation, Array<IndexPath>> = [:]
+        var removeIndexPaths: Dictionary<UITableViewRowAnimation, Array<IndexPath>> = [:]
         
-        indexs.sort().forEach { index in
+        indexs.sorted().forEach { index in
             //log("-- BEGIN: \(datas)")
             if let ops = _inserts[index] {
                 // 插入
                 var count = 0
                 let position = index + modifier
-                ops.reverse().forEach {
+                ops.reversed().forEach {
                     guard let data = $0.element else {
                         return
                     }
-                    let indexPath = NSIndexPath(forRow: position + count, inSection: 0)
+                    let indexPath = IndexPath(row: position + count, section: 0)
                     if insertIndexPaths[$1] == nil {
                         insertIndexPaths[$1] = []
                     }
                     count += 1
                     modifier += 1
                     //log("insert element at index: \(position), at row: \(indexPath.row)")
-                    datas.insert(data, atIndex: position)
+                    datas.insert(data, at: position)
                     insertIndexPaths[$1]?.append(indexPath)
                 }
             }
             if let op = _removes[index] {
                 let position = index + modifier
                 // 删除
-                let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                let indexPath = IndexPath(row: index, section: 0)
                 if removeIndexPaths[op] == nil {
                     removeIndexPaths[op] = []
                 }
                 modifier -= 1
                 //log("remove element at index: \(position), at row: \(indexPath.row)")
-                datas.removeAtIndex(position)
+                datas.remove(at: position)
                 removeIndexPaths[op]?.append(indexPath)
             } else if let op = _reloads[index] {
                 //let position = index + modifier
-                let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                let indexPath = IndexPath(row: index, section: 0)
                 // 刷新
                 if reloadIndexPaths[op] == nil {
                     reloadIndexPaths[op] = []
@@ -150,28 +150,28 @@ public class SIMChatUpdatesTransaction<Element> {
             // 禁止动画
             UIView.performWithoutAnimation {
                 tableView.beginUpdates()
-                insertIndexPaths.forEach { tableView.insertRowsAtIndexPaths($1, withRowAnimation: .None) }
-                reloadIndexPaths.forEach { tableView.reloadRowsAtIndexPaths($1, withRowAnimation: .None) }
-                removeIndexPaths.forEach { tableView.deleteRowsAtIndexPaths($1, withRowAnimation: .None) }
+                insertIndexPaths.forEach { tableView.insertRows(at: $1, with: .none) }
+                reloadIndexPaths.forEach { tableView.reloadRows(at: $1, with: .none) }
+                removeIndexPaths.forEach { tableView.deleteRows(at: $1, with: .none) }
                 tableView.endUpdates()
             }
             return
         }
         
-        if removeIndexPaths[.Left]?.count > 0 || removeIndexPaths[.Right]?.count > 0 {
-            let rl = removeIndexPaths[.Left] ?? []
-            let rr = removeIndexPaths[.Right] ?? []
+        if (removeIndexPaths[.left]?.count)! > 0 || (removeIndexPaths[.right]?.count)! > 0 {
+            let rl = removeIndexPaths[.left] ?? []
+            let rr = removeIndexPaths[.right] ?? []
             // 获取当前显示的Cell
             let visibleCells = tableView.visibleCells
             let visibleRows = tableView.indexPathsForVisibleRows
             let cellsL: [UITableViewCell] = rl.flatMap {
-                guard let index = visibleRows?.indexOf($0) else {
+                guard let index = visibleRows?.index(of: $0) else {
                     return nil
                 }
                 return visibleCells[index]
             }
             let cellsR: [UITableViewCell] = rr.flatMap {
-                guard let index = visibleRows?.indexOf($0) else {
+                guard let index = visibleRows?.index(of: $0) else {
                     return nil
                 }
                 return visibleCells[index]
@@ -179,35 +179,35 @@ public class SIMChatUpdatesTransaction<Element> {
             // 需要执行动画的cell不在显示区域
             if !cellsL.isEmpty || !cellsR.isEmpty {
                 // 自定义删除动画,
-                let enabled = tableView.scrollEnabled
-                tableView.scrollEnabled = false
-                UIView.animateWithDuration(0.25,
+                let enabled = tableView.isScrollEnabled
+                tableView.isScrollEnabled = false
+                UIView.animate(withDuration: 0.25,
                     animations: {
-                        cellsL.forEach { $0.frame.origin = CGPointMake(-$0.frame.width, $0.frame.minY) }
-                        cellsR.forEach { $0.frame.origin = CGPointMake(+$0.frame.width, $0.frame.minY) }
+                        cellsL.forEach { $0.frame.origin = CGPoint(x: -$0.frame.width, y: $0.frame.minY) }
+                        cellsR.forEach { $0.frame.origin = CGPoint(x: +$0.frame.width, y: $0.frame.minY) }
                     },
                     completion: { b in
-                        if !tableView.scrollEnabled {
-                            tableView.scrollEnabled = enabled
+                        if !tableView.isScrollEnabled {
+                            tableView.isScrollEnabled = enabled
                         }
                         // 必须要隐藏, 否则系统动画会暴露
                         cellsL.forEach {
-                            $0.frame.origin = CGPointMake(-$0.frame.width, $0.frame.minY)
-                            $0.hidden = true
+                            $0.frame.origin = CGPoint(x: -$0.frame.width, y: $0.frame.minY)
+                            $0.isHidden = true
                         }
                         cellsR.forEach {
-                            $0.frame.origin = CGPointMake(+$0.frame.width, $0.frame.minY)
-                            $0.hidden = true
+                            $0.frame.origin = CGPoint(x: +$0.frame.width, y: $0.frame.minY)
+                            $0.isHidden = true
                         }
                         // 使用系统的更新剩下的
                         tableView.beginUpdates()
-                        insertIndexPaths.forEach { tableView.insertRowsAtIndexPaths($1, withRowAnimation: $0) }
-                        reloadIndexPaths.forEach { tableView.reloadRowsAtIndexPaths($1, withRowAnimation: $0) }
+                        insertIndexPaths.forEach { tableView.insertRows(at: $1, with: $0) }
+                        reloadIndexPaths.forEach { tableView.reloadRows(at: $1, with: $0) }
                         removeIndexPaths.forEach {
-                            if $0 == .Left || $0 == .Right {
-                                tableView.deleteRowsAtIndexPaths($1, withRowAnimation: .Top)
+                            if $0 == .left || $0 == .right {
+                                tableView.deleteRows(at: $1, with: .top)
                             } else {
-                                tableView.deleteRowsAtIndexPaths($1, withRowAnimation: $0)
+                                tableView.deleteRows(at: $1, with: $0)
                             }
                         }
                         tableView.endUpdates()
@@ -217,19 +217,19 @@ public class SIMChatUpdatesTransaction<Element> {
         }
         // 使用系统动画
         tableView.beginUpdates()
-        insertIndexPaths.forEach { tableView.insertRowsAtIndexPaths($1, withRowAnimation: $0) }
-        reloadIndexPaths.forEach { tableView.reloadRowsAtIndexPaths($1, withRowAnimation: $0) }
-        removeIndexPaths.forEach { tableView.deleteRowsAtIndexPaths($1, withRowAnimation: $0) }
+        insertIndexPaths.forEach { tableView.insertRows(at: $1, with: $0) }
+        reloadIndexPaths.forEach { tableView.reloadRows(at: $1, with: $0) }
+        removeIndexPaths.forEach { tableView.deleteRows(at: $1, with: $0) }
         tableView.endUpdates()
     }
     
     public var checkIndexInCall: Bool = true
     
-    private func log(message: Any,
+    private func log(_ message: Any,
         function: StaticString = #function,
         file: String = #file,
         line: Int = #line) {
-            SIMLog.debug(message, function, file, line)
+            //SIMLog.debug(message, function, line, file)
     }
     
     private var _count: Int
@@ -238,7 +238,7 @@ public class SIMChatUpdatesTransaction<Element> {
     private var _removes: Dictionary<Int, UITableViewRowAnimation> = [:]
     private var _reloads: Dictionary<Int, UITableViewRowAnimation> = [:]
     
-    private init(count: Int) { _count = count }
+    init(count: Int) { _count = count }
 }
 
 ///
@@ -250,10 +250,10 @@ public class SIMChatUpdatesTransaction<Element> {
 /// - parameter handler 一些操作
 ///
 public func SIMChatUpdatesTransactionPerform<Element>(
-    tableView: UITableView,
-    inout _ datas: Array<Element>,
+    _ tableView: UITableView,
+    _ datas: inout Array<Element>,
     _ animated: Bool = false,
-    @noescape _ handler: (SIMChatUpdatesTransaction<Element> -> Void)) {
+    _ handler: (SIMChatUpdatesTransaction<Element>) -> Void) {
         let transaction = SIMChatUpdatesTransaction<Element>(count: datas.count)
         handler(transaction)
         transaction.apply(tableView, &datas, animated)

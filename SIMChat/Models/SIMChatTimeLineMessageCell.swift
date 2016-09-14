@@ -24,9 +24,9 @@ internal class SIMChatTimeLineMessageCell: SIMChatBaseMessageBaseCell {
         // config
         titleLabel.text = ""
         titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.systemFontOfSize(11)
+        titleLabel.font = UIFont.systemFont(ofSize: 11)
         titleLabel.textColor = UIColor(argb: 0xFF7B7B7B)
-        titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.textAlignment = NSTextAlignment.center
         // add views
         contentView.addSubview(titleLabel)
         // add constraints
@@ -41,7 +41,7 @@ internal class SIMChatTimeLineMessageCell: SIMChatBaseMessageBaseCell {
     /// 关联的消息
     override var model: SIMChatMessage? {
         didSet {
-            guard let message = model as? SIMChatTimeLineMessage where message !== oldValue else {
+            guard let message = model as? SIMChatTimeLineMessage , message !== oldValue else {
                 return
             }
             // 更新时间信息

@@ -21,14 +21,14 @@ public class SIMChatBaseMessageTextCell: SIMChatBaseMessageBubbleCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         // 添加父类的
-        _bubbleMenuItems.appendContentsOf(super.bubbleMenuItems)
+        _bubbleMenuItems.append(contentsOf: super.bubbleMenuItems)
         
         // TODO: 有性能问题, 需要重新实现
         
         // config views
-        contentLabel.font = UIFont.systemFontOfSize(16)
+        contentLabel.font = UIFont.systemFont(ofSize: 16)
         contentLabel.numberOfLines = 0
-        contentLabel.textColor = UIColor.blackColor()
+        contentLabel.textColor = UIColor.black
         // add views
         bubbleView.contentView.addSubview(contentLabel)
         // add constraints
@@ -43,16 +43,16 @@ public class SIMChatBaseMessageTextCell: SIMChatBaseMessageBubbleCell {
     public override var style: Style {
         didSet {
             switch style {
-            case .Left:  contentLabel.textColor = UIColor.blackColor()
-            case .Right: contentLabel.textColor = UIColor.whiteColor()
-            case .Unknow: break
+            case .left:  contentLabel.textColor = UIColor.black
+            case .right: contentLabel.textColor = UIColor.white
+            case .unknow: break
             }
         }
     }
     /// 消息内容
     public override var model: SIMChatMessage? {
         didSet {
-            guard let message = model where message != oldValue else {
+            guard let message = model , message != oldValue else {
                 return
             }
             
@@ -61,7 +61,7 @@ public class SIMChatBaseMessageTextCell: SIMChatBaseMessageBubbleCell {
             }
         }
     }
-    private lazy var contentLabel = SIMChatLabel(frame: CGRectZero)
+    private lazy var contentLabel = SIMChatLabel(frame: CGRect.zero)
     
     private lazy var _bubbleMenuItems: Array<UIMenuItem> = [
         UIMenuItem(title: "复制", action: #selector(SIMChatBaseMessageBubbleCell._copyMessage(_:)))

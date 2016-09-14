@@ -14,35 +14,35 @@ import Foundation
 public class SIMChatBaseFileResource: SIMChatResourceProtocol {
     /// 实际内容
     public enum Value {
-        case URL(NSURL)
-        case Path(String)
-        case Custom(AnyObject)
+        case url(Foundation.URL)
+        case path(String)
+        case custom(AnyObject)
     }
     
     /// 连接
-    public init(_ URL: NSURL) {
-        value = .URL(URL)
+    public init(_ URL: Foundation.URL) {
+        value = .url(URL)
     }
     /// 地址
     public init(_ path: String) {
-        value = .Path(path)
+        value = .path(path)
     }
     /// 自定义数据
     public init(_ custom: AnyObject) {
-        value = .Custom(custom)
+        value = .custom(custom)
     }
     
     /// 资源id
-    public let identifier: String = NSUUID().UUIDString
+    public let identifier: String = UUID().uuidString
     /// 资源链接
-    public var resourceURL: NSURL {
+    public var resourceURL: URL {
         switch value {
-        case .URL(let URL):
+        case .url(let URL):
             return URL
-        case .Path(let path):
-            return NSURL(fileURLWithPath: path)
-        case .Custom(_):
-            return NSURL(string: "simchat://custom")!
+        case .path(let path):
+            return URL(fileURLWithPath: path)
+        case .custom(_):
+            return URL(string: "simchat://custom")!
         }
     }
     
@@ -51,7 +51,7 @@ public class SIMChatBaseFileResource: SIMChatResourceProtocol {
     ///
     /// - parameter closure: 结果回调
     ///
-    public func resource(closure: SIMChatResult<AnyObject, NSError> -> Void) {
+    public func resource(_ closure: (SIMChatResult<AnyObject, NSError>) -> Void) {
         // no imp
     }
     

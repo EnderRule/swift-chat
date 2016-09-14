@@ -10,17 +10,17 @@ import UIKit
 //import ImSDK
 import SIMChat
 
-class ExMessage: SIMChatBaseMessage {
-    
-//    lazy var imp: TIMMessage = {
-//        let message = TIMMessage()
-//        message.addElem(self.content.toTIMElem())
-//        return message
-//    }()
-}
+//class ExMessage: SIMChatBaseMessage {
+//    
+////    lazy var imp: TIMMessage = {
+////        let message = TIMMessage()
+////        message.addElem(self.content.toTIMElem())
+////        return message
+////    }()
+//}
 
-class ExUnknowContent: SIMChatMessageBody {
-}
+//class ExUnknowContent: SIMChatMessageBody {
+//}
 
 //class ExTIMAudioResource: SIMChatResourceProtocol {
 //    

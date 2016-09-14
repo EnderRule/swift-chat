@@ -21,20 +21,20 @@ class SIMChatFaceAttachment: NSTextAttachment {
         super.init(coder: aDecoder)
     }
     /// 请求图片
-    override func imageForBounds(imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> UIImage? {
+    override func image(forBounds imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> UIImage? {
         textContainer?.heightTracksTextView = true
         // 附加信息
-        let info = [SIMChatTextAttachmentFrameUserInfoKey : NSValue(CGRect: imageBounds),
-                    SIMChatTextAttachmentCharIndexUserInfoKey : charIndex]
+        let info = [SIMChatTextAttachmentFrameUserInfoKey : NSValue(cgRect: imageBounds),
+                    SIMChatTextAttachmentCharIndexUserInfoKey : charIndex] as [String : Any]
         // 投送:)
-        SIMChatNotificationCenter.postNotificationName(SIMChatTextAttachmentChangedNotification, object: self, userInfo: info)
+        SIMChatNotificationCenter.postNotificationName(SIMChatTextAttachmentChangedNotification, object: self, userInfo: info as [NSObject : AnyObject]?)
         // 不要显示东西
         return nil
     }
     /// 请求大小
-    override func attachmentBoundsForTextContainer(textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
+    override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
         // ok
-        return CGRectMake(0, -lineFrag.height, 28, 28)
+        return CGRect(x: 0, y: -lineFrag.height, width: 28, height: 28)
     }
     /// 表情
     var face: String

@@ -19,7 +19,7 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
     
     @available(iOS 3.2, *)
-    public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         for d in delegates {
             if !(d.element?.gestureRecognizerShouldBegin?(gestureRecognizer) ?? true) {
                 return false
@@ -29,9 +29,9 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
     
     @available(iOS 3.2, *)
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         for d in delegates {
-            if d.element?.gestureRecognizer?(gestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer: otherGestureRecognizer) ?? true {
+            if d.element?.gestureRecognizer?(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer) ?? true {
                 return true
             }
         }
@@ -39,9 +39,9 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
 
     @available(iOS 7.0, *)
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         for d in delegates {
-            if d.element?.gestureRecognizer?(gestureRecognizer, shouldRequireFailureOfGestureRecognizer: otherGestureRecognizer) ?? true {
+            if d.element?.gestureRecognizer?(gestureRecognizer, shouldRequireFailureOf: otherGestureRecognizer) ?? true {
                 return true
             }
         }
@@ -49,9 +49,9 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
     
     @available(iOS 7.0, *)
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         for d in delegates {
-            if d.element?.gestureRecognizer?(gestureRecognizer, shouldBeRequiredToFailByGestureRecognizer: otherGestureRecognizer) ?? true {
+            if d.element?.gestureRecognizer?(gestureRecognizer, shouldBeRequiredToFailBy: otherGestureRecognizer) ?? true {
                 return true
             }
         }
@@ -59,9 +59,9 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
     
     @available(iOS 3.2, *)
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         for d in delegates {
-            if !(d.element?.gestureRecognizer?(gestureRecognizer, shouldReceiveTouch: touch) ?? true) {
+            if !(d.element?.gestureRecognizer?(gestureRecognizer, shouldReceive: touch) ?? true) {
                 return false
             }
         }
@@ -69,27 +69,27 @@ public class UIGestureRecognizerDelegateForwarder: NSObject, UIGestureRecognizer
     }
 
     @available(iOS 9.0, *)
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceivePress press: UIPress) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive press: UIPress) -> Bool {
         for d in delegates {
-            if !(d.element?.gestureRecognizer?(gestureRecognizer, shouldReceivePress: press) ?? true) {
+            if !(d.element?.gestureRecognizer?(gestureRecognizer, shouldReceive: press) ?? true) {
                 return false
             }
         }
         return true
     }
     
-    public override func respondsToSelector(aSelector: Selector) -> Bool {
-        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldRequireFailureOfGestureRecognizer:)) {
+    public override func responds(to aSelector: Selector) -> Bool {
+        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldRequireFailureOf:)) {
             return delegates.contains {
-                $0.element?.respondsToSelector(aSelector) ?? false
+                $0.element?.responds(to: aSelector) ?? false
             }
         }
-        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldBeRequiredToFailByGestureRecognizer:)) {
+        if aSelector == #selector(UIGestureRecognizerDelegate.gestureRecognizer(_:shouldBeRequiredToFailBy:)) {
             return delegates.contains {
-                $0.element?.respondsToSelector(aSelector) ?? false
+                $0.element?.responds(to: aSelector) ?? false
             }
         }
-        return super.respondsToSelector(aSelector)
+        return super.responds(to: aSelector)
     }
     
     var delegates: [WeakElement] = []
