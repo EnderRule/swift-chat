@@ -107,6 +107,7 @@
 		0C8BF7C01C6796360060684D /* UITextView+InsertAttributeString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8BF7BF1C6796360060684D /* UITextView+InsertAttributeString.swift */; };
 		0C9D870E1D772A170070DBBA /* SAInputBar+Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9D870D1D772A170070DBBA /* SAInputBar+Resource.swift */; };
 		0CD4D7471D7F05A800B14BA3 /* SAEmotionPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD4D7461D7F05A800B14BA3 /* SAEmotionPanel.swift */; };
+		0CEB6C281D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEB6C271D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift */; };
 		0CFA071C1C8205B200AF0F87 /* SIMChatBrowseAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFA071B1C8205B200AF0F87 /* SIMChatBrowseAnimatedTransitioning.swift */; };
 /* End PBXBuildFile section */
 
@@ -224,6 +225,7 @@
 		0C8BF7BF1C6796360060684D /* UITextView+InsertAttributeString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextView+InsertAttributeString.swift"; sourceTree = "<group>"; };
 		0C9D870D1D772A170070DBBA /* SAInputBar+Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SAInputBar+Resource.swift"; sourceTree = "<group>"; };
 		0CD4D7461D7F05A800B14BA3 /* SAEmotionPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanel.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0CEB6C271D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmotionGroup.swift; sourceTree = "<group>"; };
 		0CFA071B1C8205B200AF0F87 /* SIMChatBrowseAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SIMChatBrowseAnimatedTransitioning.swift; path = ../../Models/Util/SIMChatBrowseAnimatedTransitioning.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -325,6 +327,7 @@
 				0C5EBFB51C8966BD00E0B923 /* SIMChatBaseFileResource.swift */,
 				0C5EBFB71C89677F00E0B923 /* SIMChatBaseImageResource.swift */,
 				0C5EBFB91C89852C00E0B923 /* SIMChatBaseAudioResource.swift */,
+				0CEB6C271D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -680,6 +683,7 @@
 				0C0DD6671C60B4A900AEC8C4 /* SIMChatMenuController.swift in Sources */,
 				0C0DD68F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift in Sources */,
 				0C0DD6371C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift in Sources */,
+				0CEB6C281D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift in Sources */,
 				0C0DD6541C60B4A900AEC8C4 /* SIMChatFileProvider.swift in Sources */,
 				0C71D3351C6AE9E9001CBC13 /* SIMChatBaseInputItem.swift in Sources */,
 				0C0DD64E1C60B4A900AEC8C4 /* SIMChatConversation.swift in Sources */,
@@ -881,10 +885,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/SIMChat/Frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/SIMChat/Supporting Files/SIMChat.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -909,10 +910,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/SIMChat/Frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/SIMChat/Supporting Files/SIMChat.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

@@ -55,7 +55,7 @@ import UIKit
 ///
 /// Sample:
 ///    ```swift
-///    lazy var toolbar: SAInputBar = SAInputBar(nextResponder: self)
+///    lazy var toolbar: SAInputBar = SAInputBar()
 /// 
 ///    override var inputAccessoryView: UIView? {
 ///        return toolbar

@@ -90,8 +90,13 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         view.addSubview(backgroundView)
         view.addSubview(contentView)
         
-//        _messageManager.prepare()
+        
+        if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.qq.classic/Info.plist")!) {
+            _emotionGroups.append(group)
+        }
     }
+    
+    fileprivate var _emotionGroups: [SIMChatEmotionGroup] = []
     
     public override var canBecomeFirstResponder: Bool {
         return true
@@ -130,11 +135,6 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
             SAToolboxItem("page:gactivity", "群活动", R("tool_group_activity"))
         ]
     }()
-    
-    private lazy var _emotionGroups: [SIMEmotionGroup] = [
-        SIMEmotionGroup(row: 3, column: 7),
-        SIMEmotionGroup(row: 2, column: 4, type: .large),
-    ]
     
     
     private var _activedItem: SAInputItem?
@@ -272,14 +272,7 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
     }
     
     public func emotion(_ emotion: SAEmotionPanel, itemsAt group: Int) -> [SAEmotion] {
-        //let eg = _emotionGroups[group]
-        let image = SIMChatBundle.imageWithResource("Emoticons/com.qq.classic/001@2x.png")
-        
-        return (0 ..< 99).map { _ in
-            let e = SAEmotion()
-            e.contents = image
-            return e
-        }
+        return _emotionGroups[group].emotions
     }
     public func emotion(_ emotion: SAEmotionPanel, typeForItemAt group: Int) -> SAEmotionType {
         return _emotionGroups[group].type
