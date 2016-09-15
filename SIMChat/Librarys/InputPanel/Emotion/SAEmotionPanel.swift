@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreGraphics
 
 // ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
@@ -19,7 +18,7 @@ import CoreGraphics
 // [x] SAEmotionPanel - Tabbar支持
 // [x] SAEmotionPanel - 更新page
 // [ ] SAEmotionPanel - 长按删除
-// [ ] SAEmotionPanel - 发送/设置按钮
+// [x] SAEmotionPanel - 更多(More)支持
 // [ ] SAEmotion - UIView支持
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
@@ -102,12 +101,11 @@ import CoreGraphics
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
         _tabbar.dataSource = self
         _tabbar.backgroundColor = .white
-        _tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, 45)
+        _tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         _tabbar.delegate = self
         _tabbar.scrollsToTop = false
         _tabbar.showsVerticalScrollIndicator = false
         _tabbar.showsHorizontalScrollIndicator = false
-        _tabbar.alwaysBounceHorizontal = true
         
         backgroundColor = _color
         
@@ -140,6 +138,9 @@ import CoreGraphics
     fileprivate var _color: UIColor?
     fileprivate var _currentGroup: Int?
     fileprivate var _contentViewIsInit: Bool = false
+    
+    fileprivate var _currentMoreView: UIView?
+    fileprivate var _currentMoreViewConstraints: [NSLayoutConstraint]?
     
     fileprivate lazy var _tabbarLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _tabbar: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._tabbarLayout)
@@ -270,10 +271,54 @@ extension SAEmotionPanel: UICollectionViewDataSource, UICollectionViewDelegateFl
         guard _currentGroup != indexPath.section else {
             return
         }
-        let view = dataSource?.emotion?(self, moreViewForGroupAt: indexPath.section)
+        let moreView = dataSource?.emotion?(self, moreViewForGroupAt: indexPath.section)
         
-        _logger.trace(view)
-        
+        if _currentMoreView != moreView {
+            
+            var newValue: UIView?
+            var newValueCs: [NSLayoutConstraint]?
+            
+            let oldValue = _currentMoreView
+            let oldValueCs = _currentMoreViewConstraints
+            
+            if let view = moreView {
+                
+                view.translatesAutoresizingMaskIntoConstraints = false
+                
+                insertSubview(view, belowSubview: _previewer)
+                
+                let constraints = [
+                    _SALayoutConstraintMake(view, .top, .equal, _tabbar, .top),
+                    _SALayoutConstraintMake(view, .right, .equal, _tabbar, .right),
+                    _SALayoutConstraintMake(view, .bottom, .equal, _tabbar, .bottom),
+                ]
+                
+                addConstraints(constraints)
+                
+                newValue = view
+                newValueCs = constraints
+            }
+            
+            newValue?.layoutIfNeeded()
+            newValue?.transform = CGAffineTransform(translationX: newValue?.frame.width ?? 0, y: 0)
+            
+            UIView.animate(withDuration: 0.25, animations: { 
+                
+                newValue?.transform = CGAffineTransform(translationX: 0, y: 0)
+                oldValue?.transform = CGAffineTransform(translationX: oldValue?.frame.width ?? 0, y: 0)
+                
+            }, completion: { f in
+                if let view = oldValue, let cs = oldValueCs {
+                    self.removeConstraints(cs)
+                    view.removeFromSuperview()
+                }
+                
+            })
+            
+            _tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, newValue?.frame.width ?? 0)
+            _currentMoreView = newValue
+            _currentMoreViewConstraints = newValueCs
+        }
         _currentGroup = indexPath.section
     }
     

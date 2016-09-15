@@ -62,7 +62,7 @@ open class SIMChatViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        SIMLog.trace()
+        _init()
         
         view.backgroundColor = .white
         
@@ -97,16 +97,39 @@ open class SIMChatViewController: UIViewController {
         }
     }
     
+    private func _init() {
+        _logger.trace()
+        
+        _emotionSendBtn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        _emotionSendBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10 + 8, 0, 8)
+        _emotionSendBtn.setTitle("Send", for: .normal)
+        _emotionSendBtn.setTitleColor(.white, for: .normal)
+        _emotionSendBtn.setTitleColor(.gray, for: .disabled)
+        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_blue"), for: .normal)
+        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_blue_h"), for: .highlighted)
+        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .disabled)
+        _emotionSendBtn.isEnabled = false
+        
+        _emotionSettingBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0)
+        _emotionSettingBtn.setImage(UIImage(named: "emotion_btn_setting"), for: .normal)
+        _emotionSettingBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .normal)
+        _emotionSettingBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .highlighted)
+    }
+    
     
     fileprivate var _activedItem: SAInputItem?
     fileprivate var _activedPanel: UIView?
     
-    private lazy var _toolbar: SAInputBar = SAInputBar(type: .value1)
-    private lazy var _contentView: UITableView = UITableView(frame: .zero)
-    private lazy var _backgroundView: UIImageView = UIImageView()
+    fileprivate lazy var _toolbar: SAInputBar = SAInputBar(type: .value1)
+    fileprivate lazy var _contentView: UITableView = UITableView(frame: .zero)
+    fileprivate lazy var _backgroundView: UIImageView = UIImageView()
+    
+    fileprivate lazy var _emotionGroups: [SIMChatEmotionGroup] = []
+    fileprivate lazy var _emotionSendBtn: UIButton = UIButton()
+    fileprivate lazy var _emotionSettingBtn: UIButton = UIButton()
     
     fileprivate lazy var _panels: [String: UIView] = [:]
-    fileprivate lazy var _emotionGroups: [SIMChatEmotionGroup] = []
+    
     fileprivate lazy var _toolboxItems: [SAToolboxItem] = {
         let R = { (n:String) -> UIImage? in
             SIMChatBundle.imageWithResource("InputPanel/\(n).png")
@@ -277,11 +300,11 @@ extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegat
         return _emotionGroups[index]
     }
     open func emotion(_ emotion: SAEmotionPanel, moreViewForGroupAt index: Int) -> UIView? { 
-        _logger.trace(index)
-        let btn = UIButton()
-        btn.frame = CGRect(x: 0, y: 0, width: 37, height: 60)
-        btn.backgroundColor = .random
-        return btn
+        if _emotionGroups[index].type.isSmall {
+            return _emotionSendBtn
+        } else {
+            return _emotionSettingBtn
+        }
     }
     
     open func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {

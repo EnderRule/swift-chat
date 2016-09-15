@@ -297,8 +297,30 @@ internal class SAInputAccessoryView: UIView {
         _logger.trace()
         
         // configuration
+        _textField.font = UIFont.systemFont(ofSize: 15)
+        _textField.delegate = self
+        _textField.scrollsToTop = false
+        _textField.returnKeyType = .send
+        _textField.backgroundColor = .clear
+        _textField.scrollIndicatorInsets = UIEdgeInsetsMake(2, 0, 2, 0)
         _textField.translatesAutoresizingMaskIntoConstraints = false
         _textField.backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        
+        _collectionViewLayout.minimumLineSpacing = 8
+        _collectionViewLayout.minimumInteritemSpacing = 8
+        
+        _collectionView.bounces = false
+        _collectionView.scrollsToTop = false
+        _collectionView.isScrollEnabled = false
+        _collectionView.allowsSelection = false
+        _collectionView.isMultipleTouchEnabled = false
+        _collectionView.showsHorizontalScrollIndicator = false
+        _collectionView.showsVerticalScrollIndicator = false
+        _collectionView.delaysContentTouches = false
+        _collectionView.canCancelContentTouches = false
+        _collectionView.backgroundColor = .clear
+        _collectionView.dataSource = self
+        _collectionView.delegate = self
         _collectionView.translatesAutoresizingMaskIntoConstraints = false
         _collectionView.setContentHuggingPriority(700, for: .horizontal)
         _collectionView.setContentHuggingPriority(700, for: .vertical)
@@ -379,47 +401,9 @@ internal class SAInputAccessoryView: UIView {
     fileprivate lazy var _cacheBarItems: [Int: [SAInputItem]] = [:]
     fileprivate lazy var _selectedBarItems: Set<SAInputItem> = []
     
-    fileprivate lazy var _textField: SAInputTextField = {
-        let view = SAInputTextField()
-        
-        view.font = UIFont.systemFont(ofSize: 15)
-        view.scrollsToTop = false
-        view.returnKeyType = .send
-        view.backgroundColor = UIColor.clear
-        //view.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
-        view.scrollIndicatorInsets = UIEdgeInsetsMake(2, 0, 2, 0)
-        //view.enablesReturnKeyAutomatically = true
-        view.delegate = self
-        
-        return view
-    }()
-    
-    fileprivate lazy var _collectionViewLayout: SAInputAccessoryViewLayout = {
-        let layout = SAInputAccessoryViewLayout()
-        layout.minimumLineSpacing = 8
-        layout.minimumInteritemSpacing = 8
-        return layout
-    }()
-    fileprivate lazy var _collectionView: UICollectionView = {
-        let layout = self._collectionViewLayout
-        let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        
-        view.delegate = self
-        view.dataSource = self
-        view.backgroundColor = UIColor.clear
-        //view.backgroundColor = UIColor.purpleColor().colorWithAlphaComponent(0.2)
-        view.bounces = false
-        view.scrollsToTop = false
-        view.isScrollEnabled = false
-        view.allowsSelection = false
-        view.isMultipleTouchEnabled = false
-        view.showsHorizontalScrollIndicator = false
-        view.showsVerticalScrollIndicator = false
-        view.delaysContentTouches = false
-        view.canCancelContentTouches = false
-        
-        return view
-    }()
+    fileprivate lazy var _textField: SAInputTextField = SAInputTextField()
+    fileprivate lazy var _collectionViewLayout: SAInputAccessoryViewLayout = SAInputAccessoryViewLayout()
+    fileprivate lazy var _collectionView: UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: self._collectionViewLayout)
    
     fileprivate lazy var _textFieldTop: NSLayoutConstraint = {
         return _SAInputLayoutConstraintMake(self._textField, .top, .equal, self, .top)
