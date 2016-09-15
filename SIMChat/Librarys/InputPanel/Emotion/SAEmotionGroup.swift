@@ -1,6 +1,6 @@
 //
 //  SAEmotionGroup.swift
-//  SIMChatDev
+//  SIMChat
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.

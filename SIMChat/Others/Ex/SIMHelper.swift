@@ -8,57 +8,35 @@
 
 import UIKit
 
+//
+///// 提供 | 操作支持
+//func |<T : OptionSet>(lhs: T, rhs: T) -> T {
+//    return lhs.union(rhs)
+//}
+//
+///// 为时间提供 - 操作支持
+//func -(lhs: Date, rhs: Date) -> TimeInterval {
+//    return lhs.timeIntervalSince1970 - rhs.timeIntervalSince1970
+//}
+//
+///// 让枚举支持 allZeros
+//extension OptionSet where RawValue : BitwiseOperations {
+//    static var allZeros: Self {
+//        return self.init()
+//    }
+//}
 
-/// 提供 | 操作支持
-func |<T : OptionSet>(lhs: T, rhs: T) -> T {
-    return lhs.union(rhs)
-}
-
-/// 为时间提供 - 操作支持
-func -(lhs: Date, rhs: Date) -> TimeInterval {
-    return lhs.timeIntervalSince1970 - rhs.timeIntervalSince1970
-}
-
-/// 让枚举支持 allZeros
-extension OptionSet where RawValue : BitwiseOperations {
-    static var allZeros: Self {
-        return self.init()
-    }
-}
-
-// create an `UIImage` with base64 string
-extension UIImage {
-    public convenience init?(base64Encoded base64String: String, scale: CGFloat = 1) {
-        guard let data = Data(base64Encoded: base64String, options: .allZeros) else {
-            return nil
-        }
-        self.init(data: data, scale: scale)
-    }
-}
-
-/// Cretae an `NSLayoutConstraint`
-internal func _SALayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
-    
-    let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
-    c.priority = priority
-    if output != nil {
-        output?.pointee = c
-    }
-    
-    return c
-}
-
-/// 生成约束
-func NSLayoutConstraintMake(_ item: AnyObject, _ attribute: NSLayoutAttribute, _ relatedBy: NSLayoutRelation, _ toItem: AnyObject?, _ attribute2: NSLayoutAttribute, _ constant: CGFloat = 0, _ priority: CGFloat = 1000, _ multiplier: CGFloat = 1) -> NSLayoutConstraint {
-    let c = NSLayoutConstraint(item: item, attribute: attribute, relatedBy: relatedBy, toItem: toItem, attribute: attribute2, multiplier: multiplier, constant: constant)
-    c.priority = UILayoutPriority(priority)
-    return c
-}
-
-/// 生成约束, 用vfl
-func NSLayoutConstraintMake(_ format: String, views: [String : AnyObject], options opts: NSLayoutFormatOptions = .allZeros, metrics: [String : AnyObject]? = nil) -> [NSLayoutConstraint] {
-    return NSLayoutConstraint.constraints(withVisualFormat: format, options: opts, metrics: metrics, views: views)
-}
+///// 生成约束
+//func NSLayoutConstraintMake(_ item: AnyObject, _ attribute: NSLayoutAttribute, _ relatedBy: NSLayoutRelation, _ toItem: AnyObject?, _ attribute2: NSLayoutAttribute, _ constant: CGFloat = 0, _ priority: CGFloat = 1000, _ multiplier: CGFloat = 1) -> NSLayoutConstraint {
+//    let c = NSLayoutConstraint(item: item, attribute: attribute, relatedBy: relatedBy, toItem: toItem, attribute: attribute2, multiplier: multiplier, constant: constant)
+//    c.priority = UILayoutPriority(priority)
+//    return c
+//}
+//
+///// 生成约束, 用vfl
+//func NSLayoutConstraintMake(_ format: String, views: [String : AnyObject], options opts: NSLayoutFormatOptions = .allZeros, metrics: [String : AnyObject]? = nil) -> [NSLayoutConstraint] {
+//    return NSLayoutConstraint.constraints(withVisualFormat: format, options: opts, metrics: metrics, views: views)
+//}
 
 /// 添加build
 public class SIMView : UIView {

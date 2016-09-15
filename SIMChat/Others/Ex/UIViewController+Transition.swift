@@ -64,7 +64,7 @@ extension UIViewController {
         
         mask.frame = window.bounds
         mask.backgroundColor = dest.view.backgroundColor
-        mask.autoresizingMask = UIViewAutoresizing.flexibleWidth | UIViewAutoresizing.flexibleHeight
+        mask.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         tp.image = context.fromViewSnapshoot
         tp.backgroundColor = UIColor.clear
@@ -125,7 +125,7 @@ extension UIViewController {
         //window.frame = UIScreen.mainScreen().bounds
         mask.frame = window.bounds
         mask.backgroundColor = src.view.backgroundColor
-        mask.autoresizingMask = UIViewAutoresizing.flexibleWidth | UIViewAutoresizing.flexibleHeight
+        mask.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         tp.image = context?.toViewSnapshoot
         tp.backgroundColor = UIColor.clear

@@ -50,16 +50,6 @@
 		0C0DD6801C60B4A900AEC8C4 /* SIMChat.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0C0DD61C1C60B4A900AEC8C4 /* SIMChat.bundle */; };
 		0C0DD6861C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6251C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift */; };
 		0C0DD6881C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6271C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift */; };
-		0C0DD68D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD62D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift */; };
-		0C0DD68E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD62E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift */; };
-		0C0DD68F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD62F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift */; };
-		0C0DD6901C60B4A900AEC8C4 /* SIMChatLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6301C60B4A900AEC8C4 /* SIMChatLabel.swift */; };
-		0C0DD6911C60B4A900AEC8C4 /* SIMChatLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6311C60B4A900AEC8C4 /* SIMChatLine.swift */; };
-		0C0DD6921C60B4A900AEC8C4 /* SIMChatPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6321C60B4A900AEC8C4 /* SIMChatPhotoView.swift */; };
-		0C0DD6931C60B4A900AEC8C4 /* SIMChatPortraitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6331C60B4A900AEC8C4 /* SIMChatPortraitView.swift */; };
-		0C0DD6941C60B4A900AEC8C4 /* SIMChatSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6341C60B4A900AEC8C4 /* SIMChatSpectrumView.swift */; };
-		0C0DD6951C60B4A900AEC8C4 /* SIMChatStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6351C60B4A900AEC8C4 /* SIMChatStatusView.swift */; };
-		0C0DD6961C60B4A900AEC8C4 /* SIMChatVisitCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6361C60B4A900AEC8C4 /* SIMChatVisitCardView.swift */; };
 		0C0DD6971C60B4F000AEC8C4 /* SIMChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0DD61D1C60B4A900AEC8C4 /* SIMChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */; };
 		0C18235E1D8ACF290007DAEF /* SAAudioPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */; };
@@ -77,6 +67,9 @@
 		0C18236A1D8ACF290007DAEF /* SAToolboxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */; };
 		0C18236B1D8ACF290007DAEF /* SAToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */; };
 		0C18236C1D8ACF290007DAEF /* SAToolboxPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */; };
+		0C18236E1D8AD1E70007DAEF /* SAToolboxPanelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18236D1D8AD1E70007DAEF /* SAToolboxPanelLayout.swift */; };
+		0C1823721D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823701D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift */; };
+		0C1823731D8AD2E90007DAEF /* UIImage+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823711D8AD2E90007DAEF /* UIImage+Base64.swift */; };
 		0C1A176A1D7723CA0093EE12 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17691D7723CA0093EE12 /* Logger.swift */; };
 		0C1A17771D7724880093EE12 /* SAInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176C1D7724880093EE12 /* SAInput.swift */; };
 		0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */; };
@@ -177,16 +170,6 @@
 		0C0DD61E1C60B4A900AEC8C4 /* SIMChat.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SIMChat.plist; sourceTree = "<group>"; };
 		0C0DD6251C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SIMChatInputItemProtocol.swift; path = ../../Views/Input/SIMChatInputItemProtocol.swift; sourceTree = "<group>"; };
 		0C0DD6271C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SIMChatInputPanelAudioView.swift; path = ../../Views/Input/SIMChatInputPanelAudioView.swift; sourceTree = "<group>"; };
-		0C0DD62D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatBubbleView.swift; sourceTree = "<group>"; };
-		0C0DD62E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmojiAttachment.swift; sourceTree = "<group>"; };
-		0C0DD62F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmojiView.swift; sourceTree = "<group>"; };
-		0C0DD6301C60B4A900AEC8C4 /* SIMChatLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatLabel.swift; sourceTree = "<group>"; };
-		0C0DD6311C60B4A900AEC8C4 /* SIMChatLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatLine.swift; sourceTree = "<group>"; };
-		0C0DD6321C60B4A900AEC8C4 /* SIMChatPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatPhotoView.swift; sourceTree = "<group>"; };
-		0C0DD6331C60B4A900AEC8C4 /* SIMChatPortraitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatPortraitView.swift; sourceTree = "<group>"; };
-		0C0DD6341C60B4A900AEC8C4 /* SIMChatSpectrumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatSpectrumView.swift; sourceTree = "<group>"; };
-		0C0DD6351C60B4A900AEC8C4 /* SIMChatStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatStatusView.swift; sourceTree = "<group>"; };
-		0C0DD6361C60B4A900AEC8C4 /* SIMChatVisitCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatVisitCardView.swift; sourceTree = "<group>"; };
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };
 		0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPanel.swift; sourceTree = "<group>"; };
 		0C18234E1D8ACF290007DAEF /* SAEmotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotion.swift; sourceTree = "<group>"; };
@@ -203,6 +186,9 @@
 		0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItem.swift; sourceTree = "<group>"; };
 		0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItemView.swift; sourceTree = "<group>"; };
 		0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxPanel.swift; sourceTree = "<group>"; };
+		0C18236D1D8AD1E70007DAEF /* SAToolboxPanelLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxPanelLayout.swift; sourceTree = "<group>"; };
+		0C1823701D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+SA.swift"; sourceTree = "<group>"; };
+		0C1823711D8AD2E90007DAEF /* UIImage+Base64.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Base64.swift"; sourceTree = "<group>"; };
 		0C1A17691D7723CA0093EE12 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		0C1A176C1D7724880093EE12 /* SAInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInput.swift; sourceTree = "<group>"; };
 		0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryView.swift; sourceTree = "<group>"; };
@@ -290,7 +276,6 @@
 				0C0DD5C11C60B4A900AEC8C4 /* Controllers */,
 				0C0DD5C71C60B4A900AEC8C4 /* Models */,
 				0C0DD5E81C60B4A900AEC8C4 /* Others */,
-				0C0DD61F1C60B4A900AEC8C4 /* Views */,
 				0C1A17001D7721220093EE12 /* Librarys */,
 				0CC090CF1D850F11009536E4 /* Frameworks */,
 				0C0DD61B1C60B4A900AEC8C4 /* Supporting Files */,
@@ -460,31 +445,6 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		0C0DD61F1C60B4A900AEC8C4 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				0C0DD62C1C60B4A900AEC8C4 /* Other */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		0C0DD62C1C60B4A900AEC8C4 /* Other */ = {
-			isa = PBXGroup;
-			children = (
-				0C0DD62D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift */,
-				0C0DD62E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift */,
-				0C0DD62F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift */,
-				0C0DD6301C60B4A900AEC8C4 /* SIMChatLabel.swift */,
-				0C0DD6311C60B4A900AEC8C4 /* SIMChatLine.swift */,
-				0C0DD6321C60B4A900AEC8C4 /* SIMChatPhotoView.swift */,
-				0C0DD6331C60B4A900AEC8C4 /* SIMChatPortraitView.swift */,
-				0C0DD6341C60B4A900AEC8C4 /* SIMChatSpectrumView.swift */,
-				0C0DD6351C60B4A900AEC8C4 /* SIMChatStatusView.swift */,
-				0C0DD6361C60B4A900AEC8C4 /* SIMChatVisitCardView.swift */,
-			);
-			path = Other;
-			sourceTree = "<group>";
-		};
 		0C175F581C99C52400AFF210 /* Private */ = {
 			isa = PBXGroup;
 			children = (
@@ -532,8 +492,18 @@
 				0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */,
 				0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */,
 				0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */,
+				0C18236D1D8AD1E70007DAEF /* SAToolboxPanelLayout.swift */,
 			);
 			path = Toolbox;
+			sourceTree = "<group>";
+		};
+		0C18236F1D8AD2E90007DAEF /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				0C1823701D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift */,
+				0C1823711D8AD2E90007DAEF /* UIImage+Base64.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		0C1A17001D7721220093EE12 /* Librarys */ = {
@@ -541,6 +511,7 @@
 			children = (
 				0C1A176B1D7724880093EE12 /* InputBar */,
 				0C4F6A041D8A5423008A5C47 /* InputPanel */,
+				0C18236F1D8AD2E90007DAEF /* Extension */,
 				0C1A17681D7723CA0093EE12 /* Logger */,
 			);
 			path = Librarys;
@@ -740,7 +711,6 @@
 				0C71D3331C6A3BFA001CBC13 /* SIMChatInputPanelContainer.swift in Sources */,
 				0C1A176A1D7723CA0093EE12 /* Logger.swift in Sources */,
 				0C0DD6671C60B4A900AEC8C4 /* SIMChatMenuController.swift in Sources */,
-				0C0DD68F1C60B4A900AEC8C4 /* SIMChatEmojiView.swift in Sources */,
 				0C0DD6371C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift in Sources */,
 				0CEB6C281D88F2FB00C7BB34 /* SIMChatEmotionGroup.swift in Sources */,
 				0C0DD6541C60B4A900AEC8C4 /* SIMChatFileProvider.swift in Sources */,
@@ -748,18 +718,16 @@
 				0C0DD64E1C60B4A900AEC8C4 /* SIMChatConversation.swift in Sources */,
 				0C0DD6491C60B4A900AEC8C4 /* SIMChatBaseManager.swift in Sources */,
 				0C1A17811D7724880093EE12 /* SAInputView.swift in Sources */,
-				0C0DD68D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift in Sources */,
 				0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */,
 				0C18235F1D8ACF290007DAEF /* SAEmotion.swift in Sources */,
 				0C0DD6861C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift in Sources */,
-				0C0DD6901C60B4A900AEC8C4 /* SIMChatLabel.swift in Sources */,
 				0C0DD6551C60B4A900AEC8C4 /* SIMChatRequest.swift in Sources */,
 				0C1A177F1D7724880093EE12 /* SAInputTextField.swift in Sources */,
-				0C0DD6911C60B4A900AEC8C4 /* SIMChatLine.swift in Sources */,
 				0C4070FB1C7B757E00AEECB7 /* SIMChatMediaPlayerProtocol.swift in Sources */,
 				0C0DD65D1C60B4A900AEC8C4 /* UIGestureRecognizerDelegate+Forward.swift in Sources */,
 				0C4EF8F51C6B68A800CA192D /* SIMChatEmoticonProtocol.swift in Sources */,
 				0C1823681D8ACF290007DAEF /* SAEmotionTabItemView.swift in Sources */,
+				0C1823731D8AD2E90007DAEF /* UIImage+Base64.swift in Sources */,
 				0C1823671D8ACF290007DAEF /* SAEmotionPreviewer.swift in Sources */,
 				0C18235E1D8ACF290007DAEF /* SAAudioPanel.swift in Sources */,
 				0C48A8971C78C21D00571BF5 /* SIMChatUpdatesTransaction.swift in Sources */,
@@ -778,7 +746,6 @@
 				0C0DD64C1C60B4A900AEC8C4 /* SIMChatMessageCellProtocol.swift in Sources */,
 				0C18236B1D8ACF290007DAEF /* SAToolboxItemView.swift in Sources */,
 				0C4EF8F71C6B68B400CA192D /* SIMChatEmoticonGroupProtocol.swift in Sources */,
-				0C0DD68E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift in Sources */,
 				0C18236A1D8ACF290007DAEF /* SAToolboxItem.swift in Sources */,
 				0C1823631D8ACF290007DAEF /* SAEmotionPage.swift in Sources */,
 				0C368BB41C7D7986003755CC /* NSStringTransform+Heteronym.swift in Sources */,
@@ -793,19 +760,17 @@
 				0C0DD6881C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift in Sources */,
 				0C24757A1C892052003077B2 /* SIMChatResourceProtocol.swift in Sources */,
 				0C1823651D8ACF290007DAEF /* SAEmotionPanel.swift in Sources */,
-				0C0DD6951C60B4A900AEC8C4 /* SIMChatStatusView.swift in Sources */,
 				0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */,
+				0C1823721D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift in Sources */,
 				0C1A177A1D7724880093EE12 /* SAInputBackgroundView.swift in Sources */,
 				0C0DD6481C60B4A900AEC8C4 /* SIMChatBaseConversation.swift in Sources */,
-				0C0DD6931C60B4A900AEC8C4 /* SIMChatPortraitView.swift in Sources */,
-				0C0DD6961C60B4A900AEC8C4 /* SIMChatVisitCardView.swift in Sources */,
 				0C1823621D8ACF290007DAEF /* SAEmotionLine.swift in Sources */,
 				0C0DD63A1C60B4A900AEC8C4 /* SIMChatViewController.swift in Sources */,
 				0C0DD6661C60B4A900AEC8C4 /* SIMChatFPSLabel.swift in Sources */,
 				0CFA071C1C8205B200AF0F87 /* SIMChatBrowseAnimatedTransitioning.swift in Sources */,
 				0C2992B51C6B3989006697DC /* SIMChatBaseEmoticon.swift in Sources */,
 				0C0DD65A1C60B4A900AEC8C4 /* SIMHelper.swift in Sources */,
-				0C0DD6941C60B4A900AEC8C4 /* SIMChatSpectrumView.swift in Sources */,
+				0C18236E1D8AD1E70007DAEF /* SAToolboxPanelLayout.swift in Sources */,
 				0C0DD64A1C60B4A900AEC8C4 /* SIMChatBaseMessage.swift in Sources */,
 				0C0DD6441C60B4A900AEC8C4 /* SIMChatBaseMessageImageContent.swift in Sources */,
 				0C1823611D8ACF290007DAEF /* SAEmotionGroup.swift in Sources */,
@@ -827,7 +792,6 @@
 				0C0DD64B1C60B4A900AEC8C4 /* SIMChatBaseUser.swift in Sources */,
 				0C0DD6631C60B4A900AEC8C4 /* SIMChatImageManager.swift in Sources */,
 				0C4070FD1C7B75A000AEECB7 /* SIMChatMediaRecorderProtocol.swift in Sources */,
-				0C0DD6921C60B4A900AEC8C4 /* SIMChatPhotoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
