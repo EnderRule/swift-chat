@@ -11,7 +11,7 @@ import UIKit
 // [x] SAToolboxPanel - 数据源
 // [x] SAToolboxPanel - 代理
 // [x] SAToolboxPanel - 横屏
-// [ ] SAToolboxItemView - 选中高亮
+// [x] SAToolboxItemView - 选中高亮
 
 @objc public protocol SAToolboxPanelDataSource: NSObjectProtocol {
     
@@ -176,25 +176,38 @@ internal class SAToolboxPanelLayout: UICollectionViewLayout {
     }
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var ats = [UICollectionViewLayoutAttributes]()
+        
+        _logger.debug()
+        
+        // TODO: ...性能优化
+        
         // 生成
-        let frame = self.collectionView?.bounds ?? CGRect.zero
+        let edg = UIEdgeInsetsMake(12, 10, 12, 10)
+        let frame = self.collectionView?.bounds ?? .zero
         let count = self.collectionView?.numberOfItems(inSection: 0) ?? 0
-        // config
-        let w: CGFloat = 50
-        let h: CGFloat = 70
-        let yg: CGFloat = 28
-        let xg: CGFloat = (frame.width - w * CGFloat(self.column)) / CGFloat(self.column + 1)
+        
+        let width = frame.width - edg.left - edg.right
+        let height = frame.height - edg.top - edg.bottom
+        let row = CGFloat(self.row)
+        let col = CGFloat(self.column)
+        
+        let w: CGFloat = trunc((width - 8 * col) / col)
+        let h: CGFloat = trunc((height - 8 * row) / row)
+        let yg: CGFloat = (height / row) - h
+        let xg: CGFloat = (width / col) - w
         // fill
         for i in 0 ..< count {
             // 计算。
             let r = CGFloat((i / self.column) % self.row)
             let c = CGFloat((i % self.column))
             let idx = IndexPath(item: i, section: 0)
-            let page = CGFloat(i / (row * column))
+            let page = CGFloat(i / (self.row * self.column))
             
             let a = self.layoutAttributesForItem(at: idx) ?? UICollectionViewLayoutAttributes(forCellWith: idx)
-            a.frame = CGRect(x: xg + c * (w + xg) + page * frame.width, y: yg + r * (h + yg), width: w, height: h)
-            // o
+            let x = edg.left + xg / 2 + c * (w + xg) + page * frame.width
+            let y = edg.top + yg / 2 + r * (h + yg)
+            a.frame = CGRect(x: x, y: y, width: w, height: h)
+            
             ats.append(a)
         }
         return ats
@@ -220,33 +233,31 @@ internal class SAToolboxItemView: UICollectionViewCell {
         _logger.trace()
         
         _titleLabel.font = UIFont.systemFont(ofSize: 12)
+        _titleLabel.textColor = .gray
         _titleLabel.textAlignment = .center
         _titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         _iconView.contentMode = .scaleAspectFit
         _iconView.translatesAutoresizingMaskIntoConstraints = false
         
-        // frame区域太小
-        //let view = UIView()
-        //view.backgroundColor = UIColor(white: 0, alpha: 0.2)
-        //view.layer.cornerRadius = 8
-        //selectedBackgroundView = view
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0, alpha: 0.2)
+        view.layer.cornerRadius = 4
+        selectedBackgroundView = view
         
         contentView.addSubview(_iconView)
         contentView.addSubview(_titleLabel)
         
         addConstraints([
-            _SALayoutConstraintMake(_iconView, .top, .equal, self, .top),
-            _SALayoutConstraintMake(_iconView, .left, .equal, self, .left),
-            _SALayoutConstraintMake(_iconView, .right, .equal, self, .right),
+            _SALayoutConstraintMake(_iconView, .centerX, .equal, self, .centerX),
+            _SALayoutConstraintMake(_iconView, .centerY, .equal, self, .centerY, -12),
             
-            _SALayoutConstraintMake(_iconView, .bottom, .equal, _titleLabel, .top),
+            _SALayoutConstraintMake(_iconView, .width, .equal, nil, .notAnAttribute, 50),
+            _SALayoutConstraintMake(_iconView, .height, .equal, nil, .notAnAttribute, 50),
             
-            _SALayoutConstraintMake(_titleLabel, .left, .equal, self, .left),
-            _SALayoutConstraintMake(_titleLabel, .right, .equal, self, .right),
-            _SALayoutConstraintMake(_titleLabel, .bottom, .equal, self, .bottom),
-            
+            _SALayoutConstraintMake(_titleLabel, .top, .equal, _iconView, .bottom, 4),
             _SALayoutConstraintMake(_titleLabel, .height, .equal, nil, .notAnAttribute, 20),
+            _SALayoutConstraintMake(_titleLabel, .centerX, .equal, self, .centerX),
         ])
     }
     
