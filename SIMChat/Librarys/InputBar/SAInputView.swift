@@ -27,10 +27,7 @@ internal class SAInputView: UIView {
             }
             
             view.translatesAutoresizingMaskIntoConstraints = false
-            // view.backgroundColor = UIColor(red: CGFloat(arc4random() % 10) / 10.0 ,
-            //                                green: CGFloat(arc4random() % 10) / 10.0 ,
-            //                                blue: CGFloat(arc4random() % 10) / 10.0 ,
-            //                                alpha: 1)
+            // view.backgroundColor = 
             
             addSubview(view)
             

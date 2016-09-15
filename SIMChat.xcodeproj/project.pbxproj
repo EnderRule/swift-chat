@@ -173,11 +173,11 @@
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };
 		0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPanel.swift; sourceTree = "<group>"; };
 		0C18234E1D8ACF290007DAEF /* SAEmotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotion.swift; sourceTree = "<group>"; };
-		0C18234F1D8ACF290007DAEF /* SAEmotionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionBackgroundView.swift; sourceTree = "<group>"; };
+		0C18234F1D8ACF290007DAEF /* SAEmotionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionBackgroundView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C1823501D8ACF290007DAEF /* SAEmotionGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionGroup.swift; sourceTree = "<group>"; };
 		0C1823511D8ACF290007DAEF /* SAEmotionLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionLine.swift; sourceTree = "<group>"; };
 		0C1823521D8ACF290007DAEF /* SAEmotionPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPage.swift; sourceTree = "<group>"; };
-		0C1823531D8ACF290007DAEF /* SAEmotionPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPageView.swift; sourceTree = "<group>"; };
+		0C1823531D8ACF290007DAEF /* SAEmotionPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPageView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C1823541D8ACF290007DAEF /* SAEmotionPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanel.swift; sourceTree = "<group>"; };
 		0C1823551D8ACF290007DAEF /* SAEmotionPanelLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanelLayout.swift; sourceTree = "<group>"; };
 		0C1823561D8ACF290007DAEF /* SAEmotionPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPreviewer.swift; sourceTree = "<group>"; };

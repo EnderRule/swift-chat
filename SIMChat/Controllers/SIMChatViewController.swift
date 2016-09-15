@@ -175,6 +175,8 @@ open class SIMChatViewController: UIViewController {
     }
 }
 
+// MARK: - SAInputBarDelegate & SAInputBarDisplayable
+
 extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     
     open var scrollView: UIScrollView {
@@ -241,6 +243,8 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     }
 }
 
+// MARK: - SAToolboxPanelDataSource & SAToolboxPanelDelegate
+
 extension SIMChatViewController: SAToolboxPanelDataSource, SAToolboxPanelDelegate {
     
     open func numberOfItems(in toolbox: SAToolboxPanel) -> Int {
@@ -262,6 +266,8 @@ extension SIMChatViewController: SAToolboxPanelDataSource, SAToolboxPanelDelegat
     }
 }
 
+// MARK: - SAEmotionPanelDataSource & SAEmotionPanelDelegate
+
 extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegate {
     
     open func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
@@ -269,6 +275,13 @@ extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegat
     }
     open func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup {
         return _emotionGroups[index]
+    }
+    open func emotion(_ emotion: SAEmotionPanel, moreViewForGroupAt index: Int) -> UIView? { 
+        _logger.trace(index)
+        let btn = UIButton()
+        btn.frame = CGRect(x: 0, y: 0, width: 37, height: 60)
+        btn.backgroundColor = .random
+        return btn
     }
     
     open func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {

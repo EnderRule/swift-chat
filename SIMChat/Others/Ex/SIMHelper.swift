@@ -38,6 +38,16 @@ import UIKit
 //    return NSLayoutConstraint.constraints(withVisualFormat: format, options: opts, metrics: metrics, views: views)
 //}
 
+extension UIColor {
+    static var random: UIColor {
+        let maxValue: UInt32 = 24
+        return UIColor(red: CGFloat(arc4random() % maxValue) / CGFloat(maxValue),
+                       green: CGFloat(arc4random() % maxValue) / CGFloat(maxValue) ,
+                       blue: CGFloat(arc4random() % maxValue) / CGFloat(maxValue) ,
+                       alpha: 1)
+    }
+}
+
 /// 添加build
 public class SIMView : UIView {
     /// 序列化

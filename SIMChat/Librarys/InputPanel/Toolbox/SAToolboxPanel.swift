@@ -29,7 +29,7 @@ import UIKit
 
 // MARK: -
 
-@objc open class SAToolboxPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
+@objc open class SAToolboxPanel: UIView {
     
     open func reloadData() {
         _contentView.reloadData()
@@ -52,44 +52,6 @@ import UIKit
     
     open weak var delegate: SAToolboxPanelDelegate?
     open weak var dataSource: SAToolboxPanelDataSource?
-    
-    // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        _pageControl.currentPage = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = dataSource?.numberOfItems(in: self) ?? 0
-        let page = (count + (8 - 1)) / 8
-        if _pageControl.numberOfPages != page {
-            _pageControl.numberOfPages = page
-        }
-        return count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
-    }
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAToolboxItemView else {
-            return
-        }
-        cell.item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row)
-        cell.handler = self
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        
-        guard let item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row) else {
-            return
-        }
-        
-        if delegate?.toolbox?(self, shouldSelectItem: item) ?? true {
-            delegate?.toolbox?(self, didSelectItem: item)
-        }
-    }
     
     // MARK: - 
     
@@ -137,8 +99,8 @@ import UIKit
         addConstraint(_SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
     
-    private lazy var _pageControl: UIPageControl = UIPageControl()
-    private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: SAToolboxPanelLayout())
+    fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
+    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: SAToolboxPanelLayout())
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -150,3 +112,43 @@ import UIKit
     }
 }
 
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
+
+extension SAToolboxPanel: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        _pageControl.currentPage = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let count = dataSource?.numberOfItems(in: self) ?? 0
+        let page = (count + (8 - 1)) / 8
+        if _pageControl.numberOfPages != page {
+            _pageControl.numberOfPages = page
+        }
+        return count
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
+    }
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? SAToolboxItemView else {
+            return
+        }
+        cell.item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row)
+        cell.handler = self
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        guard let item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row) else {
+            return
+        }
+        
+        if delegate?.toolbox?(self, shouldSelectItem: item) ?? true {
+            delegate?.toolbox?(self, didSelectItem: item)
+        }
+    }
+}

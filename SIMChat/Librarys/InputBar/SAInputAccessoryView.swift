@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+internal class SAInputAccessoryView: UIView {
     
     var textField: SAInputTextField {
         return _textField
@@ -47,6 +47,19 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         _cacheContentSize = size
         return size
     }
+    
+    func updateInputMode(_ newMode: SAInputMode, oldMode: SAInputMode, animated: Bool) {
+        _logger.trace()
+        
+        if !newMode.isEditing && textField.isFirstResponder {
+            _ = resignFirstResponder()
+        }
+        if newMode.isEditing && !textField.isFirstResponder {
+            _ = becomeFirstResponder()
+        }
+    }
+    
+    // MARK: Selection
     
     func barItems(atPosition position: SAInputItemPosition) -> [SAInputItem] {
         return _barItems(atPosition: position)
@@ -95,113 +108,12 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         }
     }
     
-    func updateInputMode(_ newMode: SAInputMode, oldMode: SAInputMode, animated: Bool) {
-        _logger.trace()
-        
-        if !newMode.isEditing && textField.isFirstResponder {
-            _ = resignFirstResponder()
-        }
-        if newMode.isEditing && !textField.isFirstResponder {
-            _ = becomeFirstResponder()
-        }
-    }
+    // MARK: Private Method
     
-    // MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5
-    }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == _SAInputAccessoryViewCenterSection {
-            return 1
-        }
-        return _barItems[section]?.count ?? 0
-    }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "Cell-\((indexPath as NSIndexPath).section)", for: indexPath)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAInputItemView else {
-            return
-        }
-        let item = _barItem(atIndexPath: indexPath)
-        
-        cell.delegate = self
-        cell.item = item
-        cell.setSelected(_selectedBarItems.contains(item), animated: false)
-        
-        cell.isHidden = (item == _textField.item)
-    }
-    
-    
-    // MARK: - UITextViewDelegate(Forwarding)
-    
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        return delegate?.textViewShouldBeginEditing?(textView) ?? true
-    }
-    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-        return delegate?.textViewShouldEndEditing?(textView) ?? true
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        delegate?.textViewDidBeginEditing?(textView)
-    }
-    func textViewDidEndEditing(_ textView: UITextView) {
-        delegate?.textViewDidEndEditing?(textView)
-    }
-    
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        delegate?.textViewDidChangeSelection?(textView)
-    }
-    func textViewDidChange(_ textView: UITextView) {
-        delegate?.textViewDidChange?(textView)
-        _updateContentSizeForTextChanged(true)
-    }
-    
-    func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
-        return delegate?.textView?(textView, shouldInteractWith: textAttachment, in: characterRange) ?? true
-    }
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return delegate?.textView?(textView, shouldChangeTextIn: range, replacementText: text) ?? true
-    }
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
-        return delegate?.textView?(textView, shouldInteractWith: URL, in: characterRange) ?? true
-    }
-    
-    // MARK: - SAInputItemDelegate(Forwarding)
-    
-    func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldHighlight: barItem) ?? true
-    }
-    func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldDeselect: barItem) ?? false
-    }
-    func barItem(shouldSelect barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldSelect: barItem) ?? false
-    }
-    
-    func barItem(didHighlight barItem: SAInputItem) {
-        delegate?.barItem(didHighlight: barItem)
-    }
-    func barItem(didDeselect barItem: SAInputItem) {
-        _selectedBarItems.remove(barItem)
-        
-        delegate?.barItem(didDeselect: barItem)
-    }
-    func barItem(didSelect barItem: SAInputItem) {
-        _selectedBarItems.insert(barItem)
-        
-        delegate?.barItem(didSelect: barItem)
-    }
-    
-    
-    // MARK: - Private Method
-    
-    private func _barItems(atPosition position: SAInputItemPosition) -> [SAInputItem] {
+    fileprivate func _barItems(atPosition position: SAInputItemPosition) -> [SAInputItem] {
         return _barItems[position.rawValue] ?? []
     }
-    private func _setBarItems(_ barItems: [SAInputItem], atPosition position: SAInputItemPosition) {
+    fileprivate func _setBarItems(_ barItems: [SAInputItem], atPosition position: SAInputItemPosition) {
         if position == .center {
             _centerBarItem = barItems.first ?? _textField.item
             _barItems[position.rawValue] = [_centerBarItem]
@@ -210,13 +122,13 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         }
     }
     
-    private func _barItem(atIndexPath indexPath: IndexPath) -> SAInputItem {
+    fileprivate func _barItem(atIndexPath indexPath: IndexPath) -> SAInputItem {
         if let items = _barItems[(indexPath as NSIndexPath).section], (indexPath as NSIndexPath).item < items.count {
             return items[(indexPath as NSIndexPath).item]
         }
         fatalError("barItem not found at \(indexPath)")
     }
-    private func _barItemAlginment(at indexPath: IndexPath) -> SAInputItemAlignment {
+    fileprivate func _barItemAlginment(at indexPath: IndexPath) -> SAInputItemAlignment {
         let item = _barItem(atIndexPath: indexPath)
         if item.alignment == .automatic {
             // in automatic mode, the section will have different performance
@@ -230,20 +142,20 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         return item.alignment
     }
     
-    private func _boundsDidChange() {
+    fileprivate func _boundsDidChange() {
         _logger.trace()
         
         _textField.item.invalidateCache()
         _updateBarItemsLayout(false)
     }
-    private func _contentDidChange() {
+    fileprivate func _contentDidChange() {
         _logger.trace()
         
         let center = NotificationCenter.default
         center.post(name: Notification.Name(rawValue: SAInputAccessoryDidChangeFrameNotification), object: nil)
     }
     
-    private func _updateContentInsetsIfNeeded() {
+    fileprivate func _updateContentInsetsIfNeeded() {
         let contentInsets = _contentInsetsWithoutCache
         guard contentInsets != _cacheContentInsets else {
             return
@@ -258,7 +170,7 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         
         _cacheContentInsets = contentInsets
     }
-    private func _updateContentSizeIfNeeded() {
+    fileprivate func _updateContentSizeIfNeeded() {
         let contentSize = _contentSizeWithoutCache
         guard _cacheContentSize != contentSize else {
             return
@@ -269,7 +181,7 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         _cacheContentSize = contentSize
         _contentDidChange()
     }
-    private func _updateContentSizeForTextChanged(_ animated: Bool) {
+    fileprivate func _updateContentSizeForTextChanged(_ animated: Bool) {
         guard _textField.item.needsUpdateContent else {
             return
         }
@@ -291,12 +203,12 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
             UIView.commitAnimations()
         }
     }
-    private func _updateContentSizeInCollectionView() {
+    fileprivate func _updateContentSizeInCollectionView() {
         _logger.trace()
         _collectionView.reloadSections(IndexSet(integer: _SAInputAccessoryViewCenterSection))
     }
     
-    private func _updateBarItemsInCollectionView() {
+    fileprivate func _updateBarItemsInCollectionView() {
         _logger.trace()
         
         // add, remove, update
@@ -342,7 +254,7 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
             _cacheBarItems[section] = newItems
         }
     }
-    private func _updateBarItemsLayout(_ animated: Bool) {
+    fileprivate func _updateBarItemsLayout(_ animated: Bool) {
         _logger.trace()
         
         if animated {
@@ -372,7 +284,7 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
             UIView.commitAnimations()
         }
     }
-    private func _updateBarItemsIfNeeded(_ animated: Bool) {
+    fileprivate func _updateBarItemsIfNeeded(_ animated: Bool) {
         guard !_collectionView.indexPathsForVisibleItems.isEmpty else {
             // initialization is not complete
             _cacheBarItems = _barItems
@@ -424,11 +336,6 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
             _collectionView.register(SAInputItemView.self, forCellWithReuseIdentifier: "Cell-\($0)")
         }
     }
-    private func _deinit() {
-        _logger.trace()
-    }
-    
-    // MARK: - 
     
     private var _contentSizeWithoutCache: CGSize {
         _logger.trace()
@@ -464,16 +371,15 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         return contentInsets
     }
     
+    //  MARK: Ivar
     
-    //  MARK: -
+    fileprivate lazy var _centerBarItem: SAInputItem = self.textField.item
     
-    private lazy var _centerBarItem: SAInputItem = self.textField.item
+    fileprivate lazy var _barItems: [Int: [SAInputItem]] = [:]
+    fileprivate lazy var _cacheBarItems: [Int: [SAInputItem]] = [:]
+    fileprivate lazy var _selectedBarItems: Set<SAInputItem> = []
     
-    private lazy var _barItems: [Int: [SAInputItem]] = [:]
-    private lazy var _cacheBarItems: [Int: [SAInputItem]] = [:]
-    private lazy var _selectedBarItems: Set<SAInputItem> = []
-    
-    private lazy var _textField: SAInputTextField = {
+    fileprivate lazy var _textField: SAInputTextField = {
         let view = SAInputTextField()
         
         view.font = UIFont.systemFont(ofSize: 15)
@@ -488,13 +394,13 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         return view
     }()
     
-    private lazy var _collectionViewLayout: SAInputAccessoryViewLayout = {
+    fileprivate lazy var _collectionViewLayout: SAInputAccessoryViewLayout = {
         let layout = SAInputAccessoryViewLayout()
         layout.minimumLineSpacing = 8
         layout.minimumInteritemSpacing = 8
         return layout
     }()
-    private lazy var _collectionView: UICollectionView = {
+    fileprivate lazy var _collectionView: UICollectionView = {
         let layout = self._collectionViewLayout
         let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         
@@ -515,26 +421,24 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         return view
     }()
    
-    private lazy var _textFieldTop: NSLayoutConstraint = {
+    fileprivate lazy var _textFieldTop: NSLayoutConstraint = {
         return _SAInputLayoutConstraintMake(self._textField, .top, .equal, self, .top)
     }()
-    private lazy var _textFieldLeft: NSLayoutConstraint = {
+    fileprivate lazy var _textFieldLeft: NSLayoutConstraint = {
         return _SAInputLayoutConstraintMake(self._textField, .left, .equal, self, .left)
     }()
-    private lazy var _textFieldRight: NSLayoutConstraint = {
+    fileprivate lazy var _textFieldRight: NSLayoutConstraint = {
         return _SAInputLayoutConstraintMake(self, .right, .equal, self._textField, .right)
     }()
-    private lazy var _textFieldBottom: NSLayoutConstraint = {
+    fileprivate lazy var _textFieldBottom: NSLayoutConstraint = {
         return _SAInputLayoutConstraintMake(self, .bottom, .equal, self._textField, .bottom)
     }()
     
-    private var _cacheBounds: CGRect?
-    private var _cacheContentSize: CGSize?
-    private var _cacheContentInsets: UIEdgeInsets?
+    fileprivate var _cacheBounds: CGRect?
+    fileprivate var _cacheContentSize: CGSize?
+    fileprivate var _cacheContentInsets: UIEdgeInsets?
     
-    private var _cacheBarItemContainer: UICollectionViewCell?
-    
-    // MARK: - 
+    fileprivate var _cacheBarItemContainer: UICollectionViewCell?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -544,8 +448,102 @@ internal class SAInputAccessoryView: UIView, UITextViewDelegate, SAInputItemView
         super.init(frame: frame)
         _init()
     }
-    deinit {
-        _deinit()
+}
+
+// MARK: - SAInputItemDelegate(Forwarding)
+
+extension SAInputAccessoryView: SAInputItemViewDelegate {
+    
+    func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldHighlight: barItem) ?? true
+    }
+    func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldDeselect: barItem) ?? false
+    }
+    func barItem(shouldSelect barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldSelect: barItem) ?? false
+    }
+    
+    func barItem(didHighlight barItem: SAInputItem) {
+        delegate?.barItem(didHighlight: barItem)
+    }
+    func barItem(didDeselect barItem: SAInputItem) {
+        _selectedBarItems.remove(barItem)
+        
+        delegate?.barItem(didDeselect: barItem)
+    }
+    func barItem(didSelect barItem: SAInputItem) {
+        _selectedBarItems.insert(barItem)
+        
+        delegate?.barItem(didSelect: barItem)
+    }
+}
+
+// MARK: - UITextViewDelegate(Forwarding)
+
+extension SAInputAccessoryView: UITextViewDelegate {
+    
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        return delegate?.textViewShouldBeginEditing?(textView) ?? true
+    }
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        return delegate?.textViewShouldEndEditing?(textView) ?? true
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        delegate?.textViewDidBeginEditing?(textView)
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        delegate?.textViewDidEndEditing?(textView)
+    }
+    
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        delegate?.textViewDidChangeSelection?(textView)
+    }
+    func textViewDidChange(_ textView: UITextView) {
+        delegate?.textViewDidChange?(textView)
+        _updateContentSizeForTextChanged(true)
+    }
+    
+    func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
+        return delegate?.textView?(textView, shouldInteractWith: textAttachment, in: characterRange) ?? true
+    }
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return delegate?.textView?(textView, shouldChangeTextIn: range, replacementText: text) ?? true
+    }
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+        return delegate?.textView?(textView, shouldInteractWith: URL, in: characterRange) ?? true
+    }
+}
+    
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
+
+extension SAInputAccessoryView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 5
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == _SAInputAccessoryViewCenterSection {
+            return 1
+        }
+        return _barItems[section]?.count ?? 0
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Cell-\((indexPath as NSIndexPath).section)", for: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? SAInputItemView else {
+            return
+        }
+        let item = _barItem(atIndexPath: indexPath)
+        
+        cell.delegate = self
+        cell.item = item
+        cell.setSelected(_selectedBarItems.contains(item), animated: false)
+        
+        cell.isHidden = (item == _textField.item)
     }
 }
 
