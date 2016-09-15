@@ -15,19 +15,24 @@ import CoreGraphics
 // [x] SAEmotionPanel - 大表情支持
 // [x] SAEmotionPanel - 自定义大小/间距/缩进
 // [ ] SAEmotionPanel - 动态图片支持
-// [ ] SAEmotionPanel - Tabbar支持
+// [x] SAEmotionPanel - Tabbar支持
 // [x] SAEmotionPanel - 更新page
+// [ ] SAEmotionPanel - 长按删除
+// [ ] SAEmotionPanel - 发送/设置按钮
 // [ ] SAEmotion - UIView支持
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
 // [x] SAEmotionPage - Add支持
-// [ ] SAEmotionPage - Remove支持
+// [ ] SAEmotionPage - Remove支持 - 暂无意义, 除非允许编辑表情位置
 // [x] SAEmotionPage - 删除按钮
 // [x] SAEmotionPage - 异步绘制
+// [x] SAEmotionTabItemView - 选中
+// [x] SAEmotionTabItemView - 选中高亮
 // [x] SAEmotionPageView - 选中
 // [ ] SAEmotionPageView - 选中高亮
 // [x] SAEmotionPageView - 长按预览
 // [ ] SAEmotionPageView - 横屏支持
+// [ ] SAEmotionPageView - 长按删除
 
 @objc open class SAEmotion: NSObject {
     
@@ -192,8 +197,7 @@ import CoreGraphics
             guard let idx = _contentView.indexPathForItem(at: targetContentOffset.move()) else {
                 return
             }
-            _pageControl.numberOfPages = _contentView.numberOfItems(inSection: idx.section)
-            _pageControl.currentPage = idx.item
+            _updatePageNumber(at: idx)
         }
     }
     
@@ -210,8 +214,7 @@ import CoreGraphics
     }
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === _tabbar {
-            //return dataSource?.numberOfGroups(in: self) ?? 0
-            return 20
+            return dataSource?.numberOfGroups(in: self) ?? 0
         }
         if collectionView === _contentView {
             guard let ds = dataSource else {
@@ -220,10 +223,9 @@ import CoreGraphics
             let pageCount = _contentViewLayout.numberOfPages(in: section) {
                 ds.emotion(self, groupAt: section)
             }
-            if !_pageControlIsInit {
-                _pageControlIsInit = true
-                _pageControl.numberOfPages = pageCount
-                _pageControl.currentPage = 0
+            if !_contentViewIsInit {
+                _contentViewIsInit = true
+                _updatePageNumber(at: IndexPath(item: 0, section: 0))
             }
             return pageCount
         }
@@ -240,9 +242,21 @@ import CoreGraphics
             cell.previewer = _previewer
             return
         } 
-        if let cell = cell as? SAEmotionTabbarItemView {
-            cell.group = dataSource?.emotion(self, groupAt: indexPath.item % 2)
+        if let cell = cell as? SAEmotionTabItemView {
+            cell.group = dataSource?.emotion(self, groupAt: indexPath.item)
+            cell.selectedBackgroundView?.backgroundColor = _color
             return
+        }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView === _tabbar {
+            let nidx = IndexPath(item: 0, section: indexPath.item)
+            guard _contentView.indexPathsForVisibleItems.first?.section != nidx.section else {
+                return // no change
+            }
+            _contentView.scrollToItem(at: nidx, at: .left, animated: false)
+            _updatePageNumber(at: nidx)
         }
     }
     
@@ -256,10 +270,21 @@ import CoreGraphics
         return .zero
     }
     
+    private func _updatePageNumber(at indexPath: IndexPath) {
+        
+        _pageControl.numberOfPages = _contentView.numberOfItems(inSection: indexPath.section)
+        _pageControl.currentPage = indexPath.item
+        
+        let nidx = IndexPath(item: indexPath.section, section: 0)
+        guard _tabbar.indexPathsForSelectedItems?.first?.item != nidx.item else {
+            return
+        }
+        _tabbar.selectItem(at: nidx, animated: true, scrollPosition: .centeredHorizontally)
+    }
     private func _init() {
         _logger.trace()
         
-        backgroundColor = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
+        _color = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
         _pageControl.numberOfPages = 8
         _pageControl.hidesForSinglePage = true
@@ -288,7 +313,11 @@ import CoreGraphics
         _previewer.isHidden = true
         _previewer.isUserInteractionEnabled = false
         
-        _tabbar.register(SAEmotionTabbarItemView.self, forCellWithReuseIdentifier: "Page")
+        _tabbarLayout.scrollDirection = .horizontal
+        _tabbarLayout.minimumLineSpacing = 0
+        _tabbarLayout.minimumInteritemSpacing = 0
+        
+        _tabbar.register(SAEmotionTabItemView.self, forCellWithReuseIdentifier: "Page")
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
         _tabbar.dataSource = self
         _tabbar.backgroundColor = .white
@@ -299,9 +328,11 @@ import CoreGraphics
         _tabbar.showsHorizontalScrollIndicator = false
         //_tabbar.alwaysBounceHorizontal = true
         
+        backgroundColor = _color
+        
         addSubview(_contentView)
-        addSubview(_pageControl)
         addSubview(_tabbar)
+        addSubview(_pageControl)
         addSubview(_previewer)
         
         addConstraints([
@@ -324,11 +355,13 @@ import CoreGraphics
         ])
     }
     
-    private var _pageControlIsInit: Bool = false
+    private var _color: UIColor?
+    private var _contentViewIsInit: Bool = false
     
     private lazy var _pageControl: UIPageControl = UIPageControl()
     private lazy var _previewer: SAEmotionPreviewer = SAEmotionPreviewer()
-    private lazy var _tabbar: SAEmotionTabbar = SAEmotionTabbar(frame: .zero)
+    private lazy var _tabbar: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._tabbarLayout)
+    private lazy var _tabbarLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     
     private lazy var _contentViewLayout: SAEmotionPanelLayout = SAEmotionPanelLayout()
     private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
@@ -764,47 +797,47 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         _init()
     }
 }
-internal class SAEmotionTabbar: UICollectionView, UICollectionViewDelegateFlowLayout {
-    
-    init(frame: CGRect) {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
-        super.init(frame: frame, collectionViewLayout: layout)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-}
-internal class SAEmotionTabbarItemView: UICollectionViewCell {
-    
+internal class SAEmotionTabItemView: UICollectionViewCell {
     
     var group: SAEmotionGroup? {
         willSet {
             guard group !== newValue else {
                 return
             }
-            
             _imageView.image = newValue?.thumbnail
-            
-            if _imageView.superview == nil {
-                _line.backgroundColor = UIColor(white: 0.9, alpha: 1.0).cgColor
-                _imageView.contentMode = .scaleAspectFit
-                _imageView.bounds = CGRect(x: 0, y: 0, width: 25, height: 25)
-                contentView.addSubview(_imageView)
-                contentView.layer.addSublayer(_line)
-            }
         }
     }
     override func layoutSubviews() {
         super.layoutSubviews()
         _imageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
-        _line.frame = CGRect(x: bounds.maxX - 0.5, y: 8, width: 0.5, height: bounds.height - 16)
+        _line.frame = CGRect(x: bounds.maxX - 0.25, y: 8, width: 0.5, height: bounds.height - 16)
+    }
+    
+    private func _init() {
+        _logger.trace()
+        
+        _line.backgroundColor = UIColor(white: 0.9, alpha: 1.0).cgColor
+        
+        _imageView.contentMode = .scaleAspectFit
+        _imageView.bounds = CGRect(x: 0, y: 0, width: 25, height: 25)
+        
+        contentView.addSubview(_imageView)
+        contentView.layer.addSublayer(_line)
+        
+        selectedBackgroundView = UIView()
     }
     
     private lazy var _imageView: UIImageView = UIImageView()
     private lazy var _line: CALayer = CALayer()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
 }
 internal class SAEmotionPreviewer: UIView {
     
@@ -1002,7 +1035,6 @@ internal protocol SAEmotionDelegate: class {
     func emotion(didPreviewFor emotion: SAEmotion?)
     
 }
-    
 
 private var _SAEmotionPanelBackspaceImage: UIImage? = {
     let png = "iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAbFBMVEUAAACfn5+YmJibm5uYmJiYmJidnZ2Xl5eYmJiXl5eYmJiampqgoKCoqKiYmJiYmJiYmJiXl5eZmZmYmJiYmJiYmJiampqYmJidnZ2YmJiYmJiYmJiYmJiYmJiYmJiZmZmYmJiYmJiYmJiXl5dyF2b0AAAAI3RSTlMAFdQZ18kS86tmWiAKBeTbz7597OfhLicO+cS7tJtPPaaKco/AGfEAAAEUSURBVEjH7dXLroMgFAVQEHxUe321Vav31e7//8dOmuyYcjCYtCP2CHJcCcEDqJiYmM9kPMOZPD1s2uoCMYvxW9NgProrZY3Fa3WCdJKKWQ3fyqcWSSaXS6Ry8TijMUqOQS7bDpdK+QJIla9vnJ9WF3q1Ez2xYAucxue4QKJXu9hv4B+cBn5OzQnxq83/OCPgUMY3XGlJOPDgHtdfzohoZXynXWtaER+A0tmq1tIKuIS7Z7UFLK0b/yMfdmC2xxC8bDYmdciGsa3H0F9FvVAHNAmPY13taU8e5tCDQT1TBx9JNaVozK7LgFoIsZCshd1xAVInOvzq5d60WeilT22pX5+bTvljLMR0Rm3pRn5iY2Ji3pcHZE4k/ix2A/EAAAAASUVORK5CYII="
