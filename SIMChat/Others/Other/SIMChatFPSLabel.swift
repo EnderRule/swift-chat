@@ -27,9 +27,6 @@ public class SIMChatFPSLabel: UILabel {
         super.init(coder: aDecoder)
         build()
     }
-    deinit {
-        SIMLog.trace()
-    }
     
     public override var intrinsicContentSize: CGSize {
         return CGSize(width: 55, height: 20)
@@ -44,7 +41,6 @@ public class SIMChatFPSLabel: UILabel {
     }
     
     @inline(__always) private func build() {
-        SIMLog.trace()
         
         text = "calc..."
         font = UIFont.systemFont(ofSize: 14)

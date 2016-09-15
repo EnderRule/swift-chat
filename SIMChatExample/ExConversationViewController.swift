@@ -86,7 +86,7 @@ class ExConversationViewController: UITableViewController {
 //        }
         
         // 和自己聊天
-        let vc = SIMChatViewController(conversation: manager.conversation(other))
+        let vc = SIMChatViewController()
         
         navigationController?.pushViewController(vc, animated: true)
     }

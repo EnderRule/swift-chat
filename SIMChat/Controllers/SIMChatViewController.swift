@@ -38,28 +38,22 @@ class SIMEmotionGroup {
 ///
 open class SIMChatViewController: UIViewController {
     
-    ///
     /// 初始化
-    ///
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("must use init(conversation:) initialze")
-    }
-    /// 初始化
-    public required init(conversation: SIMChatConversation) {
-        _conversation = conversation
-//        _messageManager = MessageManager(conversation: conversation)
-        super.init(nibName: nil, bundle: nil)
-//        _messageManager.contentView = contentView
-        
-        hidesBottomBarWhenPushed = true
-        
-        let name = conversation.receiver.name ?? conversation.receiver.identifier
-        if conversation.receiver.type == .user {
-            title = "正在和\(name)聊天"
-        } else {
-            title = name
-        }
-    }
+    // public required init(conversation: SIMChatConversation) {
+    //     _conversation = conversation
+//  //       _messageManager = MessageManager(conversation: conversation)
+    //     super.init(nibName: nil, bundle: nil)
+//  //       _messageManager.contentView = contentView
+    //     
+    //     hidesBottomBarWhenPushed = true
+    //     
+    //     let name = conversation.receiver.name ?? conversation.receiver.identifier
+    //     if conversation.receiver.type == .user {
+    //         title = "正在和\(name)聊天"
+    //     } else {
+    //         title = name
+    //     }
+    // }
     deinit {
 //        SIMChatNotificationCenter.removeObserver(self)
         SIMLog.trace()
@@ -141,9 +135,7 @@ open class SIMChatViewController: UIViewController {
         ]
     }()
     
-    
-    
-    private var _conversation: SIMChatConversation
+    //private var _conversation: SIMChatConversation
 //    private var _messageManager: MessageManager
 //    
 //    internal var messageManager: MessageManager { return _messageManager }
@@ -155,15 +147,15 @@ open class SIMChatViewController: UIViewController {
     ///
     /// 聊天会话
     ///
-    open var conversation: SIMChatConversation {
-        return _conversation 
-    }
-    open var manager: SIMChatManager {
-        guard let manager = conversation.manager else {
-            fatalError("Must provider manager")
-        }
-        return manager
-    }
+    //open var conversation: SIMChatConversation {
+    //    return _conversation 
+    //}
+    //open var manager: SIMChatManager {
+    //    guard let manager = conversation.manager else {
+    //        fatalError("Must provider manager")
+    //    }
+    //    return manager
+    //}
     
     open var toolbar: SAInputBar {
         return _toolbar

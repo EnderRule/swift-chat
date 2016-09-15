@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public enum SAInputBarType: Int {
     case `default` // wx: center

@@ -62,6 +62,21 @@
 		0C0DD6961C60B4A900AEC8C4 /* SIMChatVisitCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6361C60B4A900AEC8C4 /* SIMChatVisitCardView.swift */; };
 		0C0DD6971C60B4F000AEC8C4 /* SIMChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0DD61D1C60B4A900AEC8C4 /* SIMChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */; };
+		0C18235E1D8ACF290007DAEF /* SAAudioPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */; };
+		0C18235F1D8ACF290007DAEF /* SAEmotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234E1D8ACF290007DAEF /* SAEmotion.swift */; };
+		0C1823601D8ACF290007DAEF /* SAEmotionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234F1D8ACF290007DAEF /* SAEmotionBackgroundView.swift */; };
+		0C1823611D8ACF290007DAEF /* SAEmotionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823501D8ACF290007DAEF /* SAEmotionGroup.swift */; };
+		0C1823621D8ACF290007DAEF /* SAEmotionLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823511D8ACF290007DAEF /* SAEmotionLine.swift */; };
+		0C1823631D8ACF290007DAEF /* SAEmotionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823521D8ACF290007DAEF /* SAEmotionPage.swift */; };
+		0C1823641D8ACF290007DAEF /* SAEmotionPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823531D8ACF290007DAEF /* SAEmotionPageView.swift */; };
+		0C1823651D8ACF290007DAEF /* SAEmotionPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823541D8ACF290007DAEF /* SAEmotionPanel.swift */; };
+		0C1823661D8ACF290007DAEF /* SAEmotionPanelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823551D8ACF290007DAEF /* SAEmotionPanelLayout.swift */; };
+		0C1823671D8ACF290007DAEF /* SAEmotionPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823561D8ACF290007DAEF /* SAEmotionPreviewer.swift */; };
+		0C1823681D8ACF290007DAEF /* SAEmotionTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823571D8ACF290007DAEF /* SAEmotionTabItemView.swift */; };
+		0C1823691D8ACF290007DAEF /* SAPhotoPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823591D8ACF290007DAEF /* SAPhotoPanel.swift */; };
+		0C18236A1D8ACF290007DAEF /* SAToolboxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */; };
+		0C18236B1D8ACF290007DAEF /* SAToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */; };
+		0C18236C1D8ACF290007DAEF /* SAToolboxPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */; };
 		0C1A176A1D7723CA0093EE12 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17691D7723CA0093EE12 /* Logger.swift */; };
 		0C1A17771D7724880093EE12 /* SAInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176C1D7724880093EE12 /* SAInput.swift */; };
 		0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */; };
@@ -90,10 +105,6 @@
 		0C4EF8F31C6B5E1200CA192D /* SIMChatBaseEmoticonGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EF8F21C6B5E1200CA192D /* SIMChatBaseEmoticonGroup.swift */; };
 		0C4EF8F51C6B68A800CA192D /* SIMChatEmoticonProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EF8F41C6B68A800CA192D /* SIMChatEmoticonProtocol.swift */; };
 		0C4EF8F71C6B68B400CA192D /* SIMChatEmoticonGroupProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EF8F61C6B68B400CA192D /* SIMChatEmoticonGroupProtocol.swift */; };
-		0C4F6A091D8A5423008A5C47 /* SAAudioPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4F6A051D8A5423008A5C47 /* SAAudioPanel.swift */; };
-		0C4F6A0A1D8A5423008A5C47 /* SAEmotionPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4F6A061D8A5423008A5C47 /* SAEmotionPanel.swift */; };
-		0C4F6A0B1D8A5423008A5C47 /* SAPhotoPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4F6A071D8A5423008A5C47 /* SAPhotoPanel.swift */; };
-		0C4F6A0C1D8A5423008A5C47 /* SAToolboxPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4F6A081D8A5423008A5C47 /* SAToolboxPanel.swift */; };
 		0C5EBFB61C8966BD00E0B923 /* SIMChatBaseFileResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5EBFB51C8966BD00E0B923 /* SIMChatBaseFileResource.swift */; };
 		0C5EBFB81C89677F00E0B923 /* SIMChatBaseImageResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5EBFB71C89677F00E0B923 /* SIMChatBaseImageResource.swift */; };
 		0C5EBFBA1C89852C00E0B923 /* SIMChatBaseAudioResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5EBFB91C89852C00E0B923 /* SIMChatBaseAudioResource.swift */; };
@@ -177,6 +188,21 @@
 		0C0DD6351C60B4A900AEC8C4 /* SIMChatStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatStatusView.swift; sourceTree = "<group>"; };
 		0C0DD6361C60B4A900AEC8C4 /* SIMChatVisitCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatVisitCardView.swift; sourceTree = "<group>"; };
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };
+		0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPanel.swift; sourceTree = "<group>"; };
+		0C18234E1D8ACF290007DAEF /* SAEmotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotion.swift; sourceTree = "<group>"; };
+		0C18234F1D8ACF290007DAEF /* SAEmotionBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionBackgroundView.swift; sourceTree = "<group>"; };
+		0C1823501D8ACF290007DAEF /* SAEmotionGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionGroup.swift; sourceTree = "<group>"; };
+		0C1823511D8ACF290007DAEF /* SAEmotionLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionLine.swift; sourceTree = "<group>"; };
+		0C1823521D8ACF290007DAEF /* SAEmotionPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPage.swift; sourceTree = "<group>"; };
+		0C1823531D8ACF290007DAEF /* SAEmotionPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPageView.swift; sourceTree = "<group>"; };
+		0C1823541D8ACF290007DAEF /* SAEmotionPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanel.swift; sourceTree = "<group>"; };
+		0C1823551D8ACF290007DAEF /* SAEmotionPanelLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanelLayout.swift; sourceTree = "<group>"; };
+		0C1823561D8ACF290007DAEF /* SAEmotionPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPreviewer.swift; sourceTree = "<group>"; };
+		0C1823571D8ACF290007DAEF /* SAEmotionTabItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionTabItemView.swift; sourceTree = "<group>"; };
+		0C1823591D8ACF290007DAEF /* SAPhotoPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPanel.swift; sourceTree = "<group>"; };
+		0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItem.swift; sourceTree = "<group>"; };
+		0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItemView.swift; sourceTree = "<group>"; };
+		0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxPanel.swift; sourceTree = "<group>"; };
 		0C1A17691D7723CA0093EE12 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		0C1A176C1D7724880093EE12 /* SAInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInput.swift; sourceTree = "<group>"; };
 		0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryView.swift; sourceTree = "<group>"; };
@@ -206,10 +232,6 @@
 		0C4EF8F21C6B5E1200CA192D /* SIMChatBaseEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatBaseEmoticonGroup.swift; sourceTree = "<group>"; };
 		0C4EF8F41C6B68A800CA192D /* SIMChatEmoticonProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmoticonProtocol.swift; sourceTree = "<group>"; };
 		0C4EF8F61C6B68B400CA192D /* SIMChatEmoticonGroupProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmoticonGroupProtocol.swift; sourceTree = "<group>"; };
-		0C4F6A051D8A5423008A5C47 /* SAAudioPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPanel.swift; sourceTree = "<group>"; };
-		0C4F6A061D8A5423008A5C47 /* SAEmotionPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotionPanel.swift; sourceTree = "<group>"; };
-		0C4F6A071D8A5423008A5C47 /* SAPhotoPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPanel.swift; sourceTree = "<group>"; };
-		0C4F6A081D8A5423008A5C47 /* SAToolboxPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxPanel.swift; sourceTree = "<group>"; };
 		0C5EBFB51C8966BD00E0B923 /* SIMChatBaseFileResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatBaseFileResource.swift; sourceTree = "<group>"; };
 		0C5EBFB71C89677F00E0B923 /* SIMChatBaseImageResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatBaseImageResource.swift; sourceTree = "<group>"; };
 		0C5EBFB91C89852C00E0B923 /* SIMChatBaseAudioResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatBaseAudioResource.swift; sourceTree = "<group>"; };
@@ -471,6 +493,49 @@
 			name = Private;
 			sourceTree = "<group>";
 		};
+		0C18234B1D8ACF290007DAEF /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		0C18234D1D8ACF290007DAEF /* Emotion */ = {
+			isa = PBXGroup;
+			children = (
+				0C18234E1D8ACF290007DAEF /* SAEmotion.swift */,
+				0C1823511D8ACF290007DAEF /* SAEmotionLine.swift */,
+				0C1823501D8ACF290007DAEF /* SAEmotionGroup.swift */,
+				0C1823561D8ACF290007DAEF /* SAEmotionPreviewer.swift */,
+				0C1823571D8ACF290007DAEF /* SAEmotionTabItemView.swift */,
+				0C1823521D8ACF290007DAEF /* SAEmotionPage.swift */,
+				0C1823531D8ACF290007DAEF /* SAEmotionPageView.swift */,
+				0C18234F1D8ACF290007DAEF /* SAEmotionBackgroundView.swift */,
+				0C1823541D8ACF290007DAEF /* SAEmotionPanel.swift */,
+				0C1823551D8ACF290007DAEF /* SAEmotionPanelLayout.swift */,
+			);
+			path = Emotion;
+			sourceTree = "<group>";
+		};
+		0C1823581D8ACF290007DAEF /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				0C1823591D8ACF290007DAEF /* SAPhotoPanel.swift */,
+			);
+			path = Photo;
+			sourceTree = "<group>";
+		};
+		0C18235A1D8ACF290007DAEF /* Toolbox */ = {
+			isa = PBXGroup;
+			children = (
+				0C18235B1D8ACF290007DAEF /* SAToolboxItem.swift */,
+				0C18235C1D8ACF290007DAEF /* SAToolboxItemView.swift */,
+				0C18235D1D8ACF290007DAEF /* SAToolboxPanel.swift */,
+			);
+			path = Toolbox;
+			sourceTree = "<group>";
+		};
 		0C1A17001D7721220093EE12 /* Librarys */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,16 +558,16 @@
 			isa = PBXGroup;
 			children = (
 				0C1A176C1D7724880093EE12 /* SAInput.swift */,
-				0C1A17701D7724880093EE12 /* SAInputBar.swift */,
-				0C1A17711D7724880093EE12 /* SAInputBarDisplayable.swift */,
 				0C1A17761D7724880093EE12 /* SAInputView.swift */,
 				0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */,
 				0C1A176E1D7724880093EE12 /* SAInputAccessoryViewLayout.swift */,
 				0C1A17721D7724880093EE12 /* SAInputItem.swift */,
 				0C1A17731D7724880093EE12 /* SAInputItemView.swift */,
+				0C1A176F1D7724880093EE12 /* SAInputBackgroundView.swift */,
 				0C1A17741D7724880093EE12 /* SAInputTextField.swift */,
 				0C1A17751D7724880093EE12 /* SAInputTextFieldItem.swift */,
-				0C1A176F1D7724880093EE12 /* SAInputBackgroundView.swift */,
+				0C1A17701D7724880093EE12 /* SAInputBar.swift */,
+				0C1A17711D7724880093EE12 /* SAInputBarDisplayable.swift */,
 			);
 			path = InputBar;
 			sourceTree = "<group>";
@@ -520,10 +585,10 @@
 		0C4F6A041D8A5423008A5C47 /* InputPanel */ = {
 			isa = PBXGroup;
 			children = (
-				0C4F6A051D8A5423008A5C47 /* SAAudioPanel.swift */,
-				0C4F6A061D8A5423008A5C47 /* SAEmotionPanel.swift */,
-				0C4F6A071D8A5423008A5C47 /* SAPhotoPanel.swift */,
-				0C4F6A081D8A5423008A5C47 /* SAToolboxPanel.swift */,
+				0C18234B1D8ACF290007DAEF /* Audio */,
+				0C18234D1D8ACF290007DAEF /* Emotion */,
+				0C1823581D8ACF290007DAEF /* Photo */,
+				0C18235A1D8ACF290007DAEF /* Toolbox */,
 				0C71D3321C6A3BFA001CBC13 /* SIMChatInputPanelContainer.swift */,
 				0C0DD6271C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift */,
 			);
@@ -666,6 +731,7 @@
 				0C0DD6461C60B4A900AEC8C4 /* SIMChatBaseMessageTipsContent.swift in Sources */,
 				0C0DD6601C60B4A900AEC8C4 /* UITableView+HeightCache.swift in Sources */,
 				0C4070FF1C7B75EA00AEECB7 /* SIMChatMediaAudioRecorder.swift in Sources */,
+				0C1823641D8ACF290007DAEF /* SAEmotionPageView.swift in Sources */,
 				0C0DD6531C60B4A900AEC8C4 /* SIMChatClassProvider.swift in Sources */,
 				0C8BF7BE1C6783F70060684D /* SIMHelper+Force.swift in Sources */,
 				0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */,
@@ -684,7 +750,7 @@
 				0C1A17811D7724880093EE12 /* SAInputView.swift in Sources */,
 				0C0DD68D1C60B4A900AEC8C4 /* SIMChatBubbleView.swift in Sources */,
 				0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */,
-				0C4F6A0B1D8A5423008A5C47 /* SAPhotoPanel.swift in Sources */,
+				0C18235F1D8ACF290007DAEF /* SAEmotion.swift in Sources */,
 				0C0DD6861C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift in Sources */,
 				0C0DD6901C60B4A900AEC8C4 /* SIMChatLabel.swift in Sources */,
 				0C0DD6551C60B4A900AEC8C4 /* SIMChatRequest.swift in Sources */,
@@ -692,8 +758,10 @@
 				0C0DD6911C60B4A900AEC8C4 /* SIMChatLine.swift in Sources */,
 				0C4070FB1C7B757E00AEECB7 /* SIMChatMediaPlayerProtocol.swift in Sources */,
 				0C0DD65D1C60B4A900AEC8C4 /* UIGestureRecognizerDelegate+Forward.swift in Sources */,
-				0C4F6A0C1D8A5423008A5C47 /* SAToolboxPanel.swift in Sources */,
 				0C4EF8F51C6B68A800CA192D /* SIMChatEmoticonProtocol.swift in Sources */,
+				0C1823681D8ACF290007DAEF /* SAEmotionTabItemView.swift in Sources */,
+				0C1823671D8ACF290007DAEF /* SAEmotionPreviewer.swift in Sources */,
+				0C18235E1D8ACF290007DAEF /* SAAudioPanel.swift in Sources */,
 				0C48A8971C78C21D00571BF5 /* SIMChatUpdatesTransaction.swift in Sources */,
 				0C1A17801D7724880093EE12 /* SAInputTextFieldItem.swift in Sources */,
 				0C4EF8F31C6B5E1200CA192D /* SIMChatBaseEmoticonGroup.swift in Sources */,
@@ -708,26 +776,30 @@
 				0C0DD6511C60B4A900AEC8C4 /* SIMChatUserProtocol.swift in Sources */,
 				0C0DD6521C60B4A900AEC8C4 /* SIMChatMediaProvider.swift in Sources */,
 				0C0DD64C1C60B4A900AEC8C4 /* SIMChatMessageCellProtocol.swift in Sources */,
+				0C18236B1D8ACF290007DAEF /* SAToolboxItemView.swift in Sources */,
 				0C4EF8F71C6B68B400CA192D /* SIMChatEmoticonGroupProtocol.swift in Sources */,
 				0C0DD68E1C60B4A900AEC8C4 /* SIMChatEmojiAttachment.swift in Sources */,
+				0C18236A1D8ACF290007DAEF /* SAToolboxItem.swift in Sources */,
+				0C1823631D8ACF290007DAEF /* SAEmotionPage.swift in Sources */,
 				0C368BB41C7D7986003755CC /* NSStringTransform+Heteronym.swift in Sources */,
 				0C0DD6451C60B4A900AEC8C4 /* SIMChatBaseMessageTextContent.swift in Sources */,
 				0C0DD65F1C60B4A900AEC8C4 /* UIResponder+FirstResponder.swift in Sources */,
 				0C7AF3031C7CA61C00F87D2C /* SIMChatMediaPhotoBrowser.swift in Sources */,
 				0C0DD6651C60B4A900AEC8C4 /* SIMChatBundle.swift in Sources */,
 				0C4404841C61E4D800C18004 /* SIMChatInputPanelProtocol.swift in Sources */,
-				0C4F6A0A1D8A5423008A5C47 /* SAEmotionPanel.swift in Sources */,
+				0C1823691D8ACF290007DAEF /* SAPhotoPanel.swift in Sources */,
 				0C0DD6681C60B4A900AEC8C4 /* SIMChatNotificationCenter.swift in Sources */,
 				0C0DD6561C60B4A900AEC8C4 /* SIMChatResult.swift in Sources */,
-				0C4F6A091D8A5423008A5C47 /* SAAudioPanel.swift in Sources */,
 				0C0DD6881C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift in Sources */,
 				0C24757A1C892052003077B2 /* SIMChatResourceProtocol.swift in Sources */,
+				0C1823651D8ACF290007DAEF /* SAEmotionPanel.swift in Sources */,
 				0C0DD6951C60B4A900AEC8C4 /* SIMChatStatusView.swift in Sources */,
 				0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */,
 				0C1A177A1D7724880093EE12 /* SAInputBackgroundView.swift in Sources */,
 				0C0DD6481C60B4A900AEC8C4 /* SIMChatBaseConversation.swift in Sources */,
 				0C0DD6931C60B4A900AEC8C4 /* SIMChatPortraitView.swift in Sources */,
 				0C0DD6961C60B4A900AEC8C4 /* SIMChatVisitCardView.swift in Sources */,
+				0C1823621D8ACF290007DAEF /* SAEmotionLine.swift in Sources */,
 				0C0DD63A1C60B4A900AEC8C4 /* SIMChatViewController.swift in Sources */,
 				0C0DD6661C60B4A900AEC8C4 /* SIMChatFPSLabel.swift in Sources */,
 				0CFA071C1C8205B200AF0F87 /* SIMChatBrowseAnimatedTransitioning.swift in Sources */,
@@ -736,13 +808,17 @@
 				0C0DD6941C60B4A900AEC8C4 /* SIMChatSpectrumView.swift in Sources */,
 				0C0DD64A1C60B4A900AEC8C4 /* SIMChatBaseMessage.swift in Sources */,
 				0C0DD6441C60B4A900AEC8C4 /* SIMChatBaseMessageImageContent.swift in Sources */,
+				0C1823611D8ACF290007DAEF /* SAEmotionGroup.swift in Sources */,
 				0C0DD6381C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift in Sources */,
 				0C0DD65C1C60B4A900AEC8C4 /* UIColor+Hex.swift in Sources */,
 				0C0DD6581C60B4A900AEC8C4 /* SIMAttr.swift in Sources */,
+				0C1823601D8ACF290007DAEF /* SAEmotionBackgroundView.swift in Sources */,
 				0C4070F91C7B753200AEECB7 /* SIMChatMediaAudioPlayer.swift in Sources */,
 				0C9D870E1D772A170070DBBA /* SAInputBar+Resource.swift in Sources */,
 				0C0DD6571C60B4A900AEC8C4 /* SIMChatUserProvider.swift in Sources */,
 				0C7448591C75A138009CF6A7 /* SIMChatMessageBody.swift in Sources */,
+				0C1823661D8ACF290007DAEF /* SAEmotionPanelLayout.swift in Sources */,
+				0C18236C1D8ACF290007DAEF /* SAToolboxPanel.swift in Sources */,
 				0C1A17791D7724880093EE12 /* SAInputAccessoryViewLayout.swift in Sources */,
 				0C5EBFB61C8966BD00E0B923 /* SIMChatBaseFileResource.swift in Sources */,
 				0C1A177B1D7724880093EE12 /* SAInputBar.swift in Sources */,

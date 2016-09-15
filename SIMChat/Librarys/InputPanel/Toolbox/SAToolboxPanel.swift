@@ -29,21 +29,6 @@ import UIKit
 
 // MARK: -
 
-@objc open class SAToolboxItem: NSObject {
-    
-    open var name: String
-    open var identifier: String
-    
-    open var image: UIImage?
-    open var highlightedImage: UIImage?
-    
-    public init(_ identifier: String, _ name: String, _ image: UIImage?, _ highlightedImage: UIImage? = nil) {
-        self.identifier = identifier
-        self.name = name
-        self.image = image
-        self.highlightedImage = highlightedImage
-    }
-}
 @objc open class SAToolboxPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     
     open func reloadData() {
@@ -139,21 +124,17 @@ import UIKit
         addSubview(_contentView)
         addSubview(_pageControl)
         
-        addConstraints([
-            
-            _SALayoutConstraintMake(_contentView, .top, .equal, self, .top),
-            _SALayoutConstraintMake(_contentView, .left, .equal, self, .left),
-            _SALayoutConstraintMake(_contentView, .right, .equal, self, .right),
-            
-            _SALayoutConstraintMake(_contentView, .bottom, .equal, _pageControl, .top),
-            
-            _SALayoutConstraintMake(_pageControl, .left, .equal, self, .left),
-            _SALayoutConstraintMake(_pageControl, .right, .equal, self, .right),
-            _SALayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15),
-            
-            _SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20)
-            
-        ])
+        addConstraint(_SALayoutConstraintMake(_contentView, .top, .equal, self, .top))
+        addConstraint(_SALayoutConstraintMake(_contentView, .left, .equal, self, .left))
+        addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
+        
+        addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, _pageControl, .top))
+        
+        addConstraint(_SALayoutConstraintMake(_pageControl, .left, .equal, self, .left))
+        addConstraint(_SALayoutConstraintMake(_pageControl, .right, .equal, self, .right))
+        addConstraint(_SALayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15))
+        
+        addConstraint(_SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
     
     private lazy var _pageControl: UIPageControl = UIPageControl()
@@ -220,60 +201,3 @@ internal class SAToolboxPanelLayout: UICollectionViewLayout {
         return ats
     }
 }
-internal class SAToolboxItemView: UICollectionViewCell {
-    
-    var item: SAToolboxItem? {
-        didSet {
-            _titleLabel.text = item?.name
-            _iconView.image = item?.image
-            _iconView.highlightedImage = item?.highlightedImage
-        }
-    }
-    
-    weak var handler: AnyObject?
-    
-    private func _init() {
-        //_logger.trace()
-        
-        _titleLabel.font = UIFont.systemFont(ofSize: 12)
-        _titleLabel.textColor = .gray
-        _titleLabel.textAlignment = .center
-        _titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        _iconView.contentMode = .scaleAspectFit
-        _iconView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let view = UIView()
-        view.backgroundColor = UIColor(white: 0, alpha: 0.2)
-        view.layer.cornerRadius = 4
-        selectedBackgroundView = view
-        
-        contentView.addSubview(_iconView)
-        contentView.addSubview(_titleLabel)
-        
-        addConstraints([
-            _SALayoutConstraintMake(_iconView, .centerX, .equal, self, .centerX),
-            _SALayoutConstraintMake(_iconView, .centerY, .equal, self, .centerY, -12),
-            
-            _SALayoutConstraintMake(_iconView, .width, .equal, nil, .notAnAttribute, 50),
-            _SALayoutConstraintMake(_iconView, .height, .equal, nil, .notAnAttribute, 50),
-            
-            _SALayoutConstraintMake(_titleLabel, .top, .equal, _iconView, .bottom, 4),
-            _SALayoutConstraintMake(_titleLabel, .height, .equal, nil, .notAnAttribute, 20),
-            _SALayoutConstraintMake(_titleLabel, .centerX, .equal, self, .centerX),
-        ])
-    }
-    
-    private lazy var _iconView: UIImageView = UIImageView()
-    private lazy var _titleLabel: UILabel = UILabel()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        _init()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
-    }
-}
-

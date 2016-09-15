@@ -1,0 +1,79 @@
+//
+//  SAEmotionPreviewer.swift
+//  SIMChatDev
+//
+//  Created by sagesse on 9/15/16.
+//  Copyright © 2016 sagesse. All rights reserved.
+//
+
+import UIKit
+
+internal class SAEmotionPreviewer: UIView {
+    
+    func preview(_ emotion: SAEmotion?, _ itemType: SAEmotionType, in rect: CGRect) {
+        guard let emotion = emotion else {
+            isHidden = true
+            return
+        }
+        _type = itemType
+        _popoverFrame = _popoverFrame(in: rect, and: _backgroundView.bounds(for: itemType))
+        _presenterFrame = _presenterFrame(in: rect, and: _popoverFrame)
+        
+        frame = _popoverFrame
+        isHidden = false
+        
+        _contentView.frame = _backgroundView.boundsOfContent(for: itemType)
+        
+        _backgroundView.popoverFrame = convert(_popoverFrame, from: superview)
+        _backgroundView.presenterFrame = convert(_presenterFrame, from: superview)
+        _backgroundView.updateBackgroundImages(with: itemType)
+        _backgroundView.updateBackgroundLayouts()
+        
+        // update
+        emotion.show(in: _contentView)
+    }
+    
+    private func _popoverFrame(in frame: CGRect, and bounds: CGRect) -> CGRect {
+        var nframe = bounds
+        
+        nframe.origin.x = frame.midX + bounds.minX - nframe.width / 2 
+        nframe.origin.y = frame.minY + bounds.minY - nframe.height
+        
+        if let window = window, _type.isLarge {
+            nframe.origin.x = max(nframe.minX, _inset.left)
+            nframe.origin.x = min(nframe.minX, window.frame.maxX - bounds.width - _inset.right)
+        }
+        
+        return nframe
+    }
+    private func _presenterFrame(in frame: CGRect, and bounds: CGRect) -> CGRect {
+        return CGRect(x: frame.minX, 
+                      y: frame.minY - bounds.height,
+                      width: frame.width,
+                      height: frame.height + bounds.height)
+    }
+    
+    private func _init() {
+        //_logger.trace()
+        
+        addSubview(_backgroundView)
+        addSubview(_contentView)
+    }
+    
+    private var _type: SAEmotionType = .small
+    private var _inset: UIEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 4)
+    private var _popoverFrame: CGRect = .zero
+    private var _presenterFrame: CGRect = .zero
+    
+    private lazy var _contentView: UIView = UIView()
+    private lazy var _backgroundView: SAEmotionBackgroundView = SAEmotionBackgroundView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+}
