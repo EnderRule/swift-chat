@@ -72,7 +72,7 @@ open class SIMChatLargeEmotion: SIMChatEmotion {
         
         // 标题
         let cfg = [NSFontAttributeName: UIFont.systemFont(ofSize: 12),
-                   NSForegroundColorAttributeName: UIColor.lightGray ]
+                   NSForegroundColorAttributeName: UIColor.gray]
         let name = title as NSString
         
         let titleSize = name.size(attributes: cfg)

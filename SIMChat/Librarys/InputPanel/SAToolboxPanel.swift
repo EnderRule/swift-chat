@@ -97,15 +97,12 @@ import UIKit
     
     // MARK: - 
     
-    @objc func onPress(_ sender: UIButton) {
-        _logger.trace()
-    }
     @objc func onPageChanged(_ sender: UIPageControl) {
         _contentView.setContentOffset(CGPoint(x: _contentView.bounds.width * CGFloat(sender.currentPage), y: 0), animated: true)
     }
 
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         backgroundColor = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
@@ -177,8 +174,7 @@ internal class SAToolboxPanelLayout: UICollectionViewLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var ats = [UICollectionViewLayoutAttributes]()
         
-        _logger.debug()
-        
+        //_logger.debug()
         // TODO: ...性能优化
         
         // 生成
@@ -215,10 +211,6 @@ internal class SAToolboxPanelLayout: UICollectionViewLayout {
 }
 internal class SAToolboxItemView: UICollectionViewCell {
     
-//    override func forwardingTarget(for aSelector: Selector!) -> AnyObject? {
-//        return handler
-//    }
-    
     var item: SAToolboxItem? {
         didSet {
             _titleLabel.text = item?.name
@@ -230,7 +222,7 @@ internal class SAToolboxItemView: UICollectionViewCell {
     weak var handler: AnyObject?
     
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         _titleLabel.font = UIFont.systemFont(ofSize: 12)
         _titleLabel.textColor = .gray

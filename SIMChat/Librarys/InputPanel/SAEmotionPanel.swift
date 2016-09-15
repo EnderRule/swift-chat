@@ -120,7 +120,8 @@ import CoreGraphics
         let row = CGFloat(self.row)
         let col = CGFloat(self.column)
         
-        let tmp = CGSize(width: (width - 8 * col) / col, height: (height - 8 * row) / row)
+        let tmp = CGSize(width: trunc((width - 8 * col) / col),
+                         height: trunc((height - 8 * row) / row))
         
         _size = tmp
         _minimumLineSpacing = (height / row) - tmp.height
