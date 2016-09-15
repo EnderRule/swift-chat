@@ -8,9 +8,14 @@
 
 import UIKit
 
-@objc public class SAAudioPanel: UIView {
+// ## TODO
+// [ ] SAAudioPanel - 变声
+// [ ] SAAudioPanel - 对讲
+// [ ] SAAudioPanel - 录音
+
+@objc open class SAAudioPanel: UIView {
     
-    public override var intrinsicContentSize: CGSize {
+    open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
     

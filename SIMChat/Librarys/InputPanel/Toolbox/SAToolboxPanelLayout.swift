@@ -30,9 +30,6 @@ internal class SAToolboxPanelLayout: UICollectionViewLayout {
             return attributes
         }
         var ats = [UICollectionViewLayoutAttributes]()
-        
-        _logger.debug()
-        
         // 生成
         let edg = UIEdgeInsetsMake(12, 10, 12, 10)
         let frame = self.collectionView?.bounds ?? .zero

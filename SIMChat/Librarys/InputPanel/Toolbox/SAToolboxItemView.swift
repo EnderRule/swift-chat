@@ -40,15 +40,15 @@ internal class SAToolboxItemView: UICollectionViewCell {
         contentView.addSubview(_titleLabel)
         
         addConstraints([
-            _SALayoutConstraintMake(_iconView, .centerX, .equal, self, .centerX),
-            _SALayoutConstraintMake(_iconView, .centerY, .equal, self, .centerY, -12),
+            _SAToolboxLayoutConstraintMake(_iconView, .centerX, .equal, self, .centerX),
+            _SAToolboxLayoutConstraintMake(_iconView, .centerY, .equal, self, .centerY, -12),
             
-            _SALayoutConstraintMake(_iconView, .width, .equal, nil, .notAnAttribute, 50),
-            _SALayoutConstraintMake(_iconView, .height, .equal, nil, .notAnAttribute, 50),
+            _SAToolboxLayoutConstraintMake(_iconView, .width, .equal, nil, .notAnAttribute, 50),
+            _SAToolboxLayoutConstraintMake(_iconView, .height, .equal, nil, .notAnAttribute, 50),
             
-            _SALayoutConstraintMake(_titleLabel, .top, .equal, _iconView, .bottom, 4),
-            _SALayoutConstraintMake(_titleLabel, .height, .equal, nil, .notAnAttribute, 20),
-            _SALayoutConstraintMake(_titleLabel, .centerX, .equal, self, .centerX),
+            _SAToolboxLayoutConstraintMake(_titleLabel, .top, .equal, _iconView, .bottom, 4),
+            _SAToolboxLayoutConstraintMake(_titleLabel, .height, .equal, nil, .notAnAttribute, 20),
+            _SAToolboxLayoutConstraintMake(_titleLabel, .centerX, .equal, self, .centerX),
         ])
     }
     

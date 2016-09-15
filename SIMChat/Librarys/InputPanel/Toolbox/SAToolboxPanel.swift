@@ -8,10 +8,13 @@
 
 import UIKit
 
+// ## TODO
 // [x] SAToolboxPanel - 数据源
 // [x] SAToolboxPanel - 代理
 // [x] SAToolboxPanel - 横屏
+// [ ] SAToolboxPanel - 自定义行/列数量
 // [x] SAToolboxItemView - 选中高亮
+// [x] SAToolboxPanelLayout - 快速滑动时性能问题
 
 @objc public protocol SAToolboxPanelDataSource: NSObjectProtocol {
     
@@ -86,17 +89,17 @@ import UIKit
         addSubview(_contentView)
         addSubview(_pageControl)
         
-        addConstraint(_SALayoutConstraintMake(_contentView, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_contentView, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
+        addConstraint(_SAToolboxLayoutConstraintMake(_contentView, .top, .equal, self, .top))
+        addConstraint(_SAToolboxLayoutConstraintMake(_contentView, .left, .equal, self, .left))
+        addConstraint(_SAToolboxLayoutConstraintMake(_contentView, .right, .equal, self, .right))
         
-        addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, _pageControl, .top))
+        addConstraint(_SAToolboxLayoutConstraintMake(_contentView, .bottom, .equal, _pageControl, .top))
         
-        addConstraint(_SALayoutConstraintMake(_pageControl, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_pageControl, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15))
         
-        addConstraint(_SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
     
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
@@ -151,4 +154,16 @@ extension SAToolboxPanel: UICollectionViewDataSource, UICollectionViewDelegate {
             delegate?.toolbox?(self, didSelectItem: item)
         }
     }
+}
+
+@inline(__always)
+internal func _SAToolboxLayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
+    
+    let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
+    c.priority = priority
+    if output != nil {
+        output?.pointee = c
+    }
+    
+    return c
 }

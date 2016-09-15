@@ -13,24 +13,26 @@ import UIKit
 // [ ] * - 横屏支持
 // [x] SAEmotionPanel - 小表情支持
 // [x] SAEmotionPanel - 大表情支持
-// [x] SAEmotionPanel - 自定义大小/间距/缩进
-// [ ] SAEmotionPanel - 动态图片支持
+// [x] SAEmotionPanel - 自定义行/列数量
 // [x] SAEmotionPanel - Tabbar支持
 // [x] SAEmotionPanel - 更新page
 // [ ] SAEmotionPanel - 长按删除
 // [x] SAEmotionPanel - 更多(More)支持
+// [x] SAEmotionPanel - 快速切换的时显示异常
 // [ ] SAEmotion - UIView支持
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
+// [ ] SAEmotionPreviewer - emoji支持(即字符串)
+// [ ] SAEmotionPreviewer - 动态图片支持
 // [x] SAEmotionPage - Add支持
 // [x] SAEmotionPage - 删除按钮
 // [x] SAEmotionPage - 异步绘制
-// [x] SAEmotionTabItemView - 选中
-// [x] SAEmotionTabItemView - 选中高亮
 // [x] SAEmotionPageView - 选中
 // [x] SAEmotionPageView - 选中高亮
 // [x] SAEmotionPageView - 长按预览
 // [ ] SAEmotionPageView - 横屏支持
+// [x] SAEmotionTabItemView - 选中
+// [x] SAEmotionTabItemView - 选中高亮
 
 
 @objc public protocol SAEmotionPanelDataSource: NSObjectProtocol {
@@ -118,21 +120,21 @@ import UIKit
         
         // add constraints
        
-        addConstraint(_SALayoutConstraintMake(_contentView, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_contentView, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
+        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .top, .equal, self, .top))
+        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .left, .equal, self, .left))
+        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .right, .equal, self, .right))
         
-        addConstraint(_SALayoutConstraintMake(_pageControl, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_pageControl, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10))
+        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
+        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
+        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10))
         
-        addConstraint(_SALayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom))
-        addConstraint(_SALayoutConstraintMake(_tabbar, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_tabbar, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom))
+        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .left, .equal, self, .left))
+        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .right, .equal, self, .right))
+        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37))
-        addConstraint(_SALayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
+        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37))
+        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
     
     fileprivate var _color: UIColor?
@@ -288,9 +290,9 @@ extension SAEmotionPanel: UICollectionViewDataSource, UICollectionViewDelegateFl
                 insertSubview(view, belowSubview: _previewer)
                 
                 let constraints = [
-                    _SALayoutConstraintMake(view, .top, .equal, _tabbar, .top),
-                    _SALayoutConstraintMake(view, .right, .equal, _tabbar, .right),
-                    _SALayoutConstraintMake(view, .bottom, .equal, _tabbar, .bottom),
+                    _SAEmotionLayoutConstraintMake(view, .top, .equal, _tabbar, .top),
+                    _SAEmotionLayoutConstraintMake(view, .right, .equal, _tabbar, .right),
+                    _SAEmotionLayoutConstraintMake(view, .bottom, .equal, _tabbar, .bottom),
                 ]
                 
                 addConstraints(constraints)
@@ -304,18 +306,22 @@ extension SAEmotionPanel: UICollectionViewDataSource, UICollectionViewDelegateFl
             
             UIView.animate(withDuration: 0.25, animations: { 
                 
+                self._tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, newValue?.frame.width ?? 0)
+                
                 newValue?.transform = CGAffineTransform(translationX: 0, y: 0)
                 oldValue?.transform = CGAffineTransform(translationX: oldValue?.frame.width ?? 0, y: 0)
                 
             }, completion: { f in
                 if let view = oldValue, let cs = oldValueCs {
+                    guard view !== self._currentMoreView else {
+                        self.removeConstraints(cs)
+                        return
+                    }
                     self.removeConstraints(cs)
                     view.removeFromSuperview()
                 }
-                
             })
             
-            _tabbar.contentInset = UIEdgeInsetsMake(0, 0, 0, newValue?.frame.width ?? 0)
             _currentMoreView = newValue
             _currentMoreViewConstraints = newValueCs
         }
@@ -335,3 +341,21 @@ extension SAEmotionPanel: UICollectionViewDataSource, UICollectionViewDelegateFl
     }
 }
 
+internal func _SAEmotionLoadImage(base64Encoded base64String: String, scale: CGFloat) -> UIImage? {
+    guard let data = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) else {
+        return nil
+    }
+    return UIImage(data: data, scale: scale)
+}
+
+@inline(__always)
+internal func _SAEmotionLayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
+    
+    let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
+    c.priority = priority
+    if output != nil {
+        output?.pointee = c
+    }
+    
+    return c
+}
