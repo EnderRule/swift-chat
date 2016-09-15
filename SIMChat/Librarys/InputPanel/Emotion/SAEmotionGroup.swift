@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc public enum SAEmotionType: Int {
+public enum SAEmotionType: Int {
     
     case small = 0
     case large = 1
@@ -17,7 +17,7 @@ import UIKit
     public var isLarge: Bool { return self == .large }
 }
 
-@objc open class SAEmotionGroup: NSObject {
+open class SAEmotionGroup: NSObject {
     
     open lazy var id: String = UUID().uuidString
     

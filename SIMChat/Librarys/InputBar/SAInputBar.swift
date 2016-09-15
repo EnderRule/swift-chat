@@ -140,7 +140,7 @@ import UIKit
 ///    inputBar.setInputMode(.None, animated: true)
 ///    ```
 ///
-@objc open class SAInputBar: UIView {
+open class SAInputBar: UIView {
     
     open override func invalidateIntrinsicContentSize() {
         super.invalidateIntrinsicContentSize()

@@ -52,7 +52,7 @@ import UIKit
     
 }
 
-@objc open class SAEmotionPanel: UIView {
+open class SAEmotionPanel: UIView {
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)

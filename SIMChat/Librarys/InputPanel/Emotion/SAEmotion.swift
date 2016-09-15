@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc open class SAEmotion: NSObject {
+open class SAEmotion: NSObject {
     
     /// 退格
     open static let backspace: SAEmotion = {

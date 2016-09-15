@@ -51,6 +51,10 @@
 		0C0DD6861C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6251C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift */; };
 		0C0DD6881C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD6271C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift */; };
 		0C0DD6971C60B4F000AEC8C4 /* SIMChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0DD61D1C60B4A900AEC8C4 /* SIMChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0C1654021D8B08D600A92C86 /* SAAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1654011D8B08D600A92C86 /* SAAudio.swift */; };
+		0C1654041D8B135400A92C86 /* SAAudioTalkbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1654031D8B135400A92C86 /* SAAudioTalkbackView.swift */; };
+		0C1654061D8B138C00A92C86 /* SAAudioRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1654051D8B138C00A92C86 /* SAAudioRecordView.swift */; };
+		0C1654081D8B139E00A92C86 /* SAAudioSimulateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1654071D8B139E00A92C86 /* SAAudioSimulateView.swift */; };
 		0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */; };
 		0C18235E1D8ACF290007DAEF /* SAAudioPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */; };
 		0C18235F1D8ACF290007DAEF /* SAEmotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18234E1D8ACF290007DAEF /* SAEmotion.swift */; };
@@ -170,6 +174,10 @@
 		0C0DD61E1C60B4A900AEC8C4 /* SIMChat.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SIMChat.plist; sourceTree = "<group>"; };
 		0C0DD6251C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SIMChatInputItemProtocol.swift; path = ../../Views/Input/SIMChatInputItemProtocol.swift; sourceTree = "<group>"; };
 		0C0DD6271C60B4A900AEC8C4 /* SIMChatInputPanelAudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SIMChatInputPanelAudioView.swift; path = ../../Views/Input/SIMChatInputPanelAudioView.swift; sourceTree = "<group>"; };
+		0C1654011D8B08D600A92C86 /* SAAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudio.swift; sourceTree = "<group>"; };
+		0C1654031D8B135400A92C86 /* SAAudioTalkbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTalkbackView.swift; sourceTree = "<group>"; };
+		0C1654051D8B138C00A92C86 /* SAAudioRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordView.swift; sourceTree = "<group>"; };
+		0C1654071D8B139E00A92C86 /* SAAudioSimulateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSimulateView.swift; sourceTree = "<group>"; };
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };
 		0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPanel.swift; sourceTree = "<group>"; };
 		0C18234E1D8ACF290007DAEF /* SAEmotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmotion.swift; sourceTree = "<group>"; };
@@ -456,7 +464,11 @@
 		0C18234B1D8ACF290007DAEF /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				0C1654011D8B08D600A92C86 /* SAAudio.swift */,
 				0C18234C1D8ACF290007DAEF /* SAAudioPanel.swift */,
+				0C1654071D8B139E00A92C86 /* SAAudioSimulateView.swift */,
+				0C1654031D8B135400A92C86 /* SAAudioTalkbackView.swift */,
+				0C1654051D8B138C00A92C86 /* SAAudioRecordView.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -699,10 +711,12 @@
 				0C0DD6591C60B4A900AEC8C4 /* SIMChatLayout.swift in Sources */,
 				0C1A177C1D7724880093EE12 /* SAInputBarDisplayable.swift in Sources */,
 				0C0DD6691C60B4A900AEC8C4 /* SIMChatTypes.swift in Sources */,
+				0C1654061D8B138C00A92C86 /* SAAudioRecordView.swift in Sources */,
 				0C0DD6461C60B4A900AEC8C4 /* SIMChatBaseMessageTipsContent.swift in Sources */,
 				0C0DD6601C60B4A900AEC8C4 /* UITableView+HeightCache.swift in Sources */,
 				0C4070FF1C7B75EA00AEECB7 /* SIMChatMediaAudioRecorder.swift in Sources */,
 				0C1823641D8ACF290007DAEF /* SAEmotionPageView.swift in Sources */,
+				0C1654021D8B08D600A92C86 /* SAAudio.swift in Sources */,
 				0C0DD6531C60B4A900AEC8C4 /* SIMChatClassProvider.swift in Sources */,
 				0C8BF7BE1C6783F70060684D /* SIMHelper+Force.swift in Sources */,
 				0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */,
@@ -718,12 +732,14 @@
 				0C0DD64E1C60B4A900AEC8C4 /* SIMChatConversation.swift in Sources */,
 				0C0DD6491C60B4A900AEC8C4 /* SIMChatBaseManager.swift in Sources */,
 				0C1A17811D7724880093EE12 /* SAInputView.swift in Sources */,
+				0C1654041D8B135400A92C86 /* SAAudioTalkbackView.swift in Sources */,
 				0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */,
 				0C18235F1D8ACF290007DAEF /* SAEmotion.swift in Sources */,
 				0C0DD6861C60B4A900AEC8C4 /* SIMChatInputItemProtocol.swift in Sources */,
 				0C0DD6551C60B4A900AEC8C4 /* SIMChatRequest.swift in Sources */,
 				0C1A177F1D7724880093EE12 /* SAInputTextField.swift in Sources */,
 				0C4070FB1C7B757E00AEECB7 /* SIMChatMediaPlayerProtocol.swift in Sources */,
+				0C1654081D8B139E00A92C86 /* SAAudioSimulateView.swift in Sources */,
 				0C0DD65D1C60B4A900AEC8C4 /* UIGestureRecognizerDelegate+Forward.swift in Sources */,
 				0C4EF8F51C6B68A800CA192D /* SIMChatEmoticonProtocol.swift in Sources */,
 				0C1823681D8ACF290007DAEF /* SAEmotionTabItemView.swift in Sources */,
