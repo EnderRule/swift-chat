@@ -29,13 +29,13 @@ import UIKit
 
 // MARK: -
 
-@objc public class SAToolboxItem: NSObject {
+@objc open class SAToolboxItem: NSObject {
     
-    public var name: String
-    public var identifier: String
+    open var name: String
+    open var identifier: String
     
-    public var image: UIImage?
-    public var highlightedImage: UIImage?
+    open var image: UIImage?
+    open var highlightedImage: UIImage?
     
     public init(_ identifier: String, _ name: String, _ image: UIImage?, _ highlightedImage: UIImage? = nil) {
         self.identifier = identifier
@@ -44,18 +44,29 @@ import UIKit
         self.highlightedImage = highlightedImage
     }
 }
-@objc public class SAToolboxPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
+@objc open class SAToolboxPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    public func reloadData() {
+    open func reloadData() {
         _contentView.reloadData()
     }
     
-    public override var intrinsicContentSize: CGSize {
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if let view = super.hitTest(point, with: event) {
+            // 如果点击了空白区域, 转发给`_pageControl`
+            guard view !== self else {
+                return _pageControl
+            }
+            return view
+        }
+        return nil
+    }
+    
+    open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
     
-    public weak var delegate: SAToolboxPanelDelegate?
-    public weak var dataSource: SAToolboxPanelDataSource?
+    open weak var delegate: SAToolboxPanelDelegate?
+    open weak var dataSource: SAToolboxPanelDataSource?
     
     // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
     

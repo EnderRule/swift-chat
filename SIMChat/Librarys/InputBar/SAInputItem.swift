@@ -8,70 +8,88 @@
 
 import UIKit
 
-public class SAInputItem: NSObject {
+open class SAInputItem: NSObject {
     
     // MARK: property
     
-    public lazy var identifier: String = UUID().uuidString
+    open lazy var identifier: String = UUID().uuidString
     
-    public var size: CGSize = CGSize.zero // default is CGSizeZero
-    public var image: UIImage? // default is nil
-    public var customView: UIView? // default is nil
+    open var size: CGSize = CGSize.zero // default is CGSizeZero
+    open var image: UIImage? // default is nil
+    open var customView: UIView? // default is nil
     
-    public var tag: Int = 0 // default is 0
-    public var title: String? // default is nil
-    public var enabled: Bool = true // default is YES
+    open var tag: Int = 0 // default is 0
+    open var title: String? // default is nil
+    open var enabled: Bool = true // default is YES
     
-    public var font: UIFont? // default is nil
-    public var backgroundColor: UIColor? // default is nil
+    open var font: UIFont? // default is nil
+    open var backgroundColor: UIColor? // default is nil
     
-    public var handler: ((SAInputItem) -> Void)? // default is nil
+    open var handler: ((SAInputItem) -> Void)? // default is nil
     
-    public var tintColor: UIColor?
-    public var alignment: SAInputItemAlignment = .automatic
-    public var imageInsets: UIEdgeInsets = .zero // default is UIEdgeInsetsZero
+    open var tintColor: UIColor?
+    open var alignment: SAInputItemAlignment = .automatic
+    open var imageInsets: UIEdgeInsets = .zero // default is UIEdgeInsetsZero
     
     // MARK: setter
     
-    public func setTitle(_ title: String?, for state: UIControlState) {
+    open func setTitle(_ title: String?, for state: UIControlState) {
         _titles[state.rawValue] = title
     }
-    public func setTitleColor(_ color: UIColor?, for state: UIControlState) {
+    open func setTitleColor(_ color: UIColor?, for state: UIControlState) {
         _titleColors[state.rawValue] = color
     }
-    public func setTitleShadowColor(_ color: UIColor?, for state: UIControlState) {
+    open func setTitleShadowColor(_ color: UIColor?, for state: UIControlState) {
         _titleShadowColors[state.rawValue] = color
     }
-    public func setAttributedTitle(_ title: NSAttributedString?, for state: UIControlState) {
+    open func setAttributedTitle(_ title: NSAttributedString?, for state: UIControlState) {
         _attributedTitles[state.rawValue] = title
     }
-    public func setImage(_ image: UIImage?, for state: UIControlState) {
+    open func setImage(_ image: UIImage?, for state: UIControlState) {
         _images[state.rawValue] = image
     }
-    public func setBackgroundImage(_ image: UIImage?, for state: UIControlState) {
+    open func setBackgroundImage(_ image: UIImage?, for state: UIControlState) {
         _backgroundImages[state.rawValue] = image
     }
     
     // MARK: getter
     
-    public func title(for state: UIControlState) -> String? {
+    open func title(for state: UIControlState) -> String? {
         return _titles[state.rawValue] ?? nil
     }
-    public func titleColor(for state: UIControlState) -> UIColor? {
+    open func titleColor(for state: UIControlState) -> UIColor? {
         return _titleColors[state.rawValue] ?? nil
     }
-    public func titleShadowColor(for state: UIControlState) -> UIColor? {
+    open func titleShadowColor(for state: UIControlState) -> UIColor? {
         return _titleShadowColors[state.rawValue] ?? nil
     }
-    public func attributedTitle(for state: UIControlState) -> NSAttributedString? {
+    open func attributedTitle(for state: UIControlState) -> NSAttributedString? {
         return _attributedTitles[state.rawValue] ?? nil
     }
-    public func image(for state: UIControlState) -> UIImage? {
+    open func image(for state: UIControlState) -> UIImage? {
         return _images[state.rawValue] ?? nil
     }
-    public func backgroundImage(for state: UIControlState) -> UIImage? {
+    open func backgroundImage(for state: UIControlState) -> UIImage? {
         return _backgroundImages[state.rawValue] ?? nil
     }
+    
+    
+    open override var hash: Int {
+        return identifier.hash
+    }
+    open override var hashValue: Int {
+        return identifier.hashValue
+    }
+    
+    // MARK: ivar
+    
+    private var _titles: [UInt: String?] = [:]
+    private var _titleColors: [UInt: UIColor?] = [:]
+    private var _titleShadowColors: [UInt: UIColor?] = [:]
+    private var _attributedTitles: [UInt: NSAttributedString?] = [:]
+    
+    private var _images: [UInt: UIImage?] = [:]
+    private var _backgroundImages: [UInt: UIImage?] = [:]
     
     // MARK: create
     
@@ -93,22 +111,5 @@ public class SAInputItem: NSObject {
         self.init()
         self.customView = customView
     }
-    
-    public override var hash: Int {
-        return identifier.hash
-    }
-    public override var hashValue: Int {
-        return identifier.hashValue
-    }
-    
-    // MARK: ivar
-    
-    internal var _titles: [UInt: String?] = [:]
-    internal var _titleColors: [UInt: UIColor?] = [:]
-    internal var _titleShadowColors: [UInt: UIColor?] = [:]
-    internal var _attributedTitles: [UInt: NSAttributedString?] = [:]
-    
-    internal var _images: [UInt: UIImage?] = [:]
-    internal var _backgroundImages: [UInt: UIImage?] = [:]
 }
 

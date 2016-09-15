@@ -24,7 +24,6 @@ import CoreGraphics
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
 // [x] SAEmotionPage - Add支持
-// [ ] SAEmotionPage - Remove支持 - 暂无意义, 除非允许编辑表情位置
 // [x] SAEmotionPage - 删除按钮
 // [x] SAEmotionPage - 异步绘制
 // [x] SAEmotionTabItemView - 选中
@@ -33,7 +32,6 @@ import CoreGraphics
 // [x] SAEmotionPageView - 选中高亮
 // [x] SAEmotionPageView - 长按预览
 // [ ] SAEmotionPageView - 横屏支持
-// [ ] SAEmotionPageView - 长按删除
 
 @objc open class SAEmotion: NSObject {
     

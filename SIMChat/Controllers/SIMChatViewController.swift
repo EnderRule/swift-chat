@@ -36,7 +36,7 @@ class SIMEmotionGroup {
 ///
 /// 聊天控制器
 ///
-public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInputBarDisplayable, SAEmotionPanelDataSource, SAEmotionPanelDelegate, SAToolboxPanelDataSource, SAToolboxPanelDelegate {
+open class SIMChatViewController: UIViewController {
     
     ///
     /// 初始化
@@ -65,7 +65,7 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         SIMLog.trace()
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         SIMLog.trace()
@@ -103,19 +103,17 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         }
     }
     
-    fileprivate var _emotionGroups: [SIMChatEmotionGroup] = []
     
-    public override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
-    private lazy var _panels: [String: UIView] = [:]
+    fileprivate var _activedItem: SAInputItem?
+    fileprivate var _activedPanel: UIView?
     
     private lazy var _toolbar: SAInputBar = SAInputBar(type: .value1)
     private lazy var _contentView: UITableView = UITableView(frame: .zero)
     private lazy var _backgroundView: UIImageView = UIImageView()
     
-    private lazy var _toolboxItems: [SAToolboxItem] = {
+    fileprivate lazy var _panels: [String: UIView] = [:]
+    fileprivate lazy var _emotionGroups: [SIMChatEmotionGroup] = []
+    fileprivate lazy var _toolboxItems: [SAToolboxItem] = {
         let R = { (n:String) -> UIImage? in
             SIMChatBundle.imageWithResource("InputPanel/\(n).png")
         }
@@ -144,8 +142,6 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
     }()
     
     
-    private var _activedItem: SAInputItem?
-    private var _activedPanel: UIView?
     
     private var _conversation: SIMChatConversation
 //    private var _messageManager: MessageManager
@@ -159,39 +155,41 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
     ///
     /// 聊天会话
     ///
-    public var conversation: SIMChatConversation {
+    open var conversation: SIMChatConversation {
         return _conversation 
     }
-    public var manager: SIMChatManager {
+    open var manager: SIMChatManager {
         guard let manager = conversation.manager else {
             fatalError("Must provider manager")
         }
         return manager
     }
     
-    public var toolbar: SAInputBar {
+    open var toolbar: SAInputBar {
         return _toolbar
     }
-    public var contentView: UITableView {
+    open var contentView: UITableView {
         return _contentView 
     }
-    public var backgroundView: UIImageView { 
+    open var backgroundView: UIImageView { 
         return _backgroundView 
     }
     
-    public override var inputAccessoryView: UIView? {
+    open override var inputAccessoryView: UIView? {
         return toolbar
     }
+    open override var canBecomeFirstResponder: Bool {
+        return true
+    }
+}
+
+extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     
-    // MARK: SAInputBarDisplayable
-    
-    public var scrollView: UIScrollView {
+    open var scrollView: UIScrollView {
         return contentView
     }
     
-    // MARK: SAInputBarDelegate
-    
-    public func inputView(with item: SAInputItem) -> UIView? {
+    open func inputView(with item: SAInputItem) -> UIView? {
         if let view = _panels[item.identifier] {
             return view
         }
@@ -225,14 +223,14 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         }
     }
     
-    public func inputBar(_ inputBar: SAInputBar, shouldSelectItem item: SAInputItem) -> Bool {
+    open func inputBar(_ inputBar: SAInputBar, shouldSelectItem item: SAInputItem) -> Bool {
         
         guard let _ = inputView(with: item) else {
             return false
         }
         return true
     }
-    public func inputBar(_ inputBar: SAInputBar, didSelectItem item: SAInputItem) {
+    open func inputBar(_ inputBar: SAInputBar, didSelectItem item: SAInputItem) {
         logger.debug(item.identifier)
         
         _activedItem = item
@@ -242,61 +240,61 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         }
     }
     
-    public func inputBar(didChangeMode inputBar: SAInputBar) {
+    open func inputBar(didChangeMode inputBar: SAInputBar) {
         logger.debug(inputBar.inputMode)
         
         if let item = _activedItem, !inputBar.inputMode.isSelecting {
             inputBar.deselectBarItem(item, animated: true)
         } 
     }
+}
+
+extension SIMChatViewController: SAToolboxPanelDataSource, SAToolboxPanelDelegate {
     
-    // SAToolboxPanelDataSource
-    
-    public func numberOfItems(in toolbox: SAToolboxPanel) -> Int {
+    open func numberOfItems(in toolbox: SAToolboxPanel) -> Int {
         return _toolboxItems.count
     }
     
-    public func toolbox(_ toolbox: SAToolboxPanel, toolboxItemAt index: Int) -> SAToolboxItem? {
+    open func toolbox(_ toolbox: SAToolboxPanel, toolboxItemAt index: Int) -> SAToolboxItem? {
         guard index < _toolboxItems.count else {
             return nil
         }
         return _toolboxItems[index]
     }
     
-    //  SAToolboxPanelDelegate
-    
-    public func toolbox(_ toolbox: SAToolboxPanel, shouldSelectItem item: SAToolboxItem) -> Bool {
+    open func toolbox(_ toolbox: SAToolboxPanel, shouldSelectItem item: SAToolboxItem) -> Bool {
         return true
     }
-    public func toolbox(_ toolbox: SAToolboxPanel, didSelectItem item: SAToolboxItem) {
+    open func toolbox(_ toolbox: SAToolboxPanel, didSelectItem item: SAToolboxItem) {
         _logger.debug(item.identifier)
     }
+}
+
+extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegate {
     
-    // SAEmotionPanelDataSource
-    
-    public func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
+    open func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
         return _emotionGroups.count
     }
-    public func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup {
+    open func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup {
         return _emotionGroups[index]
     }
     
-    // SAEmotionPanelDelegate
-    
-    public func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {
+    open func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {
         return true
     }
-    public func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion) {
+    open func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion) {
         _logger.debug(item)
     }
     
-    public func emotion(_ emotion: SAEmotionPanel, shouldPreviewFor item: SAEmotion?) -> Bool {
+    open func emotion(_ emotion: SAEmotionPanel, shouldPreviewFor item: SAEmotion?) -> Bool {
         return true
     }
-    public func emotion(_ emotion: SAEmotionPanel, didPreviewFor item: SAEmotion?) {
+    open func emotion(_ emotion: SAEmotionPanel, didPreviewFor item: SAEmotion?) {
         _logger.debug(item)
     }
 }
+
+
 
 // MARK: - Life Cycle
 

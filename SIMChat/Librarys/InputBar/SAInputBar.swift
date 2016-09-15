@@ -79,14 +79,14 @@ import UIKit
 ///    inputBar.setInputMode(.None, animated: true)
 ///    ```
 ///
-@objc public class SAInputBar: UIView, UITextViewDelegate, UIKeyInput, SAInputItemViewDelegate {
+@objc open class SAInputBar: UIView, UITextViewDelegate, UIKeyInput, SAInputItemViewDelegate {
     
     
-    public override func invalidateIntrinsicContentSize() {
+    open override func invalidateIntrinsicContentSize() {
         super.invalidateIntrinsicContentSize()
         _cacheContentSize = nil
     }
-    public override var intrinsicContentSize: CGSize {
+    open override var intrinsicContentSize: CGSize {
         if let size = _cacheContentSize, size.width == frame.width {
             return size
         }
@@ -95,13 +95,13 @@ import UIKit
         return size
     }
     
-    public override func resignFirstResponder() -> Bool {
+    open override func resignFirstResponder() -> Bool {
         return _inputAccessoryView.resignFirstResponder()
     }
-    public override func becomeFirstResponder() -> Bool {
+    open override func becomeFirstResponder() -> Bool {
         return _inputAccessoryView.becomeFirstResponder()
     }
-    public override var next: UIResponder? {
+    open override var next: UIResponder? {
         return ib_nextResponderOverride ?? super.next
     }
     
@@ -221,42 +221,42 @@ import UIKit
     
     // MARK: - UITextViewDelegate(Forwarding)
     
-    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+    open func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if let r = delegate?.inputBar?(shouldBeginEditing: self), !r {
             return false
         }
         _updateInputModeForResponder(.editing, animated: true)
         return true
     }
-    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+    open func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
         if let r = delegate?.inputBar?(shouldEndEditing: self), !r {
             return false
         }
         return true
     }
     
-    public func textViewDidBeginEditing(_ textView: UITextView) {
+    open func textViewDidBeginEditing(_ textView: UITextView) {
         delegate?.inputBar?(didBeginEditing: self)
     }
-    public func textViewDidEndEditing(_ textView: UITextView) {
+    open func textViewDidEndEditing(_ textView: UITextView) {
         delegate?.inputBar?(didEndEditing: self)
         _updateInputModeForResponder(.none, animated: true)
     }
     
-    public func textViewDidChangeSelection(_ textView: UITextView) {
+    open func textViewDidChangeSelection(_ textView: UITextView) {
         delegate?.inputBar?(didChangeSelection: self)
     }
-    public func textViewDidChange(_ textView: UITextView) {
+    open func textViewDidChange(_ textView: UITextView) {
         delegate?.inputBar?(didChangeText: self)
     }
 
-    public func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
+    open func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange) -> Bool {
         if let r = delegate?.inputBar?(self, shouldInteractWithTextAttachment: textAttachment, inRange: characterRange), !r {
             return false
         }
         return true
     }
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    open func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if let r = delegate?.inputBar?(self, shouldChangeCharactersInRange: range, replacementString: text), !r {
             return false
         }
@@ -270,7 +270,7 @@ import UIKit
         }
         return true
     }
-    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+    open func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         if let r = delegate?.inputBar?(self, shouldInteractWithURL: URL, inRange: characterRange), !r {
             return false
         }
@@ -307,16 +307,16 @@ import UIKit
     
     // MARK: - SAInputItemViewDelegate(Forwarding)
     
-    public func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
+    open func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
         return delegate?.inputBar?(self, shouldHighlightItem: barItem) ?? true
     }
-    public func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
+    open func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
         if !allowsMultipleSelection {
             return false // not allowed to cancel
         }
         return delegate?.inputBar?(self, shouldDeselectItem: barItem) ?? true 
     }
-    public func barItem(shouldSelect barItem: SAInputItem) -> Bool {
+    open func barItem(shouldSelect barItem: SAInputItem) -> Bool {
         guard allowsSelection else {
             // do not allow the selected
             return false
@@ -347,15 +347,15 @@ import UIKit
         return true
     }
     
-    public func barItem(didHighlight barItem: SAInputItem) {
+    open func barItem(didHighlight barItem: SAInputItem) {
         delegate?.inputBar?(self, didHighlightItem: barItem)
     }
-    public func barItem(didDeselect barItem: SAInputItem) {
+    open func barItem(didDeselect barItem: SAInputItem) {
         delegate?.inputBar?(self, didDeselectItem: barItem)
         // Remove from the selected list
         _selectedItems.remove(barItem)
     }
-    public func barItem(didSelect barItem: SAInputItem) {
+    open func barItem(didSelect barItem: SAInputItem) {
         delegate?.inputBar?(self, didSelectItem: barItem)
         // Added to the selected list
         _selectedItems.insert(barItem)
@@ -798,7 +798,7 @@ import UIKit
     
     // MARK: - 
     
-    public override class func initialize() {
+    open override class func initialize() {
         _ = _ib_inputBar_once
     }
     
