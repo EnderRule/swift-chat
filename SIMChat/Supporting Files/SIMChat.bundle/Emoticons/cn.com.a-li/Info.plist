@@ -11,7 +11,7 @@
 	<key>column</key>
 	<integer>4</integer>
 	<key>image</key>
-	<string>thumbnail.png</string>
+	<string>icon.png</string>
 	<key>emotions</key>
 	<array>
 		<dict>

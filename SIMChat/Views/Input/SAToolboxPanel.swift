@@ -226,6 +226,12 @@ internal class SAToolboxItemView: UICollectionViewCell {
         _iconView.contentMode = .scaleAspectFit
         _iconView.translatesAutoresizingMaskIntoConstraints = false
         
+        // frame区域太小
+        //let view = UIView()
+        //view.backgroundColor = UIColor(white: 0, alpha: 0.2)
+        //view.layer.cornerRadius = 8
+        //selectedBackgroundView = view
+        
         contentView.addSubview(_iconView)
         contentView.addSubview(_titleLabel)
         

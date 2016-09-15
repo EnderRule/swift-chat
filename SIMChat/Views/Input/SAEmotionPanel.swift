@@ -9,6 +9,7 @@
 import UIKit
 import CoreGraphics
 
+// ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
 // [ ] * - 横屏支持
 // [x] SAEmotionPanel - 小表情支持
@@ -29,7 +30,7 @@ import CoreGraphics
 // [x] SAEmotionTabItemView - 选中
 // [x] SAEmotionTabItemView - 选中高亮
 // [x] SAEmotionPageView - 选中
-// [ ] SAEmotionPageView - 选中高亮
+// [x] SAEmotionPageView - 选中高亮
 // [x] SAEmotionPageView - 长按预览
 // [ ] SAEmotionPageView - 横屏支持
 // [ ] SAEmotionPageView - 长按删除
@@ -158,32 +159,28 @@ import CoreGraphics
     
 }
 
-@objc public class SAEmotionPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SAEmotionDelegate {
+@objc open class SAEmotionPanel: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SAEmotionDelegate {
     
-    public override var intrinsicContentSize: CGSize {
+    open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
    
-    public weak var dataSource: SAEmotionPanelDataSource?
-    public weak var delegate: SAEmotionPanelDelegate?
-    
-    public var contentView: UICollectionView {
-        return _contentView
-    }
+    open weak var dataSource: SAEmotionPanelDataSource?
+    open weak var delegate: SAEmotionPanelDelegate?
     
     // MARK: SAEmotionDelegate(Forwarding)
     
-    public func emotion(shouldSelectFor emotion: SAEmotion) -> Bool {
+    open func emotion(shouldSelectFor emotion: SAEmotion) -> Bool {
         return delegate?.emotion?(self, shouldSelectFor: emotion) ?? true
     }
-    public func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool {
+    open func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool {
         return delegate?.emotion?(self, shouldPreviewFor: emotion) ?? true
     }
     
-    public func emotion(didSelectFor emotion: SAEmotion) {
+    open func emotion(didSelectFor emotion: SAEmotion) {
         delegate?.emotion?(self, didSelectFor: emotion) 
     }
-    public func emotion(didPreviewFor emotion: SAEmotion?) {
+    open func emotion(didPreviewFor emotion: SAEmotion?) {
         delegate?.emotion?(self, didPreviewFor: emotion) 
     }
     
@@ -270,6 +267,8 @@ import CoreGraphics
         return .zero
     }
     
+    // MARK: Private Method
+    
     private func _updatePageNumber(at indexPath: IndexPath) {
         
         _pageControl.numberOfPages = _contentView.numberOfItems(inSection: indexPath.section)
@@ -282,7 +281,7 @@ import CoreGraphics
         _tabbar.selectItem(at: nidx, animated: true, scrollPosition: .centeredHorizontally)
     }
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         _color = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
@@ -374,50 +373,6 @@ import CoreGraphics
         super.init(coder: aDecoder)
         _init()
     }
-}
-
-internal class SAEmotionPanelLayout: UICollectionViewFlowLayout {
-    
-    func page(at indexPath: IndexPath) -> SAEmotionPage {
-        return _allPages[indexPath.section]![indexPath.row]
-    }
-    func pages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> [SAEmotionPage] {
-        if let pages = _allPages[section] {
-            return pages
-        }
-        let pages = _makePages(in: section, with: fetch())
-        _allPages[section] = pages
-        return pages
-    }
-    
-    func numberOfPages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> Int {
-        if let count = _allPages[section]?.count {
-            return count
-        }
-        return pages(in: section, fetch: fetch).count
-    }
-    
-    func _makePages(in section: Int, with group: SAEmotionGroup) -> [SAEmotionPage] {
-        
-        let itemType = group.type
-        let itemSize = group.sizeThatFits(collectionView?.frame.size ?? .zero)
-        
-        let nlsp = group._minimumLineSpacing
-        let nisp = group._minimumInteritemSpacing
-        let inset = group._contentInset
-        
-        let bounds = collectionView?.bounds ?? .zero
-        let rect = UIEdgeInsetsInsetRect(bounds, inset)
-        
-        return group.emotions.reduce([]) { 
-            if let page = $0.last, page.addEmotion($1) {
-                return $0
-            }
-            return $0 + [SAEmotionPage($1, itemSize, rect, bounds, nlsp, nisp, itemType)]
-        }
-    }
-    
-    lazy var _allPages: [Int: [SAEmotionPage]] = [:]
 }
 
 internal class SAEmotionLine {
@@ -619,6 +574,17 @@ internal class SAEmotionPage {
     
     static var queue = DispatchQueue(label: "sa.emotion.background")
 }
+
+internal protocol SAEmotionDelegate: class {
+    
+    func emotion(shouldSelectFor emotion: SAEmotion) -> Bool
+    func emotion(didSelectFor emotion: SAEmotion)
+    
+    func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool
+    func emotion(didPreviewFor emotion: SAEmotion?)
+    
+}
+
 internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDelegate {
     
     weak var delegate: SAEmotionDelegate?
@@ -725,6 +691,15 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         }
         
         _activedIndexPath = idx
+        
+        if let nframe = rect, page.itemType.isLarge {
+            _backgroundLayer.frame = nframe
+            _backgroundLayer.isHidden = false
+            _backgroundLayer.removeAllAnimations()
+        } else {
+            _backgroundLayer.isHidden = true
+        }
+        
         previewer?.preview(emotion, page.itemType, in: rect ?? .zero)
         
         if isbegin || canpreview {
@@ -767,7 +742,11 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
     }
     
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
+        
+        _backgroundLayer.backgroundColor = UIColor(white: 0, alpha: 0.2).cgColor
+        _backgroundLayer.masksToBounds = true
+        _backgroundLayer.cornerRadius = 4
         
         _backspaceButton.tintColor = .gray
         _backspaceButton.setImage(_SAEmotionPanelBackspaceImage, for: .normal)
@@ -780,55 +759,16 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         longtapgr.delegate = self
         longtapgr.minimumPressDuration = 0.25
         
+        layer.addSublayer(_backgroundLayer)
+        
         contentView.addGestureRecognizer(tapgr)
         contentView.addGestureRecognizer(longtapgr)
     }
     
     private var _activedIndexPath: IndexPath?
     
+    private lazy var _backgroundLayer: CALayer = CALayer()
     private lazy var _backspaceButton: UIButton = UIButton(type: .system)
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        _init()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
-    }
-}
-internal class SAEmotionTabItemView: UICollectionViewCell {
-    
-    var group: SAEmotionGroup? {
-        willSet {
-            guard group !== newValue else {
-                return
-            }
-            _imageView.image = newValue?.thumbnail
-        }
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        _imageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
-        _line.frame = CGRect(x: bounds.maxX - 0.25, y: 8, width: 0.5, height: bounds.height - 16)
-    }
-    
-    private func _init() {
-        _logger.trace()
-        
-        _line.backgroundColor = UIColor(white: 0.9, alpha: 1.0).cgColor
-        
-        _imageView.contentMode = .scaleAspectFit
-        _imageView.bounds = CGRect(x: 0, y: 0, width: 25, height: 25)
-        
-        contentView.addSubview(_imageView)
-        contentView.layer.addSublayer(_line)
-        
-        selectedBackgroundView = UIView()
-    }
-    
-    private lazy var _imageView: UIImageView = UIImageView()
-    private lazy var _line: CALayer = CALayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -885,7 +825,7 @@ internal class SAEmotionPreviewer: UIView {
     }
     
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         addSubview(_backgroundView)
         addSubview(_contentView)
@@ -898,6 +838,48 @@ internal class SAEmotionPreviewer: UIView {
     
     private lazy var _contentView: UIView = UIView()
     private lazy var _backgroundView: SAEmotionBackgroundView = SAEmotionBackgroundView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+}
+internal class SAEmotionTabItemView: UICollectionViewCell {
+    
+    var group: SAEmotionGroup? {
+        willSet {
+            guard group !== newValue else {
+                return
+            }
+            _imageView.image = newValue?.thumbnail
+        }
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _imageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        _line.frame = CGRect(x: bounds.maxX - 0.25, y: 8, width: 0.5, height: bounds.height - 16)
+    }
+    
+    private func _init() {
+        //_logger.trace()
+        
+        _line.backgroundColor = UIColor(white: 0.9, alpha: 1.0).cgColor
+        
+        _imageView.contentMode = .scaleAspectFit
+        _imageView.bounds = CGRect(x: 0, y: 0, width: 25, height: 25)
+        
+        contentView.addSubview(_imageView)
+        contentView.layer.addSublayer(_line)
+        
+        selectedBackgroundView = UIView()
+    }
+    
+    private lazy var _imageView: UIImageView = UIImageView()
+    private lazy var _line: CALayer = CALayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -975,7 +957,7 @@ internal class SAEmotionBackgroundView: UIView {
     }
     
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         isUserInteractionEnabled = false
         
@@ -1026,15 +1008,50 @@ internal class SAEmotionBackgroundView: UIView {
     }
 }
 
-internal protocol SAEmotionDelegate: class {
+internal class SAEmotionPanelLayout: UICollectionViewFlowLayout {
     
-    func emotion(shouldSelectFor emotion: SAEmotion) -> Bool
-    func emotion(didSelectFor emotion: SAEmotion)
+    func page(at indexPath: IndexPath) -> SAEmotionPage {
+        return _allPages[indexPath.section]![indexPath.row]
+    }
+    func pages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> [SAEmotionPage] {
+        if let pages = _allPages[section] {
+            return pages
+        }
+        let pages = _makePages(in: section, with: fetch())
+        _allPages[section] = pages
+        return pages
+    }
     
-    func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool
-    func emotion(didPreviewFor emotion: SAEmotion?)
+    func numberOfPages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> Int {
+        if let count = _allPages[section]?.count {
+            return count
+        }
+        return pages(in: section, fetch: fetch).count
+    }
     
+    func _makePages(in section: Int, with group: SAEmotionGroup) -> [SAEmotionPage] {
+        
+        let itemType = group.type
+        let itemSize = group.sizeThatFits(collectionView?.frame.size ?? .zero)
+        
+        let nlsp = group._minimumLineSpacing
+        let nisp = group._minimumInteritemSpacing
+        let inset = group._contentInset
+        
+        let bounds = collectionView?.bounds ?? .zero
+        let rect = UIEdgeInsetsInsetRect(bounds, inset)
+        
+        return group.emotions.reduce([]) { 
+            if let page = $0.last, page.addEmotion($1) {
+                return $0
+            }
+            return $0 + [SAEmotionPage($1, itemSize, rect, bounds, nlsp, nisp, itemType)]
+        }
+    }
+    
+    lazy var _allPages: [Int: [SAEmotionPage]] = [:]
 }
+
 
 private var _SAEmotionPanelBackspaceImage: UIImage? = {
     let png = "iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAbFBMVEUAAACfn5+YmJibm5uYmJiYmJidnZ2Xl5eYmJiXl5eYmJiampqgoKCoqKiYmJiYmJiYmJiXl5eZmZmYmJiYmJiYmJiampqYmJidnZ2YmJiYmJiYmJiYmJiYmJiYmJiZmZmYmJiYmJiYmJiXl5dyF2b0AAAAI3RSTlMAFdQZ18kS86tmWiAKBeTbz7597OfhLicO+cS7tJtPPaaKco/AGfEAAAEUSURBVEjH7dXLroMgFAVQEHxUe321Vav31e7//8dOmuyYcjCYtCP2CHJcCcEDqJiYmM9kPMOZPD1s2uoCMYvxW9NgProrZY3Fa3WCdJKKWQ3fyqcWSSaXS6Ry8TijMUqOQS7bDpdK+QJIla9vnJ9WF3q1Ez2xYAucxue4QKJXu9hv4B+cBn5OzQnxq83/OCPgUMY3XGlJOPDgHtdfzohoZXynXWtaER+A0tmq1tIKuIS7Z7UFLK0b/yMfdmC2xxC8bDYmdciGsa3H0F9FvVAHNAmPY13taU8e5tCDQT1TBx9JNaVozK7LgFoIsZCshd1xAVInOvzq5d60WeilT22pX5+bTvljLMR0Rm3pRn5iY2Ji3pcHZE4k/ix2A/EAAAAASUVORK5CYII="

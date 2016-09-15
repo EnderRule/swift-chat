@@ -92,7 +92,9 @@ public class SIMChatViewController: UIViewController, SAInputBarDelegate, SAInpu
         view.addSubview(backgroundView)
         view.addSubview(contentView)
         
-        
+        //if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.apple.emoji/Info.plist")!) {
+        //    _emotionGroups.append(group)
+        //}
         if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.qq.classic/Info.plist")!) {
             _emotionGroups.append(group)
         }
