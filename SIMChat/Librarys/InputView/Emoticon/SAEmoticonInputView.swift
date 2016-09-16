@@ -88,7 +88,7 @@ open class SAEmoticonInputView: UIView {
         _contentView.dataSource = self
         _contentView.scrollsToTop = false
         _contentView.isPagingEnabled = true
-        _contentView.delaysContentTouches = false
+        _contentView.delaysContentTouches = true
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.register(SAEmoticonPageView.self, forCellWithReuseIdentifier: "Page")

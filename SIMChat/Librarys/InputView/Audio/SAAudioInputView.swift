@@ -51,6 +51,9 @@ open class SAAudioInputView: UIView {
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.translatesAutoresizingMaskIntoConstraints = false
+        _contentView.allowsSelection = false
+        _contentView.allowsMultipleSelection = false
+        _contentView.delaysContentTouches = false
         
         _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAAudioType.simulate)")
         _contentView.register(SAAudioTalkbackView.self, forCellWithReuseIdentifier: "\(SAAudioType.talkback)")
