@@ -75,6 +75,23 @@ open class SAToolboxInputView: UIView {
         _contentView.setContentOffset(CGPoint(x: _contentView.bounds.width * CGFloat(sender.currentPage), y: 0), animated: true)
     }
     
+//    private func _restoreContentOffset(at indexPath: IndexPath) {
+//        _logger.trace(indexPath)
+//        
+//        let section = indexPath.section
+//        let count = _contentView.numberOfItems(inSection: section)
+//        let item = min(indexPath.item, count - 1)
+//        
+//        let nidx = IndexPath(item: item, section: section)
+//        let mcount = (0 ..< section).reduce(0) {
+//            return $0 + _contentView.numberOfItems(inSection: $1)
+//        }
+//        let x = CGFloat(mcount + item) * _contentView.frame.width
+//        
+//        _contentView.contentOffset = CGPoint(x: x, y: 0)
+//        _updatePageNumber(at: nidx)
+//    }
+    
     private func _updatePageControl() {
         _logger.trace()
         

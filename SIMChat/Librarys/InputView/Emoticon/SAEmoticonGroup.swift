@@ -21,43 +21,10 @@ open class SAEmoticonGroup: NSObject {
     
     open lazy var id: String = UUID().uuidString
     
-    open var rows: Int = 3
-    open var columns: Int = 7
-    open var rowsInLandscape: Int = 2
-    open var columnsInLandscape: Int = 13
-    
     open var title: String?
     open var thumbnail: UIImage?
     
     open var type: SAEmoticonType = .small
     open var emoticons: [SAEmoticon] = []
-    
-    open func sizeThatFits(_ size: CGSize) -> CGSize {
-        guard _size?.width != size.width else {
-            return _size ?? .zero
-        }
-        let edg = contentInset
-        
-        let width = size.width - edg.left - edg.right
-        let height = size.height - edg.top - edg.bottom
-        
-        let row = CGFloat(self.rows)
-        let col = CGFloat(self.columns)
-        
-        let tmp = CGSize(width: trunc((width - 8 * col) / col),
-                         height: trunc((height - 8 * row) / row))
-        
-        _size = tmp
-        minimumLineSpacing = (height / row) - tmp.height
-        minimumInteritemSpacing = (width / col) - tmp.width
-        
-        return tmp
-    }
-    
-    internal var contentInset: UIEdgeInsets = UIEdgeInsetsMake(12, 10, 42, 10)
-    internal var minimumLineSpacing: CGFloat = 0
-    internal var minimumInteritemSpacing: CGFloat = 0
-    
-    fileprivate var _size: CGSize?
 }
 

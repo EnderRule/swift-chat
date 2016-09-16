@@ -113,4 +113,9 @@ open class SIMChatEmoticonGroup: SAEmoticonGroup {
             emoticons = SIMChatLargeEmoticon.emoticons(with: arr, at: directory)
         }
     }
+    
+    open var rows: Int = 3
+    open var columns: Int = 7
+    open var rowsInLandscape: Int = 3
+    open var columnsInLandscape: Int = 13
 }

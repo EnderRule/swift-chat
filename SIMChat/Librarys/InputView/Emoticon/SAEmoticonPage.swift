@@ -26,6 +26,7 @@ internal class SAEmoticonPage {
             fetch(contents.cgImage)
             return
         }
+        Logger().debug("redraw")
         SAEmoticonPage.queue.async {
             
             UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)

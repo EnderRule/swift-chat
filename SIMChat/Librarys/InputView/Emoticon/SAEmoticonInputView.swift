@@ -10,7 +10,7 @@ import UIKit
 
 // ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
-// [ ] * - 横屏支持
+// [x] * - 横屏支持
 // [x] SAEmoticonInputView - 小表情支持
 // [x] SAEmoticonInputView - 大表情支持
 // [x] SAEmoticonInputView - 自定义行/列数量
@@ -52,6 +52,8 @@ public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, contentInsetForGroupAt index: Int) -> UIEdgeInsets
+    
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon)
     
@@ -67,6 +69,10 @@ open class SAEmoticonInputView: UIView {
         
         if _cacheBounds?.width != bounds.width {
             _cacheBounds = bounds
+            if let idx = _contentView.indexPathsForVisibleItems.first {
+                _contentView.reloadData()
+                _restoreContentOffset(at: idx)
+            }
         }
     }
     open override var intrinsicContentSize: CGSize {
@@ -77,6 +83,23 @@ open class SAEmoticonInputView: UIView {
     open weak var delegate: SAEmoticonInputViewDelegate?
     
     // MARK: Private Method
+    
+    private func _restoreContentOffset(at indexPath: IndexPath) {
+        _logger.trace(indexPath)
+        
+        let section = indexPath.section
+        let count = _contentView.numberOfItems(inSection: section)
+        let item = min(indexPath.item, count - 1)
+        
+        let nidx = IndexPath(item: item, section: section)
+        let mcount = (0 ..< section).reduce(0) {
+            return $0 + _contentView.numberOfItems(inSection: $1)
+        }
+        let x = CGFloat(mcount + item) * _contentView.frame.width
+        
+        _contentView.contentOffset = CGPoint(x: x, y: 0)
+        _updatePageNumber(at: nidx)
+    }
     
     private func _init() {
         //_logger.trace()
@@ -91,10 +114,6 @@ open class SAEmoticonInputView: UIView {
         _pageControl.backgroundColor = .clear
         _pageControl.isUserInteractionEnabled = false
         //_pageControl.addTarget(self, action: #selector(onPageChanged(_:)), for: .valueChanged)
-        
-        _contentViewLayout.scrollDirection = .horizontal
-        _contentViewLayout.minimumLineSpacing = 0
-        _contentViewLayout.minimumInteritemSpacing = 0
         
         _contentView.delegate = self
         _contentView.dataSource = self
@@ -141,7 +160,7 @@ open class SAEmoticonInputView: UIView {
         
         addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
         addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
-        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -4))
         
         addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom))
         addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .left, .equal, self, .left))
@@ -199,9 +218,9 @@ extension SAEmoticonInputView: SAEmoticonDelegate {
     }
 }
 
-// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout & SAEmoticonInputViewDelegateLayout
 
-extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SAEmoticonInputViewDelegateLayout {
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView === _tabbar {
@@ -230,12 +249,8 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
             return dataSource?.numberOfItemsInEmoticon(self) ?? 0
         }
         if collectionView === _contentView {
-            guard let ds = dataSource else {
-                return 0
-            }
-            let pageCount = _contentViewLayout.numberOfPages(in: section) {
-                ds.emoticon(self, itemAt: section)
-            }
+            let pageCount = _contentViewLayout.numberOfPages(in: section)
+            //!!!!TODO
             if !_contentViewIsInit {
                 _contentViewIsInit = true
                 let idx = IndexPath(item: 0, section: 0)
@@ -285,8 +300,20 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
         }
         return .zero
     }
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup? {
+        return dataSource?.emoticon(self, itemAt: index)
+    }
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int {
+        return dataSource?.emoticon?(self, numberOfRowsForGroupAt: index) ?? 3
+    }
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfCloumnsForGroupAt index: Int) -> Int { 
+        return dataSource?.emoticon?(self, numberOfCloumnsForGroupAt: index) ?? 7
+    }
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, contentInsetForGroupAt index: Int) -> UIEdgeInsets {
+        return delegate?.emoticon?(self, contentInsetForGroupAt: index) ?? UIEdgeInsetsMake(12, 10, 12 + 30, 10)
+    }
     
-    private func _updateMoreView(at indexPath: IndexPath) {
+    fileprivate func _updateMoreView(at indexPath: IndexPath) {
         guard _currentGroup != indexPath.section else {
             return
         }
@@ -345,7 +372,8 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
         _currentGroup = indexPath.section
     }
     
-    private func _updatePageNumber(at indexPath: IndexPath) {
+    fileprivate func _updatePageNumber(at indexPath: IndexPath) {
+        //_logger.trace(indexPath)
         
         _pageControl.numberOfPages = _contentView.numberOfItems(inSection: indexPath.section)
         _pageControl.currentPage = indexPath.item

@@ -299,9 +299,15 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         return _emoticonGroups[index]
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int {
+        if UIDevice.current.orientation.isLandscape {
+            return _emoticonGroups[index].rowsInLandscape
+        }
         return _emoticonGroups[index].rows
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, numberOfCloumnsForGroupAt index: Int) -> Int {
+        if UIDevice.current.orientation.isLandscape {
+            return _emoticonGroups[index].columnsInLandscape
+        }
         return _emoticonGroups[index].columns
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView? { 
@@ -310,6 +316,13 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         } else {
             return _emoticonSettingBtn
         }
+    }
+    
+    open func emoticon(_ emoticon: SAEmoticonInputView, contentInsetForGroupAt index: Int) -> UIEdgeInsets {
+        if UIDevice.current.orientation.isLandscape {
+            return UIEdgeInsetsMake(4, 12, 4 + 24, 12)
+        }
+        return UIEdgeInsetsMake(12, 10, 12 + 24, 10)
     }
     
     open func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool {

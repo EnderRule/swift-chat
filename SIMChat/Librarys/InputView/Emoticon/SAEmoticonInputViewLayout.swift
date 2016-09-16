@@ -8,9 +8,33 @@
 
 import UIKit
 
-
-internal class SAEmoticonInputViewLayout: UICollectionViewFlowLayout {
+@objc
+internal protocol SAEmoticonInputViewDelegateLayout: UICollectionViewDelegate {
     
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup?
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, contentInsetForGroupAt index: Int) -> UIEdgeInsets
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfCloumnsForGroupAt index: Int) -> Int
+}
+
+
+internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
+    
+    override var collectionViewContentSize: CGSize {
+        if let size = _cacheContentSize {
+            return size
+        }
+        guard let collectionView = collectionView else {
+            return .zero
+        }
+        let width = collectionView.frame.width
+        let count = (0 ..< collectionView.numberOfSections).reduce(0) {
+            return $0 + numberOfPages(in: $1)
+        }
+        let size = CGSize(width: CGFloat(count) * width, height: 0)
+        _cacheContentSize = size
+        return size
+    }
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         if collectionView?.frame.width != newBounds.width {
             return true
@@ -18,47 +42,141 @@ internal class SAEmoticonInputViewLayout: UICollectionViewFlowLayout {
         return false
     }
     
+    override func prepare() {
+        _logger.trace()
+        super.prepare()
+        _cacheContentSize = nil
+        _cacheLayoutAttributes = nil
+    }
+    override func invalidateLayout() {
+        super.invalidateLayout()
+        
+        _cacheContentSize = nil
+        _cacheLayoutAttributes = nil
+    }
+    
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        guard let collectionView = collectionView else {
+            return nil
+        }
+        if let attributes = _cacheLayoutAttributes {
+            return attributes
+        }
+        _logger.trace("recalc in rect: \(rect)")
+        var allAttributes = [UICollectionViewLayoutAttributes]()
+        
+        var x = CGFloat(0)
+        let width = collectionView.frame.width
+        let height = collectionView.frame.height
+        
+        (0 ..< collectionView.numberOfSections).forEach { section in
+            (0 ..< collectionView.numberOfItems(inSection: section)).forEach { item in
+                let idx = IndexPath(item: item, section: section)
+                let attributes = layoutAttributesForItem(at: idx) ?? UICollectionViewLayoutAttributes(forCellWith: idx)
+                
+                attributes.frame = CGRect(x: x, y: 0, width: width, height: height)
+                x += width
+                
+                allAttributes.append(attributes)
+            }
+        }
+        _cacheLayoutAttributes = allAttributes
+        return allAttributes
+    }
     
     func page(at indexPath: IndexPath) -> SAEmoticonPage {
-        return _allPages[indexPath.section]![indexPath.row]
+        return _pages(at: indexPath.section, with: Int(collectionView?.frame.width ?? 0))[indexPath.item]
     }
-    func pages(in section: Int, fetch: (Void) -> SAEmoticonGroup) -> [SAEmoticonPage] {
-        if let pages = _allPages[section] {
-            return pages
-        }
-        let pages = _makePages(in: section, with: fetch())
-        _allPages[section] = pages
-        return pages
+    func pages(in section: Int) -> [SAEmoticonPage] {
+        return _pages(at: section, with: Int(collectionView?.frame.width ?? 0))
     }
     
-    func numberOfPages(in section: Int, fetch: (Void) -> SAEmoticonGroup) -> Int {
-        if let count = _allPages[section]?.count {
-            return count
-        }
-        return pages(in: section, fetch: fetch).count
+    func numberOfPages(in section: Int) -> Int {
+        return _numberOfPages(in: section, with: Int(collectionView?.frame.width ?? 0))
     }
     
-    func _makePages(in section: Int, with group: SAEmoticonGroup) -> [SAEmoticonPage] {
+    func numberOfRows(in section: Int) -> Int {
+        guard let collectionView = collectionView else {
+            return 3
+        }
+        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+            return 3
+        }
+        return delegate.collectionView?(collectionView, layout: self, numberOfRowsForGroupAt: section) ?? 3
+    }
+    func numberOfCloumns(in section: Int) -> Int {
+        guard let collectionView = collectionView else {
+            return 7
+        }
+        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+            return 7
+        }
+        return delegate.collectionView?(collectionView, layout: self, numberOfCloumnsForGroupAt: section) ?? 7
+    }
+    func contentInset(in section: Int) -> UIEdgeInsets {
+        guard let collectionView = collectionView else {
+            return .zero
+        }
+        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+            return .zero
+        }
+        return delegate.collectionView?(collectionView, layout: self, contentInsetForGroupAt: section) ?? .zero
+    }
+    
+    private func _group(at index: Int) -> SAEmoticonGroup? {
+        guard let collectionView = collectionView else {
+            return nil
+        }
+        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+            return nil
+        }
+        return delegate.collectionView?(collectionView, layout: self, groupAt: index)
+    }
+    private func _pagesWithoutCache(at index: Int, with width: Int) -> [SAEmoticonPage]  {
+        guard let group = _group(at: index) else {
+            return []
+        }
+        _logger.trace("\(index) -> \(width)")
         
-        let itemType = group.type
-        let itemSize = group.sizeThatFits(collectionView?.frame.size ?? .zero)
+        let inset = contentInset(in: index)
+        let rows = CGFloat(numberOfRows(in: index))
+        let columns = CGFloat(numberOfCloumns(in: index))
         
-        let nlsp = group.minimumLineSpacing
-        let nisp = group.minimumInteritemSpacing
-        let inset = group.contentInset
-        
-        let bounds = collectionView?.bounds ?? .zero
+        let bounds = CGRect(origin: .zero, size: collectionView?.frame.size ?? .zero)
         let rect = UIEdgeInsetsInsetRect(bounds, inset)
+        
+        let type = group.type
+        let size = CGSize(width: min(trunc((rect.width - 8 * columns) / columns), 80),
+                          height: min(trunc((rect.height - 8 * rows) / rows), 80))
+        
+        let nlsp = (rect.height / rows) - size.height
+        let nisp = (rect.width / columns) - size.width
         
         return group.emoticons.reduce([]) { 
             if let page = $0.last, page.addEmoticon($1) {
                 return $0
             }
-            return $0 + [SAEmoticonPage($1, itemSize, rect, bounds, nlsp, nisp, itemType)]
+            return $0 + [SAEmoticonPage($1, size, rect, bounds, nlsp, nisp, type)]
         }
     }
+    private func _pages(at index: Int, with width: Int) -> [SAEmoticonPage]  {
+        if let pages = _allPages[width]?[index] {
+            return pages
+        }
+        let pages = _pagesWithoutCache(at: index, with: width)
+        if _allPages[width] == nil {
+            _allPages[width] = [:]
+        }
+        _allPages[width]?[index] = pages
+        return pages
+    }
+    private func _numberOfPages(in index: Int, with width: Int) -> Int {
+        return _allPages[width]?[index]?.count ?? _pages(at: index, with: width).count
+    }
     
-    lazy var _allPages: [Int: [SAEmoticonPage]] = [:]
+    private var _cacheContentSize: CGSize?
+    private var _cacheLayoutAttributes: [UICollectionViewLayoutAttributes]?
     
-    // 以width区别
+    // width + section + pages
+    private lazy var _allPages: [Int: [Int: [SAEmoticonPage]]] = [:]
 }

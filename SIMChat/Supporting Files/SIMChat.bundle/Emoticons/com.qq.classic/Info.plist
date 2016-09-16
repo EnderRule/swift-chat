@@ -11,9 +11,9 @@
 	<key>columns</key>
 	<integer>7</integer>
 	<key>rowsInLandscape</key>
-	<integer>1</integer>
+	<integer>3</integer>
 	<key>columnsInLandscape</key>
-	<integer>7</integer>
+	<integer>13</integer>
 	<key>emoticons</key>
 	<array>
 		<dict>
