@@ -49,6 +49,7 @@ import UIKit
 // [ ] SAInputView - iOS8键盘重叠
 // [x] SAInputView - 多次切换后键盘消失
 // [ ] SAInputView - 下拉时隐藏键盘
+// [x] SAInputView - 横屏支持
 // [x] SAInputAccessoryView - iOS8的图片拉伸问题 
 // [x] SAInputAccessoryView - iOS8自定义键盘切换至系统键盘(物理键盘输入)位置异常
 // [x] * - 分离源文件
@@ -309,7 +310,8 @@ open class SAInputBar: UIView {
         _inputView.setNeedsLayout()
         _inputAccessoryView.setNeedsLayout()
         _backgroundView.setNeedsLayout()
-        _containerView?.layoutIfNeeded()
+        //_containerView?.layoutIfNeeded()
+        superview?.layoutIfNeeded()
         
         if animated {
             UIView.commitAnimations()
@@ -322,14 +324,13 @@ open class SAInputBar: UIView {
         
         // 关闭动画的更新, 主要是为了防止contentSize改变之后的动画效果
         UIView.performWithoutAnimation { 
+//            _inputView.setNeedsLayout()
+//            _inputAccessoryView.setNeedsLayout()
             _containerView?.setNeedsLayout()
+            
             superview?.setNeedsLayout()
             superview?.layoutIfNeeded()
             //_containerView?.layoutIfNeeded()
-        }
-        
-        if animated {
-            UIView.commitAnimations()
         }
         
         // 如果没有初始化, 那将他初始
@@ -340,10 +341,10 @@ open class SAInputBar: UIView {
     }
     
     fileprivate func _updateKeyboardSizeIfNeeded(_ animated: Bool) {
-        let vsize = _visableKeybaordSize
-        if _inputAccessoryViewBottom?.constant != -vsize.height {
-            _inputAccessoryViewBottom?.constant = -vsize.height
-            _logger.trace()
+        let newVisableSize = _visableKeybaordSize
+        if _inputAccessoryViewBottom?.constant != -newVisableSize.height {
+            _logger.debug("visable keyboard size is changed: \(newVisableSize)")
+            _inputAccessoryViewBottom?.constant = -newVisableSize.height
         }
         _updateContentSizeIfNeeded(animated)
         _cacheKeyboardOffset = CGPoint.zero
@@ -533,6 +534,7 @@ open class SAInputBar: UIView {
     fileprivate weak var _containerView: UIView?
     fileprivate weak var _displayable: SAInputBarDisplayable?
     
+    fileprivate var _cacheBounds: CGRect?
     fileprivate var _cacheContentSize: CGSize?
     fileprivate var _cacheKeyboardSize: CGSize?
     fileprivate var _cacheKeyboardOffset: CGPoint = .zero
@@ -647,7 +649,13 @@ extension SAInputBar {
     @objc func ntf_accessory(didChangeFrame sender: Notification) {
         _logger.info()
         
-        _updateContentSizeIfNeeded(false)
+        let newCustomKeyboardSize = _inputView.intrinsicContentSize
+        if _cacheCustomKeyboardSize.height != newCustomKeyboardSize.height {
+            _cacheCustomKeyboardSize = newCustomKeyboardSize
+            _updateKeyboardSizeIfNeeded(false)
+        } else {
+            _updateContentSizeIfNeeded(false)
+        }
         // update in advance, don't wait for willShow event, otherwise there will be a delay
         _displayable?.ib_inputBar(self, didChangeFrame: _frameInWindow)
     }

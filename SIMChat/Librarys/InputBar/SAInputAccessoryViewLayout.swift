@@ -348,12 +348,11 @@ internal class SAInputAccessoryViewLayout: UICollectionViewLayout {
     // MARK: private
     
     private func _layoutIfNeed(inRect rect: CGRect) -> [Attributes] {
-        _logger.trace(rect)
-        
+        //_logger.trace(rect)
         if let attributes = _cacheLayoutedAttributes {
             return attributes
         }
-        _logger.debug("reset")
+        _logger.debug("recalc in rect: \(rect)")
         
         let mis = minimumInteritemSpacing // 列间隔
         let mls = minimumLineSpacing // 行间隔
@@ -415,7 +414,7 @@ internal class SAInputAccessoryViewLayout: UICollectionViewLayout {
         }
     }
     private func _attributesWithBarItems(_ barItems: [SAInputItem], atPosition position: SAInputItemPosition) -> [Attributes] {
-        _logger.trace(position)
+        //_logger.trace(position)
         // 查找左对齐和右对齐的item
         let ax = barItems.enumerated().reduce((-1, barItems.count)) {
             if $1.element.alignment.rawValue & 0x00FF == 1 {
@@ -496,7 +495,7 @@ internal class SAInputAccessoryViewLayout: UICollectionViewLayout {
     }
     
     private func _invalidateLayoutCache(_ force: Bool) {
-        _logger.trace("isForce => \(force)")
+        //_logger.trace("isForce => \(force)")
         
         guard !force else {
             _invalidateLayoutAllCache()
@@ -509,7 +508,7 @@ internal class SAInputAccessoryViewLayout: UICollectionViewLayout {
     }
     
     private func _invalidateLayoutAllCache() {
-        _logger.trace()
+        //_logger.trace()
         
         _cacheLayoutSizes.removeAll(keepingCapacity: true)
         _cacheLayoutAllLines.removeAll(keepingCapacity: true)
@@ -533,7 +532,7 @@ internal class SAInputAccessoryViewLayout: UICollectionViewLayout {
         _cacheLayoutedAttributes = nil
     }
     private func _invalidateLayoutLineCache(atPosition position: SAInputItemPosition) {
-        _logger.trace(position)
+        //_logger.trace(position)
         
         _cacheLayoutSizes.removeValue(forKey: position)
         _cacheLayoutAllLines.removeValue(forKey: position)

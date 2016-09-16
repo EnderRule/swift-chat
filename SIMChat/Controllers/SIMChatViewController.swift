@@ -331,6 +331,16 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
         return _toolboxItems[index]
     }
     
+    open func numberOfRowsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
+        return 2
+    }
+    open func numberOfColumnsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
+        if UIDevice.current.orientation.isLandscape {
+            return 5
+        }
+        return 4
+    }
+    
     open func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool {
         return true
     }

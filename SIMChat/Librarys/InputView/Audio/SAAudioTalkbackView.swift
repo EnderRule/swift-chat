@@ -313,6 +313,7 @@ extension SAAudioTalkbackView {
             // 进入录音状态
             
             _recorder = recorder
+            _recorder?.delegate = self
             _recorder?.isMeteringEnabled = true
             _recorder?.record()
             
@@ -335,16 +336,14 @@ extension SAAudioTalkbackView {
             _toolbar.rightBackgroundView.isHighlighted = false
             _toolbar.rightBackgroundView.layer.transform = CATransform3DIdentity
             
-            UIView.animate(withDuration: 0.25, animations: { [_toolbar] in
+            UIView.animate(withDuration: 0.25) { [_toolbar] in
                 _toolbar.alpha = 1
-            },
-            completion: { _ in
-                _toolbar.alpha = 1
-                _toolbar.hidden = false
-            })
+            }
             
         case .processing(_):
             // 进入处理状态
+            
+            _recorder?.stop()
             
             _toolbar.isHidden = true
             _tipsLabel.attributedText = _makeTips("处理中", _activityView.bounds)

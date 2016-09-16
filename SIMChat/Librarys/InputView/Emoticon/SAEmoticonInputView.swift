@@ -58,6 +58,9 @@ public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
 open class SAEmoticonInputView: UIView {
     
     open override var intrinsicContentSize: CGSize {
+        if UIDevice.current.orientation.isLandscape {
+            return CGSize(width: frame.width, height: 193)
+        }
         return CGSize(width: frame.width, height: 253)
     }
    

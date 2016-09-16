@@ -11,8 +11,9 @@ import UIKit
 // ## TODO
 // [x] SAToolboxInputView - 数据源
 // [x] SAToolboxInputView - 代理
-// [x] SAToolboxInputView - 横屏
-// [ ] SAToolboxInputView - 自定义行/列数量
+// [x] SAToolboxInputView - 竖屏(2x4)
+// [x] SAToolboxInputView - 横屏(2x5)
+// [x] SAToolboxInputView - 自定义行/列数量
 // [x] SAToolboxItemView - 选中高亮
 // [x] SAToolboxInputViewLayout - 快速滑动时性能问题
 
@@ -22,6 +23,8 @@ public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int
     func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem?
     
+    @objc optional func numberOfRowsInToolbox(_ toolbox: SAToolboxInputView) -> Int
+    @objc optional func numberOfColumnsInToolbox(_ toolbox: SAToolboxInputView) -> Int
 }
 @objc
 public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
@@ -35,8 +38,17 @@ open class SAToolboxInputView: UIView {
     
     open func reloadData() {
         _contentView.reloadData()
+        _updatePageControl()
     }
     
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _cacheBounds?.width != bounds.width {
+            _cacheBounds = bounds
+            _updatePageControl()
+        }
+    }
     open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if let view = super.hitTest(point, with: event) {
             // 如果点击了空白区域, 转发给`_pageControl`
@@ -49,6 +61,9 @@ open class SAToolboxInputView: UIView {
     }
     
     open override var intrinsicContentSize: CGSize {
+        if UIDevice.current.orientation.isLandscape {
+            return CGSize(width: frame.width, height: 193)
+        }
         return CGSize(width: frame.width, height: 253)
     }
     
@@ -59,13 +74,30 @@ open class SAToolboxInputView: UIView {
     @objc func onPageChanged(_ sender: UIPageControl) {
         _contentView.setContentOffset(CGPoint(x: _contentView.bounds.width * CGFloat(sender.currentPage), y: 0), animated: true)
     }
+    
+    private func _updatePageControl() {
+        _logger.trace()
+        
+        let maxCount = _contentViewLayout.rows * _contentViewLayout.columns
+        let count = _contentView.numberOfItems(inSection: 0)
+        let page = (count + (maxCount - 1)) / maxCount
+        let currentPage = min(Int(_contentView.contentOffset.x / _contentView.frame.width), page - 1)
+        
+        _pageControl.numberOfPages = page
+        _pageControl.currentPage = currentPage
+        
+        let x = CGFloat(currentPage) * _contentView.frame.width
+        if _contentView.contentOffset.x != x {
+            _contentView.contentOffset = CGPoint(x: x, y: 0)
+        }
+    }
 
     private func _init() {
         //_logger.trace()
         
         backgroundColor = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
-        _pageControl.numberOfPages = 8
+        _pageControl.numberOfPages = 0
         _pageControl.hidesForSinglePage = true
         _pageControl.pageIndicatorTintColor = UIColor.gray
         _pageControl.currentPageIndicatorTintColor = UIColor.darkGray
@@ -95,13 +127,17 @@ open class SAToolboxInputView: UIView {
         
         addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
         addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
-        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom, -15))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
+        addConstraint(_SAToolboxLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 32))
     }
     
+    private var _cacheBounds: CGRect?
+    
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
-    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: SAToolboxInputViewLayout())
+    
+    fileprivate lazy var _contentViewLayout: SAToolboxInputViewLayout = SAToolboxInputViewLayout()
+    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -122,12 +158,7 @@ extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = dataSource?.numberOfItemsInToolbox(self) ?? 0
-        let page = (count + (8 - 1)) / 8
-        if _pageControl.numberOfPages != page {
-            _pageControl.numberOfPages = page
-        }
-        return count
+        return dataSource?.numberOfItemsInToolbox(self) ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

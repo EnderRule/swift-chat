@@ -28,14 +28,11 @@ internal class SAInputItemView: UICollectionViewCell {
     }
     
     func _init() {
-        _logger.trace()
+        //_logger.trace()
         
         clipsToBounds = true
         backgroundColor = .clear
         //backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
-    }
-    func _deinit() {
-        _logger.trace()
     }
     func _updateItem(_ newValue: SAInputItem?) {
         //_logger.trace(newValue)
@@ -84,9 +81,6 @@ internal class SAInputItemView: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
-    }
-    deinit {
-        _deinit()
     }
 }
 

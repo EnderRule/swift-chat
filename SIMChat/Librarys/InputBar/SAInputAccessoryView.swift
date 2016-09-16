@@ -21,7 +21,7 @@ internal class SAInputAccessoryView: UIView {
         
         if _cacheBounds?.width != bounds.width {
             _cacheBounds = bounds
-            _boundsDidChange()
+            _boundsDidChanged()
         }
     }
     
@@ -33,8 +33,9 @@ internal class SAInputAccessoryView: UIView {
     }
     
     override func invalidateIntrinsicContentSize() {
-        super.invalidateIntrinsicContentSize()
+        _logger.trace()
         _cacheContentSize = nil
+        super.invalidateIntrinsicContentSize()
     }
     override var intrinsicContentSize: CGSize {
         if let size = _cacheContentSize, size.width == frame.width {
@@ -142,7 +143,7 @@ internal class SAInputAccessoryView: UIView {
         return item.alignment
     }
     
-    fileprivate func _boundsDidChange() {
+    fileprivate func _boundsDidChanged() {
         _logger.trace()
         
         _textField.item.invalidateCache()

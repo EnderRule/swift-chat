@@ -12,7 +12,24 @@ import UIKit
 internal class SAInputView: UIView {
     
     override var intrinsicContentSize: CGSize {
-        return _inputView?.intrinsicContentSize ?? .zero
+        if let size = _cacheContentSize {
+            return size
+        }
+        _cacheContentSize = _inputView?.intrinsicContentSize
+        return _cacheContentSize ?? .zero
+    }
+    override func invalidateIntrinsicContentSize() {
+        _cacheContentSize = nil
+        _inputView?.invalidateIntrinsicContentSize()
+        super.invalidateIntrinsicContentSize()
+    }
+    
+    override func layoutSubviews() {
+        if _cacheBounds?.width != bounds.width {
+            _cacheBounds = bounds
+            invalidateIntrinsicContentSize()
+        }
+        super.layoutSubviews()
     }
     
     func updateInputMode(_ newMode: SAInputMode, oldMode: SAInputMode, animated: Bool) {
@@ -88,6 +105,9 @@ internal class SAInputView: UIView {
         
         invalidateIntrinsicContentSize()
     }
+    
+    private var _cacheBounds: CGRect?
+    private var _cacheContentSize: CGSize?
     
     private var _inputMode: SAInputMode = .none
     private var _inputView: UIView?
