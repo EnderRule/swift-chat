@@ -55,6 +55,7 @@ import UIKit
 // [ ] * - code review - p2
 // [x] * - 内嵌资源(矢量图)
 // [ ] * - 移除跟踪日志 - p0
+// [ ] * - 系统的上拉出控制中心时事件响应顺序错误(系统问题)
 // [ ] SAInputAccessoryView - barItem重用支持(现是不允许存在两个相同的barItem)
 // [ ] SAInputBar - 横/竖屏双布局(InputAccessView和InputView)
 // [x] SAInputAccessoryView - 多次转屏后barItem会报错

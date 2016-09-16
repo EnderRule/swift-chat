@@ -14,6 +14,7 @@ import UIKit
 // [ ] SAAudioInputView - 录音
 // [ ] SAAudioInputView - 自定义
 // [ ] SAAudioInputView - Mini模式
+// [ ] SAAudioTalkbackView - 按住录音的同时按home会导致事件混乱(系统问题)
 
 @objc
 public protocol SAAudioInputViewDataSource: NSObjectProtocol {
@@ -53,7 +54,7 @@ open class SAAudioInputView: UIView {
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
-        _contentView.delaysContentTouches = false
+        //_contentView.delaysContentTouches = false
         
         _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAAudioType.simulate)")
         _contentView.register(SAAudioTalkbackView.self, forCellWithReuseIdentifier: "\(SAAudioType.talkback)")
@@ -103,10 +104,6 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
             cell.audio = audio
         }
         return cell
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        cell.backgroundColor = .random
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

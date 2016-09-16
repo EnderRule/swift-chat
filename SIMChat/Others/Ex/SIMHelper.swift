@@ -169,8 +169,9 @@ extension Timer {
     }
 }
 
-public func dispatch_after_at_now(_ interval: TimeInterval, _ queue: DispatchQueue, _ block: ()->()) {
-//    return queue.after(when: DispatchTime.now() + Double(Int64(interval * TimeInterval(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
+public func dispatch_after_at_now(_ interval: TimeInterval, _ queue: DispatchQueue, _ block: @escaping ()->()) {
+    let t = DispatchTimeInterval.seconds(Int(interval))
+    queue.asyncAfter(deadline: DispatchTime.now() + t, execute: block)
 }
 
 extension Collection {

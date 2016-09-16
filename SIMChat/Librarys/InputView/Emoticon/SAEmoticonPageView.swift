@@ -146,7 +146,6 @@ internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDele
         return false
     }
     
-    
     private func _index(at point: CGPoint) -> IndexPath? {
         guard let page = page else {
             return nil

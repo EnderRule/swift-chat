@@ -10,6 +10,11 @@ import UIKit
 
 internal class SAAudioTalkbackToolbar: UIView {
     
+    var leftView: UIImageView { return _leftView }
+    var rightView: UIImageView { return _rightView }
+    
+    var leftBackgroundView: UIImageView { return _leftBackgroundView }
+    var rightBackgroundView: UIImageView { return _rightBackgroundView }
     
     private func _init() {
         _logger.trace()

@@ -273,7 +273,7 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
 extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
     
     open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
-        return 3
+        return 1
     }
     open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio {
         let audio = SAAudio()
