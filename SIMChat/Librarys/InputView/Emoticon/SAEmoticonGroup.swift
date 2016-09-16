@@ -1,5 +1,5 @@
 //
-//  SAEmotionGroup.swift
+//  SAEmoticonGroup.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public enum SAEmotionType: Int {
+public enum SAEmoticonType: Int {
     
     case small = 0
     case large = 1
@@ -17,7 +17,7 @@ public enum SAEmotionType: Int {
     public var isLarge: Bool { return self == .large }
 }
 
-open class SAEmotionGroup: NSObject {
+open class SAEmoticonGroup: NSObject {
     
     open lazy var id: String = UUID().uuidString
     
@@ -27,8 +27,8 @@ open class SAEmotionGroup: NSObject {
     open var title: String?
     open var thumbnail: UIImage?
     
-    open var type: SAEmotionType = .small
-    open var emotions: [SAEmotion] = []
+    open var type: SAEmoticonType = .small
+    open var emoticons: [SAEmoticon] = []
     
     open func sizeThatFits(_ size: CGSize) -> CGSize {
         guard _size?.width != size.width else {

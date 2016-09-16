@@ -19,7 +19,7 @@ import UIKit
 public protocol SAAudioInputViewDataSource: NSObjectProtocol {
     
     func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int
-    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio?
+    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio
     
 }
 
@@ -52,9 +52,9 @@ open class SAAudioInputView: UIView {
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         
-        _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "Simulate")
-        _contentView.register(SAAudioTalkbackView.self, forCellWithReuseIdentifier: "Talkback")
-        _contentView.register(SAAudioRecordView.self, forCellWithReuseIdentifier: "Record")
+        _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAAudioType.simulate)")
+        _contentView.register(SAAudioTalkbackView.self, forCellWithReuseIdentifier: "\(SAAudioType.talkback)")
+        _contentView.register(SAAudioRecordView.self, forCellWithReuseIdentifier: "\(SAAudioType.record)")
         
         _contentView.delegate = self
         _contentView.dataSource = self
@@ -88,20 +88,18 @@ open class SAAudioInputView: UIView {
 extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return dataSource?.numberOfItemsInAudio(self) ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.item {
-        case 0:
-            return collectionView.dequeueReusableCell(withReuseIdentifier: "Simulate", for: indexPath)
-        case 1:
-            return collectionView.dequeueReusableCell(withReuseIdentifier: "Talkback", for: indexPath)
-        case 2:
-            return collectionView.dequeueReusableCell(withReuseIdentifier: "Record", for: indexPath)
-        default:
+        guard let audio = dataSource?.audio(self, itemAt: indexPath.item) else {
             fatalError()
         }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(audio.type)", for: indexPath)
+        if let cell = cell as? SAAudioView {
+            cell.audio = audio
+        }
+        return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

@@ -1,5 +1,5 @@
 //
-//  SIMChatEmotionGroup.swift
+//  SIMChatEmoticonGroup.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/14/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class SIMChatEmotion: SAEmotion {
+open class SIMChatEmoticon: SAEmoticon {
     
     public required init?(object: NSDictionary) {
         guard let id = object["id"] as? String, let title = object["title"] as? String, let type = object["type"] as? Int else {
@@ -28,7 +28,7 @@ open class SIMChatEmotion: SAEmotion {
         }
     }
     
-    public static func emotions(with objects: NSArray, at directory: String) -> [SIMChatEmotion] {
+    public static func emoticons(with objects: NSArray, at directory: String) -> [SIMChatEmoticon] {
         return objects.flatMap {
             guard let dic = $0 as? NSDictionary else {
                 return nil
@@ -49,7 +49,7 @@ open class SIMChatEmotion: SAEmotion {
     var image: String?
     var preview: String?
 }
-open class SIMChatLargeEmotion: SIMChatEmotion {
+open class SIMChatLargeEmoticon: SIMChatEmoticon {
     
     open override func draw(in rect: CGRect, in ctx: CGContext) {
         guard let image = contents as? UIImage else {
@@ -87,17 +87,17 @@ open class SIMChatLargeEmotion: SIMChatEmotion {
     
 }
 
-open class SIMChatEmotionGroup: SAEmotionGroup {
+open class SIMChatEmoticonGroup: SAEmoticonGroup {
     
     init?(contentsOfFile: String) {
-        guard let dic = NSDictionary(contentsOfFile: contentsOfFile), let arr = dic["emotions"] as? NSArray else {
+        guard let dic = NSDictionary(contentsOfFile: contentsOfFile), let arr = dic["emoticons"] as? NSArray else {
             return nil
         }
         let directory = URL(fileURLWithPath: contentsOfFile).deletingLastPathComponent().path
         
         super.init()
         
-        type = SAEmotionType(rawValue: dic["type"] as? Int ?? 0) ?? .small
+        type = SAEmoticonType(rawValue: dic["type"] as? Int ?? 0) ?? .small
         row = dic["row"] as? Int ?? 3
         column = dic["column"] as? Int ?? 7
         
@@ -106,9 +106,9 @@ open class SIMChatEmotionGroup: SAEmotionGroup {
         }
         
         if type.isSmall {
-            emotions = SIMChatEmotion.emotions(with: arr, at: directory)
+            emoticons = SIMChatEmoticon.emoticons(with: arr, at: directory)
         } else {
-            emotions = SIMChatLargeEmotion.emotions(with: arr, at: directory)
+            emoticons = SIMChatLargeEmoticon.emoticons(with: arr, at: directory)
         }
     }
 }

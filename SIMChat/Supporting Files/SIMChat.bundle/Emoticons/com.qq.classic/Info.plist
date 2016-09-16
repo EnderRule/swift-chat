@@ -10,7 +10,7 @@
 	<integer>3</integer>
 	<key>column</key>
 	<integer>7</integer>
-	<key>emotions</key>
+	<key>emoticons</key>
 	<array>
 		<dict>
 			<key>id</key>

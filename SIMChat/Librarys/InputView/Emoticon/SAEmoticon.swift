@@ -1,5 +1,5 @@
 //
-//  SAEmotion.swift
+//  SAEmoticon.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-open class SAEmotion: NSObject {
+open class SAEmoticon: NSObject {
     
     /// 退格
-    open static let backspace: SAEmotion = {
-        let em = SAEmotion()
+    open static let backspace: SAEmoticon = {
+        let em = SAEmoticon()
         em.contents = "⌫"
         return em
     }()
@@ -69,12 +69,12 @@ open class SAEmotion: NSObject {
     open var contents: Any?
 }
 
-internal protocol SAEmotionDelegate: class {
+internal protocol SAEmoticonDelegate: class {
     
-    func emotion(shouldSelectFor emotion: SAEmotion) -> Bool
-    func emotion(didSelectFor emotion: SAEmotion)
+    func emoticon(shouldSelectFor emoticon: SAEmoticon) -> Bool
+    func emoticon(didSelectFor emoticon: SAEmoticon)
     
-    func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool
-    func emotion(didPreviewFor emotion: SAEmotion?)
+    func emoticon(shouldPreviewFor emoticon: SAEmoticon?) -> Bool
+    func emoticon(didPreviewFor emoticon: SAEmoticon?)
     
 }

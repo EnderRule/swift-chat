@@ -1,5 +1,5 @@
 //
-//  SAEmotionInputView.swift
+//  SAEmoticonInputView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/6/16.
@@ -11,58 +11,58 @@ import UIKit
 // ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
 // [ ] * - 横屏支持
-// [x] SAEmotionInputView - 小表情支持
-// [x] SAEmotionInputView - 大表情支持
-// [x] SAEmotionInputView - 自定义行/列数量
-// [x] SAEmotionInputView - Tabbar支持
-// [x] SAEmotionInputView - 更新page
-// [ ] SAEmotionInputView - 长按删除
-// [x] SAEmotionInputView - 更多(More)支持
-// [x] SAEmotionInputView - 快速切换的时显示异常
-// [ ] SAEmotion - UIView支持
-// [x] SAEmotion - UIImage支持
-// [x] SAEmotion - NSString/NSAttributedString支持
-// [ ] SAEmotionPreviewer - emoji支持(即字符串)
-// [ ] SAEmotionPreviewer - 动态图片支持
-// [x] SAEmotionPage - Add支持
-// [x] SAEmotionPage - 删除按钮
-// [x] SAEmotionPage - 异步绘制
-// [x] SAEmotionPageView - 选中
-// [x] SAEmotionPageView - 选中高亮
-// [x] SAEmotionPageView - 长按预览
-// [ ] SAEmotionPageView - 横屏支持
-// [x] SAEmotionTabItemView - 选中
-// [x] SAEmotionTabItemView - 选中高亮
+// [x] SAEmoticonInputView - 小表情支持
+// [x] SAEmoticonInputView - 大表情支持
+// [x] SAEmoticonInputView - 自定义行/列数量
+// [x] SAEmoticonInputView - Tabbar支持
+// [x] SAEmoticonInputView - 更新page
+// [ ] SAEmoticonInputView - 长按删除
+// [x] SAEmoticonInputView - 更多(More)支持
+// [x] SAEmoticonInputView - 快速切换的时显示异常
+// [ ] SAEmoticon - UIView支持
+// [x] SAEmoticon - UIImage支持
+// [x] SAEmoticon - NSString/NSAttributedString支持
+// [ ] SAEmoticonPreviewer - emoji支持(即字符串)
+// [ ] SAEmoticonPreviewer - 动态图片支持
+// [x] SAEmoticonPage - Add支持
+// [x] SAEmoticonPage - 删除按钮
+// [x] SAEmoticonPage - 异步绘制
+// [x] SAEmoticonPageView - 选中
+// [x] SAEmoticonPageView - 选中高亮
+// [x] SAEmoticonPageView - 长按预览
+// [ ] SAEmoticonPageView - 横屏支持
+// [x] SAEmoticonTabItemView - 选中
+// [x] SAEmoticonTabItemView - 选中高亮
 
 
 @objc 
-public protocol SAEmotionInputViewDataSource: NSObjectProtocol {
+public protocol SAEmoticonInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItemsInEmotion(_ emotion: SAEmotionInputView) -> Int
-    func emotion(_ emotion: SAEmotionInputView, itemAt index: Int) -> SAEmotionGroup
+    func numberOfItemsInEmoticon(_ emoticon: SAEmoticonInputView) -> Int
+    func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup
     
-    @objc optional func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView?
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView?
 }
 
 @objc 
-public protocol SAEmotionInputViewDelegate: NSObjectProtocol {
+public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
     
-    @objc optional func emotion(_ emotion: SAEmotionInputView, shouldSelectFor item: SAEmotion) -> Bool
-    @objc optional func emotion(_ emotion: SAEmotionInputView, didSelectFor item: SAEmotion)
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon)
     
-    @objc optional func emotion(_ emotion: SAEmotionInputView, shouldPreviewFor item: SAEmotion?) -> Bool
-    @objc optional func emotion(_ emotion: SAEmotionInputView, didPreviewFor item: SAEmotion?)
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldPreviewFor item: SAEmoticon?) -> Bool
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didPreviewFor item: SAEmoticon?)
     
 }
 
-open class SAEmotionInputView: UIView {
+open class SAEmoticonInputView: UIView {
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
    
-    open weak var dataSource: SAEmotionInputViewDataSource?
-    open weak var delegate: SAEmotionInputViewDelegate?
+    open weak var dataSource: SAEmoticonInputViewDataSource?
+    open weak var delegate: SAEmoticonInputViewDelegate?
     
     // MARK: Private Method
     
@@ -91,7 +91,7 @@ open class SAEmotionInputView: UIView {
         _contentView.delaysContentTouches = false
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
-        _contentView.register(SAEmotionPageView.self, forCellWithReuseIdentifier: "Page")
+        _contentView.register(SAEmoticonPageView.self, forCellWithReuseIdentifier: "Page")
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         _contentView.backgroundColor = .clear
         
@@ -102,7 +102,7 @@ open class SAEmotionInputView: UIView {
         _tabbarLayout.minimumLineSpacing = 0
         _tabbarLayout.minimumInteritemSpacing = 0
         
-        _tabbar.register(SAEmotionTabItemView.self, forCellWithReuseIdentifier: "Page")
+        _tabbar.register(SAEmoticonTabItemView.self, forCellWithReuseIdentifier: "Page")
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
         _tabbar.dataSource = self
         _tabbar.backgroundColor = .white
@@ -123,21 +123,21 @@ open class SAEmotionInputView: UIView {
         
         // add constraints
        
-        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .top, .equal, self, .top))
-        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .left, .equal, self, .left))
-        addConstraint(_SAEmotionLayoutConstraintMake(_contentView, .right, .equal, self, .right))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_contentView, .top, .equal, self, .top))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_contentView, .left, .equal, self, .left))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_contentView, .right, .equal, self, .right))
         
-        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
-        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
-        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .left, .equal, self, .left))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .right, .equal, self, .right))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .bottom, .equal, _contentView, .bottom, -10))
         
-        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom))
-        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .left, .equal, self, .left))
-        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .right, .equal, self, .right))
-        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .top, .equal, _contentView, .bottom))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .left, .equal, self, .left))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .right, .equal, self, .right))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAEmotionLayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37))
-        addConstraint(_SAEmotionLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37))
+        addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
     
     fileprivate var _color: UIColor?
@@ -150,10 +150,10 @@ open class SAEmotionInputView: UIView {
     fileprivate lazy var _tabbarLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _tabbar: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._tabbarLayout)
     
-    fileprivate lazy var _previewer: SAEmotionPreviewer = SAEmotionPreviewer()
+    fileprivate lazy var _previewer: SAEmoticonPreviewer = SAEmoticonPreviewer()
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
     
-    fileprivate lazy var _contentViewLayout: SAEmotionInputViewLayout = SAEmotionInputViewLayout()
+    fileprivate lazy var _contentViewLayout: SAEmoticonInputViewLayout = SAEmoticonInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
@@ -166,28 +166,28 @@ open class SAEmotionInputView: UIView {
     }
 }
 
-// MARK: - SAEmotionDelegate(Forwarding)
+// MARK: - SAEmoticonDelegate(Forwarding)
 
-extension SAEmotionInputView: SAEmotionDelegate {
+extension SAEmoticonInputView: SAEmoticonDelegate {
     
-    open func emotion(shouldSelectFor emotion: SAEmotion) -> Bool {
-        return delegate?.emotion?(self, shouldSelectFor: emotion) ?? true
+    open func emoticon(shouldSelectFor emoticon: SAEmoticon) -> Bool {
+        return delegate?.emoticon?(self, shouldSelectFor: emoticon) ?? true
     }
-    open func emotion(shouldPreviewFor emotion: SAEmotion?) -> Bool {
-        return delegate?.emotion?(self, shouldPreviewFor: emotion) ?? true
+    open func emoticon(shouldPreviewFor emoticon: SAEmoticon?) -> Bool {
+        return delegate?.emoticon?(self, shouldPreviewFor: emoticon) ?? true
     }
     
-    open func emotion(didSelectFor emotion: SAEmotion) {
-        delegate?.emotion?(self, didSelectFor: emotion) 
+    open func emoticon(didSelectFor emoticon: SAEmoticon) {
+        delegate?.emoticon?(self, didSelectFor: emoticon) 
     }
-    open func emotion(didPreviewFor emotion: SAEmotion?) {
-        delegate?.emotion?(self, didPreviewFor: emotion) 
+    open func emoticon(didPreviewFor emoticon: SAEmoticon?) {
+        delegate?.emoticon?(self, didPreviewFor: emoticon) 
     }
 }
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView === _tabbar {
@@ -207,20 +207,20 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
             return 1
         }
         if collectionView === _contentView {
-            return dataSource?.numberOfItemsInEmotion(self) ?? 0
+            return dataSource?.numberOfItemsInEmoticon(self) ?? 0
         }
         return 0
     }
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === _tabbar {
-            return dataSource?.numberOfItemsInEmotion(self) ?? 0
+            return dataSource?.numberOfItemsInEmoticon(self) ?? 0
         }
         if collectionView === _contentView {
             guard let ds = dataSource else {
                 return 0
             }
             let pageCount = _contentViewLayout.numberOfPages(in: section) {
-                ds.emotion(self, itemAt: section)
+                ds.emoticon(self, itemAt: section)
             }
             if !_contentViewIsInit {
                 _contentViewIsInit = true
@@ -237,14 +237,14 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Page", for: indexPath)
     }
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? SAEmotionPageView {
+        if let cell = cell as? SAEmoticonPageView {
             cell.page = _contentViewLayout.page(at: indexPath)
             cell.delegate = self
             cell.previewer = _previewer
             return
         } 
-        if let cell = cell as? SAEmotionTabItemView {
-            cell.group = dataSource?.emotion(self, itemAt: indexPath.item)
+        if let cell = cell as? SAEmoticonTabItemView {
+            cell.group = dataSource?.emoticon(self, itemAt: indexPath.item)
             cell.selectedBackgroundView?.backgroundColor = _color
             return
         }
@@ -276,7 +276,7 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
         guard _currentGroup != indexPath.section else {
             return
         }
-        let moreView = dataSource?.emotion?(self, moreViewForGroupAt: indexPath.section)
+        let moreView = dataSource?.emoticon?(self, moreViewForGroupAt: indexPath.section)
         
         if _currentMoreView != moreView {
             
@@ -293,9 +293,9 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
                 insertSubview(view, belowSubview: _previewer)
                 
                 let constraints = [
-                    _SAEmotionLayoutConstraintMake(view, .top, .equal, _tabbar, .top),
-                    _SAEmotionLayoutConstraintMake(view, .right, .equal, _tabbar, .right),
-                    _SAEmotionLayoutConstraintMake(view, .bottom, .equal, _tabbar, .bottom),
+                    _SAEmoticonLayoutConstraintMake(view, .top, .equal, _tabbar, .top),
+                    _SAEmoticonLayoutConstraintMake(view, .right, .equal, _tabbar, .right),
+                    _SAEmoticonLayoutConstraintMake(view, .bottom, .equal, _tabbar, .bottom),
                 ]
                 
                 addConstraints(constraints)
@@ -344,7 +344,7 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
     }
 }
 
-internal func _SAEmotionLoadImage(base64Encoded base64String: String, scale: CGFloat) -> UIImage? {
+internal func _SAEmoticonLoadImage(base64Encoded base64String: String, scale: CGFloat) -> UIImage? {
     guard let data = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) else {
         return nil
     }
@@ -352,7 +352,7 @@ internal func _SAEmotionLoadImage(base64Encoded base64String: String, scale: CGF
 }
 
 @inline(__always)
-internal func _SAEmotionLayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
+internal func _SAEmoticonLayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
     
     let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
     c.priority = priority

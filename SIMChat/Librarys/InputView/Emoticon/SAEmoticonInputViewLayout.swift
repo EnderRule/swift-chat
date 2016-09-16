@@ -1,5 +1,5 @@
 //
-//  SAEmotionInputViewLayout.swift
+//  SAEmoticonInputViewLayout.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -9,12 +9,12 @@
 import UIKit
 
 
-internal class SAEmotionInputViewLayout: UICollectionViewFlowLayout {
+internal class SAEmoticonInputViewLayout: UICollectionViewFlowLayout {
     
-    func page(at indexPath: IndexPath) -> SAEmotionPage {
+    func page(at indexPath: IndexPath) -> SAEmoticonPage {
         return _allPages[indexPath.section]![indexPath.row]
     }
-    func pages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> [SAEmotionPage] {
+    func pages(in section: Int, fetch: (Void) -> SAEmoticonGroup) -> [SAEmoticonPage] {
         if let pages = _allPages[section] {
             return pages
         }
@@ -23,14 +23,14 @@ internal class SAEmotionInputViewLayout: UICollectionViewFlowLayout {
         return pages
     }
     
-    func numberOfPages(in section: Int, fetch: (Void) -> SAEmotionGroup) -> Int {
+    func numberOfPages(in section: Int, fetch: (Void) -> SAEmoticonGroup) -> Int {
         if let count = _allPages[section]?.count {
             return count
         }
         return pages(in: section, fetch: fetch).count
     }
     
-    func _makePages(in section: Int, with group: SAEmotionGroup) -> [SAEmotionPage] {
+    func _makePages(in section: Int, with group: SAEmoticonGroup) -> [SAEmoticonPage] {
         
         let itemType = group.type
         let itemSize = group.sizeThatFits(collectionView?.frame.size ?? .zero)
@@ -42,13 +42,13 @@ internal class SAEmotionInputViewLayout: UICollectionViewFlowLayout {
         let bounds = collectionView?.bounds ?? .zero
         let rect = UIEdgeInsetsInsetRect(bounds, inset)
         
-        return group.emotions.reduce([]) { 
-            if let page = $0.last, page.addEmotion($1) {
+        return group.emoticons.reduce([]) { 
+            if let page = $0.last, page.addEmoticon($1) {
                 return $0
             }
-            return $0 + [SAEmotionPage($1, itemSize, rect, bounds, nlsp, nisp, itemType)]
+            return $0 + [SAEmoticonPage($1, itemSize, rect, bounds, nlsp, nisp, itemType)]
         }
     }
     
-    lazy var _allPages: [Int: [SAEmotionPage]] = [:]
+    lazy var _allPages: [Int: [SAEmoticonPage]] = [:]
 }

@@ -10,14 +10,14 @@ import UIKit
 
 
 // [ ] SIMChatViewController - 更新InputPanel
-// [x] SAEmotionInputView - 加载默认表情
-// [x] SAEmotionInputView - 加载大表情
-// [ ] SAEmotionInputView - 异步加载和同步
+// [x] SAEmoticonInputView - 加载默认表情
+// [x] SAEmoticonInputView - 加载大表情
+// [ ] SAEmoticonInputView - 异步加载和同步
 
 
-class SIMEmotionGroup {
+class SIMEmoticonGroup {
     
-    init(row: Int, column: Int, type: SAEmotionType = .small) {
+    init(row: Int, column: Int, type: SAEmoticonType = .small) {
         self.row = row
         self.column = column
         self.type = type
@@ -26,7 +26,7 @@ class SIMEmotionGroup {
     var row: Int
     var column: Int
     
-    var type: SAEmotionType
+    var type: SAEmoticonType
    
     var size: CGSize = .zero
     var minimumLineSpacing: CGFloat = 0
@@ -86,34 +86,34 @@ open class SIMChatViewController: UIViewController {
         view.addSubview(backgroundView)
         view.addSubview(contentView)
         
-        //if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.apple.emoji/Info.plist")!) {
-        //    _emotionGroups.append(group)
+        //if let group = SIMChatEmoticonGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.apple.emoji/Info.plist")!) {
+        //    _emoticonGroups.append(group)
         //}
-        if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.qq.classic/Info.plist")!) {
-            _emotionGroups.append(group)
+        if let group = SIMChatEmoticonGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/com.qq.classic/Info.plist")!) {
+            _emoticonGroups.append(group)
         }
-        if let group = SIMChatEmotionGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/cn.com.a-li/Info.plist")!) {
-            _emotionGroups.append(group)
+        if let group = SIMChatEmoticonGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/cn.com.a-li/Info.plist")!) {
+            _emoticonGroups.append(group)
         }
     }
     
     private func _init() {
         _logger.trace()
         
-        _emotionSendBtn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        _emotionSendBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10 + 8, 0, 8)
-        _emotionSendBtn.setTitle("Send", for: .normal)
-        _emotionSendBtn.setTitleColor(.white, for: .normal)
-        _emotionSendBtn.setTitleColor(.gray, for: .disabled)
-        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_blue"), for: .normal)
-        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_blue_h"), for: .highlighted)
-        _emotionSendBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .disabled)
-        _emotionSendBtn.isEnabled = false
+        _emoticonSendBtn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        _emoticonSendBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10 + 8, 0, 8)
+        _emoticonSendBtn.setTitle("Send", for: .normal)
+        _emoticonSendBtn.setTitleColor(.white, for: .normal)
+        _emoticonSendBtn.setTitleColor(.gray, for: .disabled)
+        _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_blue"), for: .normal)
+        _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_blue_h"), for: .highlighted)
+        _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .disabled)
+        _emoticonSendBtn.isEnabled = false
         
-        _emotionSettingBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0)
-        _emotionSettingBtn.setImage(UIImage(named: "emotion_btn_setting"), for: .normal)
-        _emotionSettingBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .normal)
-        _emotionSettingBtn.setBackgroundImage(UIImage(named: "emotion_btn_send_gray"), for: .highlighted)
+        _emoticonSettingBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0)
+        _emoticonSettingBtn.setImage(UIImage(named: "emoticon_btn_setting"), for: .normal)
+        _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .normal)
+        _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .highlighted)
     }
     
     
@@ -124,9 +124,9 @@ open class SIMChatViewController: UIViewController {
     fileprivate lazy var _contentView: UITableView = UITableView(frame: .zero)
     fileprivate lazy var _backgroundView: UIImageView = UIImageView()
     
-    fileprivate lazy var _emotionGroups: [SIMChatEmotionGroup] = []
-    fileprivate lazy var _emotionSendBtn: UIButton = UIButton()
-    fileprivate lazy var _emotionSettingBtn: UIButton = UIButton()
+    fileprivate lazy var _emoticonGroups: [SIMChatEmoticonGroup] = []
+    fileprivate lazy var _emoticonSendBtn: UIButton = UIButton()
+    fileprivate lazy var _emoticonSettingBtn: UIButton = UIButton()
     
     fileprivate lazy var _inputViews: [String: UIView] = [:]
     
@@ -213,6 +213,8 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
         switch item.identifier {
         case "kb:audio":
             let view = SAAudioInputView()
+            view.dataSource = self
+            view.delegate = self
             _inputViews[item.identifier] = view
             return view
             
@@ -221,8 +223,8 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
             _inputViews[item.identifier] = view
             return view
             
-        case "kb:emotion":
-            let view = SAEmotionInputView()
+        case "kb:emoticon":
+            let view = SAEmoticonInputView()
             view.delegate = self
             view.dataSource = self
             _inputViews[item.identifier] = view
@@ -266,6 +268,54 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     }
 }
 
+// MARK: - SAAudioInputViewDataSource & SAAudioInputViewDelegate
+
+extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
+    
+    open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
+        return 3
+    }
+    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio {
+        let audio = SAAudio()
+        audio.type = .talkback
+        return audio
+    }
+    
+}
+
+// MARK: - SAEmoticonInputViewDataSource & SAEmoticonInputViewDelegate
+
+extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputViewDelegate {
+    
+    open func numberOfItemsInEmoticon(_ emoticon: SAEmoticonInputView) -> Int {
+        return _emoticonGroups.count
+    }
+    open func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup {
+        return _emoticonGroups[index]
+    }
+    open func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView? { 
+        if _emoticonGroups[index].type.isSmall {
+            return _emoticonSendBtn
+        } else {
+            return _emoticonSettingBtn
+        }
+    }
+    
+    open func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool {
+        return true
+    }
+    open func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon) {
+        _logger.debug(item)
+    }
+    
+    open func emoticon(_ emoticon: SAEmoticonInputView, shouldPreviewFor item: SAEmoticon?) -> Bool {
+        return true
+    }
+    open func emoticon(_ emoticon: SAEmoticonInputView, didPreviewFor item: SAEmoticon?) {
+        _logger.debug(item)
+    }
+}
+
 // MARK: - SAToolboxInputViewDataSource & SAToolboxInputViewDelegate
 
 extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputViewDelegate {
@@ -286,52 +336,6 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
     }
     open func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) {
         _logger.debug(item.identifier)
-    }
-}
-
-// MARK: - SAAudioInputViewDataSource & SAAudioInputViewDelegate
-
-extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
-    
-    open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
-        return 3
-    }
-    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio? {
-        return nil
-    }
-    
-}
-
-// MARK: - SAEmotionInputViewDataSource & SAEmotionInputViewDelegate
-
-extension SIMChatViewController: SAEmotionInputViewDataSource, SAEmotionInputViewDelegate {
-    
-    open func numberOfItemsInEmotion(_ emotion: SAEmotionInputView) -> Int {
-        return _emotionGroups.count
-    }
-    open func emotion(_ emotion: SAEmotionInputView, itemAt index: Int) -> SAEmotionGroup {
-        return _emotionGroups[index]
-    }
-    open func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView? { 
-        if _emotionGroups[index].type.isSmall {
-            return _emotionSendBtn
-        } else {
-            return _emotionSettingBtn
-        }
-    }
-    
-    open func emotion(_ emotion: SAEmotionInputView, shouldSelectFor item: SAEmotion) -> Bool {
-        return true
-    }
-    open func emotion(_ emotion: SAEmotionInputView, didSelectFor item: SAEmotion) {
-        _logger.debug(item)
-    }
-    
-    open func emotion(_ emotion: SAEmotionInputView, shouldPreviewFor item: SAEmotion?) -> Bool {
-        return true
-    }
-    open func emotion(_ emotion: SAEmotionInputView, didPreviewFor item: SAEmotion?) {
-        _logger.debug(item)
     }
 }
 

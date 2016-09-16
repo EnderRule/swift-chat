@@ -10,7 +10,7 @@
 	<integer>7</integer>
 	<key>image</key>
 	<string>icon.png</string>
-	<key>emotions</key>
+	<key>emoticons</key>
 	<array>
 		<dict>
 			<key>contents</key>

@@ -1,5 +1,5 @@
 //
-//  SAAudioSimulateView.swift
+//  SAAudioView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/16/16.
@@ -8,6 +8,6 @@
 
 import UIKit
 
-internal class SAAudioSimulateView: SAAudioView {
-    
+internal class SAAudioView: UICollectionViewCell {
+    var audio: SAAudio?
 }

@@ -1,5 +1,5 @@
 //
-//  SAEmotionPreviewer.swift
+//  SAEmoticonPreviewer.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-internal class SAEmotionPreviewer: UIView {
+internal class SAEmoticonPreviewer: UIView {
     
-    func preview(_ emotion: SAEmotion?, _ itemType: SAEmotionType, in rect: CGRect) {
-        guard let emotion = emotion else {
+    func preview(_ emoticon: SAEmoticon?, _ itemType: SAEmoticonType, in rect: CGRect) {
+        guard let emoticon = emoticon else {
             isHidden = true
             return
         }
@@ -30,7 +30,7 @@ internal class SAEmotionPreviewer: UIView {
         _backgroundView.updateBackgroundLayouts()
         
         // update
-        emotion.show(in: _contentView)
+        emoticon.show(in: _contentView)
     }
     
     private func _popoverFrame(in frame: CGRect, and bounds: CGRect) -> CGRect {
@@ -60,13 +60,13 @@ internal class SAEmotionPreviewer: UIView {
         addSubview(_contentView)
     }
     
-    private var _type: SAEmotionType = .small
+    private var _type: SAEmoticonType = .small
     private var _inset: UIEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 4)
     private var _popoverFrame: CGRect = .zero
     private var _presenterFrame: CGRect = .zero
     
     private lazy var _contentView: UIView = UIView()
-    private lazy var _backgroundView: SAEmotionBackgroundView = SAEmotionBackgroundView()
+    private lazy var _backgroundView: SAEmoticonBackgroundView = SAEmoticonBackgroundView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

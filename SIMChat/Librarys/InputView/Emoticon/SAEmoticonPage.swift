@@ -1,5 +1,5 @@
 //
-//  SAEmotionPage.swift
+//  SAEmoticonPage.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAEmotionPage {
+internal class SAEmoticonPage {
     
     func draw(in ctx: CGContext) {
         
@@ -26,7 +26,7 @@ internal class SAEmotionPage {
             fetch(contents.cgImage)
             return
         }
-        SAEmotionPage.queue.async {
+        SAEmoticonPage.queue.async {
             
             UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
             
@@ -42,17 +42,17 @@ internal class SAEmotionPage {
         }
     }
     
-    func addEmotion(_ emotion: SAEmotion) -> Bool {
+    func addEmoticon(_ emoticon: SAEmoticon) -> Bool {
         guard let lastLine = lines.last else {
             return false
         }
-        if lastLine.addEmotion(emotion) {
+        if lastLine.addEmoticon(emoticon) {
             visableSize.width = max(visableSize.width, lastLine.visableSize.width)
             visableSize.height = lastLine.vaildRect.minY - vaildRect.minY + lastLine.visableSize.height
             return true
         }
         let rect = UIEdgeInsetsInsetRect(vaildRect, UIEdgeInsetsMake(visableSize.height + minimumLineSpacing, 0, 0, 0))
-        let line = SAEmotionLine(emotion, itemSize, rect, minimumLineSpacing, minimumInteritemSpacing, itemType)
+        let line = SAEmoticonLine(emoticon, itemSize, rect, minimumLineSpacing, minimumInteritemSpacing, itemType)
         if floor(line.vaildRect.minY + line.visableSize.height) > floor(vaildRect.maxY) {
             return false
         }
@@ -60,15 +60,15 @@ internal class SAEmotionPage {
         return true
     }
     
-    func emotion(at indexPath: IndexPath) -> SAEmotion? {
+    func emoticon(at indexPath: IndexPath) -> SAEmoticon? {
         guard indexPath.section < lines.count else {
             return nil
         }
         let line = lines[indexPath.section]
-        guard indexPath.item < line.emotions.count else {
+        guard indexPath.item < line.emoticons.count else {
             return nil
         }
-        return line.emotions[indexPath.item]
+        return line.emoticons[indexPath.item]
     }
     func rect(at indexPath: IndexPath) -> CGRect? {
         guard indexPath.section < lines.count else {
@@ -84,28 +84,28 @@ internal class SAEmotionPage {
     var visableRect: CGRect
     
     var itemSize: CGSize
-    var itemType: SAEmotionType
+    var itemType: SAEmoticonType
     
     var minimumLineSpacing: CGFloat
     var minimumInteritemSpacing: CGFloat
     
-    var lines: [SAEmotionLine]
+    var lines: [SAEmoticonLine]
     
     private var _contents: UIImage?
     
-    init(_ first: SAEmotion,
+    init(_ first: SAEmoticon,
          _ itemSize: CGSize,
          _ rect: CGRect,
          _ bounds: CGRect,
          _ lineSpacing: CGFloat,
          _ interitemSpacing: CGFloat,
-         _ itemType: SAEmotionType) {
+         _ itemType: SAEmoticonType) {
         
         let nlsp = lineSpacing / 2
         let nisp = interitemSpacing / 2
         
         let nrect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(nlsp, nisp, nlsp, nisp))
-        let line = SAEmotionLine(first, itemSize, nrect, lineSpacing, interitemSpacing, itemType)
+        let line = SAEmoticonLine(first, itemSize, nrect, lineSpacing, interitemSpacing, itemType)
         
         self.bounds = bounds
         self.itemSize = itemSize
@@ -121,5 +121,5 @@ internal class SAEmotionPage {
         self.lines = [line]
     }
     
-    static var queue = DispatchQueue(label: "sa.emotion.background")
+    static var queue = DispatchQueue(label: "sa.emoticon.background")
 }

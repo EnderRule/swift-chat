@@ -51,7 +51,7 @@ public extension SAInputBar {
             _barItem("kb:audio", "chat_bottom_PTT_nor", "chat_bottom_PTT_press"),
         ]
         let rbs = [
-            _barItem("kb:emotion", "chat_bottom_emotion_nor", "chat_bottom_emotion_press"),
+            _barItem("kb:emoticon", "chat_bottom_emoticon_nor", "chat_bottom_emoticon_press"),
             _barItem("kb:toolbox", "chat_bottom_more_nor", "chat_bottom_more_press"),
         ]
         setBarItems(lbs, atPosition: .left)
@@ -68,7 +68,7 @@ public extension SAInputBar {
             _barItem("kb:camera", "chat_bottom_Camera_nor", "chat_bottom_Camera_press"),
             _barItem("page:red_pack", "chat_bottom_red_pack_nor", "chat_bottom_red_pack_press"),
             
-            _barItem("kb:emotion", "chat_bottom_emotion_nor", "chat_bottom_emotion_press"),
+            _barItem("kb:emoticon", "chat_bottom_emoticon_nor", "chat_bottom_emoticon_press"),
             _barItem("kb:toolbox", "chat_bottom_more_nor", "chat_bottom_more_press"),
         ]
         bbs.first?.alignment = .left

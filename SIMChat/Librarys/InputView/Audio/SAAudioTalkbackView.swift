@@ -8,6 +8,6 @@
 
 import UIKit
 
-internal class SAAudioTalkbackView: UICollectionViewCell {
+internal class SAAudioTalkbackView: SAAudioView {
     
 }

@@ -1,5 +1,5 @@
 //
-//  SAEmotionPageView.swift
+//  SAEmoticonPageView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDelegate {
+internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDelegate {
     
-    weak var delegate: SAEmotionDelegate?
-    weak var previewer: SAEmotionPreviewer?
+    weak var delegate: SAEmoticonDelegate?
+    weak var previewer: SAEmoticonPreviewer?
     
     func setupBackspace() {
         _backspaceButton.isHidden = !(page?.itemType.isSmall ?? true)
@@ -31,7 +31,7 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         }
     }
     
-    var page: SAEmotionPage? {
+    var page: SAEmoticonPage? {
         didSet {
             let newValue = self.page
             guard newValue !== oldValue else {
@@ -60,12 +60,12 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
             
             return // no index
         }
-        guard let emotion = page?.emotion(at: idx) else {
+        guard let emoticon = page?.emoticon(at: idx) else {
             return // outside
         }
         
-        if delegate?.emotion(shouldSelectFor: emotion) ?? true {
-            delegate?.emotion(didSelectFor: emotion)
+        if delegate?.emoticon(shouldSelectFor: emoticon) ?? true {
+            delegate?.emoticon(didSelectFor: emoticon)
         }
     }
     func onLongPress(_ sender: UITapGestureRecognizer) {
@@ -75,16 +75,16 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         
         var idx: IndexPath?
         var rect: CGRect?
-        var emotion: SAEmotion?
+        var emoticon: SAEmoticon?
         
         let isbegin = sender.state == .began || sender.state == .possible
         let isend = sender.state == .cancelled || sender.state == .failed || sender.state == .ended
         
         if isend {
-            if let idx = _activedIndexPath, let emotion = page.emotion(at: idx) {
-                //_logger.debug("\(emotion) is selected")
-                if delegate?.emotion(shouldSelectFor: emotion) ?? true {
-                    delegate?.emotion(didSelectFor: emotion)
+            if let idx = _activedIndexPath, let emoticon = page.emoticon(at: idx) {
+                //_logger.debug("\(emoticon) is selected")
+                if delegate?.emoticon(shouldSelectFor: emoticon) ?? true {
+                    delegate?.emoticon(didSelectFor: emoticon)
                 }
             }
             idx = nil
@@ -94,10 +94,10 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         
         if let idx = idx {
             rect = page.rect(at: idx)
-            emotion = page.emotion(at: idx)
+            emoticon = page.emoticon(at: idx)
         }
         // 并没有找到任何可用的表情
-        if emotion == nil {
+        if emoticon == nil {
             idx = nil
         }
         // 检查没有改变
@@ -107,9 +107,9 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         
         var canpreview = !isbegin && !isend
         
-        if canpreview && !(delegate?.emotion(shouldPreviewFor: emotion) ?? true) {
+        if canpreview && !(delegate?.emoticon(shouldPreviewFor: emoticon) ?? true) {
             canpreview = false
-            emotion = nil
+            emoticon = nil
             idx = nil
         }
         
@@ -123,25 +123,25 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
             _backgroundLayer.isHidden = true
         }
         
-        previewer?.preview(emotion, page.itemType, in: rect ?? .zero)
+        previewer?.preview(emoticon, page.itemType, in: rect ?? .zero)
         
         if isbegin || canpreview {
-            delegate?.emotion(didPreviewFor: emotion)
+            delegate?.emoticon(didPreviewFor: emoticon)
         }
     }
     func onBackspace(_ sender: UIButton) {
         //_logger.trace()
         
-        if delegate?.emotion(shouldSelectFor: SAEmotion.backspace) ?? true {
-            delegate?.emotion(didSelectFor: SAEmotion.backspace)
+        if delegate?.emoticon(shouldSelectFor: SAEmoticon.backspace) ?? true {
+            delegate?.emoticon(didSelectFor: SAEmoticon.backspace)
         }
     }
     
     // MARK: UIGestureRecognizerDelegate
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let idx = _index(at: gestureRecognizer.location(in: self)), let emotion = page?.emotion(at: idx) {
-            return delegate?.emotion(shouldPreviewFor: emotion) ?? true
+        if let idx = _index(at: gestureRecognizer.location(in: self)), let emoticon = page?.emoticon(at: idx) {
+            return delegate?.emoticon(shouldPreviewFor: emoticon) ?? true
         }
         return false
     }
@@ -172,7 +172,7 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         _backgroundLayer.cornerRadius = 4
         
         _backspaceButton.tintColor = .gray
-        _backspaceButton.setImage(_SAEmotionInputViewBackspaceImage, for: .normal)
+        _backspaceButton.setImage(_SAEmoticonInputViewBackspaceImage, for: .normal)
         _backspaceButton.addTarget(self, action: #selector(onBackspace(_:)), for: .touchUpInside)
         //_backspaceButton.backgroundColor = UIColor.red.withAlphaComponent(0.2)
         
@@ -203,7 +203,7 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
     }
 }
 
-private var _SAEmotionInputViewBackspaceImage: UIImage? = {
+private var _SAEmoticonInputViewBackspaceImage: UIImage? = {
     let png = "iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAbFBMVEUAAACfn5+YmJibm5uYmJiYmJidnZ2Xl5eYmJiXl5eYmJiampqgoKCoqKiYmJiYmJiYmJiXl5eZmZmYmJiYmJiYmJiampqYmJidnZ2YmJiYmJiYmJiYmJiYmJiYmJiZmZmYmJiYmJiYmJiXl5dyF2b0AAAAI3RSTlMAFdQZ18kS86tmWiAKBeTbz7597OfhLicO+cS7tJtPPaaKco/AGfEAAAEUSURBVEjH7dXLroMgFAVQEHxUe321Vav31e7//8dOmuyYcjCYtCP2CHJcCcEDqJiYmM9kPMOZPD1s2uoCMYvxW9NgProrZY3Fa3WCdJKKWQ3fyqcWSSaXS6Ry8TijMUqOQS7bDpdK+QJIla9vnJ9WF3q1Ez2xYAucxue4QKJXu9hv4B+cBn5OzQnxq83/OCPgUMY3XGlJOPDgHtdfzohoZXynXWtaER+A0tmq1tIKuIS7Z7UFLK0b/yMfdmC2xxC8bDYmdciGsa3H0F9FvVAHNAmPY13taU8e5tCDQT1TBx9JNaVozK7LgFoIsZCshd1xAVInOvzq5d60WeilT22pX5+bTvljLMR0Rm3pRn5iY2Ji3pcHZE4k/ix2A/EAAAAASUVORK5CYII="
-    return _SAEmotionLoadImage(base64Encoded: png, scale: 2)
+    return _SAEmoticonLoadImage(base64Encoded: png, scale: 2)
 }()

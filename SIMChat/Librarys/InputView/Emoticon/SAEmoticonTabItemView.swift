@@ -1,5 +1,5 @@
 //
-//  SAEmotionTabItemView.swift
+//  SAEmoticonTabItemView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAEmotionTabItemView: UICollectionViewCell {
+internal class SAEmoticonTabItemView: UICollectionViewCell {
     
-    var group: SAEmotionGroup? {
+    var group: SAEmoticonGroup? {
         willSet {
             guard group !== newValue else {
                 return

@@ -1,5 +1,5 @@
 //
-//  SAEmotionLine.swift
+//  SAEmoticonLine.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-internal class SAEmotionLine {
+internal class SAEmoticonLine {
     
     func draw(in ctx: CGContext) {
-        _ = emotions.reduce(CGRect(origin: vaildRect.origin, size: itemSize)) { 
+        _ = emoticons.reduce(CGRect(origin: vaildRect.origin, size: itemSize)) { 
             $1.draw(in: $0, in: ctx)
             return $0.offsetBy(dx: $0.width + minimumInteritemSpacing, dy: 0)
         }
     }
     func rect(at index: Int) -> CGRect? {
-        guard index < emotions.count else {
+        guard index < emoticons.count else {
             return nil
         }
         let isp = minimumInteritemSpacing
@@ -25,7 +25,7 @@ internal class SAEmotionLine {
         return CGRect(origin: CGPoint(x: vaildRect.minX + nwidth, y: vaildRect.minY), size: itemSize)
     }
     
-    func addEmotion(_ emotion: SAEmotion) -> Bool {
+    func addEmoticon(_ emoticon: SAEmoticon) -> Bool {
         let isp = minimumInteritemSpacing
         let nwidth = visableSize.width + isp + itemSize.width
         let nwidthWithDelete = visableSize.width + (isp + itemSize.width) * 2
@@ -47,7 +47,7 @@ internal class SAEmotionLine {
         visableSize.width = nwidth
         visableSize.height = nheight
         
-        emotions.append(emotion)
+        emoticons.append(emoticon)
         return true
     }
     
@@ -56,7 +56,7 @@ internal class SAEmotionLine {
     var vaildRect: CGRect
     var visableSize: CGSize
     
-    var itemType: SAEmotionType
+    var itemType: SAEmoticonType
     var isLastLine: Bool {
         if let isLastLine = _isLastLine {
             return isLastLine
@@ -69,16 +69,16 @@ internal class SAEmotionLine {
     var minimumLineSpacing: CGFloat
     var minimumInteritemSpacing: CGFloat
     
-    var emotions: [SAEmotion] 
+    var emoticons: [SAEmoticon] 
     
     var _isLastLine: Bool?
     
-    init(_ first: SAEmotion, 
+    init(_ first: SAEmoticon, 
          _ itemSize: CGSize,
          _ rect: CGRect, 
          _ lineSpacing: CGFloat,
          _ interitemSpacing: CGFloat,
-         _ itemType: SAEmotionType) {
+         _ itemType: SAEmoticonType) {
         
         self.itemSize = itemSize
         self.itemType = itemType
@@ -89,6 +89,6 @@ internal class SAEmotionLine {
         minimumLineSpacing = lineSpacing
         minimumInteritemSpacing = interitemSpacing
         
-        emotions = [first]
+        emoticons = [first]
     }
 }
