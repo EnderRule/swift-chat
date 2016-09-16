@@ -106,14 +106,16 @@ internal class SAAudioTalkbackView: SAAudioView {
         addSubview(_spectrumView)
         
         addConstraint(_SALayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -12))
+        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY))
         
         addConstraint(_SALayoutConstraintMake(_toolbar, .top, .equal, _recordButton, .top, -9))
         addConstraint(_SALayoutConstraintMake(_toolbar, .left, .equal, self, .left, 20))
         addConstraint(_SALayoutConstraintMake(_toolbar, .right, .equal, self, .right, -20))
         
+        addConstraint(_SALayoutConstraintMake(_tipsLabel, .top, .equal, self, .top, 12))
+        addConstraint(_SALayoutConstraintMake(_tipsLabel, .bottom, .equal, _recordButton, .top, -12))
         addConstraint(_SALayoutConstraintMake(_tipsLabel, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_tipsLabel, .bottom, .equal, _recordButton, .top, -20))
+        
         addConstraint(_SALayoutConstraintMake(_activityView, .left, .equal, _tipsLabel, .left))
         addConstraint(_SALayoutConstraintMake(_activityView, .centerY, .equal, _tipsLabel, .centerY))
         addConstraint(_SALayoutConstraintMake(_spectrumView, .centerX, .equal, _tipsLabel, .centerX))
@@ -185,14 +187,20 @@ extension SAAudioTalkbackView {
         
         _logger.trace("isPlay: \(isPlay), isCancel: \(isCancel)")
         
-        if let url = _recorder?.url {
-            self.updateStatus(.processing(url))
-            dispatch_after_at_now(1, .main) { 
-                self.updateStatus(.none)
-            }
-        } else {
+        guard !isCancel else {
+            // 取消的话直接重置就好了
             updateStatus(.none)
+            return
         }
+        
+        guard let url = _recorder?.url else {
+            // 出错了
+            updateStatus(.error("文件丢失"))
+            return
+        }
+        
+        // 记住用记的选择
+        updateStatus(.processing(url))
         
 //        // 检查用户选择
 //        if !isCancel && delegate?.inputPanelShouldSendAudio(panel, resource: recorder.resource, duration: recorder.currentTime) ?? true {
@@ -244,7 +252,7 @@ extension SAAudioTalkbackView {
             // 是否高亮
             hl = r < _toolbar.leftBackgroundView.bounds.width / 2
             // 计算出左边的缩放
-            sl = 1.0 + max((80 - r) / 80, 0) * 0.75
+            sl = 1.0 + min(max((100 - r) / 80, 0), 1) * 0.75
         } else if pt.x > _recordButton.bounds.width {
             // 右边
             var pt2 = touch.location(in: _toolbar.rightBackgroundView)
@@ -254,7 +262,7 @@ extension SAAudioTalkbackView {
             // 是否高亮
             hr = r < _toolbar.rightBackgroundView.bounds.width / 2
             // 计算出右边的缩放
-            sr = 1.0 + max((80 - r) / 80, 0) * 0.75
+            sr = 1.0 + min(max((100 - r) / 80, 0), 1) * 0.75
         }
         //_logger.debug("\(sl)|\(hl) => \(sr)|\(hr)")
         
@@ -282,7 +290,8 @@ extension SAAudioTalkbackView {
             // 进入默认状态
             
             _lastPoint = nil
-            _recorder?.stop()
+            _recorder?.delegate = nil
+            _recorder?.stop() 
             _recorder = nil
             
             _toolbar.isHidden = true
@@ -358,6 +367,10 @@ extension SAAudioTalkbackView {
         case .error(let err):
             // 进入错误状态
             
+            _recorder?.delegate = nil
+            _recorder?.stop() 
+            _recorder = nil
+            
             _toolbar.isHidden = true
             _tipsLabel.text = err
             _tipsLabel.isHidden = false
@@ -391,7 +404,7 @@ extension SAAudioTalkbackView {
         let mas = NSMutableAttributedString(string: str)
         if let bounds = bounds {
             let at = NSTextAttachment()
-            at.bounds = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(0, 0, 0, -8))
+            at.bounds = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(0, 0, bounds.height, -8))
             mas.insert(NSAttributedString(attachment: at), at: 0)
         }
         return mas
@@ -404,10 +417,11 @@ extension SAAudioTalkbackView: AVAudioRecorderDelegate {
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         _logger.trace(flag)
+        updateStatus(.none)
     }
 
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        _logger.trace(error)
+        updateStatus(.error(error?.localizedDescription ?? "未知错误"))
     }
 }
 

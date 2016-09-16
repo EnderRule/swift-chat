@@ -9,7 +9,7 @@
 import UIKit
 
 // ## TODO
-// [ ] SAAudioInputView - 横屏
+// [x] SAAudioInputView - 横屏
 // [ ] SAAudioInputView - 变声
 // [ ] SAAudioInputView - 对讲
 // [ ] SAAudioInputView - 录音
@@ -46,10 +46,6 @@ open class SAAudioInputView: UIView {
         
         backgroundColor = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
-        _contentViewLayout.scrollDirection = .horizontal
-        _contentViewLayout.minimumLineSpacing = 0
-        _contentViewLayout.minimumInteritemSpacing = 0
-        
         _contentView.backgroundColor = .clear
         _contentView.isPagingEnabled = true
         _contentView.showsVerticalScrollIndicator = false
@@ -57,6 +53,7 @@ open class SAAudioInputView: UIView {
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
+        _contentView.alwaysBounceHorizontal = true
         //_contentView.delaysContentTouches = false
         
         _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAAudioType.simulate)")
@@ -77,7 +74,7 @@ open class SAAudioInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom))
     }
     
-    fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    fileprivate lazy var _contentViewLayout: SAAudioInputViewLayout = SAAudioInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
@@ -90,9 +87,9 @@ open class SAAudioInputView: UIView {
     }
 }
 
-// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource?.numberOfItemsInAudio(self) ?? 0
@@ -108,9 +105,4 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
         }
         return cell
     }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return collectionView.frame.size
-    }
-    
 }

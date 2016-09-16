@@ -47,12 +47,7 @@ open class SAAudio: NSObject {
         return try? AVAudioRecorder(url: url as URL, settings: settings)
     }
     open func requestRecordPermission(_ response: @escaping (Bool) -> Void) {
-        //AVAudioSession.sharedInstance().requestRecordPermission(response)
-        AVAudioSession.sharedInstance().requestRecordPermission({ b in
-            dispatch_after_at_now(1, DispatchQueue.main, { 
-                response(b)
-            })
-        })
+        AVAudioSession.sharedInstance().requestRecordPermission(response)
     }
     
     open var type: SAAudioType = .talkback

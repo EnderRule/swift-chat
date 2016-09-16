@@ -66,6 +66,16 @@ open class SAAudioSpectrumView: UIView {
         
         _link?.remove(from: .main, forMode: .commonModes)
         _link = nil
+        
+        let pbl = CGRect(x: 0, y: 0, width: 2, height: 2)
+        let pbr = CGRect(x: 0, y: 0, width: 2, height: 2)
+        
+        _leftLayers.forEach {
+            $0.bounds = pbl
+        }
+        _rightLayers.forEach {
+            $0.bounds = pbr
+        }
     }
     
     @objc func tack(_ sender: AnyObject) {
@@ -79,12 +89,11 @@ open class SAAudioSpectrumView: UIView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         
-        // 小于-40一律视为静音
         let sl = CGFloat(_decibelsToLevel(wl))
         let sr = CGFloat(_decibelsToLevel(wr))
         
-        var pbl = CGRect(x: 0, y: 0, width: 2, height: 2 + round(sl * 8) * 2)
-        var pbr = CGRect(x: 0, y: 0, width: 2, height: 2 + round(sr * 8) * 2)
+        var pbl = CGRect(x: 0, y: 0, width: 2, height: 2 + trunc(sl * 8) * 2)
+        var pbr = CGRect(x: 0, y: 0, width: 2, height: 2 + trunc(sr * 8) * 2)
         
         _leftLayers.forEach {
             swap(&$0.bounds, &pbl)
@@ -103,7 +112,7 @@ open class SAAudioSpectrumView: UIView {
         // Link: http://stackoverflow.com/questions/9247255/am-i-doing-the-right-thing-to-convert-decibel-from-120-0-to-0-120/16192481#16192481
         
         var level = 0.0 // The linear 0.0 .. 1.0 value we need.
-        let minDecibels = -70.0 // Or use -60dB, which I measured in a silent room.
+        let minDecibels = -80.0 // Or use -60dB, which I measured in a silent room.
         
         if decibels < minDecibels {
             level = 0.0
@@ -135,8 +144,8 @@ open class SAAudioSpectrumView: UIView {
             r.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             l.position = CGPoint(x: (x - CGFloat(i * (2 + 2)) - sw), y: y)
             r.position = CGPoint(x: (x + CGFloat(i * (2 + 2)) + sw), y: y)
-            l.bounds = CGRect(x: 0, y: 0, width: 2, height: 3)
-            r.bounds = CGRect(x: 0, y: 0, width: 2, height: 3)
+            l.bounds = CGRect(x: 0, y: 0, width: 2, height: 2)
+            r.bounds = CGRect(x: 0, y: 0, width: 2, height: 2)
             
             _leftLayers.append(l)
             _rightLayers.append(r)

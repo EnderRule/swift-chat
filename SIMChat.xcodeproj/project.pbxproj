@@ -107,6 +107,7 @@
 		0C9E3DC01D8BA7F700F4DEE6 /* SAEmoticonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9E3DB61D8BA7F700F4DEE6 /* SAEmoticonPageView.swift */; };
 		0C9E3DC11D8BA7F700F4DEE6 /* SAEmoticonPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9E3DB71D8BA7F700F4DEE6 /* SAEmoticonPreviewer.swift */; };
 		0C9E3DC21D8BA7F700F4DEE6 /* SAEmoticonTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9E3DB81D8BA7F700F4DEE6 /* SAEmoticonTabItemView.swift */; };
+		0CBC0F3C1D8C79F700D05122 /* SAAudioInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBC0F3B1D8C79F700D05122 /* SAAudioInputViewLayout.swift */; };
 		0CEB6C281D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEB6C271D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift */; };
 		0CEC3F2C1D8BB28000099478 /* SAAudioTalkbackToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEC3F2B1D8BB28000099478 /* SAAudioTalkbackToolbar.swift */; };
 		0CEC3F2E1D8BE9E300099478 /* SAAudioSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEC3F2D1D8BE9E300099478 /* SAAudioSpectrumView.swift */; };
@@ -227,6 +228,7 @@
 		0C9E3DB61D8BA7F700F4DEE6 /* SAEmoticonPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPageView.swift; sourceTree = "<group>"; };
 		0C9E3DB71D8BA7F700F4DEE6 /* SAEmoticonPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPreviewer.swift; sourceTree = "<group>"; };
 		0C9E3DB81D8BA7F700F4DEE6 /* SAEmoticonTabItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonTabItemView.swift; sourceTree = "<group>"; };
+		0CBC0F3B1D8C79F700D05122 /* SAAudioInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioInputViewLayout.swift; sourceTree = "<group>"; };
 		0CEB6C271D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmoticonGroup.swift; sourceTree = "<group>"; };
 		0CEC3F2B1D8BB28000099478 /* SAAudioTalkbackToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTalkbackToolbar.swift; sourceTree = "<group>"; };
 		0CEC3F2D1D8BE9E300099478 /* SAAudioSpectrumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSpectrumView.swift; sourceTree = "<group>"; };
@@ -463,6 +465,7 @@
 				0C16540F1D8B9C4F00A92C86 /* SAAudioTalkbackView.swift */,
 				0CEC3F2B1D8BB28000099478 /* SAAudioTalkbackToolbar.swift */,
 				0C16540C1D8B9C4F00A92C86 /* SAAudioInputView.swift */,
+				0CBC0F3B1D8C79F700D05122 /* SAAudioInputViewLayout.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -787,6 +790,7 @@
 				0C9E3DBF1D8BA7F700F4DEE6 /* SAEmoticonPage.swift in Sources */,
 				0C5EBFB61C8966BD00E0B923 /* SIMChatBaseFileResource.swift in Sources */,
 				0C1A177B1D7724880093EE12 /* SAInputBar.swift in Sources */,
+				0CBC0F3C1D8C79F700D05122 /* SAAudioInputViewLayout.swift in Sources */,
 				0C0DD6641C60B4A900AEC8C4 /* SIMChatUserManager.swift in Sources */,
 				0C0DD65E1C60B4A900AEC8C4 /* UIImage+FixOrientation.swift in Sources */,
 				0C0DD64B1C60B4A900AEC8C4 /* SIMChatBaseUser.swift in Sources */,

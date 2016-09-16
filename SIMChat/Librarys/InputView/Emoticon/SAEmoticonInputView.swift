@@ -114,7 +114,6 @@ open class SAEmoticonInputView: UIView {
         _pageControl.translatesAutoresizingMaskIntoConstraints = false
         _pageControl.backgroundColor = .clear
         _pageControl.isUserInteractionEnabled = false
-        //_pageControl.addTarget(self, action: #selector(onPageChanged(_:)), for: .valueChanged)
         
         _contentView.delegate = self
         _contentView.dataSource = self
