@@ -96,9 +96,9 @@ internal class SAInputItemButton: UIButton {
         guard let barItem = self.barItem else {
             return super.beginTracking(touch, with: event)
         }
-        if delegate?.barItem(shouldHighlight: barItem) ?? true {
+        if delegate?.barItem(shouldHighlightFor: barItem) ?? true {
             allowsHighlight = true
-            delegate?.barItem(didHighlight: barItem)
+            delegate?.barItem(didHighlightFor: barItem)
         } else {
             allowsHighlight = false
         }
@@ -228,18 +228,18 @@ internal class SAInputItemButton: UIButton {
         
         if !_selected {
             // select
-            guard delegate?.barItem(shouldSelect: barItem) ?? true else {
+            guard delegate?.barItem(shouldSelectFor: barItem) ?? true else {
                 return
             }
             setSelected(selected: true, animated: true)
-            delegate?.barItem(didSelect: barItem)
+            delegate?.barItem(didSelectFor: barItem)
         } else {
-            // deselect
-            guard delegate?.barItem(shouldDeselect: barItem) ?? true else {
+            // Deselect
+            guard delegate?.barItem(shouldDeselectFor: barItem) ?? true else {
                 return
             }
             setSelected(selected: false, animated: true)
-            delegate?.barItem(didDeselect: barItem)
+            delegate?.barItem(didDeselectFor: barItem)
         }
     }
     
@@ -256,12 +256,12 @@ internal class SAInputItemButton: UIButton {
 
 internal protocol SAInputItemViewDelegate: class {
     
-    func barItem(shouldHighlight barItem: SAInputItem) -> Bool
-    func barItem(shouldDeselect barItem: SAInputItem) -> Bool
-    func barItem(shouldSelect barItem: SAInputItem) -> Bool
+    func barItem(shouldHighlightFor barItem: SAInputItem) -> Bool
+    func barItem(shouldDeselectFor barItem: SAInputItem) -> Bool
+    func barItem(shouldSelectFor barItem: SAInputItem) -> Bool
     
-    func barItem(didHighlight barItem: SAInputItem)
-    func barItem(didDeselect barItem: SAInputItem)
-    func barItem(didSelect barItem: SAInputItem)
+    func barItem(didHighlightFor barItem: SAInputItem)
+    func barItem(didDeselectFor barItem: SAInputItem)
+    func barItem(didSelectFor barItem: SAInputItem)
     
 }

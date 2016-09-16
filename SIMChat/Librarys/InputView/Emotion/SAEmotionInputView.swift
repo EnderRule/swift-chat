@@ -38,8 +38,8 @@ import UIKit
 @objc 
 public protocol SAEmotionInputViewDataSource: NSObjectProtocol {
     
-    func numberOfGroups(in emotion: SAEmotionInputView) -> Int
-    func emotion(_ emotion: SAEmotionInputView, groupAt index: Int) -> SAEmotionGroup
+    func numberOfItemsInEmotion(_ emotion: SAEmotionInputView) -> Int
+    func emotion(_ emotion: SAEmotionInputView, itemAt index: Int) -> SAEmotionGroup
     
     @objc optional func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView?
 }
@@ -207,20 +207,20 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
             return 1
         }
         if collectionView === _contentView {
-            return dataSource?.numberOfGroups(in: self) ?? 0
+            return dataSource?.numberOfItemsInEmotion(self) ?? 0
         }
         return 0
     }
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === _tabbar {
-            return dataSource?.numberOfGroups(in: self) ?? 0
+            return dataSource?.numberOfItemsInEmotion(self) ?? 0
         }
         if collectionView === _contentView {
             guard let ds = dataSource else {
                 return 0
             }
             let pageCount = _contentViewLayout.numberOfPages(in: section) {
-                ds.emotion(self, groupAt: section)
+                ds.emotion(self, itemAt: section)
             }
             if !_contentViewIsInit {
                 _contentViewIsInit = true
@@ -244,7 +244,7 @@ extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelega
             return
         } 
         if let cell = cell as? SAEmotionTabItemView {
-            cell.group = dataSource?.emotion(self, groupAt: indexPath.item)
+            cell.group = dataSource?.emotion(self, itemAt: indexPath.item)
             cell.selectedBackgroundView?.backgroundColor = _color
             return
         }

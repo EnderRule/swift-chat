@@ -19,16 +19,15 @@ import UIKit
 @objc 
 public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItems(in toolbox: SAToolboxInputView) -> Int
-    
-    func toolbox(_ toolbox: SAToolboxInputView, toolboxItemAt index: Int) -> SAToolboxItem?
+    func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int
+    func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem?
     
 }
 @objc
 public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
     
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectItem item: SAToolboxItem) -> Bool
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectItem item: SAToolboxItem) 
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) 
     
 }
 
@@ -123,7 +122,7 @@ extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = dataSource?.numberOfItems(in: self) ?? 0
+        let count = dataSource?.numberOfItemsInToolbox(self) ?? 0
         let page = (count + (8 - 1)) / 8
         if _pageControl.numberOfPages != page {
             _pageControl.numberOfPages = page
@@ -138,19 +137,19 @@ extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelega
         guard let cell = cell as? SAToolboxItemView else {
             return
         }
-        cell.item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row)
+        cell.item = dataSource?.toolbox(self, itemAt: indexPath.row)
         cell.handler = self
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        guard let item = dataSource?.toolbox(self, toolboxItemAt: indexPath.row) else {
+        guard let item = dataSource?.toolbox(self, itemAt: indexPath.row) else {
             return
         }
         
-        if delegate?.toolbox?(self, shouldSelectItem: item) ?? true {
-            delegate?.toolbox?(self, didSelectItem: item)
+        if delegate?.toolbox?(self, shouldSelectFor: item) ?? true {
+            delegate?.toolbox?(self, didSelectFor: item)
         }
     }
 }

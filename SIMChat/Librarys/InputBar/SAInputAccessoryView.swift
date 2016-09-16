@@ -438,28 +438,26 @@ internal class SAInputAccessoryView: UIView {
 
 extension SAInputAccessoryView: SAInputItemViewDelegate {
     
-    func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldHighlight: barItem) ?? true
+    func barItem(shouldHighlightFor barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldHighlightFor: barItem) ?? true
     }
-    func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldDeselect: barItem) ?? false
+    func barItem(shouldDeselectFor barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldDeselectFor: barItem) ?? false
     }
-    func barItem(shouldSelect barItem: SAInputItem) -> Bool {
-        return delegate?.barItem(shouldSelect: barItem) ?? false
+    func barItem(shouldSelectFor barItem: SAInputItem) -> Bool {
+        return delegate?.barItem(shouldSelectFor: barItem) ?? false
     }
     
-    func barItem(didHighlight barItem: SAInputItem) {
-        delegate?.barItem(didHighlight: barItem)
+    func barItem(didHighlightFor barItem: SAInputItem) {
+        delegate?.barItem(didHighlightFor: barItem)
     }
-    func barItem(didDeselect barItem: SAInputItem) {
+    func barItem(didDeselectFor barItem: SAInputItem) {
         _selectedBarItems.remove(barItem)
-        
-        delegate?.barItem(didDeselect: barItem)
+        delegate?.barItem(didDeselectFor: barItem)
     }
-    func barItem(didSelect barItem: SAInputItem) {
+    func barItem(didSelectFor barItem: SAInputItem) {
         _selectedBarItems.insert(barItem)
-        
-        delegate?.barItem(didSelect: barItem)
+        delegate?.barItem(didSelectFor: barItem)
     }
 }
 

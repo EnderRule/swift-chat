@@ -15,7 +15,23 @@ import UIKit
 // [ ] SAAudioInputView - 自定义
 // [ ] SAAudioInputView - Mini模式
 
+@objc
+public protocol SAAudioInputViewDataSource: NSObjectProtocol {
+    
+    func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int
+    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio?
+    
+}
+
+@objc 
+public protocol SAAudioInputViewDelegate: NSObjectProtocol {
+}
+
+
 open class SAAudioInputView: UIView {
+    
+    open weak var dataSource: SAAudioInputViewDataSource?
+    open weak var delegate: SAAudioInputViewDelegate?
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)

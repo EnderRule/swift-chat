@@ -240,14 +240,14 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
         }
     }
     
-    open func inputBar(_ inputBar: SAInputBar, shouldSelectItem item: SAInputItem) -> Bool {
+    open func inputBar(_ inputBar: SAInputBar, shouldSelectFor item: SAInputItem) -> Bool {
         
         guard let _ = inputView(with: item) else {
             return false
         }
         return true
     }
-    open func inputBar(_ inputBar: SAInputBar, didSelectItem item: SAInputItem) {
+    open func inputBar(_ inputBar: SAInputBar, didSelectFor item: SAInputItem) {
         logger.debug(item.identifier)
         
         _activedItem = item
@@ -270,33 +270,46 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
 
 extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputViewDelegate {
     
-    open func numberOfItems(in toolbox: SAToolboxInputView) -> Int {
+    open func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
         return _toolboxItems.count
     }
     
-    open func toolbox(_ toolbox: SAToolboxInputView, toolboxItemAt index: Int) -> SAToolboxItem? {
+    open func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem? {
         guard index < _toolboxItems.count else {
             return nil
         }
         return _toolboxItems[index]
     }
     
-    open func toolbox(_ toolbox: SAToolboxInputView, shouldSelectItem item: SAToolboxItem) -> Bool {
+    open func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool {
         return true
     }
-    open func toolbox(_ toolbox: SAToolboxInputView, didSelectItem item: SAToolboxItem) {
+    open func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) {
         _logger.debug(item.identifier)
     }
+}
+
+// MARK: - SAAudioInputViewDataSource & SAAudioInputViewDelegate
+
+extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
+    
+    open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
+        return 3
+    }
+    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio? {
+        return nil
+    }
+    
 }
 
 // MARK: - SAEmotionInputViewDataSource & SAEmotionInputViewDelegate
 
 extension SIMChatViewController: SAEmotionInputViewDataSource, SAEmotionInputViewDelegate {
     
-    open func numberOfGroups(in emotion: SAEmotionInputView) -> Int {
+    open func numberOfItemsInEmotion(_ emotion: SAEmotionInputView) -> Int {
         return _emotionGroups.count
     }
-    open func emotion(_ emotion: SAEmotionInputView, groupAt index: Int) -> SAEmotionGroup {
+    open func emotion(_ emotion: SAEmotionInputView, itemAt index: Int) -> SAEmotionGroup {
         return _emotionGroups[index]
     }
     open func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView? { 

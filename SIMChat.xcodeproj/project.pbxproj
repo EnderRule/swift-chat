@@ -476,13 +476,13 @@
 				0C1654111D8B9C5000A92C86 /* SAEmotion.swift */,
 				0C1654121D8B9C5000A92C86 /* SAEmotionBackgroundView.swift */,
 				0C1654131D8B9C5000A92C86 /* SAEmotionGroup.swift */,
-				0C1654141D8B9C5000A92C86 /* SAEmotionInputView.swift */,
-				0C1654151D8B9C5000A92C86 /* SAEmotionInputViewLayout.swift */,
 				0C1654161D8B9C5000A92C86 /* SAEmotionLine.swift */,
 				0C1654171D8B9C5000A92C86 /* SAEmotionPage.swift */,
 				0C1654181D8B9C5000A92C86 /* SAEmotionPageView.swift */,
 				0C1654191D8B9C5000A92C86 /* SAEmotionPreviewer.swift */,
 				0C16541A1D8B9C5000A92C86 /* SAEmotionTabItemView.swift */,
+				0C1654141D8B9C5000A92C86 /* SAEmotionInputView.swift */,
+				0C1654151D8B9C5000A92C86 /* SAEmotionInputViewLayout.swift */,
 			);
 			path = Emotion;
 			sourceTree = "<group>";

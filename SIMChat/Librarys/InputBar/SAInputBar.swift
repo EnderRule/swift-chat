@@ -127,13 +127,13 @@ public protocol SAInputBarDelegate: NSObjectProtocol {
     
     // MARK: Accessory Item Selection
     
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldHighlightItem item: SAInputItem) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldDeselectItem item: SAInputItem) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldSelectItem item: SAInputItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAInputBar, shouldHighlightFor item: SAInputItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAInputBar, shouldDeselectFor item: SAInputItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAInputBar, shouldSelectFor item: SAInputItem) -> Bool
     
-    @objc optional func inputBar(_ inputBar: SAInputBar, didHighlightItem item: SAInputItem)
-    @objc optional func inputBar(_ inputBar: SAInputBar, didDeselectItem item: SAInputItem)
-    @objc optional func inputBar(_ inputBar: SAInputBar, didSelectItem item: SAInputItem)
+    @objc optional func inputBar(_ inputBar: SAInputBar, didHighlightFor item: SAInputItem)
+    @objc optional func inputBar(_ inputBar: SAInputBar, didDeselectFor item: SAInputItem)
+    @objc optional func inputBar(_ inputBar: SAInputBar, didSelectFor item: SAInputItem)
     
     // MARK: Input Mode
     
@@ -871,16 +871,16 @@ extension SAInputBar {
 
 extension SAInputBar: SAInputItemViewDelegate {
     
-    open func barItem(shouldHighlight barItem: SAInputItem) -> Bool {
-        return delegate?.inputBar?(self, shouldHighlightItem: barItem) ?? true
+    open func barItem(shouldHighlightFor barItem: SAInputItem) -> Bool {
+        return delegate?.inputBar?(self, shouldHighlightFor: barItem) ?? true
     }
-    open func barItem(shouldDeselect barItem: SAInputItem) -> Bool {
+    open func barItem(shouldDeselectFor barItem: SAInputItem) -> Bool {
         if !allowsMultipleSelection {
             return false // not allowed to cancel
         }
-        return delegate?.inputBar?(self, shouldDeselectItem: barItem) ?? true 
+        return delegate?.inputBar?(self, shouldDeselectFor: barItem) ?? true 
     }
-    open func barItem(shouldSelect barItem: SAInputItem) -> Bool {
+    open func barItem(shouldSelectFor barItem: SAInputItem) -> Bool {
         guard allowsSelection else {
             // do not allow the selected
             return false
@@ -889,14 +889,14 @@ extension SAInputBar: SAInputItemViewDelegate {
             // has been selected
             return false
         }
-        guard delegate?.inputBar?(self, shouldSelectItem: barItem) ?? true else {
+        guard delegate?.inputBar?(self, shouldSelectFor: barItem) ?? true else {
             // users are not allowed to select
             return false
         }
         if !allowsMultipleSelection {
             // don't allow a multiple-select, cancel has been chosen
             for item in _selectedItems  {
-                if !(self.delegate?.inputBar?(self, shouldDeselectItem: item) ?? true) {
+                if !(self.delegate?.inputBar?(self, shouldDeselectFor: item) ?? true) {
                     // Not allowed to cancel, so do not allow the selected
                     return false
                 }
@@ -904,23 +904,23 @@ extension SAInputBar: SAInputItemViewDelegate {
             // 
             _selectedItems.forEach{ 
                 self.deselectBarItem($0, animated: true)
-                self.barItem(didDeselect: $0)
+                self.barItem(didDeselectFor: $0)
             }
             _selectedItems = []
         }
         return true
     }
     
-    open func barItem(didHighlight barItem: SAInputItem) {
-        delegate?.inputBar?(self, didHighlightItem: barItem)
+    open func barItem(didHighlightFor barItem: SAInputItem) {
+        delegate?.inputBar?(self, didHighlightFor: barItem)
     }
-    open func barItem(didDeselect barItem: SAInputItem) {
-        delegate?.inputBar?(self, didDeselectItem: barItem)
+    open func barItem(didDeselectFor barItem: SAInputItem) {
+        delegate?.inputBar?(self, didDeselectFor: barItem)
         // Remove from the selected list
         _selectedItems.remove(barItem)
     }
-    open func barItem(didSelect barItem: SAInputItem) {
-        delegate?.inputBar?(self, didSelectItem: barItem)
+    open func barItem(didSelectFor barItem: SAInputItem) {
+        delegate?.inputBar?(self, didSelectFor: barItem)
         // Added to the selected list
         _selectedItems.insert(barItem)
     }
