@@ -1,5 +1,5 @@
 //
-//  SAAudioPanel.swift
+//  SAAudioInputView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/12/16.
@@ -9,12 +9,13 @@
 import UIKit
 
 // ## TODO
-// [ ] SAAudioPanel - 变声
-// [ ] SAAudioPanel - 对讲
-// [ ] SAAudioPanel - 录音
-// [ ] SAAudioPanel - 自定义
+// [ ] SAAudioInputView - 变声
+// [ ] SAAudioInputView - 对讲
+// [ ] SAAudioInputView - 录音
+// [ ] SAAudioInputView - 自定义
+// [ ] SAAudioInputView - Mini模式
 
-open class SAAudioPanel: UIView {
+open class SAAudioInputView: UIView {
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
@@ -68,7 +69,7 @@ open class SAAudioPanel: UIView {
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
 
-extension SAAudioPanel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 3

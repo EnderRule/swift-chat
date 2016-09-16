@@ -1,5 +1,5 @@
 //
-//  SAToolboxPanel.swift
+//  SAToolboxInputView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/6/16.
@@ -9,30 +9,30 @@
 import UIKit
 
 // ## TODO
-// [x] SAToolboxPanel - 数据源
-// [x] SAToolboxPanel - 代理
-// [x] SAToolboxPanel - 横屏
-// [ ] SAToolboxPanel - 自定义行/列数量
+// [x] SAToolboxInputView - 数据源
+// [x] SAToolboxInputView - 代理
+// [x] SAToolboxInputView - 横屏
+// [ ] SAToolboxInputView - 自定义行/列数量
 // [x] SAToolboxItemView - 选中高亮
-// [x] SAToolboxPanelLayout - 快速滑动时性能问题
+// [x] SAToolboxInputViewLayout - 快速滑动时性能问题
 
-@objc public protocol SAToolboxPanelDataSource: NSObjectProtocol {
+@objc public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItems(in toolbox: SAToolboxPanel) -> Int
+    func numberOfItems(in toolbox: SAToolboxInputView) -> Int
     
-    func toolbox(_ toolbox: SAToolboxPanel, toolboxItemAt index: Int) -> SAToolboxItem?
+    func toolbox(_ toolbox: SAToolboxInputView, toolboxItemAt index: Int) -> SAToolboxItem?
     
 }
-@objc public protocol SAToolboxPanelDelegate: NSObjectProtocol {
+@objc public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
     
-    @objc optional func toolbox(_ toolbox: SAToolboxPanel, shouldSelectItem item: SAToolboxItem) -> Bool
-    @objc optional func toolbox(_ toolbox: SAToolboxPanel, didSelectItem item: SAToolboxItem) 
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectItem item: SAToolboxItem) -> Bool
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectItem item: SAToolboxItem) 
     
 }
 
 // MARK: -
 
-@objc open class SAToolboxPanel: UIView {
+@objc open class SAToolboxInputView: UIView {
     
     open func reloadData() {
         _contentView.reloadData()
@@ -53,8 +53,8 @@ import UIKit
         return CGSize(width: frame.width, height: 253)
     }
     
-    open weak var delegate: SAToolboxPanelDelegate?
-    open weak var dataSource: SAToolboxPanelDataSource?
+    open weak var delegate: SAToolboxInputViewDelegate?
+    open weak var dataSource: SAToolboxInputViewDataSource?
     
     // MARK: - 
     
@@ -103,7 +103,7 @@ import UIKit
     }
     
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
-    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: SAToolboxPanelLayout())
+    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: SAToolboxInputViewLayout())
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -117,7 +117,7 @@ import UIKit
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension SAToolboxPanel: UICollectionViewDataSource, UICollectionViewDelegate {
+extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         _pageControl.currentPage = Int(round(scrollView.contentOffset.x / scrollView.frame.width))

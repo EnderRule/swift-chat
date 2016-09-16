@@ -1,5 +1,5 @@
 //
-//  SAToolboxPanelLayout.swift
+//  SAToolboxInputViewLayout.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAToolboxPanelLayout: UICollectionViewLayout {
+internal class SAToolboxInputViewLayout: UICollectionViewLayout {
     
     var row = 2
     var column = 4

@@ -172,7 +172,7 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
         _backgroundLayer.cornerRadius = 4
         
         _backspaceButton.tintColor = .gray
-        _backspaceButton.setImage(_SAEmotionPanelBackspaceImage, for: .normal)
+        _backspaceButton.setImage(_SAEmotionInputViewBackspaceImage, for: .normal)
         _backspaceButton.addTarget(self, action: #selector(onBackspace(_:)), for: .touchUpInside)
         //_backspaceButton.backgroundColor = UIColor.red.withAlphaComponent(0.2)
         
@@ -203,7 +203,7 @@ internal class SAEmotionPageView: UICollectionViewCell, UIGestureRecognizerDeleg
     }
 }
 
-private var _SAEmotionPanelBackspaceImage: UIImage? = {
+private var _SAEmotionInputViewBackspaceImage: UIImage? = {
     let png = "iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAbFBMVEUAAACfn5+YmJibm5uYmJiYmJidnZ2Xl5eYmJiXl5eYmJiampqgoKCoqKiYmJiYmJiYmJiXl5eZmZmYmJiYmJiYmJiampqYmJidnZ2YmJiYmJiYmJiYmJiYmJiYmJiZmZmYmJiYmJiYmJiXl5dyF2b0AAAAI3RSTlMAFdQZ18kS86tmWiAKBeTbz7597OfhLicO+cS7tJtPPaaKco/AGfEAAAEUSURBVEjH7dXLroMgFAVQEHxUe321Vav31e7//8dOmuyYcjCYtCP2CHJcCcEDqJiYmM9kPMOZPD1s2uoCMYvxW9NgProrZY3Fa3WCdJKKWQ3fyqcWSSaXS6Ry8TijMUqOQS7bDpdK+QJIla9vnJ9WF3q1Ez2xYAucxue4QKJXu9hv4B+cBn5OzQnxq83/OCPgUMY3XGlJOPDgHtdfzohoZXynXWtaER+A0tmq1tIKuIS7Z7UFLK0b/yMfdmC2xxC8bDYmdciGsa3H0F9FvVAHNAmPY13taU8e5tCDQT1TBx9JNaVozK7LgFoIsZCshd1xAVInOvzq5d60WeilT22pX5+bTvljLMR0Rm3pRn5iY2Ji3pcHZE4k/ix2A/EAAAAASUVORK5CYII="
     return _SAEmotionLoadImage(base64Encoded: png, scale: 2)
 }()

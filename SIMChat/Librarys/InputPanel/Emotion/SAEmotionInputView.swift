@@ -1,5 +1,5 @@
 //
-//  SAEmotionPanel.swift
+//  SAEmotionInputView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/6/16.
@@ -11,14 +11,14 @@ import UIKit
 // ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
 // [ ] * - 横屏支持
-// [x] SAEmotionPanel - 小表情支持
-// [x] SAEmotionPanel - 大表情支持
-// [x] SAEmotionPanel - 自定义行/列数量
-// [x] SAEmotionPanel - Tabbar支持
-// [x] SAEmotionPanel - 更新page
-// [ ] SAEmotionPanel - 长按删除
-// [x] SAEmotionPanel - 更多(More)支持
-// [x] SAEmotionPanel - 快速切换的时显示异常
+// [x] SAEmotionInputView - 小表情支持
+// [x] SAEmotionInputView - 大表情支持
+// [x] SAEmotionInputView - 自定义行/列数量
+// [x] SAEmotionInputView - Tabbar支持
+// [x] SAEmotionInputView - 更新page
+// [ ] SAEmotionInputView - 长按删除
+// [x] SAEmotionInputView - 更多(More)支持
+// [x] SAEmotionInputView - 快速切换的时显示异常
 // [ ] SAEmotion - UIView支持
 // [x] SAEmotion - UIImage支持
 // [x] SAEmotion - NSString/NSAttributedString支持
@@ -35,31 +35,31 @@ import UIKit
 // [x] SAEmotionTabItemView - 选中高亮
 
 
-@objc public protocol SAEmotionPanelDataSource: NSObjectProtocol {
+@objc public protocol SAEmotionInputViewDataSource: NSObjectProtocol {
     
-    func numberOfGroups(in emotion: SAEmotionPanel) -> Int
-    func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup
+    func numberOfGroups(in emotion: SAEmotionInputView) -> Int
+    func emotion(_ emotion: SAEmotionInputView, groupAt index: Int) -> SAEmotionGroup
     
-    @objc optional func emotion(_ emotion: SAEmotionPanel, moreViewForGroupAt index: Int) -> UIView?
+    @objc optional func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView?
 }
-@objc public protocol SAEmotionPanelDelegate: NSObjectProtocol {
+@objc public protocol SAEmotionInputViewDelegate: NSObjectProtocol {
     
-    @objc optional func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool
-    @objc optional func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion)
+    @objc optional func emotion(_ emotion: SAEmotionInputView, shouldSelectFor item: SAEmotion) -> Bool
+    @objc optional func emotion(_ emotion: SAEmotionInputView, didSelectFor item: SAEmotion)
     
-    @objc optional func emotion(_ emotion: SAEmotionPanel, shouldPreviewFor item: SAEmotion?) -> Bool
-    @objc optional func emotion(_ emotion: SAEmotionPanel, didPreviewFor item: SAEmotion?)
+    @objc optional func emotion(_ emotion: SAEmotionInputView, shouldPreviewFor item: SAEmotion?) -> Bool
+    @objc optional func emotion(_ emotion: SAEmotionInputView, didPreviewFor item: SAEmotion?)
     
 }
 
-open class SAEmotionPanel: UIView {
+open class SAEmotionInputView: UIView {
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
    
-    open weak var dataSource: SAEmotionPanelDataSource?
-    open weak var delegate: SAEmotionPanelDelegate?
+    open weak var dataSource: SAEmotionInputViewDataSource?
+    open weak var delegate: SAEmotionInputViewDelegate?
     
     // MARK: Private Method
     
@@ -150,7 +150,7 @@ open class SAEmotionPanel: UIView {
     fileprivate lazy var _previewer: SAEmotionPreviewer = SAEmotionPreviewer()
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
     
-    fileprivate lazy var _contentViewLayout: SAEmotionPanelLayout = SAEmotionPanelLayout()
+    fileprivate lazy var _contentViewLayout: SAEmotionInputViewLayout = SAEmotionInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
@@ -165,7 +165,7 @@ open class SAEmotionPanel: UIView {
 
 // MARK: - SAEmotionDelegate(Forwarding)
 
-extension SAEmotionPanel: SAEmotionDelegate {
+extension SAEmotionInputView: SAEmotionDelegate {
     
     open func emotion(shouldSelectFor emotion: SAEmotion) -> Bool {
         return delegate?.emotion?(self, shouldSelectFor: emotion) ?? true
@@ -184,7 +184,7 @@ extension SAEmotionPanel: SAEmotionDelegate {
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension SAEmotionPanel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAEmotionInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView === _tabbar {

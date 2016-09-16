@@ -10,9 +10,9 @@ import UIKit
 
 
 // [ ] SIMChatViewController - 更新InputPanel
-// [x] SAEmotionPanel - 加载默认表情
-// [x] SAEmotionPanel - 加载大表情
-// [ ] SAEmotionPanel - 异步加载和同步
+// [x] SAEmotionInputView - 加载默认表情
+// [x] SAEmotionInputView - 加载大表情
+// [ ] SAEmotionInputView - 异步加载和同步
 
 
 class SIMEmotionGroup {
@@ -128,7 +128,7 @@ open class SIMChatViewController: UIViewController {
     fileprivate lazy var _emotionSendBtn: UIButton = UIButton()
     fileprivate lazy var _emotionSettingBtn: UIButton = UIButton()
     
-    fileprivate lazy var _panels: [String: UIView] = [:]
+    fileprivate lazy var _inputViews: [String: UIView] = [:]
     
     fileprivate lazy var _toolboxItems: [SAToolboxItem] = {
         let R = { (n:String) -> UIImage? in
@@ -207,33 +207,33 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     }
     
     open func inputView(with item: SAInputItem) -> UIView? {
-        if let view = _panels[item.identifier] {
+        if let view = _inputViews[item.identifier] {
             return view
         }
         switch item.identifier {
         case "kb:audio":
-            let panel = SAAudioPanel()
-            _panels[item.identifier] = panel
-            return panel
+            let view = SAAudioInputView()
+            _inputViews[item.identifier] = view
+            return view
             
         case "kb:photo":
-            let panel = SAPhotoPanel()
-            _panels[item.identifier] = panel
-            return panel
+            let view = SAPhotoInputView()
+            _inputViews[item.identifier] = view
+            return view
             
         case "kb:emotion":
-            let panel = SAEmotionPanel()
-            panel.delegate = self
-            panel.dataSource = self
-            _panels[item.identifier] = panel
-            return panel
+            let view = SAEmotionInputView()
+            view.delegate = self
+            view.dataSource = self
+            _inputViews[item.identifier] = view
+            return view
             
         case "kb:toolbox":
-            let panel = SAToolboxPanel()
-            panel.delegate = self
-            panel.dataSource = self
-            _panels[item.identifier] = panel
-            return panel
+            let view = SAToolboxInputView()
+            view.delegate = self
+            view.dataSource = self
+            _inputViews[item.identifier] = view
+            return view
             
         default:
             return nil
@@ -266,40 +266,40 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     }
 }
 
-// MARK: - SAToolboxPanelDataSource & SAToolboxPanelDelegate
+// MARK: - SAToolboxInputViewDataSource & SAToolboxInputViewDelegate
 
-extension SIMChatViewController: SAToolboxPanelDataSource, SAToolboxPanelDelegate {
+extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputViewDelegate {
     
-    open func numberOfItems(in toolbox: SAToolboxPanel) -> Int {
+    open func numberOfItems(in toolbox: SAToolboxInputView) -> Int {
         return _toolboxItems.count
     }
     
-    open func toolbox(_ toolbox: SAToolboxPanel, toolboxItemAt index: Int) -> SAToolboxItem? {
+    open func toolbox(_ toolbox: SAToolboxInputView, toolboxItemAt index: Int) -> SAToolboxItem? {
         guard index < _toolboxItems.count else {
             return nil
         }
         return _toolboxItems[index]
     }
     
-    open func toolbox(_ toolbox: SAToolboxPanel, shouldSelectItem item: SAToolboxItem) -> Bool {
+    open func toolbox(_ toolbox: SAToolboxInputView, shouldSelectItem item: SAToolboxItem) -> Bool {
         return true
     }
-    open func toolbox(_ toolbox: SAToolboxPanel, didSelectItem item: SAToolboxItem) {
+    open func toolbox(_ toolbox: SAToolboxInputView, didSelectItem item: SAToolboxItem) {
         _logger.debug(item.identifier)
     }
 }
 
-// MARK: - SAEmotionPanelDataSource & SAEmotionPanelDelegate
+// MARK: - SAEmotionInputViewDataSource & SAEmotionInputViewDelegate
 
-extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegate {
+extension SIMChatViewController: SAEmotionInputViewDataSource, SAEmotionInputViewDelegate {
     
-    open func numberOfGroups(in emotion: SAEmotionPanel) -> Int {
+    open func numberOfGroups(in emotion: SAEmotionInputView) -> Int {
         return _emotionGroups.count
     }
-    open func emotion(_ emotion: SAEmotionPanel, groupAt index: Int) -> SAEmotionGroup {
+    open func emotion(_ emotion: SAEmotionInputView, groupAt index: Int) -> SAEmotionGroup {
         return _emotionGroups[index]
     }
-    open func emotion(_ emotion: SAEmotionPanel, moreViewForGroupAt index: Int) -> UIView? { 
+    open func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView? { 
         if _emotionGroups[index].type.isSmall {
             return _emotionSendBtn
         } else {
@@ -307,17 +307,17 @@ extension SIMChatViewController: SAEmotionPanelDataSource, SAEmotionPanelDelegat
         }
     }
     
-    open func emotion(_ emotion: SAEmotionPanel, shouldSelectFor item: SAEmotion) -> Bool {
+    open func emotion(_ emotion: SAEmotionInputView, shouldSelectFor item: SAEmotion) -> Bool {
         return true
     }
-    open func emotion(_ emotion: SAEmotionPanel, didSelectFor item: SAEmotion) {
+    open func emotion(_ emotion: SAEmotionInputView, didSelectFor item: SAEmotion) {
         _logger.debug(item)
     }
     
-    open func emotion(_ emotion: SAEmotionPanel, shouldPreviewFor item: SAEmotion?) -> Bool {
+    open func emotion(_ emotion: SAEmotionInputView, shouldPreviewFor item: SAEmotion?) -> Bool {
         return true
     }
-    open func emotion(_ emotion: SAEmotionPanel, didPreviewFor item: SAEmotion?) {
+    open func emotion(_ emotion: SAEmotionInputView, didPreviewFor item: SAEmotion?) {
         _logger.debug(item)
     }
 }

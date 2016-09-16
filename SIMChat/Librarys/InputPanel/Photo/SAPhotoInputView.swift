@@ -1,5 +1,5 @@
 //
-//  SAPhotoPanel.swift
+//  SAPhotoInputView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/12/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc public class SAPhotoPanel: UIView {
+@objc public class SAPhotoInputView: UIView {
     
     public override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)

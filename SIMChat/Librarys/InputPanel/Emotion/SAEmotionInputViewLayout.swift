@@ -1,5 +1,5 @@
 //
-//  SAEmotionPanelLayout.swift
+//  SAEmotionInputViewLayout.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/15/16.
@@ -9,7 +9,7 @@
 import UIKit
 
 
-internal class SAEmotionPanelLayout: UICollectionViewFlowLayout {
+internal class SAEmotionInputViewLayout: UICollectionViewFlowLayout {
     
     func page(at indexPath: IndexPath) -> SAEmotionPage {
         return _allPages[indexPath.section]![indexPath.row]
