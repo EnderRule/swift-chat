@@ -16,23 +16,23 @@ import UIKit
 // [x] SAToolboxItemView - 选中高亮
 // [x] SAToolboxInputViewLayout - 快速滑动时性能问题
 
-@objc public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
+@objc 
+public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     
     func numberOfItems(in toolbox: SAToolboxInputView) -> Int
     
     func toolbox(_ toolbox: SAToolboxInputView, toolboxItemAt index: Int) -> SAToolboxItem?
     
 }
-@objc public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
+@objc
+public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
     
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectItem item: SAToolboxItem) -> Bool
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectItem item: SAToolboxItem) 
     
 }
 
-// MARK: -
-
-@objc open class SAToolboxInputView: UIView {
+open class SAToolboxInputView: UIView {
     
     open func reloadData() {
         _contentView.reloadData()
@@ -56,7 +56,6 @@ import UIKit
     open weak var delegate: SAToolboxInputViewDelegate?
     open weak var dataSource: SAToolboxInputViewDataSource?
     
-    // MARK: - 
     
     @objc func onPageChanged(_ sender: UIPageControl) {
         _contentView.setContentOffset(CGPoint(x: _contentView.bounds.width * CGFloat(sender.currentPage), y: 0), animated: true)

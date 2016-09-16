@@ -74,7 +74,6 @@
 		0C1823721D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823701D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift */; };
 		0C1823731D8AD2E90007DAEF /* UIImage+Base64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1823711D8AD2E90007DAEF /* UIImage+Base64.swift */; };
 		0C1A176A1D7723CA0093EE12 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17691D7723CA0093EE12 /* Logger.swift */; };
-		0C1A17771D7724880093EE12 /* SAInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176C1D7724880093EE12 /* SAInput.swift */; };
 		0C1A17781D7724880093EE12 /* SAInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */; };
 		0C1A17791D7724880093EE12 /* SAInputAccessoryViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176E1D7724880093EE12 /* SAInputAccessoryViewLayout.swift */; };
 		0C1A177A1D7724880093EE12 /* SAInputBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A176F1D7724880093EE12 /* SAInputBackgroundView.swift */; };
@@ -195,7 +194,6 @@
 		0C1823701D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+SA.swift"; sourceTree = "<group>"; };
 		0C1823711D8AD2E90007DAEF /* UIImage+Base64.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Base64.swift"; sourceTree = "<group>"; };
 		0C1A17691D7723CA0093EE12 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		0C1A176C1D7724880093EE12 /* SAInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInput.swift; sourceTree = "<group>"; };
 		0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C1A176E1D7724880093EE12 /* SAInputAccessoryViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryViewLayout.swift; sourceTree = "<group>"; };
 		0C1A176F1D7724880093EE12 /* SAInputBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputBackgroundView.swift; sourceTree = "<group>"; };
@@ -500,10 +498,10 @@
 		0C16541D1D8B9C5000A92C86 /* Toolbox */ = {
 			isa = PBXGroup;
 			children = (
-				0C16541E1D8B9C5000A92C86 /* SAToolboxInputView.swift */,
-				0C16541F1D8B9C5000A92C86 /* SAToolboxInputViewLayout.swift */,
 				0C1654201D8B9C5000A92C86 /* SAToolboxItem.swift */,
 				0C1654211D8B9C5000A92C86 /* SAToolboxItemView.swift */,
+				0C16541E1D8B9C5000A92C86 /* SAToolboxInputView.swift */,
+				0C16541F1D8B9C5000A92C86 /* SAToolboxInputViewLayout.swift */,
 			);
 			path = Toolbox;
 			sourceTree = "<group>";
@@ -547,7 +545,6 @@
 		0C1A176B1D7724880093EE12 /* InputBar */ = {
 			isa = PBXGroup;
 			children = (
-				0C1A176C1D7724880093EE12 /* SAInput.swift */,
 				0C1A17761D7724880093EE12 /* SAInputView.swift */,
 				0C1A176D1D7724880093EE12 /* SAInputAccessoryView.swift */,
 				0C1A176E1D7724880093EE12 /* SAInputAccessoryViewLayout.swift */,
@@ -746,7 +743,6 @@
 				0C1654271D8B9C5000A92C86 /* SAEmotion.swift in Sources */,
 				0C0DD65B1C60B4A900AEC8C4 /* SIMLog.swift in Sources */,
 				0C4070ED1C7ABF0100AEECB7 /* SIMChatMessageBox.swift in Sources */,
-				0C1A17771D7724880093EE12 /* SAInput.swift in Sources */,
 				0C5EBFB81C89677F00E0B923 /* SIMChatBaseImageResource.swift in Sources */,
 				0C0DD6501C60B4A900AEC8C4 /* SIMChatMessage.swift in Sources */,
 				0C1654231D8B9C5000A92C86 /* SAAudioInputView.swift in Sources */,

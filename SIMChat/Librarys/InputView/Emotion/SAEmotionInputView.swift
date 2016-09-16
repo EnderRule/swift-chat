@@ -35,14 +35,17 @@ import UIKit
 // [x] SAEmotionTabItemView - 选中高亮
 
 
-@objc public protocol SAEmotionInputViewDataSource: NSObjectProtocol {
+@objc 
+public protocol SAEmotionInputViewDataSource: NSObjectProtocol {
     
     func numberOfGroups(in emotion: SAEmotionInputView) -> Int
     func emotion(_ emotion: SAEmotionInputView, groupAt index: Int) -> SAEmotionGroup
     
     @objc optional func emotion(_ emotion: SAEmotionInputView, moreViewForGroupAt index: Int) -> UIView?
 }
-@objc public protocol SAEmotionInputViewDelegate: NSObjectProtocol {
+
+@objc 
+public protocol SAEmotionInputViewDelegate: NSObjectProtocol {
     
     @objc optional func emotion(_ emotion: SAEmotionInputView, shouldSelectFor item: SAEmotion) -> Bool
     @objc optional func emotion(_ emotion: SAEmotionInputView, didSelectFor item: SAEmotion)

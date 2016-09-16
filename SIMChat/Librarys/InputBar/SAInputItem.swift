@@ -8,6 +8,28 @@
 
 import UIKit
 
+public enum SAInputItemPosition: Int {
+    case top        = 0
+    case left       = 1
+    case right      = 3
+    case bottom     = 4
+    case center     = 2
+}
+public enum SAInputItemAlignment: Int {
+    //0xvvhh
+    case top            = 0x0104 // Top + Center(H)
+    case bottom         = 0x0204 // Bottom + Center(H)
+    case left           = 0x0401 // Center(V) + Left
+    case right          = 0x0402 // Center(V) + Right
+    case topLeft        = 0x0101 // Top + Left
+    case topRight       = 0x0102 // Top + Right
+    case bottomLeft     = 0x0201 // Bottom + Left
+    case bottomRight    = 0x0202 // Bottom + Right
+    case center         = 0x0404 // Center(V) + Center(H)
+    
+    case automatic      = 0x0000
+}
+
 open class SAInputItem: NSObject {
     
     // MARK: property
@@ -113,3 +135,15 @@ open class SAInputItem: NSObject {
     }
 }
 
+
+extension SAInputItemPosition: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .top: return "Top(\(rawValue))"
+        case .left: return "Left(\(rawValue))"
+        case .right: return "Right(\(rawValue))"
+        case .bottom: return "Bottom(\(rawValue))"
+        case .center:  return "Center(\(rawValue))"
+        }
+    }
+}
