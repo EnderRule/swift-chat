@@ -29,7 +29,6 @@ public protocol SAAudioInputViewDataSource: NSObjectProtocol {
 public protocol SAAudioInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
-    
 }
 
 

@@ -97,10 +97,18 @@ open class SIMChatViewController: UIViewController {
         }
     }
     open func inputViewContentSize(_ inputView: UIView) -> CGSize {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return CGSize(width: view.frame.width, height: 193)
         }
         return CGSize(width: view.frame.width, height: 253)
+    }
+    
+    var isLandscape: Bool {
+        let io = UIScreen.main.value(forKey: "_interfaceOrientation") as! Int
+        if UIInterfaceOrientation(rawValue: io)?.isLandscape ?? false {
+            return true
+        }
+        return false
     }
     
     private func _init() {
@@ -299,13 +307,13 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         return _emoticonGroups[index]
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return _emoticonGroups[index].rowsInLandscape
         }
         return _emoticonGroups[index].rows
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return _emoticonGroups[index].columnsInLandscape
         }
         return _emoticonGroups[index].columns
@@ -319,7 +327,7 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
     }
     
     open func emoticon(_ emoticon: SAEmoticonInputView, insetForGroupAt index: Int) -> UIEdgeInsets {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return UIEdgeInsetsMake(4, 12, 4 + 24, 12)
         }
         return UIEdgeInsetsMake(12, 10, 12 + 24, 10)
@@ -359,14 +367,14 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
         return 2
     }
     open func toolbox(_ toolbox: SAToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return 6
         }
         return 4
     }
     
     open func toolbox(_ toolbox: SAToolboxInputView, insetForSectionAt index: Int) -> UIEdgeInsets {
-        if UIDevice.current.orientation.isLandscape {
+        if isLandscape {
             return UIEdgeInsetsMake(4, 12, 4, 12)
         }
         return UIEdgeInsetsMake(12, 10, 12, 10)

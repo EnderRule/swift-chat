@@ -54,17 +54,6 @@ open class SAToolboxInputView: UIView {
             _updatePageControl()
         }
     }
-    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if let view = super.hitTest(point, with: event) {
-            // 如果点击了空白区域, 转发给`_pageControl`
-            guard view !== self else {
-                return _pageControl
-            }
-            return view
-        }
-        return nil
-    }
-    
     open override var intrinsicContentSize: CGSize {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
