@@ -11,10 +11,11 @@ import UIKit
 // ## TODO
 // [x] SAToolboxInputView - 数据源
 // [x] SAToolboxInputView - 代理
-// [x] SAToolboxInputView - 竖屏(2x4)
-// [x] SAToolboxInputView - 横屏(2x5)
+// [x] SAToolboxInputView - 竖屏
+// [x] SAToolboxInputView - 横屏
 // [x] SAToolboxInputView - 自定义行/列数量
 // [x] SAToolboxItemView - 选中高亮
+// [x] SAToolboxItemView - 限制最大大小(80x80)
 // [x] SAToolboxInputViewLayout - 快速滑动时性能问题
 
 @objc 
@@ -28,6 +29,8 @@ public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
 }
 @objc
 public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
+    
+    @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) 
@@ -61,10 +64,7 @@ open class SAToolboxInputView: UIView {
     }
     
     open override var intrinsicContentSize: CGSize {
-        if UIDevice.current.orientation.isLandscape {
-            return CGSize(width: frame.width, height: 193)
-        }
-        return CGSize(width: frame.width, height: 253)
+        return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
     
     open weak var delegate: SAToolboxInputViewDelegate?
@@ -149,9 +149,9 @@ open class SAToolboxInputView: UIView {
     }
 }
 
-// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
+// MARK: - UICollectionViewDataSource & SAToolboxInputViewLayoutDelegate
 
-extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelegate {
+extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayoutDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         _pageControl.currentPage = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
@@ -170,6 +170,13 @@ extension SAToolboxInputView: UICollectionViewDataSource, UICollectionViewDelega
         }
         cell.item = dataSource?.toolbox(self, itemAt: indexPath.row)
         cell.handler = self
+    }
+    
+    public func numberOfRowsInCollectionView(_ collectionView: UICollectionView) -> Int {
+        return dataSource?.numberOfRowsInToolbox?(self) ?? 2
+    }
+    public func numberOfColumnsInCollectionView(_ collectionView: UICollectionView) -> Int {
+        return dataSource?.numberOfColumnsInToolbox?(self) ?? 4
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

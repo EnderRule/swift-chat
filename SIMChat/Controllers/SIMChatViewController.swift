@@ -96,6 +96,12 @@ open class SIMChatViewController: UIViewController {
             _emoticonGroups.append(group)
         }
     }
+    open func inputViewContentSize(_ inputView: UIView) -> CGSize {
+        if UIDevice.current.orientation.isLandscape {
+            return CGSize(width: view.frame.width, height: 193)
+        }
+        return CGSize(width: view.frame.width, height: 253)
+    }
     
     private func _init() {
         _logger.trace()
@@ -115,7 +121,6 @@ open class SIMChatViewController: UIViewController {
         _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .normal)
         _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .highlighted)
     }
-    
     
     fileprivate var _activedItem: SAInputItem?
     fileprivate var _activedPanel: UIView?
@@ -293,6 +298,12 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
     open func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup {
         return _emoticonGroups[index]
     }
+    open func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int {
+        return _emoticonGroups[index].rows
+    }
+    open func emoticon(_ emoticon: SAEmoticonInputView, numberOfCloumnsForGroupAt index: Int) -> Int {
+        return _emoticonGroups[index].columns
+    }
     open func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView? { 
         if _emoticonGroups[index].type.isSmall {
             return _emoticonSendBtn
@@ -336,7 +347,7 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
     }
     open func numberOfColumnsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
         if UIDevice.current.orientation.isLandscape {
-            return 5
+            return 6
         }
         return 4
     }

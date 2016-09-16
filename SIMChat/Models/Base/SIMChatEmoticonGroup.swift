@@ -98,8 +98,10 @@ open class SIMChatEmoticonGroup: SAEmoticonGroup {
         super.init()
         
         type = SAEmoticonType(rawValue: dic["type"] as? Int ?? 0) ?? .small
-        row = dic["row"] as? Int ?? 3
-        column = dic["column"] as? Int ?? 7
+        rows = dic["rows"] as? Int ?? 3
+        columns = dic["columns"] as? Int ?? 7
+        rowsInLandscape = dic["rowsInLandscape"] as? Int ?? 2
+        columnsInLandscape = dic["columnsInLandscape"] as? Int ?? 13
         
         if let img = dic["image"] as? String {
             thumbnail = UIImage(contentsOfFile: "\(directory)/\(img)")

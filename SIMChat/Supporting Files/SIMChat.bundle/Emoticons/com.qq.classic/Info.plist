@@ -6,9 +6,13 @@
 	<integer>0</integer>
 	<key>image</key>
 	<string>icon.png</string>
-	<key>row</key>
+	<key>rows</key>
 	<integer>3</integer>
-	<key>column</key>
+	<key>columns</key>
+	<integer>7</integer>
+	<key>rowsInLandscape</key>
+	<integer>1</integer>
+	<key>columnsInLandscape</key>
 	<integer>7</integer>
 	<key>emoticons</key>
 	<array>

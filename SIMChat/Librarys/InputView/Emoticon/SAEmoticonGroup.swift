@@ -21,8 +21,10 @@ open class SAEmoticonGroup: NSObject {
     
     open lazy var id: String = UUID().uuidString
     
-    open var row: Int = 3
-    open var column: Int = 7
+    open var rows: Int = 3
+    open var columns: Int = 7
+    open var rowsInLandscape: Int = 2
+    open var columnsInLandscape: Int = 13
     
     open var title: String?
     open var thumbnail: UIImage?
@@ -39,8 +41,8 @@ open class SAEmoticonGroup: NSObject {
         let width = size.width - edg.left - edg.right
         let height = size.height - edg.top - edg.bottom
         
-        let row = CGFloat(self.row)
-        let col = CGFloat(self.column)
+        let row = CGFloat(self.rows)
+        let col = CGFloat(self.columns)
         
         let tmp = CGSize(width: trunc((width - 8 * col) / col),
                          height: trunc((height - 8 * row) / row))

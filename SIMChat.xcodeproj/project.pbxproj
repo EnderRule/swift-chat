@@ -220,7 +220,7 @@
 		0C9E3DAF1D8BA7F700F4DEE6 /* SAEmoticon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticon.swift; sourceTree = "<group>"; };
 		0C9E3DB01D8BA7F700F4DEE6 /* SAEmoticonBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonBackgroundView.swift; sourceTree = "<group>"; };
 		0C9E3DB11D8BA7F700F4DEE6 /* SAEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonGroup.swift; sourceTree = "<group>"; };
-		0C9E3DB21D8BA7F700F4DEE6 /* SAEmoticonInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonInputView.swift; sourceTree = "<group>"; };
+		0C9E3DB21D8BA7F700F4DEE6 /* SAEmoticonInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonInputView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C9E3DB31D8BA7F700F4DEE6 /* SAEmoticonInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonInputViewLayout.swift; sourceTree = "<group>"; };
 		0C9E3DB41D8BA7F700F4DEE6 /* SAEmoticonLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonLine.swift; sourceTree = "<group>"; };
 		0C9E3DB51D8BA7F700F4DEE6 /* SAEmoticonPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPage.swift; sourceTree = "<group>"; };

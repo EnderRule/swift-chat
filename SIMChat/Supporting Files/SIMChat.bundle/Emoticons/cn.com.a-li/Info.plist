@@ -6,10 +6,14 @@
 	<string>20936f5deebe6dcd</string>
 	<key>type</key>
 	<integer>1</integer>
-	<key>row</key>
+	<key>rows</key>
 	<integer>2</integer>
-	<key>column</key>
+	<key>columns</key>
 	<integer>4</integer>
+	<key>rowsInLandscape</key>
+	<integer>1</integer>
+	<key>columnsInLandscape</key>
+	<integer>7</integer>
 	<key>image</key>
 	<string>icon.png</string>
 	<key>emoticons</key>

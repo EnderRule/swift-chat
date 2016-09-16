@@ -11,6 +11,14 @@ import UIKit
 
 internal class SAEmoticonInputViewLayout: UICollectionViewFlowLayout {
     
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        if collectionView?.frame.width != newBounds.width {
+            return true
+        }
+        return false
+    }
+    
+    
     func page(at indexPath: IndexPath) -> SAEmoticonPage {
         return _allPages[indexPath.section]![indexPath.row]
     }
@@ -51,4 +59,6 @@ internal class SAEmoticonInputViewLayout: UICollectionViewFlowLayout {
     }
     
     lazy var _allPages: [Int: [SAEmoticonPage]] = [:]
+    
+    // 以width区别
 }

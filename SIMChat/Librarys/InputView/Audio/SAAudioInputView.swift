@@ -26,6 +26,9 @@ public protocol SAAudioInputViewDataSource: NSObjectProtocol {
 
 @objc 
 public protocol SAAudioInputViewDelegate: NSObjectProtocol {
+    
+    @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
+    
 }
 
 
@@ -35,10 +38,7 @@ open class SAAudioInputView: UIView {
     open weak var delegate: SAAudioInputViewDelegate?
     
     open override var intrinsicContentSize: CGSize {
-        if UIDevice.current.orientation.isLandscape {
-            return CGSize(width: frame.width, height: 193)
-        }
-        return CGSize(width: frame.width, height: 253)
+        return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
     
     private func _init() {

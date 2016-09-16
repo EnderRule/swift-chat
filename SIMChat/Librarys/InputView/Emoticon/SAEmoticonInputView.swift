@@ -41,11 +41,16 @@ public protocol SAEmoticonInputViewDataSource: NSObjectProtocol {
     func numberOfItemsInEmoticon(_ emoticon: SAEmoticonInputView) -> Int
     func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup
     
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfCloumnsForGroupAt index: Int) -> Int
+    
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView?
 }
 
 @objc 
 public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
+    
+    @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon)
@@ -57,11 +62,15 @@ public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
 
 open class SAEmoticonInputView: UIView {
     
-    open override var intrinsicContentSize: CGSize {
-        if UIDevice.current.orientation.isLandscape {
-            return CGSize(width: frame.width, height: 193)
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _cacheBounds?.width != bounds.width {
+            _cacheBounds = bounds
         }
-        return CGSize(width: frame.width, height: 253)
+    }
+    open override var intrinsicContentSize: CGSize {
+        return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
    
     open weak var dataSource: SAEmoticonInputViewDataSource?
@@ -142,6 +151,8 @@ open class SAEmoticonInputView: UIView {
         addConstraint(_SAEmoticonLayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 37))
         addConstraint(_SAEmoticonLayoutConstraintMake(_pageControl, .height, .equal, nil, .notAnAttribute, 20))
     }
+    
+    private var _cacheBounds: CGRect?
     
     fileprivate var _color: UIColor?
     fileprivate var _currentGroup: Int?

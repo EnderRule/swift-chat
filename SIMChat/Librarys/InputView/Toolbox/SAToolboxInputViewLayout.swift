@@ -18,15 +18,15 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
     
     var rows: Int {
         guard let collectionView = collectionView else {
-            return _defaultRows
+            return 2
         }
-        return delegate?.numberOfRowsInCollectionView?(collectionView) ?? _defaultRows
+        return delegate?.numberOfRowsInCollectionView?(collectionView) ?? 2
     }
     var columns: Int {
         guard let collectionView = collectionView else {
-            return _defaultColumns
+            return 4
         }
-        return delegate?.numberOfColumnsInCollectionView?(collectionView) ?? _defaultColumns
+        return delegate?.numberOfColumnsInCollectionView?(collectionView) ?? 4
     }
     
     weak var delegate: SAToolboxInputViewLayoutDelegate? {
