@@ -12,9 +12,9 @@ import UIKit
 internal protocol SAEmoticonInputViewDelegateLayout: UICollectionViewDelegate {
     
     @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup?
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, contentInsetForGroupAt index: Int) -> UIEdgeInsets
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets
     @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfCloumnsForGroupAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int
 }
 
 
@@ -104,14 +104,14 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         }
         return delegate.collectionView?(collectionView, layout: self, numberOfRowsForGroupAt: section) ?? 3
     }
-    func numberOfCloumns(in section: Int) -> Int {
+    func numberOfColumns(in section: Int) -> Int {
         guard let collectionView = collectionView else {
             return 7
         }
         guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
             return 7
         }
-        return delegate.collectionView?(collectionView, layout: self, numberOfCloumnsForGroupAt: section) ?? 7
+        return delegate.collectionView?(collectionView, layout: self, numberOfColumnsForGroupAt: section) ?? 7
     }
     func contentInset(in section: Int) -> UIEdgeInsets {
         guard let collectionView = collectionView else {
@@ -120,7 +120,7 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
             return .zero
         }
-        return delegate.collectionView?(collectionView, layout: self, contentInsetForGroupAt: section) ?? .zero
+        return delegate.collectionView?(collectionView, layout: self, insetForGroupAt: section) ?? .zero
     }
     
     private func _group(at index: Int) -> SAEmoticonGroup? {
@@ -140,7 +140,7 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         
         let inset = contentInset(in: index)
         let rows = CGFloat(numberOfRows(in: index))
-        let columns = CGFloat(numberOfCloumns(in: index))
+        let columns = CGFloat(numberOfColumns(in: index))
         
         let bounds = CGRect(origin: .zero, size: collectionView?.frame.size ?? .zero)
         let rect = UIEdgeInsetsInsetRect(bounds, inset)

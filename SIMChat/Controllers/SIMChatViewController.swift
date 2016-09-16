@@ -304,7 +304,7 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         }
         return _emoticonGroups[index].rows
     }
-    open func emoticon(_ emoticon: SAEmoticonInputView, numberOfCloumnsForGroupAt index: Int) -> Int {
+    open func emoticon(_ emoticon: SAEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int {
         if UIDevice.current.orientation.isLandscape {
             return _emoticonGroups[index].columnsInLandscape
         }
@@ -318,7 +318,7 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         }
     }
     
-    open func emoticon(_ emoticon: SAEmoticonInputView, contentInsetForGroupAt index: Int) -> UIEdgeInsets {
+    open func emoticon(_ emoticon: SAEmoticonInputView, insetForGroupAt index: Int) -> UIEdgeInsets {
         if UIDevice.current.orientation.isLandscape {
             return UIEdgeInsetsMake(4, 12, 4 + 24, 12)
         }
@@ -355,14 +355,21 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
         return _toolboxItems[index]
     }
     
-    open func numberOfRowsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
+    open func toolbox(_ toolbox: SAToolboxInputView, numberOfRowsForSectionAt index: Int) -> Int {
         return 2
     }
-    open func numberOfColumnsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
+    open func toolbox(_ toolbox: SAToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int {
         if UIDevice.current.orientation.isLandscape {
             return 6
         }
         return 4
+    }
+    
+    open func toolbox(_ toolbox: SAToolboxInputView, insetForSectionAt index: Int) -> UIEdgeInsets {
+        if UIDevice.current.orientation.isLandscape {
+            return UIEdgeInsetsMake(4, 12, 4, 12)
+        }
+        return UIEdgeInsetsMake(12, 10, 12, 10)
     }
     
     open func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool {

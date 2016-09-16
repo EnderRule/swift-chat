@@ -42,7 +42,7 @@ public protocol SAEmoticonInputViewDataSource: NSObjectProtocol {
     func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup
     
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfCloumnsForGroupAt index: Int) -> Int
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int
     
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView?
 }
@@ -52,7 +52,7 @@ public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, contentInsetForGroupAt index: Int) -> UIEdgeInsets
+    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, insetForGroupAt index: Int) -> UIEdgeInsets
     
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon)
@@ -306,11 +306,11 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
     internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int {
         return dataSource?.emoticon?(self, numberOfRowsForGroupAt: index) ?? 3
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfCloumnsForGroupAt index: Int) -> Int { 
-        return dataSource?.emoticon?(self, numberOfCloumnsForGroupAt: index) ?? 7
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int { 
+        return dataSource?.emoticon?(self, numberOfColumnsForGroupAt: index) ?? 7
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, contentInsetForGroupAt index: Int) -> UIEdgeInsets {
-        return delegate?.emoticon?(self, contentInsetForGroupAt: index) ?? UIEdgeInsetsMake(12, 10, 12 + 30, 10)
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets {
+        return delegate?.emoticon?(self, insetForGroupAt: index) ?? UIEdgeInsetsMake(12, 10, 12 + 30, 10)
     }
     
     fileprivate func _updateMoreView(at indexPath: IndexPath) {

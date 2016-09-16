@@ -175,8 +175,8 @@
 		0C16540E1D8B9C4F00A92C86 /* SAAudioSimulateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSimulateView.swift; sourceTree = "<group>"; };
 		0C16540F1D8B9C4F00A92C86 /* SAAudioTalkbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTalkbackView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C16541C1D8B9C5000A92C86 /* SAPhotoInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoInputView.swift; sourceTree = "<group>"; };
-		0C16541E1D8B9C5000A92C86 /* SAToolboxInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputView.swift; sourceTree = "<group>"; };
-		0C16541F1D8B9C5000A92C86 /* SAToolboxInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputViewLayout.swift; sourceTree = "<group>"; };
+		0C16541E1D8B9C5000A92C86 /* SAToolboxInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputView.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0C16541F1D8B9C5000A92C86 /* SAToolboxInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputViewLayout.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C1654201D8B9C5000A92C86 /* SAToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItem.swift; sourceTree = "<group>"; };
 		0C1654211D8B9C5000A92C86 /* SAToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItemView.swift; sourceTree = "<group>"; };
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };

@@ -24,13 +24,15 @@ public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int
     func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem?
     
-    @objc optional func numberOfRowsInToolbox(_ toolbox: SAToolboxInputView) -> Int
-    @objc optional func numberOfColumnsInToolbox(_ toolbox: SAToolboxInputView) -> Int
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfRowsForSectionAt index: Int) -> Int
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int
 }
 @objc
 public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
+    
+    @objc optional func toolbox(_ toolbox: SAToolboxInputView, insetForSectionAt index: Int) -> UIEdgeInsets
     
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) 
@@ -95,7 +97,8 @@ open class SAToolboxInputView: UIView {
     private func _updatePageControl() {
         _logger.trace()
         
-        let maxCount = _contentViewLayout.rows * _contentViewLayout.columns
+        
+        let maxCount = _contentViewLayout.numberOfRows(in: 0) * _contentViewLayout.numberOfColumns(in: 0)
         let count = _contentView.numberOfItems(inSection: 0)
         let page = (count + (maxCount - 1)) / maxCount
         let currentPage = min(Int(_contentView.contentOffset.x / _contentView.frame.width), page - 1)
@@ -189,11 +192,14 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
         cell.handler = self
     }
     
-    public func numberOfRowsInCollectionView(_ collectionView: UICollectionView) -> Int {
-        return dataSource?.numberOfRowsInToolbox?(self) ?? 2
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets {
+        return delegate?.toolbox?(self, insetForSectionAt: index) ?? UIEdgeInsetsMake(12, 10, 12, 10)
     }
-    public func numberOfColumnsInCollectionView(_ collectionView: UICollectionView) -> Int {
-        return dataSource?.numberOfColumnsInToolbox?(self) ?? 4
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int {
+        return dataSource?.toolbox?(self, numberOfRowsForSectionAt: index) ?? 2
+    }
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int {
+        return dataSource?.toolbox?(self, numberOfColumnsForSectionAt: index) ?? 4
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

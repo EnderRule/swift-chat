@@ -10,23 +10,41 @@ import UIKit
 
 @objc
 internal protocol SAToolboxInputViewLayoutDelegate: UICollectionViewDelegate {
-    @objc optional func numberOfRowsInCollectionView(_ collectionView: UICollectionView) -> Int
-    @objc optional func numberOfColumnsInCollectionView(_ collectionView: UICollectionView) -> Int
+    
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int
+    
 }
 
 internal class SAToolboxInputViewLayout: UICollectionViewLayout {
     
-    var rows: Int {
+    func numberOfRows(in section: Int) -> Int {
         guard let collectionView = collectionView else {
             return 2
         }
-        return delegate?.numberOfRowsInCollectionView?(collectionView) ?? 2
+        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+            return 2
+        }
+        return delegate.collectionView?(collectionView, layout: self, numberOfRowsForSectionAt: section) ?? 2
     }
-    var columns: Int {
+    func numberOfColumns(in section: Int) -> Int {
         guard let collectionView = collectionView else {
             return 4
         }
-        return delegate?.numberOfColumnsInCollectionView?(collectionView) ?? 4
+        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+            return 4
+        }
+        return delegate.collectionView?(collectionView, layout: self, numberOfColumnsForSectionAt: section) ?? 4
+    }
+    func contentInset(in section: Int) -> UIEdgeInsets {
+        guard let collectionView = collectionView else {
+            return .zero
+        }
+        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+            return .zero
+        }
+        return delegate.collectionView?(collectionView, layout: self, insetForSectionAt: section) ?? .zero
     }
     
     weak var delegate: SAToolboxInputViewLayoutDelegate? {
@@ -43,7 +61,7 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
     override var collectionViewContentSize: CGSize {
         
         let count = collectionView?.numberOfItems(inSection: 0) ?? 0
-        let maxCount = rows * columns
+        let maxCount = numberOfRows(in: 0) * numberOfColumns(in: 0)
         let page = (count + (maxCount - 1)) / maxCount
         let frame = collectionView?.frame ?? CGRect.zero
         
@@ -74,20 +92,22 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
         
         let width = frame.width - edg.left - edg.right
         let height = frame.height - edg.top - edg.bottom
-        let frow = CGFloat(rows)
-        let fcol = CGFloat(columns)
+        let irows = numberOfRows(in: 0)
+        let icolumns = numberOfColumns(in: 0)
+        let rows = CGFloat(irows)
+        let columns = CGFloat(icolumns)
         
-        let w: CGFloat = min(trunc((width - 8 * fcol) / fcol), 80)
-        let h: CGFloat = min(trunc((height - 4 * frow) / frow), 80)
-        let yg: CGFloat = (height / frow) - h
-        let xg: CGFloat = (width / fcol) - w
+        let w: CGFloat = min(trunc((width - 8 * columns) / columns), 80)
+        let h: CGFloat = min(trunc((height - 4 * rows) / rows), 80)
+        let yg: CGFloat = (height / rows) - h
+        let xg: CGFloat = (width / columns) - w
         // fill
         for i in 0 ..< count {
             // 计算。
-            let r = CGFloat((i / columns) % rows)
-            let c = CGFloat((i % columns))
+            let r = CGFloat((i / icolumns) % irows)
+            let c = CGFloat((i % icolumns))
             let idx = IndexPath(item: i, section: 0)
-            let page = CGFloat(i / (rows * columns))
+            let page = CGFloat(i / (irows * icolumns))
             
             let a = self.layoutAttributesForItem(at: idx) ?? UICollectionViewLayoutAttributes(forCellWith: idx)
             let x = edg.left + xg / 2 + c * (w + xg) + page * frame.width
