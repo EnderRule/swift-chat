@@ -51,13 +51,6 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
         return collectionView?.delegate as? SAToolboxInputViewLayoutDelegate
     }
     
-    var contentInset: UIEdgeInsets {
-        if UIDevice.current.orientation.isLandscape {
-            return UIEdgeInsetsMake(0, 12, 0, 12)
-        }
-        return UIEdgeInsetsMake(12, 10, 12, 10)
-    }
-    
     override var collectionViewContentSize: CGSize {
         
         let count = collectionView?.numberOfItems(inSection: 0) ?? 0
@@ -86,7 +79,7 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
         
         var ats = [UICollectionViewLayoutAttributes]()
         // 生成
-        let edg = contentInset
+        let edg = contentInset(in: 0)
         let frame = collectionView?.bounds ?? .zero
         let count = collectionView?.numberOfItems(inSection: 0) ?? 0
         

@@ -30,7 +30,8 @@ import UIKit
 // [x] SAEmoticonPageView - 选中
 // [x] SAEmoticonPageView - 选中高亮
 // [x] SAEmoticonPageView - 长按预览
-// [ ] SAEmoticonPageView - 横屏支持
+// [x] SAEmoticonPageView - 横屏支持
+// [x] SAEmoticonPageView - 限制最大大小(80x80)
 // [x] SAEmoticonTabItemView - 选中
 // [x] SAEmoticonTabItemView - 选中高亮
 
