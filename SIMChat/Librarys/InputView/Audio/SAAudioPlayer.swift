@@ -7,7 +7,293 @@
 //
 
 import UIKit
+import AVFoundation
 
-class SAAudioPlayer: NSObject {
+@objc 
+public protocol SAAudioPlayerDelegate: NSObjectProtocol {
+    
+    @objc optional func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool
+    @objc optional func player(didPrepareToPlay player: SAAudioPlayer)
+    
+    @objc optional func player(shouldStartPlay player: SAAudioPlayer) -> Bool
+    @objc optional func player(didStartPlay player: SAAudioPlayer)
+    
+    @objc optional func player(didStopPlay player: SAAudioPlayer)
+    
+    @objc optional func player(didFinishPlay player: SAAudioPlayer)
+    @objc optional func player(didInterruptionPlay player: SAAudioPlayer)
+    @objc optional func player(didErrorOccur player: SAAudioPlayer, error: NSError)
+}
 
+
+open class SAAudioPlayer: NSObject {
+    
+    open func prepareToPlay() {
+        _prepareToPlay()
+    }
+    open func play() {
+        _isStarted = true
+        _prepareToPlay()
+        _startPlay()
+    }
+    open func stop() {
+        _stopPlay()
+        _isStarted = false
+    }
+    
+    open weak var delegate: SAAudioPlayerDelegate?
+    
+    open var url: URL {
+        return _url
+    }
+    open var duration: TimeInterval { 
+        return _player?.duration ?? 0 
+    }
+    open var currentTime: TimeInterval {
+        set {
+            _player?.currentTime = newValue
+        }
+        get {
+            return _player?.currentTime ?? 0 
+        }
+    }
+    
+    open var isPlaying: Bool {
+        return _player?.isPlaying ?? false
+    }
+    open var isActivating: Bool {
+        objc_sync_enter(SAAudioPlayer.self)
+        defer {
+            objc_sync_exit(SAAudioPlayer.self) 
+        }
+        
+        if SAAudioPlayer._activatedPlayer === self {
+            return true
+        }
+        return false
+    }
+    open var isMeteringEnabled: Bool = false {
+        willSet {
+            _player?.isMeteringEnabled = newValue
+        }
+    }
+    
+    open func updateMeters() {
+        _player?.updateMeters()
+    }
+    open func peakPower(forChannel channelNumber: Int) -> Float {
+        return _player?.peakPower(forChannel: channelNumber) ?? -160
+    }
+    open func averagePower(forChannel channelNumber: Int) -> Float {
+        return _player?.averagePower(forChannel: channelNumber) ?? -160
+    }
+    
+    fileprivate var _isStarted: Bool = false
+    
+    fileprivate var _isPrepared: Bool { return _player != nil }
+    fileprivate var _isPrepareing: Bool = false
+    
+    fileprivate var _url: URL
+    fileprivate var _player: AVAudioPlayer?
+    
+    fileprivate static weak var _activatedPlayer: SAAudioPlayer?
+    
+    public init(url: URL) {
+        _url = url
+        super.init()
+        
+        let center = NotificationCenter.default
+        center.addObserver(self,
+                           selector: #selector(audioPlayDidInterruption(_:)),
+                           name: .AVAudioSessionInterruption,
+                           object: nil)
+    }
+    deinit {
+        _player?.delegate = nil
+        NotificationCenter.default.removeObserver(self)
+    }
+}
+
+fileprivate extension SAAudioPlayer {
+    
+    fileprivate func _clearResource() {
+        
+        _isStarted = false
+        _player?.delegate = nil
+        _player?.stop() 
+        _player = nil
+    }
+    
+    fileprivate func _activate() throws {
+        objc_sync_enter(SAAudioPlayer.self)
+        defer {
+            objc_sync_exit(SAAudioPlayer.self) 
+        }
+        guard !isActivating else {
+            return
+        }
+        try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        try AVAudioSession.sharedInstance().setActive(true)
+        
+        SAAudioPlayer._activatedPlayer = self
+    }
+    fileprivate func _deactivate() {
+        objc_sync_enter(SAAudioPlayer.self)
+        defer {
+            objc_sync_exit(SAAudioPlayer.self) 
+        }
+        guard isActivating else {
+            return
+        }
+        let st = DispatchTimeInterval.seconds(1)
+        let session = AVAudioSession.sharedInstance()
+        let category = session.category
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + st) { 
+            objc_sync_enter(SAAudioPlayer.self)
+            autoreleasepool {
+                guard session.category == category else {
+                    return // 别人使用了
+                }
+                guard self.isActivating && !self.isPlaying else {
+                    return 
+                }
+                _ = try? session.setActive(false, with: .notifyOthersOnDeactivation)
+                SAAudioPlayer._activatedPlayer = nil
+            }
+            objc_sync_exit(SAAudioPlayer.self) 
+        }
+    }
+    
+    fileprivate func _prepareToPlay() {
+        guard !_isPrepared && !_isPrepareing else {
+            return // 己经准备或正在准备
+        }
+        guard _shouldPrepareToPlay() else {
+            return // 申请被拒绝
+        }
+        _isPrepareing = true
+        if _prepareToPlayV2() {
+        }
+    }
+    fileprivate func _prepareToPlayV2() -> Bool {
+        do {
+            let player = try AVAudioPlayer(contentsOf: _url)
+            player.delegate = self
+            player.isMeteringEnabled = isMeteringEnabled
+            guard player.prepareToPlay() else  {
+                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
+                    NSLocalizedFailureReasonErrorKey: "准备播放失败"
+                ])
+            }
+            _player = player
+            _isPrepareing = false
+            _didPrepareToPlay()
+            return true
+        } catch let error as NSError  {
+            _isPrepareing = false
+            _didErrorOccur(error)
+            return false
+        }
+    }
+    
+    fileprivate func _startPlay() {
+        guard _isStarted && _isPrepared else {
+            return // 并没有准备好
+        }
+        do {
+            guard let player = _player else {
+                return // 并没有准备好
+            }
+            guard _shouldStartPlay() else {
+                _clearResource()
+                return // 用户拒绝了该请求
+            }
+            try _activate()
+            guard player.play() else {
+                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
+                    NSLocalizedFailureReasonErrorKey: "播放失败"
+                ])
+            }
+            _didStartPlay()
+        } catch let error as NSError {
+            _didErrorOccur(error)
+        }
+    }
+    
+    fileprivate func _stopPlay() {
+        guard _isPrepared else {
+            return // 并没有启动
+        }
+        // 取消
+        _player?.stop()
+        _didStopPlay()
+        _deactivate()
+    }
+}
+
+fileprivate extension SAAudioPlayer {
+    
+    fileprivate func _shouldPrepareToPlay() -> Bool {
+        guard delegate?.player?(shouldPrepareToPlay: self) ?? true else {
+            return false
+        }
+        return true
+    }
+    fileprivate func _didPrepareToPlay() {
+        delegate?.player?(didPrepareToPlay: self)
+    }
+    
+    fileprivate func _shouldStartPlay() -> Bool {
+        guard delegate?.player?(shouldStartPlay: self) ?? true else {
+            return false
+        }
+        return true
+    }
+    fileprivate func _didStartPlay() {
+        delegate?.player?(didStartPlay: self)
+    }
+    
+    fileprivate func _didStopPlay() {
+        delegate?.player?(didStopPlay: self)
+    }
+    
+    fileprivate func _didInterruptionPlay() {
+        delegate?.player?(didInterruptionPlay: self)
+    }
+    
+    fileprivate func _didFinishPlay() {
+        delegate?.player?(didFinishPlay: self)
+    }
+    fileprivate func _didErrorOccur(_ error: NSError) {
+        delegate?.player?(didErrorOccur: self, error: error)
+        // 释放资源
+        _isStarted = false
+        _clearResource()
+    }
+}
+
+// MARK: - AVAudioPlayerDelegate
+
+extension SAAudioPlayer: AVAudioPlayerDelegate {
+    
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        _didFinishPlay()
+        _clearResource()
+    }
+    
+    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        let err = (error as? NSError) ?? NSError(domain: "SAAudioDoMain", code: 4, userInfo: [
+            NSLocalizedFailureReasonErrorKey: "编码错误"
+        ])
+        _didErrorOccur(err)
+    }
+    
+    public func audioPlayDidInterruption(_ sender: Notification) {
+        guard isPlaying else {
+            return
+        }
+        _stopPlay()
+        _didInterruptionPlay()
+    }
 }

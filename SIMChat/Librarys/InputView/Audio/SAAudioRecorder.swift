@@ -19,7 +19,9 @@ public protocol SAAudioRecorderDelegate: NSObjectProtocol {
     @objc optional func recorder(didStartRecord recorder: SAAudioRecorder)
     
     @objc optional func recorder(didStopRecord recorder: SAAudioRecorder)
-    @objc optional func recorder(didFinish recorder: SAAudioRecorder)
+    
+    @objc optional func recorder(didFinishRecord recorder: SAAudioRecorder)
+    @objc optional func recorder(didInterruptionRecord recorder: SAAudioRecorder)
     @objc optional func recorder(didErrorOccur recorder: SAAudioRecorder, error: NSError)
 }
 
@@ -46,7 +48,7 @@ open class SAAudioRecorder: NSObject {
         if let recorder = _recorder, recorder.isRecording {
             return recorder.currentTime
         }
-        return _currentTime
+        return _lastCurrentTime
     }
     
     open var isRecording: Bool {
@@ -64,12 +66,9 @@ open class SAAudioRecorder: NSObject {
         }
         return false
     }
-    open var isMeteringEnabled: Bool {
-        set {
+    open var isMeteringEnabled: Bool = false {
+        willSet {
             _recorder?.isMeteringEnabled = newValue
-        }
-        get {
-            return _recorder?.isMeteringEnabled ?? false
         }
     }
     
@@ -85,7 +84,7 @@ open class SAAudioRecorder: NSObject {
     
     open weak var delegate: SAAudioRecorderDelegate?
     
-    fileprivate var _currentTime: TimeInterval = 0
+    fileprivate var _lastCurrentTime: TimeInterval = 0
     fileprivate var _isStarted: Bool = false
     
     fileprivate var _isPrepared: Bool { return _recorder != nil }
@@ -163,19 +162,18 @@ fileprivate extension SAAudioRecorder {
         DispatchQueue.main.asyncAfter(deadline: .now() + st) { 
             
             objc_sync_enter(SAAudioRecorder.self)
-            defer {
-                objc_sync_exit(SAAudioRecorder.self) 
+            autoreleasepool {
+                guard session.category == category else {
+                    return // 别人使用了
+                }
+                guard self.isActivating && !self.isRecording else {
+                    return 
+                }
+                _ = try? session.setActive(false, with: .notifyOthersOnDeactivation)
+                SAAudioRecorder._activatedRecorder = nil
+                
             }
-            
-            guard session.category == category else {
-                return // 别人使用了
-            }
-            guard self.isActivating else {
-                return 
-            }
-            _ = try? session.setActive(false, with: .notifyOthersOnDeactivation)
-            
-            SAAudioRecorder._activatedRecorder = nil
+            objc_sync_exit(SAAudioRecorder.self) 
         }
     }
     
@@ -190,13 +188,12 @@ fileprivate extension SAAudioRecorder {
         let isStarted = _isStarted
         // 首先请求录音权限
         AVAudioSession.sharedInstance().requestRecordPermission { hasPermission in
-            self._prepareToRecordV2(hasPermission)
-            if isStarted {
+            if self._prepareToRecordV2(hasPermission) && isStarted {
                 self._startRecord()
             }
         }
     }
-    fileprivate func _prepareToRecordV2(_ hasPermission: Bool) {
+    fileprivate func _prepareToRecordV2(_ hasPermission: Bool) -> Bool {
         do {
             guard hasPermission else {
                 throw NSError(domain: "SAAudioDoMain", code: 1, userInfo: [
@@ -212,9 +209,11 @@ fileprivate extension SAAudioRecorder {
             _recorder = recorder
             _isPrepareing = false
             _didPrepareToRecord()
+            return true
         } catch let error as NSError  {
             _isPrepareing = false
             _didErrorOccur(error)
+            return false
         }
     }
     
@@ -247,7 +246,7 @@ fileprivate extension SAAudioRecorder {
             return // 并没有启动
         }
         // 取消
-        _currentTime = currentTime
+        _lastCurrentTime = currentTime
         _recorder?.stop()
         _didStopRecord()
         _deactivate()
@@ -257,6 +256,7 @@ fileprivate extension SAAudioRecorder {
         _ = try? FileManager.default.removeItem(at: _url)
         let recorder = try AVAudioRecorder(url: _url, settings: _settings)
         recorder.delegate = self
+        recorder.isMeteringEnabled = isMeteringEnabled
         return recorder
     }
 }
@@ -287,8 +287,12 @@ fileprivate extension SAAudioRecorder {
         delegate?.recorder?(didStopRecord: self)
     }
     
-    fileprivate func _didFinish() {
-        delegate?.recorder?(didFinish: self)
+    fileprivate func _didInterruptionRecord() {
+        delegate?.recorder?(didInterruptionRecord: self)
+    }
+    
+    fileprivate func _didFinishRecord() {
+        delegate?.recorder?(didFinishRecord: self)
     }
     fileprivate func _didErrorOccur(_ error: NSError) {
         delegate?.recorder?(didErrorOccur: self, error: error)
@@ -301,7 +305,7 @@ fileprivate extension SAAudioRecorder {
 extension SAAudioRecorder: AVAudioRecorderDelegate { 
     
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        _didFinish()
+        _didFinishRecord()
         _clearResource()
     }
     
@@ -316,10 +320,7 @@ extension SAAudioRecorder: AVAudioRecorderDelegate {
         guard isRecording else {
             return
         }
-        let err = NSError(domain: "SAAudioDoMain", code: 5, userInfo: [
-            NSLocalizedFailureReasonErrorKey: "系统中断"
-        ])
         _stopRecord()
-        _didErrorOccur(err)
+        _didInterruptionRecord()
     }
 }
