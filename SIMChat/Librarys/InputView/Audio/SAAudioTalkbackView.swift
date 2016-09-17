@@ -195,8 +195,9 @@ internal class SAAudioTalkbackView: SAAudioView {
     
     fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("/sa-audio-record.m3a"))
     
-    fileprivate var _recorder: SAAudioRecorder?
     fileprivate var _status: SAAudioTalkbackStatus = .none
+    fileprivate var _recorder: SAAudioRecorder?
+    fileprivate var _player: AVAudioPlayer?
     
     fileprivate var _lastPoint: CGPoint?
     
@@ -217,23 +218,19 @@ extension SAAudioTalkbackView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
-        
+        // TODO: 取消
         updateStatus(.none)
     }
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
-        
         // TODO: 发送
         updateStatus(.none)
     }
     @objc func onPlayAndStop(_ sender: UIButton) {
         _logger.trace()
-        
         if _status.isPlaying {
-            sender.isSelected = false
             updateStatus(.processed(_recordFileAtURL))
         } else {
-            sender.isSelected = true
             updateStatus(.playing(_recordFileAtURL))
         }
     }
@@ -327,7 +324,7 @@ extension SAAudioTalkbackView {
     }
     
     func updateStatus(_ status: SAAudioTalkbackStatus) {
-        _logger.trace("\(status) -> \(CACurrentMediaTime())")
+        _logger.trace(status)
         
         _status = status
         
@@ -423,18 +420,30 @@ extension SAAudioTalkbackView {
         case .processed(_):
             // 处理完成
             
+            _playButton.isSelected = false
+            _playProgress.strokeEnd = 0
+            
             let t = Int(_recorder?.currentTime ?? 0)
             _tipsLabel.text = String(format: "%0d:%02d", t / 60, t % 60)
             _activityView.isHidden = true
+            
             _spectrumView.isHidden = false
+            _spectrumView.stopAnimating()
             
             _showPlayMode()
             
         case .playing(_):
-            // 播放中
+            // 进入播放状态
             
+            _player?.isMeteringEnabled = true
+            _player?.play()
             
-            break
+            _playButton.isSelected = true
+            
+            _spectrumView.isHidden = false
+            _spectrumView.startAnimating()
+            
+            _updateTime()
             
         case .error(let err):
             // 进入错误状态
@@ -503,19 +512,25 @@ extension SAAudioTalkbackView {
     }
     
     fileprivate func _updateTime() {
-        guard _status.isRecording else {
-            return
-        }
-        
-        if _recordToolbar.leftView.isHighlighted {
-            _tipsLabel.text = "松手试听"
-            _spectrumView.isHidden = true
-        } else if _recordToolbar.rightView.isHighlighted {
-            _tipsLabel.text = "松手取消发送"
-            _spectrumView.isHidden = true
-        } else {
-            let t = Int(_recorder?.currentTime ?? 0)
-            _tipsLabel.text = String(format: "%0d:%02d", t / 60, t % 60)
+        if _status.isRecording {
+            if _recordToolbar.leftView.isHighlighted {
+                _tipsLabel.text = "松手试听"
+                _spectrumView.isHidden = true
+            } else if _recordToolbar.rightView.isHighlighted {
+                _tipsLabel.text = "松手取消发送"
+                _spectrumView.isHidden = true
+            } else {
+                let t = Int(_recorder?.currentTime ?? 0)
+                _tipsLabel.text = String(format: "%0d:%02d", t / 60, t % 60)
+                _spectrumView.isHidden = false
+            }
+        } else if _status.isPlaying {
+            let d = TimeInterval(_recorder?.currentTime ?? 0)
+            let ct = TimeInterval(_player?.currentTime ?? 0)
+            
+            _playProgress.strokeEnd = CGFloat(ct) / CGFloat(d)
+            
+            _tipsLabel.text = String(format: "%0d:%02d", Int(ct) / 60, Int(ct) % 60)
             _spectrumView.isHidden = false
         }
     }
@@ -565,6 +580,8 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         _logger.trace("play: \(isplay), cancel: \(iscancel)")
         
         if isplay {
+            // 创建一个播放器
+            _player = try? AVAudioPlayer(contentsOf: _recordFileAtURL)
             updateStatus(.processed(_recordFileAtURL))
         } else if iscancel {
             onCancel(recorder)
@@ -584,14 +601,26 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
 extension SAAudioTalkbackView: SAAudioSpectrumViewDataSource {
     
     func spectrumView(willUpdateMeters spectrumView: SAAudioSpectrumView) {
-        _recorder?.updateMeters()
         _updateTime()
+        if _status.isPlaying {
+            _player?.updateMeters()
+        } else {
+            _recorder?.updateMeters()
+        }
     }
     func spectrumView(_ spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float {
+        if _status.isPlaying {
+            return _player?.peakPower(forChannel: 0) ?? -160
+        } else {
         return _recorder?.peakPower(forChannel: 0) ?? -160
+        }
     }
     func spectrumView(_ spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float {
-        return _recorder?.averagePower(forChannel: 0) ?? -160
+        if _status.isPlaying {
+            return _player?.averagePower(forChannel: 0) ?? -160
+        } else {
+            return _recorder?.averagePower(forChannel: 0) ?? -160
+        }
     }
 }
 
