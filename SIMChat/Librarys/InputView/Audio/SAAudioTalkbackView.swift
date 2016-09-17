@@ -9,8 +9,6 @@
 import UIKit
 import AVFoundation
 
-
-
 internal enum SAAudioTalkbackStatus: CustomStringConvertible {
     
     case none

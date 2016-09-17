@@ -466,6 +466,8 @@
 				0C16540B1D8B9C4F00A92C86 /* SAAudio.swift */,
 				0C759B7B1D8D96B600D9DA69 /* SAAudioPlayer.swift */,
 				0CBC0F3D1D8CD7EB00D05122 /* SAAudioRecorder.swift */,
+				0C5F4BA41D8D6E20000E0B7E /* SAAudioPlayToolbar.swift */,
+				0CEC3F2B1D8BB28000099478 /* SAAudioRecordToolbar.swift */,
 				0CEC3F2D1D8BE9E300099478 /* SAAudioSpectrumView.swift */,
 				0C9E3DAC1D8BA3EA00F4DEE6 /* SAAudioView.swift */,
 				0C16540D1D8B9C4F00A92C86 /* SAAudioRecordView.swift */,
@@ -473,8 +475,6 @@
 				0C16540F1D8B9C4F00A92C86 /* SAAudioTalkbackView.swift */,
 				0C16540C1D8B9C4F00A92C86 /* SAAudioInputView.swift */,
 				0CBC0F3B1D8C79F700D05122 /* SAAudioInputViewLayout.swift */,
-				0C5F4BA41D8D6E20000E0B7E /* SAAudioPlayToolbar.swift */,
-				0CEC3F2B1D8BB28000099478 /* SAAudioRecordToolbar.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";

@@ -9,13 +9,20 @@
 import UIKit
 
 // ## TODO
-// [x] SAAudioInputView - 横屏
-// [ ] SAAudioInputView - 变声
-// [ ] SAAudioInputView - 对讲
-// [ ] SAAudioInputView - 录音
-// [ ] SAAudioInputView - 自定义
-// [ ] SAAudioInputView - Mini模式
-// [ ] SAAudioTalkbackView - 按住录音的同时按home会导致事件混乱(系统问题)
+// [x] SAAudioInputView - 横屏支持
+// [ ] SAAudioInputView - 变声支持
+// [x] SAAudioInputView - 对讲支持
+// [ ] SAAudioInputView - 录音支持
+// [ ] SAAudioInputView - 自定义支持
+// [ ] SAAudioInputView - Mini模式支持
+// [ ] SAAudioInputView - Tabbar支持
+// [x] SAAudioTalkbackView - 长按录音
+// [x] SAAudioTalkbackView - 试听
+// [x] SAAudioTalkbackView - 频谱显示
+// [ ] SAAudioTalkbackView - 代理
+// [ ] SAAudioTalkbackView - 按住录音的同时按home会导致button事件混乱(系统问题)
+// [x] SAAudioSpectrumView - 显示波形
+// [ ] SAAudioSpectrumView - 优化(主要是算法)
 
 @objc
 public protocol SAAudioInputViewDataSource: NSObjectProtocol {
