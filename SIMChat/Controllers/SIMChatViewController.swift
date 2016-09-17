@@ -104,6 +104,7 @@ open class SIMChatViewController: UIViewController {
     }
     
     var isLandscape: Bool {
+        // iOS 8.0+
         let io = UIScreen.main.value(forKey: "_interfaceOrientation") as! Int
         if UIInterfaceOrientation(rawValue: io)?.isLandscape ?? false {
             return true
@@ -286,7 +287,7 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
 extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
     
     open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
-        return 1
+        return 3
     }
     open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio {
         let audio = SAAudio()

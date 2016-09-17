@@ -38,6 +38,7 @@
 		0C7C93931C76D2F700E7DC5C /* photo_picker_mark_null_sm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C938A1C76D2F700E7DC5C /* photo_picker_mark_null_sm@2x.png */; };
 		0C7C93941C76D2F700E7DC5C /* photo_picker_mark_select@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C938B1C76D2F700E7DC5C /* photo_picker_mark_select@2x.png */; };
 		0C7C93951C76D2F700E7DC5C /* photo_picker_mark_select_sm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C938C1C76D2F700E7DC5C /* photo_picker_mark_select_sm@2x.png */; };
+		0CBC0F411D8CDAF000D05122 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CBC0F401D8CDAF000D05122 /* Accelerate.framework */; };
 		0CF5002C1CB3854F00CAA303 /* ExViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5002B1CB3854F00CAA303 /* ExViewController.swift */; };
 		0CFA07191C81BC7100AF0F87 /* t1_t.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CFA07181C81BC7100AF0F87 /* t1_t.jpg */; };
 /* End PBXBuildFile section */
@@ -123,6 +124,7 @@
 		0C7C938A1C76D2F700E7DC5C /* photo_picker_mark_null_sm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_picker_mark_null_sm@2x.png"; sourceTree = "<group>"; };
 		0C7C938B1C76D2F700E7DC5C /* photo_picker_mark_select@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_picker_mark_select@2x.png"; sourceTree = "<group>"; };
 		0C7C938C1C76D2F700E7DC5C /* photo_picker_mark_select_sm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_picker_mark_select_sm@2x.png"; sourceTree = "<group>"; };
+		0CBC0F401D8CDAF000D05122 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		0CE522861C63341800EB284D /* SIMChatExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = SIMChatExample.entitlements; sourceTree = "<group>"; };
 		0CF5002B1CB3854F00CAA303 /* ExViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExViewController.swift; sourceTree = "<group>"; };
 		0CF5002E1CB3866A00CAA303 /* SIMChatTextLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTextLabel.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -134,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CBC0F411D8CDAF000D05122 /* Accelerate.framework in Frameworks */,
 				0C4C0C991C89CA7A00DC3D56 /* CoreTelephony.framework in Frameworks */,
 				0C4C0C971C89CA6B00DC3D56 /* SystemConfiguration.framework in Frameworks */,
 				0C4C0C951C89CA5F00DC3D56 /* libz.tbd in Frameworks */,
@@ -154,6 +157,7 @@
 				0C0DD6A31C60B65D00AEC8C4 /* SIMChatExample */,
 				0C48A89D1C79566B00571BF5 /* SIMChatExampleTests */,
 				0C0DD6A21C60B65D00AEC8C4 /* Products */,
+				0CBC0F3F1D8CDAEF00D05122 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -240,6 +244,14 @@
 			);
 			name = Resources;
 			path = ../SIMChat/Photo/Resources;
+			sourceTree = "<group>";
+		};
+		0CBC0F3F1D8CDAEF00D05122 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0CBC0F401D8CDAF000D05122 /* Accelerate.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

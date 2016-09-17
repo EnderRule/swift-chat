@@ -1,5 +1,5 @@
 //
-//  SAAudioTalkbackToolbar.swift
+//  SAAudioRecordToolbar.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/16/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAAudioTalkbackToolbar: UIView {
+internal class SAAudioRecordToolbar: UIView {
     
     var leftView: UIImageView { return _leftView }
     var rightView: UIImageView { return _rightView }

@@ -51,21 +51,10 @@ open class SAAudioSpectrumView: UIView {
         guard _link == nil else {
             return
         }
-            
-        _logger.trace()
+        //_logger.trace()
         
-        _link = CADisplayLink(target: self, selector: #selector(tack(_:)))
-        _link?.frameInterval = 4
-        _link?.add(to: .main, forMode: .commonModes)
-    }
-    open func stopAnimating() {
-        guard _link != nil else {
-            return
-        }
-        _logger.trace()
-        
-        _link?.remove(from: .main, forMode: .commonModes)
-        _link = nil
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         
         let pbl = CGRect(x: 0, y: 0, width: 2, height: 2)
         let pbr = CGRect(x: 0, y: 0, width: 2, height: 2)
@@ -76,6 +65,22 @@ open class SAAudioSpectrumView: UIView {
         _rightLayers.forEach {
             $0.bounds = pbr
         }
+        
+        CATransaction.commit()
+        
+        _link = CADisplayLink(target: self, selector: #selector(tack(_:)))
+        _link?.frameInterval = 3
+        _link?.add(to: .main, forMode: .commonModes)
+        
+    }
+    open func stopAnimating() {
+        guard _link != nil else {
+            return
+        }
+        //_logger.trace()
+        
+        _link?.remove(from: .main, forMode: .commonModes)
+        _link = nil
     }
     
     @objc func tack(_ sender: AnyObject) {

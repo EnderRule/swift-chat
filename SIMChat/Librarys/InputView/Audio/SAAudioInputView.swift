@@ -37,8 +37,30 @@ open class SAAudioInputView: UIView {
     open weak var dataSource: SAAudioInputViewDataSource?
     open weak var delegate: SAAudioInputViewDelegate?
     
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _cacheBounds?.width != bounds.width {
+            _cacheBounds = bounds
+            if let idx = _contentView.indexPathsForVisibleItems.first {
+                _restoreContentOffset(at: idx)
+            }
+        }
+    }
     open override var intrinsicContentSize: CGSize {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
+    }
+    
+    private func _restoreContentOffset(at indexPath: IndexPath) {
+        _logger.trace(indexPath)
+        
+        let section = indexPath.section
+        let count = _contentView.numberOfItems(inSection: section)
+        let item = min(indexPath.item, count - 1)
+        
+        let x = CGFloat(item + item) * _contentView.frame.width
+        
+        _contentView.contentOffset = CGPoint(x: x, y: 0)
     }
     
     private func _init() {
@@ -73,6 +95,8 @@ open class SAAudioInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
         addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom))
     }
+    
+    private var _cacheBounds: CGRect?
     
     fileprivate lazy var _contentViewLayout: SAAudioInputViewLayout = SAAudioInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)

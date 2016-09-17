@@ -41,6 +41,7 @@ import UIKit
 // [ ] SAInputBar - 切换自定键盘和第三方输入法时的键盘抖动问题 - 还是有问题, 背景导致的(暂时禁用动画)
 // [ ] SAInputTextField - 输入框自定表情支持(TextKit) - p2
 // [x] SAInputTextField - 输入框高度限制
+// [ ] SAInputTextField - 输入光标
 // [x] SAInputAccessoryView - 更新barItem - 自动计算
 // [x] SAInputAccessoryView - 更新barItem - 动画(包含: 插入, 删除, 更新)
 // [x] SAInputView - 自定义键盘的切换动画
