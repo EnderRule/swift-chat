@@ -56,8 +56,8 @@ open class SAAudioSpectrumView: UIView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         
-        let pbl = CGRect(x: 0, y: 0, width: 2, height: 2)
-        let pbr = CGRect(x: 0, y: 0, width: 2, height: 2)
+        let pbl = CGRect(x: 0, y: 0, width: 2, height: 0)
+        let pbr = CGRect(x: 0, y: 0, width: 2, height: 0)
         
         _leftLayers.forEach {
             $0.bounds = pbl
