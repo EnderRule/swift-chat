@@ -165,8 +165,7 @@ internal class SAAudioSimulateView: SAAudioView {
         _playToolbar.confirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         
         _recordButton.translatesAutoresizingMaskIntoConstraints = false
-        _recordButton.setImage(UIImage(named: "simchat_keyboard_voice_icon_record"), for: .normal)
-        _recordButton.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_button_nor"), for: .normal)
+        _recordButton.setBackgroundImage(UIImage(named: "aio_simulate_icon"), for: .normal)
         _recordButton.addTarget(self, action: #selector(onTouchStart(_:)), for: .touchDown)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragInside)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragOutside)

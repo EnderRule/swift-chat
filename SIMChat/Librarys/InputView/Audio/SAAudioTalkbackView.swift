@@ -191,7 +191,7 @@ internal class SAAudioTalkbackView: SAAudioView {
         _recordToolbar.isHidden = true
         _recordToolbar.translatesAutoresizingMaskIntoConstraints = false
         
-        let backgroundImage = UIImage(named: "simchat_keyboard_voice_background")
+        let backgroundImage = UIImage(named: "aio_play_background")
         
         _playButton.isHidden = true
         _playButton.progressColor = hcolor
@@ -201,10 +201,10 @@ internal class SAAudioTalkbackView: SAAudioView {
         _playButton.setBackgroundImage(backgroundImage, for: .highlighted)
         _playButton.setBackgroundImage(backgroundImage, for: [.selected, .normal])
         _playButton.setBackgroundImage(backgroundImage, for: [.selected, .highlighted])
-        _playButton.setImage(UIImage(named: "simchat_keyboard_voice_button_play_nor"), for: .normal)
-        _playButton.setImage(UIImage(named: "simchat_keyboard_voice_button_play_press"), for: .highlighted)
-        _playButton.setImage(UIImage(named: "simchat_keyboard_voice_button_stop_nor"), for: [.selected, .normal])
-        _playButton.setImage(UIImage(named: "simchat_keyboard_voice_button_stop_press"), for: [.selected, .highlighted])
+        _playButton.setImage(UIImage(named: "aio_play_start_nor"), for: .normal)
+        _playButton.setImage(UIImage(named: "aio_play_start_press"), for: .highlighted)
+        _playButton.setImage(UIImage(named: "aio_play_stop_nor"), for: [.selected, .normal])
+        _playButton.setImage(UIImage(named: "aio_play_stop_press"), for: [.selected, .highlighted])
         _playButton.addTarget(self, action: #selector(onPlayAndStop(_:)), for: .touchUpInside)
         
        
@@ -215,8 +215,9 @@ internal class SAAudioTalkbackView: SAAudioView {
         _playToolbar.cancelButton.addTarget(self, action: #selector(onCancel(_:)), for: .touchUpInside)
         _playToolbar.confirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         
-        _recordButton.setImage(UIImage(named: "simchat_keyboard_voice_icon_record"), for: .normal)
-        _recordButton.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_button_nor"), for: .normal)
+        _recordButton.setImage(UIImage(named: "aio_record_icon"), for: .normal)
+        _recordButton.setBackgroundImage(UIImage(named: "aio_record_nor"), for: .normal)
+        _recordButton.setBackgroundImage(UIImage(named: "aio_record_pres"), for: .normal)
         _recordButton.translatesAutoresizingMaskIntoConstraints = false
         _recordButton.addTarget(self, action: #selector(onTouchStart(_:)), for: .touchDown)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragInside)

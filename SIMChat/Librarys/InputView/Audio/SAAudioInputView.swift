@@ -16,7 +16,7 @@ import UIKit
 // [ ] SAAudioInputView - MaskView
 // [ ] SAAudioInputView - 检查录音时间
 // [ ] SAAudioInputView - Mini模式支持
-// [ ] SAAudioInputView - 更换图标
+// [x] SAAudioInputView - 更换图标
 // [ ] SAAudioInputView - Tabbar支持
 // [x] SAAudioTalkbackView - 长按录音
 // [x] SAAudioTalkbackView - 试听
