@@ -112,58 +112,9 @@ fileprivate extension SAAudioPlayer {
     fileprivate func _activate() throws {
         try SAAudioSession.setCategory(AVAudioSessionCategoryPlayback)
         try SAAudioSession.setActive(true, context: self)
-        
-//        objc_sync_enter(SAAudioPlayer.self)
-//        defer {
-//            objc_sync_exit(SAAudioPlayer.self) 
-//        }
-//        guard SAAudioPlayer._activatedPlayer !== self else {
-//            return
-//        }
-//        logger.debug("activate session for \(self)")
-//        
-//        try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-//        try AVAudioSession.sharedInstance().setActive(true)
-//        
-//        SAAudioPlayer._activatedPlayer = self
     }
     fileprivate func _deactivate() {
         _ = try? SAAudioSession.setActive(false, with: .notifyOthersOnDeactivation, context: self)
-        
-//        let st = DispatchTimeInterval.seconds(3)
-//        let task = time(nil)
-//        let session = AVAudioSession.sharedInstance()
-//        let category = session.category
-//        
-//        objc_sync_enter(SAAudioPlayer.self)
-//        SAAudioPlayer._activateTaskId = task
-//        objc_sync_exit(SAAudioPlayer.self)
-//        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + st) {  [logger] in
-//            objc_sync_enter(SAAudioPlayer.self)
-//            autoreleasepool {
-//                guard session.category == category else {
-//                    return // 别人使用了
-//                }
-//                guard SAAudioPlayer._activateTaskId == task else {
-//                    logger.debug("can't deactivate session for \(self), task is expire")
-//                    return // 任务过期
-//                }
-//                let activatedPlayer = SAAudioPlayer._activatedPlayer
-//                guard activatedPlayer === self else {
-//                    logger.debug("can't deactivate session for \(self), activated player is \(activatedPlayer)")
-//                    return 
-//                }
-//                guard !self._isStarted else {
-//                    logger.debug("can't deactivate session for \(self), player is stated")
-//                    return 
-//                }
-//                logger.debug("dactivate session for \(self)")
-//                _ = try? session.setActive(false, with: .notifyOthersOnDeactivation)
-//                SAAudioPlayer._activatedPlayer = nil
-//            }
-//            objc_sync_exit(SAAudioPlayer.self) 
-//        }
     }
     
     fileprivate func _prepareToPlay(_ autoStart: Bool) {
@@ -177,7 +128,7 @@ fileprivate extension SAAudioPlayer {
 //        if self._prepareToPlayV2() && autoStart {
 //            self._startPlay()
 //        }
-        dispatch_after_at_now(1, .main) {
+        dispatch_after_at_now(0.5, .main) {
             if self._prepareToPlayV2() && autoStart {
                 self._startPlay()
             }

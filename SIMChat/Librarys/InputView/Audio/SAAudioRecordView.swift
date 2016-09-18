@@ -56,12 +56,6 @@ internal class SAAudioRecordView: SAAudioView {
             _playButton.isUserInteractionEnabled = true
             
             _showPlayMode()
-
-            _clearResources()
-            _showRecordMode()
-            
-            _recordButton.isSelected = false
-            _recordButton.isUserInteractionEnabled = true
         }
     }
     
@@ -242,12 +236,12 @@ extension SAAudioRecordView {
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
         // TODO: 取消
-        //updateStatus(.none)
+        updateStatus(.none)
     }
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
         // TODO: 发送
-        //updateStatus(.none)
+        updateStatus(.none)
     }
     @objc func onRecordAndStop(_ sender: Any) {
         _logger.trace()
@@ -277,30 +271,38 @@ extension SAAudioRecordView {
 extension SAAudioRecordView: SAAudioPlayerDelegate {
     
     public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
+        _logger.trace()
         updateStatus(.waiting)
         return true
     }
     public func player(didPrepareToPlay player: SAAudioPlayer){ 
+        _logger.trace()
     }
     
     public func player(shouldStartPlay player: SAAudioPlayer) -> Bool {
+        _logger.trace()
         return true
     }
     public func player(didStartPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.playing)
     }
     
     public func player(didStopPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     
     public func player(didFinishPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func player(didInterruptionPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func player(didErrorOccur player: SAAudioPlayer, error: NSError){
+        _logger.trace(error)
         updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
     }
 }
@@ -310,26 +312,33 @@ extension SAAudioRecordView: SAAudioPlayerDelegate {
 extension SAAudioRecordView: SAAudioRecorderDelegate {
     
     public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
+        _logger.trace()
         updateStatus(.waiting)
         return true
     }
     public func recorder(didPrepareToRecord recorder: SAAudioRecorder) {
+        _logger.trace()
     }
     
     public func recorder(shouldStartRecord recorder: SAAudioRecorder) -> Bool {
+        _logger.trace()
         return true
     }
     public func recorder(didStartRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.recording)
     }
     
     public func recorder(didStopRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.processing)
     }
     public func recorder(didInterruptionRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func recorder(didFinishRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func recorder(didErrorOccur recorder: SAAudioRecorder, error: NSError) {

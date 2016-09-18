@@ -25,7 +25,7 @@ open class SAAudioSession {
             try AVAudioSession.sharedInstance().setActive(active)
             return
         }
-        deactive(delay: 3, context: context) {
+        deactive(delay: 1, context: context) {
             _ = try? AVAudioSession.sharedInstance().setActive(active)
         }
     }
@@ -36,7 +36,7 @@ open class SAAudioSession {
             try AVAudioSession.sharedInstance().setActive(active, with: options)
             return
         }
-        deactive(delay: 3, context: context) {
+        deactive(delay: 1, context: context) {
             _ = try? AVAudioSession.sharedInstance().setActive(active, with: options)
         }
     }

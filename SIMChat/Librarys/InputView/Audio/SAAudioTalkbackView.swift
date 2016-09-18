@@ -18,10 +18,10 @@ internal class SAAudioTalkbackView: SAAudioView {
         _statusView.status = status
         
         switch status {
-        case .none: // 默认状态
+        case .none, // 默认状态
+             .error(_): // 错误状态
             
             _clearResources()
-            
             
             // 先重置状态
             _recordToolbar.leftView.isHighlighted = false
@@ -86,15 +86,6 @@ internal class SAAudioTalkbackView: SAAudioView {
             _playButton.isUserInteractionEnabled = true
             
             _showPlayMode()
-            
-        case .error(_): // 错误状态
-            
-            _clearResources()
-            
-            _recordToolbar.isHidden = true
-            _recordButton.isUserInteractionEnabled = true
-            
-            _showRecordMode()
         }
     }
     
@@ -410,30 +401,38 @@ extension SAAudioTalkbackView {
 extension SAAudioTalkbackView: SAAudioPlayerDelegate {
     
     public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
+        _logger.trace()
         updateStatus(.waiting)
         return true
     }
     public func player(didPrepareToPlay player: SAAudioPlayer){ 
+        _logger.trace()
     }
     
     public func player(shouldStartPlay player: SAAudioPlayer) -> Bool {
+        _logger.trace()
         return true
     }
     public func player(didStartPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.playing)
     }
     
     public func player(didStopPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     
     public func player(didFinishPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func player(didInterruptionPlay player: SAAudioPlayer) {
+        _logger.trace()
         updateStatus(.processed)
     }
     public func player(didErrorOccur player: SAAudioPlayer, error: NSError){
+        _logger.trace(error)
         updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
     }
 }
@@ -443,10 +442,12 @@ extension SAAudioTalkbackView: SAAudioPlayerDelegate {
 extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     
     public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
+        _logger.trace()
         updateStatus(.waiting)
         return true
     }
     public func recorder(didPrepareToRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         // 异步一下让系统消息有机会处理
         DispatchQueue.main.async {
             guard self._recordButton.isHighlighted else {
@@ -457,17 +458,20 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     }
     
     public func recorder(shouldStartRecord recorder: SAAudioRecorder) -> Bool {
+        _logger.trace()
         return true
     }
     public func recorder(didStartRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.recording)
     }
     
     public func recorder(didStopRecord recorder: SAAudioRecorder) {
+        _logger.trace()
         updateStatus(.processing)
     }
     public func recorder(didInterruptionRecord recorder: SAAudioRecorder) {
-        _player = _makePlayer(_recordFileAtURL)
+        _logger.trace()
         updateStatus(.processed)
     }
     public func recorder(didFinishRecord recorder: SAAudioRecorder) {
@@ -477,7 +481,6 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         _logger.trace("play: \(isplay), cancel: \(iscancel)")
         
         if isplay {
-            _player = _makePlayer(_recordFileAtURL)
             updateStatus(.processed)
         } else if iscancel {
             onCancel(recorder)
