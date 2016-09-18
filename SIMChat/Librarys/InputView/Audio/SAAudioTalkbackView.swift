@@ -13,10 +13,10 @@ internal enum SAAudioTalkbackStatus: CustomStringConvertible {
     
     case none
     case waiting
-    case recording(SAAudioRecorder)
-    case processing(URL)
-    case processed(URL)
-    case playing(URL)
+    case recording
+    case processing
+    case processed
+    case playing
     case error(String)
     
     
@@ -34,25 +34,25 @@ internal enum SAAudioTalkbackStatus: CustomStringConvertible {
     }
     var isRecording: Bool {
         switch self {
-        case .recording(_): return true
+        case .recording: return true
         default: return false
         }
     }
     var isProcessing: Bool {
         switch self {
-        case .processing(_): return true
+        case .processing: return true
         default: return false
         }
     }
     var isProcessed: Bool {
         switch self {
-        case .processed(_): return true
+        case .processed: return true
         default: return false
         }
     }
     var isPlaying: Bool {
         switch self {
-        case .playing(_): return true
+        case .playing: return true
         default: return false
         }
     }
@@ -67,10 +67,10 @@ internal enum SAAudioTalkbackStatus: CustomStringConvertible {
         switch self {
         case .none: return "None"
         case .waiting: return "Waiting"
-        case .recording(_): return "Recording"
-        case .processing(_): return "Processing"
-        case .processed(_): return "Processed"
-        case .playing(_): return "Playing"
+        case .recording: return "Recording"
+        case .processing: return "Processing"
+        case .processed: return "Processed"
+        case .playing: return "Playing"
         case .error(let e): return "Error(\(e))"
         }
     }
@@ -235,7 +235,7 @@ extension SAAudioTalkbackView {
         }
     }
     
-    @objc func onTouchStart(_ sender: UIButton) {
+    @objc func onTouchStart(_ sender: Any) {
         guard _status.isNone || _status.isError else {
             return
         }
@@ -247,13 +247,13 @@ extension SAAudioTalkbackView {
         
         _recorder = recorder
     }
-    @objc func onTouchStop(_ sender: UIButton) {
+    @objc func onTouchStop(_ sender: Any) {
         guard _status.isRecording else {
             return
         }
-        updateStatus(.processing(_recordFileAtURL))
+        updateStatus(.processing)
     }
-    @objc func onTouchInterrupt(_ sender: UIButton) {
+    @objc func onTouchInterrupt(_ sender: Any) {
         guard _status.isRecording else {
             return
         }
@@ -270,7 +270,7 @@ extension SAAudioTalkbackView {
     @objc func onTouchDrag(_ sender: UIButton, withEvent event: UIEvent) {
         sender.isHighlighted = true
         
-        guard let touch = event.allTouches?.first else {
+        guard let touch = event.allTouches?.first, _status.isRecording else {
             return
         }
         //_logger.trace(touch.location(in: self))
@@ -354,24 +354,7 @@ extension SAAudioTalkbackView {
             _spectrumView.isHidden = true
             _spectrumView.stopAnimating()
             
-            _recordButton.isUserInteractionEnabled = true
             _recordToolbar.isHidden = true
-            
-            _showRecordMode()
-            
-        case .waiting:
-            // 进入等待状态
-            
-            _recordToolbar.isHidden = true
-            _tipsLabel.attributedText = _makeTips("准备中", _activityView.bounds)
-            
-            _spectrumView.isHidden = true
-            _spectrumView.startAnimating()
-            
-            _activityView.isHidden = false
-            _activityView.startAnimating()
-            
-            _recordButton.isUserInteractionEnabled = false
             
             // 先重置状态
             _recordToolbar.leftView.isHighlighted = false
@@ -381,10 +364,61 @@ extension SAAudioTalkbackView {
             _recordToolbar.rightBackgroundView.isHighlighted = false
             _recordToolbar.rightBackgroundView.layer.transform = CATransform3DIdentity
             
-        case .recording(let recorder):
+            // 显示录音按钮
+            _showRecordMode()
+            
+            // 开启事件响应
+            _recordButton.isUserInteractionEnabled = true
+            
+        case .waiting:
+            // 进入等待状态(等待)
+            
+            _recordToolbar.isHidden = true
+            _tipsLabel.attributedText = _makeTips("准备中", _activityView.bounds)
+            
+            _spectrumView.isHidden = true
+            _spectrumView.stopAnimating()
+            
+            _activityView.isHidden = false
+            _activityView.startAnimating()
+            
+            _playButton.isUserInteractionEnabled = false
+            _recordButton.isUserInteractionEnabled = false
+            
+        case .processing:
+            // 进入处理状态(等待)
+            
+            _recorder?.stop()
+            
+            _recordToolbar.isHidden = true
+            
+            _tipsLabel.attributedText = _makeTips("处理中", _activityView.bounds)
+            
+            _spectrumView.isHidden = true
+            _spectrumView.stopAnimating()
+            
+            _activityView.isHidden = false
+            _activityView.startAnimating()
+            
+            _playButton.isUserInteractionEnabled = false
+            _recordButton.isUserInteractionEnabled = false
+            
+        case .playing:
+            // 进入播放状态
+            
+            _playButton.isSelected = true
+            
+            _activityView.isHidden = true
+            _activityView.stopAnimating()
+            
+            _spectrumView.isHidden = false
+            _spectrumView.startAnimating()
+            
+            _playButton.isUserInteractionEnabled = true
+            
+        case .recording:
             // 进入录音状态
             
-            _recorder = recorder
             _recorder?.isMeteringEnabled = true
             _recorder?.record()
             
@@ -406,23 +440,7 @@ extension SAAudioTalkbackView {
                 _recordToolbar.alpha = 1
             }
             
-        case .processing(_):
-            // 进入处理状态
-            
-            _recorder?.stop()
-            
-            _recordToolbar.isHidden = true
-            
-            _spectrumView.isHidden = true
-            _spectrumView.stopAnimating()
-            
-            _tipsLabel.attributedText = _makeTips("处理中", _activityView.bounds)
-            _activityView.isHidden = false
-            _activityView.startAnimating()
-            
-            _recordButton.isUserInteractionEnabled = false
-            
-        case .processed(_):
+        case .processed:
             // 处理完成
             
             _playButton.isSelected = false
@@ -432,20 +450,16 @@ extension SAAudioTalkbackView {
             
             let t = Int(_recorder?.currentTime ?? 0)
             _tipsLabel.text = String(format: "%0d:%02d", t / 60, t % 60)
+            
             _activityView.isHidden = true
+            _activityView.stopAnimating()
             
             _spectrumView.isHidden = false
             _spectrumView.stopAnimating()
             
             _showPlayMode()
             
-        case .playing(_):
-            // 进入播放状态
-            
-            _playButton.isSelected = true
-            
-            _spectrumView.isHidden = false
-            _spectrumView.startAnimating()
+            _playButton.isUserInteractionEnabled = true
             
         case .error(let err):
             // 进入错误状态
@@ -552,6 +566,7 @@ extension SAAudioTalkbackView {
 extension SAAudioTalkbackView: SAAudioPlayerDelegate {
     
     public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
+        updateStatus(.waiting)
         return true
     }
     public func player(didPrepareToPlay player: SAAudioPlayer){ 
@@ -563,18 +578,24 @@ extension SAAudioTalkbackView: SAAudioPlayerDelegate {
     }
     public func player(didStartPlay player: SAAudioPlayer) {
         _logger.trace()
-        updateStatus(.playing(_recordFileAtURL))
+        updateStatus(.playing)
     }
     
     public func player(didStopPlay player: SAAudioPlayer) {
-        updateStatus(.processed(_recordFileAtURL))
+        _logger.trace()
+        
+        updateStatus(.processed)
     }
     
     public func player(didFinishPlay player: SAAudioPlayer) {
-        updateStatus(.processed(_recordFileAtURL))
+        _logger.trace()
+        
+        updateStatus(.processed)
     }
     public func player(didInterruptionPlay player: SAAudioPlayer) {
         _logger.trace()
+        
+        updateStatus(.processed)
     }
     public func player(didErrorOccur player: SAAudioPlayer, error: NSError){ 
         _logger.trace()
@@ -593,7 +614,7 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         guard _recordButton.isHighlighted else {
             return updateStatus(.none)
         }
-        updateStatus(.recording(recorder))
+        updateStatus(.recording)
     }
     
     public func recorder(shouldStartRecord recorder: SAAudioRecorder) -> Bool {
@@ -608,6 +629,9 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     }
     public func recorder(didInterruptionRecord recorder: SAAudioRecorder) { 
         _logger.trace()
+        
+        _player = _makePlayer(_recordFileAtURL)
+        updateStatus(.processed)
     }
     public func recorder(didFinishRecord recorder: SAAudioRecorder) {
         let isplay = _recordToolbar.leftView.isHighlighted
@@ -616,12 +640,8 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         _logger.trace("play: \(isplay), cancel: \(iscancel)")
         
         if isplay {
-            // 创建播放器
-            _player = SAAudioPlayer(url: _recordFileAtURL)
-            _player?.delegate = self
-            _player?.isMeteringEnabled = true
-            // 进入状态
-            updateStatus(.processed(_recordFileAtURL))
+            _player = _makePlayer(_recordFileAtURL)
+            updateStatus(.processed)
         } else if iscancel {
             onCancel(recorder)
         } else {
@@ -630,8 +650,14 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     }
     public func recorder(didErrorOccur recorder: SAAudioRecorder, error: NSError) {
         _logger.trace(error)
-        
         updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
+    }
+    
+    private func _makePlayer(_ url: URL) -> SAAudioPlayer {
+        let player = SAAudioPlayer(url: _recordFileAtURL)
+        player.delegate = self
+        player.isMeteringEnabled = true
+        return player
     }
 }
 
