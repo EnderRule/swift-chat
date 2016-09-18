@@ -51,6 +51,9 @@ open class SAAudioInputView: UIView {
             _cacheBounds = bounds
             if let idx = _contentView.indexPathsForVisibleItems.first {
                 _restoreContentOffset(at: idx)
+            } else {
+                let idx = max(_contentView.numberOfItems(inSection: 0) / 2 - 1, 0)
+                _contentView.contentOffset = CGPoint(x: _contentView.frame.width * CGFloat(idx), y: 0)
             }
         }
     }

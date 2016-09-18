@@ -290,9 +290,20 @@ extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDel
         return 3
     }
     open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio {
-        let audio = SAAudio()
-        audio.type = .talkback
-        return audio
+        switch index {
+        case 0:
+            let audio = SAAudio()
+            audio.type = .simulate
+            return audio
+        case 1:
+            let audio = SAAudio()
+            audio.type = .talkback
+            return audio
+        default:
+            let audio = SAAudio()
+            audio.type = .record
+            return audio
+        }
     }
     
 }

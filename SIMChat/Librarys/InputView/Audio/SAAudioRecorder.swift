@@ -29,13 +29,11 @@ public protocol SAAudioRecorderDelegate: NSObjectProtocol {
 open class SAAudioRecorder: NSObject {
 
     open func prepareToRecord() {
-        _prepareToRecord()
+        _prepareToRecord(false)
     }
     open func record() {
-        _needAutoStart = true
-        _prepareToRecord()
+        _prepareToRecord(true)
         _startRecord()
-        _needAutoStart = false
     }
     open func stop() {
         _stopRecord()
@@ -74,7 +72,6 @@ open class SAAudioRecorder: NSObject {
     
     fileprivate var _lastCurrentTime: TimeInterval = 0
     fileprivate var _isStarted: Bool = false
-    fileprivate var _needAutoStart: Bool = false
     
     fileprivate var _isPrepared: Bool { return _recorder != nil }
     fileprivate var _isPrepareing: Bool = false
@@ -83,6 +80,7 @@ open class SAAudioRecorder: NSObject {
     fileprivate var _settings: [String: Any] 
     fileprivate var _recorder: AVAudioRecorder?
     
+    fileprivate static var _activateTaskId: time_t = 0
     fileprivate static weak var _activatedRecorder: SAAudioRecorder?
     
     public init(url: URL, settings: [String: Any]? = nil) {
@@ -139,9 +137,14 @@ fileprivate extension SAAudioRecorder {
     }
     fileprivate func _deactivate() {
         
-        let st = DispatchTimeInterval.seconds(1)
+        let st = DispatchTimeInterval.seconds(3)
+        let task = time(nil)
         let session = AVAudioSession.sharedInstance()
         let category = session.category
+        
+        objc_sync_enter(SAAudioRecorder.self)
+        SAAudioRecorder._activateTaskId = task
+        objc_sync_exit(SAAudioRecorder.self)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + st) { [logger] in
             
@@ -149,6 +152,10 @@ fileprivate extension SAAudioRecorder {
             autoreleasepool {
                 guard session.category == category else {
                     return // 别人使用了
+                }
+                guard SAAudioRecorder._activateTaskId == task else {
+                    logger.debug("can't deactivate session for \(self), task is expire")
+                    return // 任务过期
                 }
                 let activatedRecorder = SAAudioRecorder._activatedRecorder
                 guard activatedRecorder === self else {
@@ -168,7 +175,7 @@ fileprivate extension SAAudioRecorder {
         }
     }
     
-    fileprivate func _prepareToRecord() {
+    fileprivate func _prepareToRecord(_ autoStart: Bool) {
         guard !_isPrepared && !_isPrepareing else {
             return // 己经准备或正在准备
         }
@@ -176,11 +183,15 @@ fileprivate extension SAAudioRecorder {
             return // 申请被拒绝
         }
         _isPrepareing = true
-        let autostart = _needAutoStart
         // 首先请求录音权限
         AVAudioSession.sharedInstance().requestRecordPermission { hasPermission in
-            if self._prepareToRecordV2(hasPermission) && autostart {
-                self._startRecord()
+//            if self._prepareToRecordV2(hasPermission) && autoStart {
+//                self._startRecord()
+//            }
+            dispatch_after_at_now(1, .main) { 
+                if self._prepareToRecordV2(hasPermission) && autoStart {
+                    self._startRecord()
+                }
             }
         }
     }
@@ -311,8 +322,12 @@ fileprivate extension SAAudioRecorder {
 extension SAAudioRecorder: AVAudioRecorderDelegate { 
     
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        _didFinishRecord()
-        _clearResource()
+        dispatch_after_at_now(1, .main) {
+            self._didFinishRecord()
+            self._clearResource()
+        }
+//        _didFinishRecord()
+//        _clearResource()
     }
     
     public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {

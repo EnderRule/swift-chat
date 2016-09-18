@@ -29,13 +29,11 @@ public protocol SAAudioPlayerDelegate: NSObjectProtocol {
 open class SAAudioPlayer: NSObject {
     
     open func prepareToPlay() {
-        _prepareToPlay()
+        _prepareToPlay(false)
     }
     open func play() {
-        _needAutoStart = true
-        _prepareToPlay()
+        _prepareToPlay(true)
         _startPlay()
-        _needAutoStart = false
     }
     open func stop() {
         _stopPlay()
@@ -78,7 +76,6 @@ open class SAAudioPlayer: NSObject {
     }
     
     fileprivate var _isStarted: Bool = false
-    fileprivate var _needAutoStart: Bool = false
     
     fileprivate var _isPrepared: Bool { return _player != nil }
     fileprivate var _isPrepareing: Bool = false
@@ -86,6 +83,7 @@ open class SAAudioPlayer: NSObject {
     fileprivate var _url: URL
     fileprivate var _player: AVAudioPlayer?
     
+    fileprivate static var _activateTaskId: time_t = 0
     fileprivate static weak var _activatedPlayer: SAAudioPlayer?
     
     public init(url: URL) {
@@ -131,15 +129,24 @@ fileprivate extension SAAudioPlayer {
     }
     fileprivate func _deactivate() {
         
-        let st = DispatchTimeInterval.seconds(1)
+        let st = DispatchTimeInterval.seconds(3)
+        let task = time(nil)
         let session = AVAudioSession.sharedInstance()
         let category = session.category
+        
+        objc_sync_enter(SAAudioPlayer.self)
+        SAAudioPlayer._activateTaskId = task
+        objc_sync_exit(SAAudioPlayer.self)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + st) {  [logger] in
             objc_sync_enter(SAAudioPlayer.self)
             autoreleasepool {
                 guard session.category == category else {
                     return // 别人使用了
+                }
+                guard SAAudioPlayer._activateTaskId == task else {
+                    logger.debug("can't deactivate session for \(self), task is expire")
+                    return // 任务过期
                 }
                 let activatedPlayer = SAAudioPlayer._activatedPlayer
                 guard activatedPlayer === self else {
@@ -158,7 +165,7 @@ fileprivate extension SAAudioPlayer {
         }
     }
     
-    fileprivate func _prepareToPlay() {
+    fileprivate func _prepareToPlay(_ autoStart: Bool) {
         guard !_isPrepared && !_isPrepareing else {
             return // 己经准备或正在准备
         }
@@ -166,9 +173,13 @@ fileprivate extension SAAudioPlayer {
             return // 申请被拒绝
         }
         _isPrepareing = true
-        let autostart = _needAutoStart
-        if self._prepareToPlayV2() && autostart {
-            //self._startPlay()
+//        if self._prepareToPlayV2() && autoStart {
+//            self._startPlay()
+//        }
+        dispatch_after_at_now(1, .main) {
+            if self._prepareToPlayV2() && autoStart {
+                self._startPlay()
+            }
         }
     }
     fileprivate func _prepareToPlayV2() -> Bool {
