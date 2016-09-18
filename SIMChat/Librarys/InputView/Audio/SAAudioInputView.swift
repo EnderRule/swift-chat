@@ -18,6 +18,7 @@ import UIKit
 // [ ] SAAudioInputView - Mini模式支持
 // [x] SAAudioInputView - 更换图标
 // [ ] SAAudioInputView - Tabbar支持
+// [ ] SAAudioInputView - 初始化时在中心
 // [x] SAAudioTalkbackView - 长按录音
 // [x] SAAudioTalkbackView - 试听
 // [x] SAAudioTalkbackView - 频谱显示
@@ -50,10 +51,11 @@ open class SAAudioInputView: UIView {
         
         if _cacheBounds?.width != bounds.width {
             _cacheBounds = bounds
-            if let idx = _contentView.indexPathsForVisibleItems.first {
+            
+            if let idx = _contentViewLayout.lastIndexPath {
                 _restoreContentOffset(at: idx)
             } else {
-                let idx = max(_contentView.numberOfItems(inSection: 0) / 2 - 1, 0)
+                let idx = max(((_contentView.numberOfItems(inSection: 0) + 1) / 2) - 1, 0)
                 _contentView.contentOffset = CGPoint(x: _contentView.frame.width * CGFloat(idx), y: 0)
             }
         }
@@ -65,11 +67,10 @@ open class SAAudioInputView: UIView {
     private func _restoreContentOffset(at indexPath: IndexPath) {
         _logger.trace(indexPath)
         
-        let section = indexPath.section
-        let count = _contentView.numberOfItems(inSection: section)
+        let count = _contentView.numberOfItems(inSection: indexPath.section)
         let item = min(indexPath.item, count - 1)
         
-        let x = CGFloat(item + item) * _contentView.frame.width
+        let x = CGFloat(item) * _contentView.frame.width
         
         _contentView.contentOffset = CGPoint(x: x, y: 0)
     }

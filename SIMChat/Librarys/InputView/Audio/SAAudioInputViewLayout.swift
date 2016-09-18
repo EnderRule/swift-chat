@@ -10,6 +10,8 @@ import UIKit
 
 internal class SAAudioInputViewLayout: UICollectionViewLayout {
     
+    var lastIndexPath: IndexPath?
+    
     override var collectionViewContentSize: CGSize {
         if let size = _cacheContentSize {
             return size
@@ -25,6 +27,7 @@ internal class SAAudioInputViewLayout: UICollectionViewLayout {
     }
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         if collectionView?.frame.width != newBounds.width {
+            lastIndexPath = collectionView?.indexPathsForVisibleItems.first
             return true
         }
         return false
