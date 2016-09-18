@@ -167,10 +167,8 @@ fileprivate extension SAAudioPlayer {
         }
         _isPrepareing = true
         let autostart = _needAutoStart
-        DispatchQueue.main.async {
-            if self._prepareToPlayV2() && autostart {
-                self._startPlay()
-            }
+        if self._prepareToPlayV2() && autostart {
+            //self._startPlay()
         }
     }
     fileprivate func _prepareToPlayV2() -> Bool {
@@ -178,11 +176,6 @@ fileprivate extension SAAudioPlayer {
             let player = try AVAudioPlayer(contentsOf: _url)
             player.delegate = self
             player.isMeteringEnabled = isMeteringEnabled
-            guard player.prepareToPlay() else  {
-                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
-                    NSLocalizedFailureReasonErrorKey: "准备播放失败"
-                ])
-            }
             _player = player
             _isPrepareing = false
             _didPrepareToPlay()
@@ -207,6 +200,11 @@ fileprivate extension SAAudioPlayer {
                 return // 用户拒绝了该请求
             }
             try _activate()
+            guard player.prepareToPlay() else  {
+                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
+                    NSLocalizedFailureReasonErrorKey: "准备播放失败"
+                ])
+            }
             guard player.play() else {
                 throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
                     NSLocalizedFailureReasonErrorKey: "播放失败"
@@ -225,9 +223,12 @@ fileprivate extension SAAudioPlayer {
         }
         // 取消
         _isStarted = false
+        _player?.delegate = nil
         _player?.stop()
+        _player = nil
         _didStopPlay()
         _deactivate()
+        _clearResource()
     }
     fileprivate func _interruptionPlay() {
         guard _isStarted && _isPrepared else {
@@ -291,6 +292,7 @@ extension SAAudioPlayer: AVAudioPlayerDelegate {
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         _didFinishPlay()
+        _deactivate()
         _clearResource()
     }
     
@@ -298,6 +300,7 @@ extension SAAudioPlayer: AVAudioPlayerDelegate {
         let err = (error as? NSError) ?? NSError(domain: "SAAudioDoMain", code: 4, userInfo: [
             NSLocalizedFailureReasonErrorKey: "编码错误"
         ])
+        _deactivate()
         _didErrorOccur(err)
     }
     

@@ -192,11 +192,6 @@ fileprivate extension SAAudioRecorder {
                 ])
             }
             let recorder = try _makeRecorder()
-            guard recorder.prepareToRecord() else  {
-                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
-                    NSLocalizedFailureReasonErrorKey: "准备录音失败"
-                ])
-            }
             _recorder = recorder
             _isPrepareing = false
             _didPrepareToRecord()
@@ -221,6 +216,11 @@ fileprivate extension SAAudioRecorder {
                 return // 用户拒绝了该请求
             }
             try _activate()
+            guard recorder.prepareToRecord() else  {
+                throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
+                    NSLocalizedFailureReasonErrorKey: "准备录音失败"
+                ])
+            }
             guard recorder.record() else {
                 throw NSError(domain: "SAAudioDoMain", code: 2, userInfo: [
                     NSLocalizedFailureReasonErrorKey: "录音失败"
@@ -319,12 +319,11 @@ extension SAAudioRecorder: AVAudioRecorderDelegate {
         let err = (error as? NSError) ?? NSError(domain: "SAAudioDoMain", code: 4, userInfo: [
             NSLocalizedFailureReasonErrorKey: "编码错误"
         ])
+        _deactivate()
         _didErrorOccur(err)
     }
     
     public func audioRecorderDidInterruption(_ sender: Notification) {
-        //_stopRecord()
-        //_didInterruptionRecord()
         _interruptionRecord()
     }
 }

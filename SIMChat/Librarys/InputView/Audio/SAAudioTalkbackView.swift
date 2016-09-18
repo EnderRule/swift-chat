@@ -239,19 +239,16 @@ extension SAAudioTalkbackView {
         guard _status.isNone || _status.isError else {
             return
         }
-        
-        let recorder = SAAudioRecorder(url: _recordFileAtURL)
-        
-        recorder.delegate = self
-        recorder.prepareToRecord()
-        
-        _recorder = recorder
+        _recorder = SAAudioRecorder(url: _recordFileAtURL)
+        _recorder?.isMeteringEnabled = true
+        _recorder?.delegate = self
+        _recorder?.prepareToRecord()
     }
     @objc func onTouchStop(_ sender: Any) {
         guard _status.isRecording else {
             return
         }
-        updateStatus(.processing)
+        _recorder?.stop()
     }
     @objc func onTouchInterrupt(_ sender: Any) {
         guard _status.isRecording else {
@@ -374,7 +371,7 @@ extension SAAudioTalkbackView {
             // 进入等待状态(等待)
             
             _recordToolbar.isHidden = true
-            _tipsLabel.attributedText = _makeTips("准备中", _activityView.bounds)
+            _tipsLabel.attributedText = _makeTips("准备中...", _activityView.bounds)
             
             _spectrumView.isHidden = true
             _spectrumView.stopAnimating()
@@ -392,7 +389,7 @@ extension SAAudioTalkbackView {
             
             _recordToolbar.isHidden = true
             
-            _tipsLabel.attributedText = _makeTips("处理中", _activityView.bounds)
+            _tipsLabel.attributedText = _makeTips("处理中...", _activityView.bounds)
             
             _spectrumView.isHidden = true
             _spectrumView.stopAnimating()
@@ -418,9 +415,6 @@ extension SAAudioTalkbackView {
             
         case .recording:
             // 进入录音状态
-            
-            _recorder?.isMeteringEnabled = true
-            _recorder?.record()
             
             _recordToolbar.isHidden = false
             _recordToolbar.alpha = 0
@@ -566,39 +560,31 @@ extension SAAudioTalkbackView {
 extension SAAudioTalkbackView: SAAudioPlayerDelegate {
     
     public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
-        updateStatus(.waiting)
+        //updateStatus(.waiting)
         return true
     }
     public func player(didPrepareToPlay player: SAAudioPlayer){ 
-        _logger.trace()
     }
     
     public func player(shouldStartPlay player: SAAudioPlayer) -> Bool {
         return true
     }
     public func player(didStartPlay player: SAAudioPlayer) {
-        _logger.trace()
         updateStatus(.playing)
     }
     
     public func player(didStopPlay player: SAAudioPlayer) {
-        _logger.trace()
-        
         updateStatus(.processed)
     }
     
     public func player(didFinishPlay player: SAAudioPlayer) {
-        _logger.trace()
-        
         updateStatus(.processed)
     }
     public func player(didInterruptionPlay player: SAAudioPlayer) {
-        _logger.trace()
-        
         updateStatus(.processed)
     }
-    public func player(didErrorOccur player: SAAudioPlayer, error: NSError){ 
-        _logger.trace()
+    public func player(didErrorOccur player: SAAudioPlayer, error: NSError){
+        updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
     }
 }
 
@@ -611,10 +597,14 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         return true
     }
     public func recorder(didPrepareToRecord recorder: SAAudioRecorder) {
-        guard _recordButton.isHighlighted else {
-            return updateStatus(.none)
+        // 异步一下让系统消息有机会处理
+        DispatchQueue.main.async {
+            guard self._recordButton.isHighlighted else {
+                return self.updateStatus(.none)
+            }
+            self._recorder?.record()
+            self.updateStatus(.recording)
         }
-        updateStatus(.recording)
     }
     
     public func recorder(shouldStartRecord recorder: SAAudioRecorder) -> Bool {
@@ -626,6 +616,8 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     
     public func recorder(didStopRecord recorder: SAAudioRecorder) {
         _logger.trace()
+        
+        updateStatus(.processing)
     }
     public func recorder(didInterruptionRecord recorder: SAAudioRecorder) { 
         _logger.trace()
