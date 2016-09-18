@@ -20,6 +20,10 @@ internal class SAAudioRecordView: SAAudioView {
         case .none,
              .error(_): // 错误状态
             
+            if !_status.isError {
+                _statusView.text = "点击录音"
+            }
+            
             _clearResources()
             _showRecordMode()
             

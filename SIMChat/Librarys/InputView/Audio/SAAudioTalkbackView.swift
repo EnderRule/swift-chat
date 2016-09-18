@@ -60,11 +60,6 @@ internal class SAAudioTalkbackView: SAAudioView {
             _recordToolbar.transform = CGAffineTransform(scaleX: 0.5, y: 1)
             _recordToolbar.center = CGPoint(x: self.bounds.width / 2, y: _recordToolbar.center.y)
             
-            let ani = CAKeyframeAnimation(keyPath: "transform.scale")
-            ani.values = [1, 1.2, 1]
-            ani.duration = 0.15
-            _recordButton.layer.add(ani, forKey: "click")
-            
             UIView.animate(withDuration: 0.25) { [_recordToolbar] in
                 _recordToolbar.alpha = 1
                 _recordToolbar.transform = CGAffineTransform(scaleX: 1, y: 1)
@@ -221,9 +216,7 @@ internal class SAAudioTalkbackView: SAAudioView {
         _playToolbar.confirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         
         _recordButton.setImage(UIImage(named: "simchat_keyboard_voice_icon_record"), for: .normal)
-        _recordButton.setImage(UIImage(named: "simchat_keyboard_voice_icon_record"), for: .highlighted)
         _recordButton.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_button_nor"), for: .normal)
-        _recordButton.setBackgroundImage(UIImage(named: "simchat_keyboard_voice_button_press"), for: .highlighted)
         _recordButton.translatesAutoresizingMaskIntoConstraints = false
         _recordButton.addTarget(self, action: #selector(onTouchStart(_:)), for: .touchDown)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragInside)
@@ -317,6 +310,11 @@ extension SAAudioTalkbackView {
         _lastPoint = nil
         _recorder = _makeRecorder(_recordFileAtURL)
         _recorder?.prepareToRecord()
+        
+        let ani = CAKeyframeAnimation(keyPath: "transform.scale")
+        ani.values = [1, 1.2, 1]
+        ani.duration = 0.15
+        _recordButton.layer.add(ani, forKey: "click")
     }
     @objc func onTouchStop(_ sender: Any) {
         guard _status.isRecording else {

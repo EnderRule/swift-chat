@@ -19,8 +19,14 @@ open class SAAudioSession {
     }
     
     open static func setActive(_ active: Bool, context: AnyObject? = nil) throws {
+        
+        objc_sync_enter(SAAudioSession.self)
+        defer {
+            objc_sync_exit(SAAudioSession.self)
+        }
+        
         guard !active else {
-            _task = time(nil)
+            _task = NSUUID().uuidString
             _context = context
             try AVAudioSession.sharedInstance().setActive(active)
             return
@@ -30,8 +36,14 @@ open class SAAudioSession {
         }
     }
     open static func setActive(_ active: Bool, with options: AVAudioSessionSetActiveOptions, context: AnyObject? = nil) throws {
+        
+        objc_sync_enter(SAAudioSession.self)
+        defer {
+            objc_sync_exit(SAAudioSession.self)
+        }
+        
         guard !active else {
-            _task = time(nil)
+            _task = NSUUID().uuidString
             _context = context
             try AVAudioSession.sharedInstance().setActive(active, with: options)
             return
@@ -42,15 +54,27 @@ open class SAAudioSession {
     }
     
     open static func deactive(delay: TimeInterval, context: AnyObject?, execute: @escaping (Void) -> Void) {
+        
+        objc_sync_enter(SAAudioSession.self)
+        defer {
+            objc_sync_exit(SAAudioSession.self)
+        }
+        
         guard _context === context else {
             return // 不匹配, 说明别人正在使用
         }
-        let task = time(nil)
+        let task = NSUUID().uuidString
         
         _task = task
         _context = context
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(Int(delay * 1000))) {
+            
+            objc_sync_enter(SAAudioSession.self)
+            defer {
+                objc_sync_exit(SAAudioSession.self)
+            }
+            
             guard _task == task else {
                 _logger.debug("can't deactive, the task is expire")
                 return // 不匹配, 说明该任务己经过期了
@@ -66,6 +90,6 @@ open class SAAudioSession {
     
     private static var _logger: Logger = Logger(name: "SAAudioSession")
     
-    private static var _task: time_t?
+    private static var _task: String?
     private static weak var _context: AnyObject?
 }

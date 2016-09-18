@@ -125,12 +125,11 @@ fileprivate extension SAAudioPlayer {
             return // 申请被拒绝
         }
         _isPrepareing = true
-//        if self._prepareToPlayV2() && autoStart {
-//            self._startPlay()
-//        }
-        dispatch_after_at_now(0.5, .main) {
+        DispatchQueue.main.async {
             if self._prepareToPlayV2() && autoStart {
-                self._startPlay()
+                DispatchQueue.main.async {
+                    self._startPlay()
+                }
             }
         }
     }

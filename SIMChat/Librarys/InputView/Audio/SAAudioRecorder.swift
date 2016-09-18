@@ -133,12 +133,11 @@ fileprivate extension SAAudioRecorder {
         _isPrepareing = true
         // 首先请求录音权限
         AVAudioSession.sharedInstance().requestRecordPermission { hasPermission in
-//            if self._prepareToRecordV2(hasPermission) && autoStart {
-//                self._startRecord()
-//            }
-            dispatch_after_at_now(0.5, .main) {
+            DispatchQueue.main.async {
                 if self._prepareToRecordV2(hasPermission) && autoStart {
-                    self._startRecord()
+                    DispatchQueue.main.async {
+                        self._startRecord()
+                    }
                 }
             }
         }
@@ -270,12 +269,10 @@ fileprivate extension SAAudioRecorder {
 extension SAAudioRecorder: AVAudioRecorderDelegate { 
     
     public func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        dispatch_after_at_now(0.5, .main) {
+        DispatchQueue.main.async {
             self._didFinishRecord()
             self._clearResource()
         }
-//        _didFinishRecord()
-//        _clearResource()
     }
     
     public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
