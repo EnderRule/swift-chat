@@ -166,11 +166,14 @@ fileprivate extension SAAudioPlayer {
             return // 申请被拒绝
         }
         _isPrepareing = true
-        dispatch_after_at_now(1, .main) { 
-            self._prepareToPlayV2()
+        let autostart = _needAutoStart
+        DispatchQueue.main.async {
+            if self._prepareToPlayV2() && autostart {
+                self._startPlay()
+            }
         }
     }
-    fileprivate func _prepareToPlayV2() {
+    fileprivate func _prepareToPlayV2() -> Bool {
         do {
             let player = try AVAudioPlayer(contentsOf: _url)
             player.delegate = self
@@ -183,9 +186,11 @@ fileprivate extension SAAudioPlayer {
             _player = player
             _isPrepareing = false
             _didPrepareToPlay()
+            return true
         } catch let error as NSError  {
             _isPrepareing = false
             _didErrorOccur(error)
+            return false
         }
     }
     
