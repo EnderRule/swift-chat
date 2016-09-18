@@ -48,19 +48,19 @@ internal class SAAudioPlayToolbar: UIView {
         addSubview(line1)
         addSubview(line2)
         
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .top, .equal, self, .top))
+        addConstraint(_SALayoutConstraintMake(_cancelButton, .top, .equal, line2, .bottom))
         addConstraint(_SALayoutConstraintMake(_cancelButton, .left, .equal, self, .left))
         addConstraint(_SALayoutConstraintMake(_cancelButton, .right, .equal, line1, .left))
         addConstraint(_SALayoutConstraintMake(_cancelButton, .bottom, .equal, self, .bottom))
         
         addConstraint(_SALayoutConstraintMake(_cancelButton, .width, .equal, _confirmButton, .width))
         
-        addConstraint(_SALayoutConstraintMake(_confirmButton, .top, .equal, self, .top))
+        addConstraint(_SALayoutConstraintMake(_confirmButton, .top, .equal, line2, .bottom))
         addConstraint(_SALayoutConstraintMake(_confirmButton, .left, .equal, line1, .right))
         addConstraint(_SALayoutConstraintMake(_confirmButton, .right, .equal, self, .right))
         addConstraint(_SALayoutConstraintMake(_confirmButton, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(line1, .top, .equal, self, .top))
+        addConstraint(_SALayoutConstraintMake(line1, .top, .equal, line2, .bottom))
         addConstraint(_SALayoutConstraintMake(line1, .bottom, .equal, self, .bottom))
         
         addConstraint(_SALayoutConstraintMake(line2, .top, .equal, self, .top))

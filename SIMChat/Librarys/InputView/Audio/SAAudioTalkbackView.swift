@@ -116,13 +116,14 @@ internal class SAAudioTalkbackView: SAAudioView {
         
         let nbounds = CGRect(origin: .zero, size: _playButton.intrinsicContentSize)
         
-        _playProgress.lineWidth = 3.5
+        //_playProgress.lineWidth = 3.5
+        _playProgress.lineWidth = 2
         _playProgress.fillColor = nil
         _playProgress.strokeColor = hcolor.cgColor
         _playProgress.strokeStart = 0
         _playProgress.strokeEnd = 0
         _playProgress.frame = nbounds
-        _playProgress.path = UIBezierPath(ovalIn: nbounds).cgPath
+        _playProgress.path = UIBezierPath(ovalIn: UIEdgeInsetsInsetRect(nbounds, UIEdgeInsetsMake(1, 1, 1, 1))).cgPath
         _playProgress.transform = CATransform3DMakeRotation((-90 / 180) * CGFloat(M_PI), 0, 0, 1)
         _playButton.layer.addSublayer(_playProgress)
         
@@ -430,9 +431,17 @@ extension SAAudioTalkbackView {
             
             _recordButton.isUserInteractionEnabled = true
             
+            _recordToolbar.transform = CGAffineTransform(scaleX: 0.5, y: 1)
+            _recordToolbar.center = CGPoint(x: self.bounds.width / 2, y: _recordToolbar.center.y)
+            
             UIView.animate(withDuration: 0.25) { [_recordToolbar] in
                 _recordToolbar.alpha = 1
+                _recordToolbar.transform = CGAffineTransform(scaleX: 1, y: 1)
             }
+            let ani = CAKeyframeAnimation(keyPath: "transform.scale")
+            ani.values = [1, 1.2, 1]
+            ani.duration = 0.15
+            self._recordButton.layer.add(ani, forKey: "click")
             
         case .processed:
             // 处理完成
@@ -521,6 +530,7 @@ extension SAAudioTalkbackView {
         })
     }
     
+    
     fileprivate func _updateTime() {
         if _status.isRecording {
             if _recordToolbar.leftView.isHighlighted {
@@ -538,7 +548,7 @@ extension SAAudioTalkbackView {
             let d = TimeInterval(_recorder?.currentTime ?? 0)
             let ct = TimeInterval(_player?.currentTime ?? 0)
             
-            _playProgress.strokeEnd = (CGFloat(ct) / CGFloat(d)) + 0.1
+            _playProgress.strokeEnd = (CGFloat(ct + 0.2) / CGFloat(d))
             
             _tipsLabel.text = String(format: "%0d:%02d", Int(ct) / 60, Int(ct) % 60)
             _spectrumView.isHidden = false
