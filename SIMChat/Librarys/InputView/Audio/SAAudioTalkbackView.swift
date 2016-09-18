@@ -237,7 +237,7 @@ internal class SAAudioTalkbackView: SAAudioView {
         addConstraint(_SALayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
         
         addConstraint(_SALayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -12))
+        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
         addConstraint(_SALayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
         addConstraint(_SALayoutConstraintMake(_playToolbar, .right, .equal, self, .right))

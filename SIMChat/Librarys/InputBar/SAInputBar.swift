@@ -32,13 +32,20 @@ import UIKit
 //    -[UIView snapshotViewAfterScreenUpdates:] UIView => UIInputSetContainerView
 
 // ## TODO
+// [ ] * - iOS10侧滑空白
+// [ ] * - iOS10背景不同步
+// [ ] * - 转屏时强制动画
+// [ ] * - 系统的上拉出控制中心时事件响应顺序错误(系统问题)
+// [ ] SAInputView - iOS8键盘重叠
+// [ ] SAInputBarDisplayable - 兼容UICollectionViewController/UITableViewController - 中止(系统行为太多)
+// [ ] SAInputBackgroundViwe - 透明背景显示异常
+// [ ] SAInputBar - 切换自定键盘和第三方输入法时的键盘抖动问题 - 还是有问题, 背景导致的(暂时禁用动画)
 // [x] SAInputTextField - 动态高度支持
 // [x] SAInputAccessoryView - barItem支持, 更随意的组合, 上下左右+中心
 // [x] SAInputAccessoryView - barItem对齐支持
 // [x] SAInputAccessoryView - barItem自定义支持
 // [x] SAInputAccessoryView - barItem选中支持
 // [x] SAInputBar - dismmsMode支持
-// [ ] SAInputBar - 切换自定键盘和第三方输入法时的键盘抖动问题 - 还是有问题, 背景导致的(暂时禁用动画)
 // [ ] SAInputTextField - 输入框自定表情支持(TextKit) - p2
 // [x] SAInputTextField - 输入框高度限制
 // [ ] SAInputTextField - 输入光标
@@ -47,7 +54,6 @@ import UIKit
 // [x] SAInputView - 自定义键盘的切换动画
 // [x] SAInputView - 高度显示错误
 // [x] SAInputView - AutoLayout支持
-// [ ] SAInputView - iOS8键盘重叠
 // [x] SAInputView - 多次切换后键盘消失
 // [ ] SAInputView - 下拉时隐藏键盘
 // [x] SAInputView - 横屏支持
@@ -57,7 +63,6 @@ import UIKit
 // [ ] * - code review - p2
 // [x] * - 内嵌资源(矢量图)
 // [ ] * - 移除跟踪日志 - p0
-// [ ] * - 系统的上拉出控制中心时事件响应顺序错误(系统问题)
 // [ ] SAInputAccessoryView - barItem重用支持(现是不允许存在两个相同的barItem)
 // [ ] SAInputBar - 横/竖屏双布局(InputAccessView和InputView)
 // [x] SAInputAccessoryView - 多次转屏后barItem会报错
@@ -68,9 +73,7 @@ import UIKit
 // [x] SAInputBarDisplayable - dismmsMode支持, scrollIndicatorInsets跟随
 // [x] SAInputBarDisplayable - 切换页面时显示异常
 // [x] SAInputBarDisplayable - 初始化动画异常
-// [ ] SAInputBarDisplayable - 兼容UICollectionViewController/UITableViewController - 中止(系统行为太多)
 // [x] SAInputBackgroundViwe - 自定义背景
-// [ ] SAInputBackgroundViwe - 透明背景显示异常
 
 
 public enum SAInputMode: CustomStringConvertible {

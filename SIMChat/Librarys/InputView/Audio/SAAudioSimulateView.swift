@@ -66,6 +66,7 @@ internal class SAAudioSimulateView: SAAudioView {
         }
         _logger.trace()
         
+        
         _simulateView.isHidden = false
         _simulateView.alpha = 0
         _playToolbar.isHidden = false
@@ -153,9 +154,19 @@ internal class SAAudioSimulateView: SAAudioView {
         _statusView.delegate = self
         _statusView.translatesAutoresizingMaskIntoConstraints = false
         
+        _simulateViewLayout.itemSize = CGSize(width: 80, height: 80)
+        _simulateViewLayout.minimumLineSpacing = 12
+        _simulateViewLayout.minimumInteritemSpacing = 12
+        
         _simulateView.isHidden = true
-        _simulateView.backgroundColor = .random
+        _simulateView.backgroundColor = .clear
         _simulateView.translatesAutoresizingMaskIntoConstraints = false
+        _simulateView.delegate = self
+        _simulateView.dataSource = self
+        _simulateView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Item")
+        _simulateView.showsVerticalScrollIndicator = false
+        _simulateView.showsHorizontalScrollIndicator = false
+        _simulateView.contentInset = UIEdgeInsetsMake(12, 10, 12 + 44, 10)
         
         _playToolbar.isHidden = true
         _playToolbar.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +191,7 @@ internal class SAAudioSimulateView: SAAudioView {
         addSubview(_playToolbar)
         
         addConstraint(_SALayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -12))
+        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
         addConstraint(_SALayoutConstraintMake(_simulateView, .top, .equal, self, .top))
         addConstraint(_SALayoutConstraintMake(_simulateView, .left, .equal, self, .left))
@@ -196,7 +207,9 @@ internal class SAAudioSimulateView: SAAudioView {
         addConstraint(_SALayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
-    fileprivate lazy var _simulateView: UIView = UIView()
+    fileprivate lazy var _simulateViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    fileprivate lazy var _simulateView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._simulateViewLayout)
+    
     fileprivate lazy var _playToolbar: SAAudioPlayToolbar = SAAudioPlayToolbar()
     
     fileprivate lazy var _recordButton: SAAudioRecordButton = SAAudioRecordButton()
@@ -276,6 +289,21 @@ extension SAAudioSimulateView {
     }
     @objc func onTouchDrag(_ sender: UIButton, withEvent event: UIEvent) {
         sender.isHighlighted = true
+    }
+}
+
+extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 6
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        cell.backgroundColor = .random
     }
 }
 
