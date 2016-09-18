@@ -239,13 +239,23 @@ extension SAAudioRecordView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
-        // TODO: 取消
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didFailure: url, duration: duration)
     }
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
-        // TODO: 发送
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didComplete: url, duration: duration)
     }
     @objc func onRecordAndStop(_ sender: Any) {
         _logger.trace()
@@ -317,6 +327,10 @@ extension SAAudioRecordView: SAAudioRecorderDelegate {
     
     public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
         _logger.trace()
+        
+        guard delegate?.audioView(self, shouldStartRecord: recorder.url) ?? true else {
+            return false
+        }
         updateStatus(.waiting)
         return true
     }
@@ -330,6 +344,8 @@ extension SAAudioRecordView: SAAudioRecorderDelegate {
     }
     public func recorder(didStartRecord recorder: SAAudioRecorder) {
         _logger.trace()
+        
+        delegate?.audioView(self, didStartRecord: recorder.url)
         updateStatus(.recording)
     }
     

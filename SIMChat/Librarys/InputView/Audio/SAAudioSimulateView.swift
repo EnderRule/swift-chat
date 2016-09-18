@@ -27,6 +27,7 @@ internal class SAAudioSimulateView: SAAudioView {
             _clearResources()
             _showRecordMode()
             
+            _statusView.isHidden = false
             _recordButton.isUserInteractionEnabled = true
             
         case .waiting: // 等待状态
@@ -47,6 +48,7 @@ internal class SAAudioSimulateView: SAAudioView {
             
         case .processed: // 试听状态
             
+            _statusView.isHidden = true
 //            let t = Int(_recorder?.currentTime ?? 0)
 //            _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
 //            
@@ -65,12 +67,12 @@ internal class SAAudioSimulateView: SAAudioView {
         _logger.trace()
         
         _simulateView.isHidden = false
-        _simulateView.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
+        _simulateView.alpha = 0
         _playToolbar.isHidden = false
         _playToolbar.transform = CGAffineTransform(translationX: 0, y: _playToolbar.frame.height)
         
-        UIView.animate(withDuration: 2.5, animations: {
-            self._simulateView.transform = .identity
+        UIView.animate(withDuration: 0.25, animations: {
+            self._simulateView.alpha = 1
             self._playToolbar.transform = .identity
             self._recordButton.alpha = 0
         }, completion: { f in
@@ -87,12 +89,12 @@ internal class SAAudioSimulateView: SAAudioView {
         _recordButton.alpha = 0
         _recordButton.isHidden = false
         
-        UIView.animate(withDuration: 2.5, animations: {
-            self._simulateView.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
+        UIView.animate(withDuration: 0.25, animations: {
+            self._simulateView.alpha = 0
             self._playToolbar.transform = CGAffineTransform(translationX: 0, y: self._playToolbar.frame.height)
             self._recordButton.alpha = 1
         }, completion: { f in
-            self._simulateView.transform = .identity
+            self._simulateView.alpha = 1
             self._simulateView.isHidden = true
             self._playToolbar.transform = .identity
             self._playToolbar.isHidden = true
@@ -225,13 +227,23 @@ extension SAAudioSimulateView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
-        // TODO: 取消
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didFailure: url, duration: duration)
     }
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
-        // TODO: 发送
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didComplete: url, duration: duration)
     }
     @objc func onPlayAndStop(_ sender: Any) {
         _logger.trace()
@@ -315,6 +327,10 @@ extension SAAudioSimulateView: SAAudioRecorderDelegate {
     
     public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
         _logger.trace()
+        
+        guard delegate?.audioView(self, shouldStartRecord: recorder.url) ?? true else {
+            return false
+        }
         updateStatus(.waiting)
         return true
     }
@@ -335,6 +351,8 @@ extension SAAudioSimulateView: SAAudioRecorderDelegate {
     }
     public func recorder(didStartRecord recorder: SAAudioRecorder) {
         _logger.trace()
+        
+        delegate?.audioView(self, didStartRecord: recorder.url)
         updateStatus(.recording)
     }
     

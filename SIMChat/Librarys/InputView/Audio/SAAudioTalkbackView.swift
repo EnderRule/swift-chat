@@ -283,13 +283,23 @@ extension SAAudioTalkbackView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
-        // TODO: 取消
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didFailure: url, duration: duration)
     }
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
-        // TODO: 发送
+        
+        let duration = _recorder?.currentTime ?? 0
+        let url = _recordFileAtURL
+        
         updateStatus(.none)
+        
+        delegate?.audioView(self, didComplete: url, duration: duration)
     }
     @objc func onPlayAndStop(_ sender: Any) {
         _logger.trace()
@@ -441,6 +451,10 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     
     public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
         _logger.trace()
+        
+        guard delegate?.audioView(self, shouldStartRecord: recorder.url) ?? true else {
+            return false
+        }
         updateStatus(.waiting)
         return true
     }
@@ -449,7 +463,7 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         // 异步一下让系统消息有机会处理
         DispatchQueue.main.async {
             guard self._recordButton.isHighlighted else {
-                return self.updateStatus(.none)
+                return self.onCancel(recorder)
             }
             self._recorder?.record()
         }
@@ -461,6 +475,8 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
     }
     public func recorder(didStartRecord recorder: SAAudioRecorder) {
         _logger.trace()
+        
+        delegate?.audioView(self, didStartRecord: recorder.url)
         updateStatus(.recording)
     }
     

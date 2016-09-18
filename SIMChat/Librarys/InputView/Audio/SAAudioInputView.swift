@@ -10,17 +10,18 @@ import UIKit
 
 // ## TODO
 // [x] SAAudioInputView - 横屏支持
-// [ ] SAAudioInputView - 变声支持
-// [x] SAAudioInputView - 对讲支持
-// [ ] SAAudioInputView - 录音支持
-// [ ] SAAudioInputView - 自定义支持
+// [ ] SAAudioInputView - 变声模式支持
+// [x] SAAudioInputView - 对讲模式支持
+// [x] SAAudioInputView - 录音模式支持
+// [ ] SAAudioInputView - MaskView
+// [ ] SAAudioInputView - 检查录音时间
 // [ ] SAAudioInputView - Mini模式支持
+// [ ] SAAudioInputView - 更换图标
 // [ ] SAAudioInputView - Tabbar支持
 // [x] SAAudioTalkbackView - 长按录音
 // [x] SAAudioTalkbackView - 试听
 // [x] SAAudioTalkbackView - 频谱显示
 // [ ] SAAudioTalkbackView - 代理
-// [ ] SAAudioTalkbackView - 按住录音的同时按home会导致button事件混乱(系统问题)
 // [x] SAAudioSpectrumView - 显示波形
 // [ ] SAAudioSpectrumView - 优化(主要是算法)
 
@@ -136,7 +137,33 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(audio.type)", for: indexPath)
         if let cell = cell as? SAAudioView {
             cell.audio = audio
+            cell.delegate = self
         }
         return cell
+    }
+}
+
+// MARK: - SAAudioViewDelegate
+
+extension SAAudioInputView: SAAudioViewDelegate {
+    
+    func audioView(_ audioView: SAAudioView, shouldStartRecord url: URL) -> Bool {
+        _logger.trace()
+        return true
+    }
+    func audioView(_ audioView: SAAudioView, didStartRecord url: URL) {
+        _logger.trace()
+        
+        _contentView.isScrollEnabled = false
+    }
+    
+    func audioView(_ audioView: SAAudioView, didComplete url: URL, duration: TimeInterval) {
+        _logger.trace()
+        _contentView.isScrollEnabled = true
+    }
+    func audioView(_ audioView: SAAudioView, didFailure url: URL, duration: TimeInterval) {
+        _logger.trace()
+        
+        _contentView.isScrollEnabled = true
     }
 }
