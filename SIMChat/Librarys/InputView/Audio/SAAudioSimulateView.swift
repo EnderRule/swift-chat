@@ -217,7 +217,7 @@ internal class SAAudioSimulateView: SAAudioView {
     fileprivate lazy var _status: SAAudioStatus = .none
     fileprivate lazy var _statusView: SAAudioStatusView = SAAudioStatusView()
     
-    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("/sa-audio-record.m3a"))
+    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
     
     fileprivate var _recorder: SAAudioRecorder?
     fileprivate var _player: SAAudioPlayer?

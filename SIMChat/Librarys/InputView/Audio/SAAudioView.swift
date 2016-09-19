@@ -19,7 +19,8 @@ internal protocol SAAudioViewDelegate: NSObjectProtocol {
 }
 
 internal class SAAudioView: UICollectionViewCell {
-    var audio: SAAudio?
+    
+    var audioType: SAAudioType?
     
     weak var delegate: SAAudioViewDelegate?
 }

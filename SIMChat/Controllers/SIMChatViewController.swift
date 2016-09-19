@@ -289,23 +289,23 @@ extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDel
     open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
         return 3
     }
-    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio {
-        switch index {
-        case 0:
-            let audio = SAAudio()
-            audio.type = .simulate
-            return audio
-        case 1:
-            let audio = SAAudio()
-            audio.type = .talkback
-            return audio
-        default:
-            let audio = SAAudio()
-            audio.type = .record
-            return audio
-        }
+    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudioType {
+        return SAAudioType(rawValue: index)!
     }
     
+    open func audio(_ audio: SAAudioInputView, shouldStartRecord url: URL) -> Bool {
+        return true
+    }
+    open func audio(_ audio: SAAudioInputView, didStartRecord url: URL) {
+        _logger.trace()
+    }
+    
+    open func audio(_ audio: SAAudioInputView, didRecordFailure url: URL, duration: TimeInterval) {
+        _logger.trace("\(url)(\(duration))")
+    }
+    open func audio(_ audio: SAAudioInputView, didRecordComplete url: URL, duration: TimeInterval) {
+        _logger.trace("\(url)(\(duration))")
+    }
 }
 
 // MARK: - SAEmoticonInputViewDataSource & SAEmoticonInputViewDelegate

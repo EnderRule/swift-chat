@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C0697231D8F762600547588 /* SAAudioStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0697221D8F762600547588 /* SAAudioStatus.swift */; };
 		0C0DD6371C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C31C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift */; };
 		0C0DD6381C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C41C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift */; };
 		0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C51C60B4A900AEC8C4 /* SIMChatViewController+Message.swift */; };
@@ -54,7 +55,6 @@
 		0C1637771D8E68E400E45ED1 /* SAAudioPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1637761D8E68E400E45ED1 /* SAAudioPlayButton.swift */; };
 		0C1637791D8E6CE900E45ED1 /* SAAudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1637781D8E6CE900E45ED1 /* SAAudioRecordButton.swift */; };
 		0C16377B1D8E825900E45ED1 /* SAAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16377A1D8E825900E45ED1 /* SAAudioSession.swift */; };
-		0C1654221D8B9C5000A92C86 /* SAAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16540B1D8B9C4F00A92C86 /* SAAudio.swift */; };
 		0C1654231D8B9C5000A92C86 /* SAAudioInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16540C1D8B9C4F00A92C86 /* SAAudioInputView.swift */; };
 		0C1654241D8B9C5000A92C86 /* SAAudioRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16540D1D8B9C4F00A92C86 /* SAAudioRecordView.swift */; };
 		0C1654251D8B9C5000A92C86 /* SAAudioSimulateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16540E1D8B9C4F00A92C86 /* SAAudioSimulateView.swift */; };
@@ -132,6 +132,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C0697221D8F762600547588 /* SAAudioStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioStatus.swift; sourceTree = "<group>"; };
 		0C0DD5A41C60B28E00AEC8C4 /* SIMChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SIMChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0DD5C31C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatPhotoBrowserController.swift; sourceTree = "<group>"; };
 		0C0DD5C41C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SIMChatViewController+Keyboard.swift"; sourceTree = "<group>"; };
@@ -181,7 +182,6 @@
 		0C1637761D8E68E400E45ED1 /* SAAudioPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPlayButton.swift; sourceTree = "<group>"; };
 		0C1637781D8E6CE900E45ED1 /* SAAudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordButton.swift; sourceTree = "<group>"; };
 		0C16377A1D8E825900E45ED1 /* SAAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSession.swift; sourceTree = "<group>"; };
-		0C16540B1D8B9C4F00A92C86 /* SAAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudio.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C16540C1D8B9C4F00A92C86 /* SAAudioInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioInputView.swift; sourceTree = "<group>"; };
 		0C16540D1D8B9C4F00A92C86 /* SAAudioRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordView.swift; sourceTree = "<group>"; };
 		0C16540E1D8B9C4F00A92C86 /* SAAudioSimulateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSimulateView.swift; sourceTree = "<group>"; };
@@ -471,7 +471,6 @@
 		0C16540A1D8B9C4F00A92C86 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				0C16540B1D8B9C4F00A92C86 /* SAAudio.swift */,
 				0C9E3DAC1D8BA3EA00F4DEE6 /* SAAudioView.swift */,
 				0C16540D1D8B9C4F00A92C86 /* SAAudioRecordView.swift */,
 				0C16540E1D8B9C4F00A92C86 /* SAAudioSimulateView.swift */,
@@ -479,6 +478,7 @@
 				0C759B7B1D8D96B600D9DA69 /* SAAudioPlayer.swift */,
 				0CBC0F3D1D8CD7EB00D05122 /* SAAudioRecorder.swift */,
 				0C16377A1D8E825900E45ED1 /* SAAudioSession.swift */,
+				0C0697221D8F762600547588 /* SAAudioStatus.swift */,
 				0C1637741D8E5DFC00E45ED1 /* SAAudioStatusView.swift */,
 				0CEC3F2D1D8BE9E300099478 /* SAAudioSpectrumView.swift */,
 				0C1637761D8E68E400E45ED1 /* SAAudioPlayButton.swift */,
@@ -789,6 +789,7 @@
 				0C0DD6561C60B4A900AEC8C4 /* SIMChatResult.swift in Sources */,
 				0C24757A1C892052003077B2 /* SIMChatResourceProtocol.swift in Sources */,
 				0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */,
+				0C0697231D8F762600547588 /* SAAudioStatus.swift in Sources */,
 				0C9E3DBC1D8BA7F700F4DEE6 /* SAEmoticonInputView.swift in Sources */,
 				0C1823721D8AD2E90007DAEF /* NSLayoutConstraint+SA.swift in Sources */,
 				0C1654251D8B9C5000A92C86 /* SAAudioSimulateView.swift in Sources */,
@@ -802,7 +803,6 @@
 				0C1654311D8B9C5000A92C86 /* SAPhotoInputView.swift in Sources */,
 				0C0DD64A1C60B4A900AEC8C4 /* SIMChatBaseMessage.swift in Sources */,
 				0C0DD6441C60B4A900AEC8C4 /* SIMChatBaseMessageImageContent.swift in Sources */,
-				0C1654221D8B9C5000A92C86 /* SAAudio.swift in Sources */,
 				0C9E3DC21D8BA7F700F4DEE6 /* SAEmoticonTabItemView.swift in Sources */,
 				0C0DD6381C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift in Sources */,
 				0C0DD65C1C60B4A900AEC8C4 /* UIColor+Hex.swift in Sources */,

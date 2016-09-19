@@ -10,27 +10,50 @@ import UIKit
 
 // ## TODO
 // [x] SAAudioInputView - 横屏支持
-// [ ] SAAudioInputView - 变声模式支持
+// [ ] SAAudioInputView - 变声模式支持 - 50%
 // [x] SAAudioInputView - 对讲模式支持
 // [x] SAAudioInputView - 录音模式支持
-// [ ] SAAudioInputView - MaskView
+// [x] SAAudioInputView - 添加MaskView
 // [ ] SAAudioInputView - 检查录音时间
 // [ ] SAAudioInputView - Mini模式支持
 // [x] SAAudioInputView - 更换图标
 // [ ] SAAudioInputView - Tabbar支持
-// [ ] SAAudioInputView - 初始化时在中心
+// [x] SAAudioInputView - 初始化时在中心
 // [x] SAAudioTalkbackView - 长按录音
-// [x] SAAudioTalkbackView - 试听
+// [x] SAAudioTalkbackView - 回放
 // [x] SAAudioTalkbackView - 频谱显示
-// [ ] SAAudioTalkbackView - 代理
+// [x] SAAudioRecordView - 点击录音
+// [x] SAAudioRecordView - 回放
+// [x] SAAudioRecordView - 频谱显示
+// [x] SAAudioSimulateView - 长按录音
+// [ ] SAAudioSimulateView - 变声处理
+// [ ] SAAudioSimulateView - 回放
+// [x] SAAudioSimulateView - 频谱显示(录音)
+// [ ] SAAudioSimulateView - 频谱显示(回放)
 // [x] SAAudioSpectrumView - 显示波形
 // [ ] SAAudioSpectrumView - 优化(主要是算法)
+
+@objc
+public enum SAAudioType: Int, CustomStringConvertible {
+    
+    case simulate = 0   // 变声
+    case talkback = 1   // 对讲
+    case record = 2     // 录音
+    
+    public var description: String { 
+        switch self {
+        case .talkback: return "Talkback"
+        case .simulate: return "Simulate"
+        case .record:   return "Record"
+        }
+    }
+}
 
 @objc
 public protocol SAAudioInputViewDataSource: NSObjectProtocol {
     
     func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int
-    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudio
+    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudioType
     
 }
 
@@ -144,12 +167,12 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let audio = dataSource?.audio(self, itemAt: indexPath.item) else {
+        guard let type = dataSource?.audio(self, itemAt: indexPath.item) else {
             fatalError()
         }
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(audio.type)", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(type)", for: indexPath)
         if let cell = cell as? SAAudioView {
-            cell.audio = audio
+            cell.audioType = type
             cell.delegate = self
         }
         return cell
