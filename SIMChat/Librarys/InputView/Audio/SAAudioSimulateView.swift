@@ -163,10 +163,12 @@ internal class SAAudioSimulateView: SAAudioView {
         _simulateView.translatesAutoresizingMaskIntoConstraints = false
         _simulateView.delegate = self
         _simulateView.dataSource = self
-        _simulateView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Item")
+        _simulateView.allowsSelection = false
+        _simulateView.allowsMultipleSelection = false
+        _simulateView.register(SAAudioEffectView.self, forCellWithReuseIdentifier: "Item")
         _simulateView.showsVerticalScrollIndicator = false
         _simulateView.showsHorizontalScrollIndicator = false
-        _simulateView.contentInset = UIEdgeInsetsMake(12, 10, 12 + 44, 10)
+        _simulateView.contentInset = UIEdgeInsetsMake(18, 10, 18 + 44, 10)
         
         _playToolbar.isHidden = true
         _playToolbar.translatesAutoresizingMaskIntoConstraints = false
@@ -206,6 +208,16 @@ internal class SAAudioSimulateView: SAAudioView {
         addConstraint(_SALayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
         addConstraint(_SALayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
+    
+    fileprivate lazy var _supportEffects: [SAAudioEffect] = [
+        SAAudioEffect(type: .original),
+        SAAudioEffect(type: .ef1),
+        SAAudioEffect(type: .ef2),
+        SAAudioEffect(type: .ef3),
+        SAAudioEffect(type: .ef4),
+        SAAudioEffect(type: .ef5),
+    ]
+    
     
     fileprivate lazy var _simulateViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _simulateView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._simulateViewLayout)
@@ -295,7 +307,7 @@ extension SAAudioSimulateView {
 extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return _supportEffects.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -303,7 +315,10 @@ extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        cell.backgroundColor = .random
+        guard let cell = cell as? SAAudioEffectView else {
+            return
+        }
+        cell.effect = _supportEffects[indexPath.item]
     }
 }
 
@@ -366,6 +381,7 @@ extension SAAudioSimulateView: SAAudioRecorderDelegate {
         // 异步一下让系统消息有机会处理
         DispatchQueue.main.async {
             guard self._recordButton.isHighlighted else {
+                // 不能直接调用onCancel, 因为没有启动就没有失败
                 return self.updateStatus(.none)
             }
             self._recorder?.record()

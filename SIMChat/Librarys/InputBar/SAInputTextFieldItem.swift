@@ -64,7 +64,9 @@ internal class SAInputTextFieldItem: SAInputItem {
     }
     
     override var size: CGSize {
-        set { }
+        set {
+            // don't set
+        }
         get {
             if let size = _cacheSize {
                 return size

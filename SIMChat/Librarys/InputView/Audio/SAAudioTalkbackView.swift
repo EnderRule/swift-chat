@@ -464,7 +464,8 @@ extension SAAudioTalkbackView: SAAudioRecorderDelegate {
         // 异步一下让系统消息有机会处理
         DispatchQueue.main.async {
             guard self._recordButton.isHighlighted else {
-                return self.onCancel(recorder)
+                // 不能直接调用onCancel, 因为没有启动就没有失败
+                return self.updateStatus(.none)
             }
             self._recorder?.record()
         }

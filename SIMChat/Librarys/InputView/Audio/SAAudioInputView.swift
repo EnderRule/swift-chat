@@ -30,6 +30,7 @@ import UIKit
 // [ ] SAAudioSimulateView - 回放
 // [x] SAAudioSimulateView - 频谱显示(录音)
 // [ ] SAAudioSimulateView - 频谱显示(回放)
+// [ ] SAAudioSimulateView - 各种效果支持(6)
 // [x] SAAudioSpectrumView - 显示波形
 // [ ] SAAudioSpectrumView - 优化(主要是算法)
 // [x] SAAudioTabbar - Index设置
