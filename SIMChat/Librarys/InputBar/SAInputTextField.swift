@@ -16,6 +16,26 @@ internal class SAInputTextField: UITextView {
         }
     }
     
+    override var text: String! {
+        set {
+            super.text = newValue
+            delegate?.textViewDidChange?(self)
+        }
+        get {
+            return super.text
+        }
+    }
+    override var attributedText: NSAttributedString! {
+        set {
+            super.attributedText = newValue
+            delegate?.textViewDidChange?(self)
+        }
+        get {
+            return super.attributedText
+        }
+    }
+    
+    
     func insertAttributedText(_ attributedText: NSAttributedString) {
         let currnetTextRange = selectedTextRange ?? UITextRange()
         let newTextLength = attributedText.length

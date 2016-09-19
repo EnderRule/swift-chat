@@ -119,16 +119,18 @@ open class SIMChatViewController: UIViewController {
         _emoticonSendBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10 + 8, 0, 8)
         _emoticonSendBtn.setTitle("Send", for: .normal)
         _emoticonSendBtn.setTitleColor(.white, for: .normal)
+        _emoticonSendBtn.setTitleColor(.lightGray, for: .highlighted)
         _emoticonSendBtn.setTitleColor(.gray, for: .disabled)
         _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_blue"), for: .normal)
-        _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_blue_h"), for: .highlighted)
         _emoticonSendBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .disabled)
+        _emoticonSendBtn.addTarget(self, action: #selector(onEmoticonSend(_:)), for: .touchUpInside)
         _emoticonSendBtn.isEnabled = false
         
         _emoticonSettingBtn.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0)
         _emoticonSettingBtn.setImage(UIImage(named: "emoticon_btn_setting"), for: .normal)
         _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .normal)
         _emoticonSettingBtn.setBackgroundImage(UIImage(named: "emoticon_btn_send_gray"), for: .highlighted)
+        _emoticonSettingBtn.addTarget(self, action: #selector(onEmoticonSetting(_:)), for: .touchUpInside)
     }
     
     fileprivate var _activedItem: SAInputItem?
@@ -210,6 +212,21 @@ open class SIMChatViewController: UIViewController {
     open override var canBecomeFirstResponder: Bool {
         return true
     }
+}
+
+// MARK: - Touch Events
+
+extension SIMChatViewController {
+    
+    open func onEmoticonSend(_ sender: Any) {
+        _logger.trace()
+        
+        _toolbar.text = ""
+    }
+    open func onEmoticonSetting(_ sender: Any) {
+        _logger.trace()
+    }
+    
 }
 
 // MARK: - SAInputBarDelegate & SAInputBarDisplayable
