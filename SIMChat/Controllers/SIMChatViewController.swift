@@ -280,6 +280,10 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
             inputBar.deselectBarItem(item, animated: true)
         } 
     }
+    
+    open func inputBar(didChangeText inputBar: SAInputBar) {
+        _emoticonSendBtn.isEnabled = inputBar.attributedText.length != 0
+    }
 }
 
 // MARK: - SAAudioInputViewDataSource & SAAudioInputViewDelegate
@@ -350,6 +354,28 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon) {
         _logger.debug(item)
+        
+        guard !item.isBackspace else {
+            _toolbar.deleteBackward()
+            return
+        }
+        guard let item = item as? SIMChatEmoticon else {
+            return
+        }
+        if let img = item.contents as? UIImage {
+            
+            let d = _toolbar.font?.descender ?? 0
+            let h = _toolbar.font?.lineHeight ?? 0
+            
+            let attachment = NSTextAttachment()
+            
+            attachment.image = img
+            attachment.bounds = CGRect(x: 0, y: d, width: h, height: h)
+            
+            _toolbar.insertAttributedText(NSAttributedString(attachment: attachment))
+        } else {
+            _toolbar.insertText("/\(item.title)")
+        }
     }
     
     open func emoticon(_ emoticon: SAEmoticonInputView, shouldPreviewFor item: SAEmoticon?) -> Bool {

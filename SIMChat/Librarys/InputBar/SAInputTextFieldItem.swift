@@ -20,8 +20,13 @@ internal class SAInputTextFieldItem: SAInputItem {
     }
     
     override var font: UIFont? {
-        set { return _textView.font = newValue }
-        get { return _textView.font }
+        set {
+            _cacheMinHeight = nil
+            _textView.font = newValue
+        }
+        get {
+            return _textView.font
+        }
     }
     
     override var tintColor: UIColor? {
@@ -88,13 +93,27 @@ internal class SAInputTextFieldItem: SAInputItem {
     func sizeThatFits() -> CGSize {
         _logger.trace()
         
-        let textSize = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.greatestFiniteMagnitude))
-        let size = CGSize(width: _textView.bounds.width, height: min(textSize.height + 0.5, _maxHeight))
+        var size = _textView.sizeThatFits(CGSize(width: _textView.bounds.width, height: CGFloat.greatestFiniteMagnitude))
+        //size.height = min(max(size.height, _minHeight), _maxHeight)
+        size.height = min(size.height, _maxHeight)
         return size
     }
     
     var _maxHeight: CGFloat = 106
+    var _minHeight: CGFloat {
+        if let height = _cacheMinHeight {
+            return height
+        }
+        if let font = _textView.font {
+            let edg = _textView.textContainerInset
+            let mh = font.lineHeight + edg.top + edg.bottom
+            _cacheMinHeight = mh
+            return mh
+        }
+        return 0
+    }
     
+    var _cacheMinHeight: CGFloat?
     var _cacheSize: CGSize?
     var _cacheContentSize: CGSize?
     

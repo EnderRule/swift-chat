@@ -46,9 +46,10 @@ import UIKit
 // [x] SAInputAccessoryView - barItem自定义支持
 // [x] SAInputAccessoryView - barItem选中支持
 // [x] SAInputBar - dismmsMode支持
-// [ ] SAInputTextField - 输入框自定表情支持(TextKit) - p2
+// [x] SAInputTextField - 输入框自定表情支持(TextKit)
 // [x] SAInputTextField - 输入框高度限制
 // [ ] SAInputTextField - 输入光标
+// [x] SAInputTextField - 添加Text和删除Text没有响应事件
 // [x] SAInputAccessoryView - 更新barItem - 自动计算
 // [x] SAInputAccessoryView - 更新barItem - 动画(包含: 插入, 删除, 更新)
 // [x] SAInputView - 自定义键盘的切换动画
@@ -745,10 +746,16 @@ extension SAInputBar: UIKeyInput {
         return _inputAccessoryView.textField.hasText
     }
     open func insertText(_ text: String) {
-        return _inputAccessoryView.textField.insertText(text)
+        _inputAccessoryView.textField.insertText(text)
+        _inputAccessoryView.textViewDidChange(_inputAccessoryView.textField)
+    }
+    open func insertAttributedText(_ attributedText: NSAttributedString) {
+        _inputAccessoryView.textField.insertAttributedText(attributedText)
+        _inputAccessoryView.textViewDidChange(_inputAccessoryView.textField)
     }
     open func deleteBackward() {
-        return _inputAccessoryView.textField.deleteBackward()
+        _inputAccessoryView.textField.deleteBackward()
+        _inputAccessoryView.textViewDidChange(_inputAccessoryView.textField)
     }
     
     // UITextInputTraits(Forwarding)

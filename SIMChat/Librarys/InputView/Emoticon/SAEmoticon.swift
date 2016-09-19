@@ -10,6 +10,10 @@ import UIKit
 
 open class SAEmoticon: NSObject {
     
+    open var isBackspace: Bool {
+        return self === SAEmoticon.backspace
+    }
+    
     /// 退格
     open static let backspace: SAEmoticon = {
         let em = SAEmoticon()

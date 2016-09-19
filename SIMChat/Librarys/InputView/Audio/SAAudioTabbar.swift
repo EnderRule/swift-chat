@@ -97,10 +97,11 @@ internal class SAAudioTabbar: UIView {
         _itemViews.removeAll()
         
         let s: CGFloat = 8
-        var x: CGFloat = -s
+        var x: CGFloat = 0
         let y: CGFloat = 0
         let height: CGFloat = 21
         
+        x -= s / 2
         (0 ..< numberOfItems).forEach {
             let label = _makeLabel(_title(at: $0))
             
@@ -116,6 +117,7 @@ internal class SAAudioTabbar: UIView {
             
             x += s + nframe.width
         }
+        x += s / 2
         
         _contentView.frame = CGRect(x: 0, y: 5, width: max(x, 0), height: height)
     }
