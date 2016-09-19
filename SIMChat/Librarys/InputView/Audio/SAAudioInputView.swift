@@ -32,6 +32,9 @@ import UIKit
 // [ ] SAAudioSimulateView - 频谱显示(回放)
 // [x] SAAudioSpectrumView - 显示波形
 // [ ] SAAudioSpectrumView - 优化(主要是算法)
+// [x] SAAudioTabbar - Index设置
+// [ ] SAAudioTabbar - 点击事件
+// [x] SAAudioTabbar - 颜色
 
 @objc
 public enum SAAudioType: Int, CustomStringConvertible {
@@ -83,9 +86,12 @@ open class SAAudioInputView: UIView {
             
             if let idx = _contentViewLayout.lastIndexPath {
                 _restoreContentOffset(at: idx)
+                _tabbar.index = CGFloat(idx.item) + 0.5
             } else {
-                let idx = max(((_contentView.numberOfItems(inSection: 0) + 1) / 2) - 1, 0)
+            let count = _contentView.numberOfItems(inSection: 0)
+                let idx = max(((count + 1) / 2) - 1, 0)
                 _contentView.contentOffset = CGPoint(x: _contentView.frame.width * CGFloat(idx), y: 0)
+                _tabbar.index = CGFloat(idx) + 0.5
             }
         }
     }
@@ -109,6 +115,11 @@ open class SAAudioInputView: UIView {
         
         backgroundColor = UIColor(colorLiteralRed: 0xec / 0xff, green: 0xed / 0xff, blue: 0xf1 / 0xff, alpha: 1)
         
+        _tabbar.delegate = self
+        _tabbar.indicatorColor = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
+        _tabbar.textHighlightedColor = _tabbar.indicatorColor
+        _tabbar.translatesAutoresizingMaskIntoConstraints = false
+        
         _maskView.backgroundColor = UIColor(white: 0, alpha: 0.2)
         _maskView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -131,6 +142,7 @@ open class SAAudioInputView: UIView {
         
         // add subview 
         addSubview(_contentView)
+        addSubview(_tabbar)
         
         // add constraints
        
@@ -138,9 +150,15 @@ open class SAAudioInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_contentView, .left, .equal, self, .left))
         addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
         addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom))
+        
+        addConstraint(_SALayoutConstraintMake(_tabbar, .left, .equal, self, .left))
+        addConstraint(_SALayoutConstraintMake(_tabbar, .right, .equal, self, .right))
+        addConstraint(_SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom, -16))
     }
     
     private var _cacheBounds: CGRect?
+    
+    fileprivate lazy var _tabbar: SAAudioTabbar = SAAudioTabbar()
     
     fileprivate lazy var _contentViewLayout: SAAudioInputViewLayout = SAAudioInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
@@ -161,6 +179,12 @@ open class SAAudioInputView: UIView {
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
 extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if let _ = _contentView.indexPathsForVisibleItems.first {
+            _tabbar.index = (scrollView.contentOffset.x / scrollView.bounds.width) + 0.5
+        }
+    }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource?.numberOfItemsInAudio(self) ?? 0
@@ -201,16 +225,11 @@ extension SAAudioInputView: SAAudioViewDelegate {
     }
     
     func addMaskView() {
-        guard let window = window else {
+        guard let window = window, _maskView.superview == nil else {
             return
         }
-        guard _maskView.superview == nil else {
-            return
-        }
-        
         _logger.trace()
         
-
         window.addSubview(_maskView)
         _maskViewLayout = [
             _SALayoutConstraintMake(_maskView, .top, .equal, window, .top),
@@ -221,10 +240,13 @@ extension SAAudioInputView: SAAudioViewDelegate {
         window.addConstraints(_maskViewLayout)
         
         self._maskView.alpha = 0
-        UIView.animate(withDuration: 0.25) {
+        self._tabbar.transform = .identity
+        UIView.animate(withDuration: 0.25, animations: {
             self._maskView.alpha = 1
-        }
-        
+            self._tabbar.transform = CGAffineTransform(translationX: 0, y: self._tabbar.frame.height + 16)
+        }, completion: { _ in
+            self._tabbar.isHidden = true
+        })
         _contentView.isScrollEnabled = false
         _contentView.panGestureRecognizer.isEnabled = false
     }
@@ -236,13 +258,41 @@ extension SAAudioInputView: SAAudioViewDelegate {
         
         UIView.animate(withDuration: 0.25, animations: {
             self._maskView.alpha = 0
+            self._tabbar.transform = .identity
         }, completion: { _ in
             self._maskView.superview?.removeConstraints(self._maskViewLayout)
             self._maskView.removeFromSuperview()
             self._maskViewLayout = []
         })
         
+        _tabbar.isHidden = false
         _contentView.isScrollEnabled = true
         _contentView.panGestureRecognizer.isEnabled = true
+    }
+}
+
+// MARK: - SAAudioTabbarDelegate
+
+extension SAAudioInputView: SAAudioTabbarDelegate {
+    
+    func numberOfItemsInTabbar(_ tabbar: SAAudioTabbar) -> Int {
+        return dataSource?.numberOfItemsInAudio(self) ?? 0
+    }
+    func tabbar(_ tabbar: SAAudioTabbar, titleAt index: Int) -> String {
+        guard let type = dataSource?.audio(self, itemAt: index) else {
+            fatalError()
+        }
+        switch type {
+        case .record: return "录音"
+        case .talkback: return "对讲"
+        case .simulate: return "变声"
+        }
+    }
+    
+    func tabbar(_ tabbar: SAAudioTabbar, shouldSelectItemAt index: Int) -> Bool {
+        return true
+    }
+    func tabbar(_ tabbar: SAAudioTabbar, didSelectItemAt index: Int) {
+        _contentView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
     }
 }
