@@ -257,9 +257,12 @@ extension SAAudioInputView: SAAudioViewDelegate {
         }
         _logger.trace()
         
+        UIView.animate(withDuration: 0.25, delay: 0.2, options: .curveEaseInOut, animations: {
+            self._tabbar.transform = .identity
+        }, completion: nil)
+        
         UIView.animate(withDuration: 0.25, animations: {
             self._maskView.alpha = 0
-            self._tabbar.transform = .identity
         }, completion: { _ in
             self._maskView.superview?.removeConstraints(self._maskViewLayout)
             self._maskView.removeFromSuperview()
