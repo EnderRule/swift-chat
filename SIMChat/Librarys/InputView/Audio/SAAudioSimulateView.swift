@@ -133,13 +133,13 @@ internal class SAAudioSimulateView: SAAudioView {
     
     
     fileprivate func _makePlayer(_ url: URL) -> SAAudioPlayer {
-        let player = SAAudioPlayer(url: _recordFileAtURL)
+        let player = SAAudioPlayer(url: url)
         player.delegate = self
         player.isMeteringEnabled = true
         return player
     }
     fileprivate func _makeRecorder(_ url: URL) -> SAAudioRecorder {
-        let recorder = SAAudioRecorder(url: _recordFileAtURL)
+        let recorder = SAAudioRecorder(url: url)
         recorder.delegate = self
         recorder.isMeteringEnabled = true
         return recorder
@@ -207,7 +207,13 @@ internal class SAAudioSimulateView: SAAudioView {
         addConstraint(_SALayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
         addConstraint(_SALayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
         addConstraint(_SALayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
+        
+        
+        _activatedEffect = _supportEffects.first
     }
+    
+    fileprivate var _activatedEffect: SAAudioEffect?
+    fileprivate weak var _activatedEffectView: SAAudioEffectView?
     
     fileprivate lazy var _supportEffects: [SAAudioEffect] = [
         SAAudioEffect(type: .original),
@@ -304,6 +310,48 @@ extension SAAudioSimulateView {
     }
 }
 
+// MARK: - SAAudioEffectView
+
+extension SAAudioSimulateView: SAAudioEffectViewDelegate {
+    
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, shouldSelectItem audioEffect: SAAudioEffect) -> Bool {
+        return true
+    }
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, didSelectItem audioEffect: SAAudioEffect) {
+        _logger.trace(audioEffect)
+        
+        if let view = _activatedEffectView, view.status.isPlaying || view.status.isProcessing {
+            // 正在播放的时候需要停止
+            _activatedEffect?.delegate = nil // 忽略任何错误和回调
+            _activatedEffect?.stop()
+            _player?.delegate = nil // 忽略任何错误和回调
+            _player?.stop()
+            
+            _activatedEffectView?.status = .none
+            
+            // 如果是同一个view说明, 这是用户主动取消操作
+            if audioEffectView === view {
+                return
+            }
+        }
+        
+        _activatedEffect = audioEffect
+        _activatedEffectView = audioEffectView
+        _simulateView.visibleCells.forEach {
+            guard audioEffectView !== $0 else {
+                return
+            }
+            $0.isSelected = false
+        }
+        
+        audioEffectView.isSelected = true
+        audioEffect.delegate = self
+        audioEffect.process(at: _recordFileAtURL)
+    }
+}
+
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
+
 extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -319,6 +367,47 @@ extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDeleg
             return
         }
         cell.effect = _supportEffects[indexPath.item]
+        cell.delegate = self
+        cell.isSelected = cell.effect === _activatedEffect
+    }
+}
+
+
+// MARK: - SAAudioEffect
+
+extension SAAudioSimulateView: SAAudioEffectDelegate {
+    
+    func audioEffect(_ audioEffect: SAAudioEffect, shouldPrepareProcessAt url: URL) -> Bool {
+        _logger.trace()
+        _activatedEffectView?.status = .processing
+        return true
+    }
+    func audioEffect(_ audioEffect: SAAudioEffect, didPrepareProcessAt url: URL) {
+        _logger.trace()
+    }
+
+    func audioEffect(_ audioEffect: SAAudioEffect, shouldStartProcessAt url: URL) -> Bool {
+        _logger.trace()
+        return true
+    }
+    func audioEffect(_ audioEffect: SAAudioEffect, didStartProcessAt url: URL) {
+        _logger.trace()
+    }
+    
+    func audioEffect(_ audioEffect: SAAudioEffect, didFinishProcessAt url: URL) {
+        _logger.trace()
+        
+        _activatedEffectView?.status = .processed
+        
+        // 进入播放状态
+        _player = _makePlayer(url)
+        _player?.play()
+    }
+    func audioEffect(_ audioEffect: SAAudioEffect, didErrorOccur error: NSError) {
+        _logger.trace()
+        
+        // TODO: 弹出提示窗
+        _activatedEffectView?.status = .none
     }
 }
 
@@ -328,7 +417,7 @@ extension SAAudioSimulateView: SAAudioPlayerDelegate {
     
     public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
         _logger.trace()
-        updateStatus(.waiting)
+        _activatedEffectView?.status = .waiting
         return true
     }
     public func player(didPrepareToPlay player: SAAudioPlayer){ 
@@ -341,25 +430,31 @@ extension SAAudioSimulateView: SAAudioPlayerDelegate {
     }
     public func player(didStartPlay player: SAAudioPlayer) {
         _logger.trace()
-        updateStatus(.playing)
+        
+        _activatedEffectView?.status = .playing
     }
     
     public func player(didStopPlay player: SAAudioPlayer) {
         _logger.trace()
-        updateStatus(.processed)
+        
+        _activatedEffectView?.status = .none
     }
     
     public func player(didFinishPlay player: SAAudioPlayer) {
         _logger.trace()
-        updateStatus(.processed)
+        
+        _activatedEffectView?.status = .none
     }
     public func player(didInterruptionPlay player: SAAudioPlayer) {
         _logger.trace()
-        updateStatus(.processed)
+        
+        _activatedEffectView?.status = .none
     }
     public func player(didErrorOccur player: SAAudioPlayer, error: NSError){
         _logger.trace(error)
-        updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
+        
+        _activatedEffectView?.status = .none
+        // TODO: 弹出提示窗
     }
 }
 
