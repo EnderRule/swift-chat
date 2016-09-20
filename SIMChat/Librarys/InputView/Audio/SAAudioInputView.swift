@@ -145,14 +145,14 @@ open class SAAudioInputView: UIView {
         
         // add constraints
        
-        addConstraint(_SALayoutConstraintMake(_contentView, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_contentView, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_contentView, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom))
+        addConstraint(_SAAudioLayoutConstraintMake(_contentView, .top, .equal, self, .top))
+        addConstraint(_SAAudioLayoutConstraintMake(_contentView, .left, .equal, self, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_contentView, .right, .equal, self, .right))
+        addConstraint(_SAAudioLayoutConstraintMake(_contentView, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(_tabbar, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_tabbar, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom, -16))
+        addConstraint(_SAAudioLayoutConstraintMake(_tabbar, .left, .equal, self, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_tabbar, .right, .equal, self, .right))
+        addConstraint(_SAAudioLayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom, -16))
     }
     
     private var _cacheBounds: CGRect?
@@ -231,10 +231,10 @@ extension SAAudioInputView: SAAudioViewDelegate {
         
         window.addSubview(_maskView)
         _maskViewLayout = [
-            _SALayoutConstraintMake(_maskView, .top, .equal, window, .top),
-            _SALayoutConstraintMake(_maskView, .left, .equal, window, .left),
-            _SALayoutConstraintMake(_maskView, .right, .equal, window, .right),
-            _SALayoutConstraintMake(_maskView, .bottom, .equal, self, .top),
+            _SAAudioLayoutConstraintMake(_maskView, .top, .equal, window, .top),
+            _SAAudioLayoutConstraintMake(_maskView, .left, .equal, window, .left),
+            _SAAudioLayoutConstraintMake(_maskView, .right, .equal, window, .right),
+            _SAAudioLayoutConstraintMake(_maskView, .bottom, .equal, self, .top),
         ]
         window.addConstraints(_maskViewLayout)
         
@@ -297,4 +297,16 @@ extension SAAudioInputView: SAAudioTabbarDelegate {
     func tabbar(_ tabbar: SAAudioTabbar, didSelectItemAt index: Int) {
         _contentView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
     }
+}
+
+@inline(__always)
+internal func _SAAudioLayoutConstraintMake(_ item: AnyObject, _ attr1: NSLayoutAttribute, _ related: NSLayoutRelation, _ toItem: AnyObject? = nil, _ attr2: NSLayoutAttribute = .notAnAttribute, _ constant: CGFloat = 0, priority: UILayoutPriority = 1000, multiplier: CGFloat = 1, output: UnsafeMutablePointer<NSLayoutConstraint?>? = nil) -> NSLayoutConstraint {
+    
+    let c = NSLayoutConstraint(item:item, attribute:attr1, relatedBy:related, toItem:toItem, attribute:attr2, multiplier:multiplier, constant:constant)
+    c.priority = priority
+    if output != nil {
+        output?.pointee = c
+    }
+    
+    return c
 }

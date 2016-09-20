@@ -158,16 +158,16 @@ internal class SAAudioStatusView: UIView {
         addSubview(_activityIndicatorView)
         addSubview(_textLabel)
         
-        addConstraint(_SALayoutConstraintMake(_textLabel, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_textLabel, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_textLabel, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_textLabel, .bottom, .equal, self, .bottom))
+        addConstraint(_SAAudioLayoutConstraintMake(_textLabel, .top, .equal, self, .top))
+        addConstraint(_SAAudioLayoutConstraintMake(_textLabel, .left, .equal, self, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_textLabel, .right, .equal, self, .right))
+        addConstraint(_SAAudioLayoutConstraintMake(_textLabel, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(_spectrumView, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_spectrumView, .centerY, .equal, self, .centerY))
+        addConstraint(_SAAudioLayoutConstraintMake(_spectrumView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAAudioLayoutConstraintMake(_spectrumView, .centerY, .equal, self, .centerY))
         
-        addConstraint(_SALayoutConstraintMake(_activityIndicatorView, .left, .equal, _textLabel, .left))
-        addConstraint(_SALayoutConstraintMake(_activityIndicatorView, .centerY, .equal, _textLabel, .centerY))
+        addConstraint(_SAAudioLayoutConstraintMake(_activityIndicatorView, .left, .equal, _textLabel, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_activityIndicatorView, .centerY, .equal, _textLabel, .centerY))
     }
     
     fileprivate lazy var _textLabel: UILabel = UILabel()

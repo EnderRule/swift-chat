@@ -41,16 +41,16 @@ internal class SAAudioPlayToolbar: UIView {
         addSubview(_cancelButton)
         addSubview(_confirmButton)
         
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .bottom, .equal, self, .bottom))
+        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .top, .equal, self, .top))
+        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .left, .equal, self, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .right, .equal, _confirmButton, .left))
-        addConstraint(_SALayoutConstraintMake(_cancelButton, .width, .equal, _confirmButton, .width))
+        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .right, .equal, _confirmButton, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .width, .equal, _confirmButton, .width))
         
-        addConstraint(_SALayoutConstraintMake(_confirmButton, .top, .equal, self, .top))
-        addConstraint(_SALayoutConstraintMake(_confirmButton, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_confirmButton, .bottom, .equal, self, .bottom))
+        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .top, .equal, self, .top))
+        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .right, .equal, self, .right))
+        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .bottom, .equal, self, .bottom))
     }
     
     private lazy var _cancelButton: UIButton = UIButton()

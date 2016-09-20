@@ -233,23 +233,23 @@ internal class SAAudioTalkbackView: SAAudioView {
         addSubview(_playToolbar)
         addSubview(_statusView)
         
-        addConstraint(_SALayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
-        addConstraint(_SALayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
+        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
+        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
         
-        addConstraint(_SALayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SALayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
+        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
+        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
-        addConstraint(_SALayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
-        addConstraint(_SALayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
-        addConstraint(_SALayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
+        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
+        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SALayoutConstraintMake(_recordToolbar, .top, .equal, _recordButton, .top, -9))
-        addConstraint(_SALayoutConstraintMake(_recordToolbar, .left, .equal, self, .left, 20))
-        addConstraint(_SALayoutConstraintMake(_recordToolbar, .right, .equal, self, .right, -20))
+        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .top, .equal, _recordButton, .top, -9))
+        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .left, .equal, self, .left, 20))
+        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .right, .equal, self, .right, -20))
         
-        addConstraint(_SALayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
-        addConstraint(_SALayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
-        addConstraint(_SALayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
+        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
+        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
     fileprivate lazy var _playButton: SAAudioPlayButton = SAAudioPlayButton()
