@@ -251,6 +251,8 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
             
         case "kb:photo":
             let view = SAPhotoInputView()
+            //view.dataSource = self
+            view.delegate = self
             _inputViews[item.identifier] = view
             return view
             
@@ -344,6 +346,12 @@ extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDel
     open func audio(_ audio: SAAudioInputView, didRecordComplete url: URL, duration: TimeInterval) {
         _logger.trace("\(url)(\(duration))")
     }
+}
+
+// MARK: - SAPhotoInputViewDelegate
+
+extension SIMChatViewController: SAPhotoInputViewDelegate {
+    
 }
 
 // MARK: - SAEmoticonInputViewDataSource & SAEmoticonInputViewDelegate
