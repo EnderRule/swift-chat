@@ -72,7 +72,6 @@ public protocol SAAudioInputViewDelegate: NSObjectProtocol {
     @objc optional func audio(_ audio: SAAudioInputView, didRecordFailure url: URL, duration: TimeInterval)
 }
 
-
 open class SAAudioInputView: UIView {
     
     open weak var dataSource: SAAudioInputViewDataSource?

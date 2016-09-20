@@ -8,9 +8,21 @@
 
 import UIKit
 
-@objc public class SAPhotoInputView: UIView {
+@objc
+public protocol SAPhotoInputViewDelegate: NSObjectProtocol {
     
-    public override var intrinsicContentSize: CGSize {
+    @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
+    
+    @objc optional func photo(_ photo: SAPhotoInputView, shouldStartRecord url: URL) -> Bool
+    @objc optional func photo(_ photo: SAPhotoInputView, didStartRecord url: URL)
+    
+    @objc optional func photo(_ photo: SAPhotoInputView, didRecordComplete url: URL, duration: TimeInterval)
+    @objc optional func photo(_ photo: SAPhotoInputView, didRecordFailure url: URL, duration: TimeInterval)
+}
+
+open class SAPhotoInputView: UIView {
+    
+    open override var intrinsicContentSize: CGSize {
         return CGSize(width: frame.width, height: 253)
     }
     

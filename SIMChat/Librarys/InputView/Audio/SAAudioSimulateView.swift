@@ -250,7 +250,7 @@ extension SAAudioSimulateView {
         _logger.trace()
         
         let duration = _recorder?.currentTime ?? 0
-        let url = _recordFileAtURL
+        let url = _processedFileAtURL ?? _recordFileAtURL
         
         updateStatus(.none)
         
@@ -260,7 +260,7 @@ extension SAAudioSimulateView {
         _logger.trace()
         
         let duration = _recorder?.currentTime ?? 0
-        let url = _recordFileAtURL
+        let url = _processedFileAtURL ?? _recordFileAtURL
         
         updateStatus(.none)
         

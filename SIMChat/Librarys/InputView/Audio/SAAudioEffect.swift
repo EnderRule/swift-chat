@@ -14,11 +14,8 @@ internal enum SAAudioEffectType: Int {
     case ef1 = 1 // 萝莉
     case ef2 = 2 // 大叔
     case ef3 = 3 // 惊悚
-    case ef4 = 4// 搞怪
-    case ef5 = 5// 空灵
-    
-    case custom = 999
-    
+    case ef4 = 4 // 搞怪
+    case ef5 = 5 // 空灵
 }
 
 internal protocol SAAudioEffectDelegate: NSObjectProtocol {
@@ -46,7 +43,7 @@ internal class SAAudioEffect: NSObject {
             delegate?.audioEffect(self, didFinishProcessAt: url)
             return
         }
-        let nurl = url.appendingPathExtension("\(type).ef")
+        let nurl = url.appendingPathExtension("\(type)")
         // 如果己经处理过了, 直接返回不需要做额外处理
         if let dst = lastDestURL, lastSrcURL == url {
             delegate?.audioEffect(self, didFinishProcessAt: dst)
@@ -71,7 +68,7 @@ internal class SAAudioEffect: NSObject {
             let fm = FileManager.default
             
             // TODO: 音频变声处理
-            _ = try? fm.removeItem(at: srcURL)
+            _ = try? fm.removeItem(at: destURL)
             _ = try? fm.copyItem(at: srcURL, to: destURL)
             
             DispatchQueue.main.async {
