@@ -29,6 +29,7 @@ internal class SAAudioSimulateView: SAAudioView {
             
             _statusView.isHidden = false
             _recordButton.isUserInteractionEnabled = true
+            _activatedEffectView?.status = .none
             
         case .waiting: // 等待状态
             
@@ -42,21 +43,24 @@ internal class SAAudioSimulateView: SAAudioView {
             
             _recordButton.isUserInteractionEnabled = true
             
-        case .playing: // 播放状态
-            
+        case .playing: // 播放状态(并没有这个状态)
             break
             
         case .processed: // 试听状态
             
             _statusView.isHidden = true
-//            let t = Int(_recorder?.currentTime ?? 0)
-//            _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
-//            
-//            _playButton.progress = 0
-//            _playButton.isSelected = false
-//            _playButton.isUserInteractionEnabled = true
-            
             _showPlayMode()
+            
+            _activatedEffect = _supportEffects.first
+            _activatedEffectView = nil
+            _processedFileAtURL = nil
+            _playToolbar.confirmButton.isEnabled = true
+            
+            _supportEffects.forEach {
+                $0.clearCache()
+            }
+            
+            _simulateView.reloadData()
         }
     }
     
@@ -65,7 +69,6 @@ internal class SAAudioSimulateView: SAAudioView {
             return
         }
         _logger.trace()
-        
         
         _simulateView.isHidden = false
         _simulateView.alpha = 0
@@ -119,16 +122,6 @@ internal class SAAudioSimulateView: SAAudioView {
             _statusView.spectrumView.isHidden = false
             return
         }
-//        if _status.isPlaying {
-//            let d = TimeInterval(_recorder?.currentTime ?? 0)
-//            let ct = TimeInterval(_player?.currentTime ?? 0)
-//            
-//            //_playButton.setProgress(CGFloat(ct + 0.2) / CGFloat(d), animated: true)
-//            
-//            _statusView.text = String(format: "%0d:%02d", Int(ct) / 60, Int(ct) % 60)
-//            _statusView.spectrumView.isHidden = false
-//            return
-//        }
     }
     
     
@@ -207,9 +200,6 @@ internal class SAAudioSimulateView: SAAudioView {
         addConstraint(_SALayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
         addConstraint(_SALayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
         addConstraint(_SALayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
-        
-        
-        _activatedEffect = _supportEffects.first
     }
     
     fileprivate var _activatedEffect: SAAudioEffect?
@@ -236,6 +226,7 @@ internal class SAAudioSimulateView: SAAudioView {
     fileprivate lazy var _statusView: SAAudioStatusView = SAAudioStatusView()
     
     fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
+    fileprivate var _processedFileAtURL: URL?
     
     fileprivate var _recorder: SAAudioRecorder?
     fileprivate var _player: SAAudioPlayer?
@@ -333,10 +324,11 @@ extension SAAudioSimulateView: SAAudioEffectViewDelegate {
             if audioEffectView === view {
                 return
             }
-        }
+        } 
         
         _activatedEffect = audioEffect
         _activatedEffectView = audioEffectView
+        _playToolbar.confirmButton.isEnabled = false
         _simulateView.visibleCells.forEach {
             guard audioEffectView !== $0 else {
                 return
@@ -347,6 +339,26 @@ extension SAAudioSimulateView: SAAudioEffectViewDelegate {
         audioEffectView.isSelected = true
         audioEffect.delegate = self
         audioEffect.process(at: _recordFileAtURL)
+    }
+    
+    func audioEffectViewGetCurrentTime(_ audioEffectView: SAAudioEffectView) -> TimeInterval {
+        return _player?.currentTime ?? 0
+    }
+    func audioEffectViewGetProgress(_ audioEffectView: SAAudioEffectView) -> CGFloat {
+        return CGFloat((TimeInterval(_player?.currentTime ?? 0) + 0.2) / TimeInterval(_recorder?.currentTime ?? 0))
+    }
+    
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewWillUpdateMeters: SAAudioSpectrumMiniView) {
+        _player?.updateMeters()
+    }
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewDidUpdateMeters: SAAudioSpectrumMiniView) {
+    }
+    
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
+        return _player?.peakPower(forChannel: 0) ?? -160
+    }
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
+        return _player?.averagePower(forChannel: 0) ?? -160
     }
 }
 
@@ -377,17 +389,8 @@ extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDeleg
 
 extension SAAudioSimulateView: SAAudioEffectDelegate {
     
-    func audioEffect(_ audioEffect: SAAudioEffect, shouldPrepareProcessAt url: URL) -> Bool {
-        _logger.trace()
-        _activatedEffectView?.status = .processing
-        return true
-    }
-    func audioEffect(_ audioEffect: SAAudioEffect, didPrepareProcessAt url: URL) {
-        _logger.trace()
-    }
-
     func audioEffect(_ audioEffect: SAAudioEffect, shouldStartProcessAt url: URL) -> Bool {
-        _logger.trace()
+        _activatedEffectView?.status = .processing
         return true
     }
     func audioEffect(_ audioEffect: SAAudioEffect, didStartProcessAt url: URL) {
@@ -397,6 +400,8 @@ extension SAAudioSimulateView: SAAudioEffectDelegate {
     func audioEffect(_ audioEffect: SAAudioEffect, didFinishProcessAt url: URL) {
         _logger.trace()
         
+        _playToolbar.confirmButton.isEnabled = true
+        _processedFileAtURL = url
         _activatedEffectView?.status = .processed
         
         // 进入播放状态
@@ -407,6 +412,7 @@ extension SAAudioSimulateView: SAAudioEffectDelegate {
         _logger.trace()
         
         // TODO: 弹出提示窗
+        _processedFileAtURL = nil
         _activatedEffectView?.status = .none
     }
 }

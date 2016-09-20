@@ -13,6 +13,15 @@ internal protocol SAAudioEffectViewDelegate: NSObjectProtocol {
     func audioEffectView(_ audioEffectView: SAAudioEffectView, shouldSelectItem audioEffect: SAAudioEffect) -> Bool
     func audioEffectView(_ audioEffectView: SAAudioEffectView, didSelectItem audioEffect: SAAudioEffect)
     
+    func audioEffectViewGetCurrentTime(_ audioEffectView: SAAudioEffectView) -> TimeInterval
+    func audioEffectViewGetProgress(_ audioEffectView: SAAudioEffectView) -> CGFloat
+    
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float
+    
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewWillUpdateMeters: SAAudioSpectrumMiniView)
+    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewDidUpdateMeters: SAAudioSpectrumMiniView)
+    
 }
 
 internal class SAAudioEffectView: UICollectionViewCell {
@@ -56,6 +65,8 @@ internal class SAAudioEffectView: UICollectionViewCell {
         case .none:
             
             _tipsLabel.isHidden = true
+            
+            _playButton.progress = 0
             
             _spectrumView.isHidden = true
             _spectrumView.stopAnimating()
@@ -149,17 +160,18 @@ internal class SAAudioEffectView: UICollectionViewCell {
         _tipsLabel.text = "准备中"
         _tipsLabel.textColor = .white
         
-        _spectrumView.isHidden = true
-        _spectrumView.translatesAutoresizingMaskIntoConstraints = false
         _spectrumView.color = .white
+        _spectrumView.dataSource = self
+        _spectrumView.translatesAutoresizingMaskIntoConstraints = false
+        _spectrumView.isHidden = true
         
         _activityIndicatorView.isHidden = true
         _activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(_backgroundView)
-        addSubview(_playButton)
         addSubview(_titleButton)
         addSubview(_foregroundView)
+        addSubview(_playButton)
         
         addSubview(_spectrumView)
         addSubview(_activityIndicatorView)
@@ -210,5 +222,34 @@ internal class SAAudioEffectView: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
+    }
+}
+
+extension SAAudioEffectView: SAAudioSpectrumMiniViewDataSource {
+    
+    func spectrumMiniView(willUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView) {
+        _updateTime()
+        delegate?.audioEffectView(self, spectrumViewWillUpdateMeters: spectrumMiniView)
+    }
+    func spectrumMiniView(didUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView) {
+        delegate?.audioEffectView(self, spectrumViewDidUpdateMeters: spectrumMiniView)
+    }
+    
+    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
+        return delegate?.audioEffectView(self, spectrumView: spectrumMiniView, peakPowerFor: channel) ?? -160
+    }
+    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
+        return delegate?.audioEffectView(self, spectrumView: spectrumMiniView, averagePowerFor: channel) ?? -160
+    }
+    
+    private func _updateTime() {
+        guard status.isPlaying else {
+            return
+        }
+        let time = delegate?.audioEffectViewGetCurrentTime(self) ?? 0
+        let progress = delegate?.audioEffectViewGetProgress(self) ?? 0
+        
+        _tipsLabel.text = String(format: "%0d:%02d", Int(time) / 60, Int(time) % 60)
+        _playButton.setProgress(progress, animated: true)
     }
 }

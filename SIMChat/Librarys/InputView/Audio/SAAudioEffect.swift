@@ -23,9 +23,6 @@ internal enum SAAudioEffectType: Int {
 
 internal protocol SAAudioEffectDelegate: NSObjectProtocol {
     
-    func audioEffect(_ audioEffect: SAAudioEffect, shouldPrepareProcessAt url: URL) -> Bool
-    func audioEffect(_ audioEffect: SAAudioEffect, didPrepareProcessAt url: URL)
-    
     func audioEffect(_ audioEffect: SAAudioEffect, shouldStartProcessAt url: URL) -> Bool
     func audioEffect(_ audioEffect: SAAudioEffect, didStartProcessAt url: URL)
     
@@ -39,25 +36,52 @@ internal class SAAudioEffect: NSObject {
     }
     
     func process(at url: URL) {
-        
-        guard delegate?.audioEffect(self, shouldPrepareProcessAt: url) ?? true else {
+        guard delegate?.audioEffect(self, shouldStartProcessAt: url) ?? true else {
             return
         }
-        dispatch_after_at_now(1, .main) { 
-            self.delegate?.audioEffect(self, didPrepareProcessAt: url)
-            
-            //        let nurl = url.appendingPathExtension(".\(type).ef")
-            
-            guard self.delegate?.audioEffect(self, shouldStartProcessAt: url) ?? true else {
-                return
-            }
-            self.delegate?.audioEffect(self, didStartProcessAt: url)
-                
-            dispatch_after_at_now(1, .main) { 
-                //self.delegate?.audioEffect(self, didErrorOccur: nurl)
-                self.delegate?.audioEffect(self, didFinishProcessAt: url)
+        delegate?.audioEffect(self, didStartProcessAt: url)
+        
+        // 如果是原声, 直接返回不需要做任何处理
+        guard type != .original else {
+            delegate?.audioEffect(self, didFinishProcessAt: url)
+            return
+        }
+        let nurl = url.appendingPathExtension("\(type).ef")
+        // 如果己经处理过了, 直接返回不需要做额外处理
+        if let dst = lastDestURL, lastSrcURL == url {
+            delegate?.audioEffect(self, didFinishProcessAt: dst)
+            return
+        }
+        // 开始处理
+        process(from: url, to: nurl) {
+            if let err = $1 {
+                self.lastSrcURL = url
+                self.lastDestURL = nil
+                self.delegate?.audioEffect(self, didErrorOccur: err)
+            } else {
+                self.lastSrcURL = url
+                self.lastDestURL = $0
+                self.delegate?.audioEffect(self, didFinishProcessAt: $0)
             }
         }
+    }
+    
+    func process(from srcURL: URL, to destURL: URL, clouser: @escaping (URL, NSError?) -> Void) {
+        dispatch_after_at_now(1, .global()) {
+            let fm = FileManager.default
+            
+            _ = try? fm.removeItem(at: srcURL)
+            _ = try? fm.copyItem(at: srcURL, to: destURL)
+            
+            DispatchQueue.main.async {
+                clouser(destURL, nil)
+            }
+        }
+    }
+    
+    func clearCache() {
+        lastSrcURL = nil
+        lastDestURL = nil
     }
     
     var type: SAAudioEffectType
@@ -78,6 +102,10 @@ internal class SAAudioEffect: NSObject {
         return image
     }
     
+    // 最后一次处理的文件
+    var lastSrcURL: URL?
+    var lastDestURL: URL?
+    
     private var _image: UIImage??
     private lazy var _titles: [String] = [
         "原声",
@@ -92,5 +120,4 @@ internal class SAAudioEffect: NSObject {
         self.type = type
         super.init()
     }
-    
 }

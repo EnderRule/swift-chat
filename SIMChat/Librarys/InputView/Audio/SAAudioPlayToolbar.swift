@@ -26,7 +26,9 @@ internal class SAAudioPlayToolbar: UIView {
         
         _confirmButton.setTitle("发送", for: UIControlState())
         _confirmButton.setTitleColor(.gray, for: .normal)
+        _confirmButton.setTitleColor(.gray, for: .disabled)
         _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_nor"), for: .normal)
+        _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_nor"), for: .disabled)
         _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_press"), for: .highlighted)
         _confirmButton.translatesAutoresizingMaskIntoConstraints = false
         
