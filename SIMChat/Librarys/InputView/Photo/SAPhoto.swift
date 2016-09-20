@@ -12,64 +12,64 @@ import Photos
 open class SAPhoto: NSObject {
     
     open var identifier: String {
-        return _asset.localIdentifier
+        return asset.localIdentifier
     }
     
     open var pixelWidth: Int { 
-        return _asset.pixelWidth
+        return asset.pixelWidth
     }
     open var pixelHeight: Int { 
-        return _asset.pixelHeight
+        return asset.pixelHeight
     }
 
     open var creationDate: Date? { 
-        return _asset.creationDate
+        return asset.creationDate
     }
     open var modificationDate: Date? { 
-        return _asset.modificationDate
+        return asset.modificationDate
     }
     
     open var mediaType: PHAssetMediaType { 
-        return _asset.mediaType
+        return asset.mediaType
     }
     open var mediaSubtypes: PHAssetMediaSubtype { 
-        return _asset.mediaSubtypes
+        return asset.mediaSubtypes
     }
 
     open var location: CLLocation? { 
-        return _asset.location
+        return asset.location
     }
     
     open var duration: TimeInterval { 
-        return _asset.duration
+        return asset.duration
     }
     
     open var isHidden: Bool { 
-        return _asset.isHidden
+        return asset.isHidden
     }
     open var isFavorite: Bool { 
-        return _asset.isFavorite
+        return asset.isFavorite
     }
     
     open var burstIdentifier: String? { 
-        return _asset.burstIdentifier
+        return asset.burstIdentifier
     }
     open var burstSelectionTypes: PHAssetBurstSelectionType { 
-        return _asset.burstSelectionTypes
+        return asset.burstSelectionTypes
     }
     
     open var representsBurst: Bool { 
-        return _asset.representsBurst
+        return asset.representsBurst
     }
     
     open override var description: String {
-        return _asset.description
+        return asset.description
     }
     
-    private var _asset: PHAsset
+    internal var asset: PHAsset
     
     public init(asset: PHAsset) {
-        _asset = asset
+        self.asset = asset
         super.init()
     }
 }

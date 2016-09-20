@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoView: UIView {
     
@@ -20,7 +21,7 @@ internal class SAPhotoView: UIView {
             return
         }
         let x = convert(CGPoint(x: window.bounds.width, y: 0), from: window).x
-        let edg = UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5)
+        let edg = _contentInset
 
         var nframe = _selectedView.bounds
         
@@ -35,7 +36,18 @@ internal class SAPhotoView: UIView {
     
     var photo: SAPhoto? {
         willSet {
-            //_logger.trace(photo?.identifier)
+            guard let newValue = newValue, photo !== newValue else {
+                return
+            }
+            
+            let options = PHImageRequestOptions()
+            options.deliveryMode = .fastFormat
+            options.resizeMode = .fast
+            
+            SAPhotoLibrary.requestImage(for: newValue, targetSize: bounds.size, contentMode: .aspectFill, options: nil) { img, _ in
+                //self._logger.trace(img)
+                self._imageView.image = img
+            }
         }
     }
     
@@ -43,10 +55,10 @@ internal class SAPhotoView: UIView {
         _logger.trace()
         
         _imageView.frame = bounds
-        _imageView.backgroundColor = .random
         _imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        _selectedView.frame = CGRect(x: bounds.width - 4.5 - 23, y: 4.5, width: 23, height: 23)
+        let edg = _contentInset
+        _selectedView.frame = CGRect(x: bounds.width - edg.right - 23, y: edg.top, width: 23, height: 23)
         _selectedView.backgroundColor = .random
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
         
@@ -56,6 +68,8 @@ internal class SAPhotoView: UIView {
     
     private lazy var _imageView: UIImageView = UIImageView()
     private lazy var _selectedView: UIView = UIView()
+    
+    private lazy var _contentInset: UIEdgeInsets = UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

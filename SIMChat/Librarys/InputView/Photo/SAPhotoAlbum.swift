@@ -13,28 +13,28 @@ import Photos
 open class SAPhotoAlbum: NSObject {
     
     open var title: String? {
-        return _collection.localizedTitle
+        return collection.localizedTitle
     }
     open var identifier: String {
-        return _collection.localIdentifier
+        return collection.localIdentifier
     }
     
     open var type: PHAssetCollectionType {
-        return _collection.assetCollectionType
+        return collection.assetCollectionType
     }
     open var subtype: PHAssetCollectionSubtype {
-        return _collection.assetCollectionSubtype
+        return collection.assetCollectionSubtype
     }
     
     open override var description: String {
-        return _collection.description
+        return collection.description
     }
     
     open var photos: [SAPhoto] {
         if let photos = _photos {
             return photos
         }
-        let photos = SAPhotoAlbum._loadPhotos(with: _collection)
+        let photos = SAPhotoAlbum._loadPhotos(with: collection)
         _photos = photos
         return photos
     }
@@ -67,10 +67,10 @@ open class SAPhotoAlbum: NSObject {
     private static var _albums: [SAPhotoAlbum]?
     private static var _recentlyAlbum: SAPhotoAlbum??
     
-    fileprivate var _collection: PHAssetCollection
+    internal var collection: PHAssetCollection
     
     public init(collection: PHAssetCollection) {
-        _collection = collection
+        self.collection = collection
         super.init()
     }
 }
