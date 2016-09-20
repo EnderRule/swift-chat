@@ -10,14 +10,14 @@ import UIKit
 
 // ## TODO
 // [x] SAAudioInputView - 横屏支持
-// [ ] SAAudioInputView - 变声模式支持 - 50%
+// [x] SAAudioInputView - 变声模式支持 - 99%, 算法没有实现(soundtouch?)
 // [x] SAAudioInputView - 对讲模式支持
 // [x] SAAudioInputView - 录音模式支持
 // [x] SAAudioInputView - 添加MaskView
 // [ ] SAAudioInputView - 检查录音时间
 // [ ] SAAudioInputView - Mini模式支持
 // [x] SAAudioInputView - 更换图标
-// [ ] SAAudioInputView - Tabbar支持
+// [x] SAAudioInputView - Tabbar支持
 // [x] SAAudioInputView - 初始化时在中心
 // [x] SAAudioTalkbackView - 长按录音
 // [x] SAAudioTalkbackView - 回放
@@ -26,15 +26,14 @@ import UIKit
 // [x] SAAudioRecordView - 回放
 // [x] SAAudioRecordView - 频谱显示
 // [x] SAAudioSimulateView - 长按录音
-// [ ] SAAudioSimulateView - 变声处理
-// [ ] SAAudioSimulateView - 回放
+// [x] SAAudioSimulateView - 回放
 // [x] SAAudioSimulateView - 频谱显示(录音)
-// [ ] SAAudioSimulateView - 频谱显示(回放)
-// [ ] SAAudioSimulateView - 各种效果支持(6)
+// [x] SAAudioSimulateView - 频谱显示(回放)
+// [ ] SAAudioSimulateView - 各种效果支持(6) - 50%, 主要是算法没有实现
 // [x] SAAudioSpectrumView - 显示波形
 // [ ] SAAudioSpectrumView - 优化(主要是算法)
 // [x] SAAudioTabbar - Index设置
-// [ ] SAAudioTabbar - 点击事件
+// [x] SAAudioTabbar - 点击事件
 // [x] SAAudioTabbar - 颜色
 
 @objc
