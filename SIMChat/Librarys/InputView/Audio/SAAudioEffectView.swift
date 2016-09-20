@@ -16,6 +16,21 @@ internal class SAAudioEffectView: UICollectionViewCell {
         }
     }
     
+    override var isSelected: Bool {
+        set {
+            _updateSelected(newValue)
+            super.isSelected = newValue
+        }
+        get {
+            return super.isSelected 
+        }
+    }
+    
+    private func _updateSelected(_ newValue: Bool) {
+        
+        _titleButton.isSelected = newValue
+    }
+    
     private func _updateEffect(_ newValue: SAAudioEffect?) {
         
         _titleButton.setTitle(newValue?.title, for: .normal)
@@ -29,9 +44,11 @@ internal class SAAudioEffectView: UICollectionViewCell {
         
         _titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         _titleButton.setTitleColor(.black, for: .normal)
-        _titleButton.setTitleColor(.white, for: .highlighted)
+        _titleButton.setTitleColor(.white, for: .selected)
+        _titleButton.setBackgroundImage(UIImage(named: "aio_simulate_text_select"), for: .selected)
         _titleButton.isUserInteractionEnabled = false
         _titleButton.translatesAutoresizingMaskIntoConstraints = false
+        _titleButton.contentEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 8)
         
         addSubview(_playButton)
         addSubview(_titleButton)

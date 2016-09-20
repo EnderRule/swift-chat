@@ -275,6 +275,23 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
     
     open func inputBar(_ inputBar: SAInputBar, shouldSelectFor item: SAInputItem) -> Bool {
         
+        class TVC : UIViewController {
+            override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+                super.touchesBegan(touches, with: event)
+                dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        if item.identifier == "kb:video"  {
+            let vc = UIViewController()
+            vc.view.backgroundColor = .random
+            self.navigationController?.pushViewController(vc, animated: true)
+        } else if item.identifier == "kb:camera" {
+            let vc = TVC()
+            vc.view.backgroundColor = .random
+            self.present(vc, animated: true, completion: nil)
+        }
+        
         guard let _ = inputView(with: item) else {
             return false
         }
