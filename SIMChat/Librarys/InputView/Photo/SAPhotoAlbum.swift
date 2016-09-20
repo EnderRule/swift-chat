@@ -30,11 +30,20 @@ open class SAPhotoAlbum: NSObject {
         return _collection.description
     }
     
+    open var photos: [SAPhoto] {
+        if let photos = _photos {
+            return photos
+        }
+        let photos = SAPhotoAlbum._loadPhotos(with: _collection)
+        _photos = photos
+        return photos
+    }
+    
     open static var albums: [SAPhotoAlbum] {
         if let albums = _albums {
             return albums
         }
-        let albums = _loadAlbums()
+        let albums = SAPhotoAlbum._loadAlbums()
         _albums = albums
         return albums
     }
@@ -53,12 +62,14 @@ open class SAPhotoAlbum: NSObject {
         return album
     }
     
+    private var _photos: [SAPhoto]?
+    
     private static var _albums: [SAPhotoAlbum]?
     private static var _recentlyAlbum: SAPhotoAlbum??
     
-    private var _collection: PHAssetCollection
+    fileprivate var _collection: PHAssetCollection
     
-    init(collection: PHAssetCollection) {
+    public init(collection: PHAssetCollection) {
         _collection = collection
         super.init()
     }
@@ -68,22 +79,26 @@ open class SAPhotoAlbum: NSObject {
 
 private extension SAPhotoAlbum {
     
-    class func _loadAlbums() -> [SAPhotoAlbum] {
+    static func _loadPhotos(with collection: PHAssetCollection) -> [SAPhoto] {
+        var photos: [SAPhoto] = []
+        PHAsset.fetchAssets(in: collection, options: nil).enumerateObjects(options: .reverse, using: { 
+            photos.append(SAPhoto(asset: $0.0))
+        })
+        return photos
+    }
+    
+    static func _loadAlbums() -> [SAPhotoAlbum] {
         var albums: [SAPhotoAlbum] = []
         
         PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil).enumerateObjects({
-            albums.append(_makeAlbum(with: $0.0))
+            albums.append(SAPhotoAlbum(collection: $0.0))
         })
         PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: nil).enumerateObjects({
-            albums.append(_makeAlbum(with: $0.0))
+            albums.append(SAPhotoAlbum(collection: $0.0))
         })
         
         return albums.sorted { 
             ($0.title ?? "") < ($1.title ?? "")
         }
-    }
-    class func _makeAlbum(with collection: PHAssetCollection) -> SAPhotoAlbum {
-        let album = SAPhotoAlbum(collection: collection)
-        return album
     }
 }

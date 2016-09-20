@@ -10,6 +10,14 @@ import UIKit
 
 internal class SAPhotoRecentView: UICollectionViewCell {
     
+    func updateEdge() {
+        _photoView.updateEdge()
+    }
+    
+    var photo: SAPhoto? {
+        set { return _photoView.photo = newValue }
+        get { return _photoView.photo }
+    }
     
     private func _init() {
         _logger.trace()
