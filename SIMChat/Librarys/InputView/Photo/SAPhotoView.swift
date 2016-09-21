@@ -48,6 +48,7 @@ internal class SAPhotoView: UIView {
             }
         }
     }
+    
     weak var delegate: SAPhotoViewDelegate?
     
     func updateEdge() {
@@ -139,7 +140,7 @@ internal class SAPhotoView: UIView {
     }
     
     private func _updateIndex(_ photo: SAPhoto?) {
-        guard let photo = photo, isSelected else {
+        guard let photo = photo, _isSelected else {
             return
         }
         let idx = delegate?.photoView(self, indexOfSelectedItem: photo) ?? 0

@@ -22,6 +22,13 @@ internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
         get { return _photoView.delegate }
     }
     
+    func updateEdge() {
+        _photoView.updateEdge()
+    }
+    func updateIndex() {
+        _photoView.updateIndex()
+    }
+    
     private func _init() {
         
         _photoView.frame = bounds
