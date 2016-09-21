@@ -8,8 +8,24 @@
 
 import UIKit
 
+@objc
+public protocol SAPhotoPickerDelegate: NSObjectProtocol {
+    
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, indexOfSelectedItem photo: SAPhoto) -> Int
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, isSelectedOfItem photo: SAPhoto) -> Bool
+    
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, previewItem photo: SAPhoto, in view: UIView)
+    
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, shouldSelectItem photo: SAPhoto) -> Bool
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, didSelectItem photo: SAPhoto)
+    
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, shouldDeselectItem photo: SAPhoto) -> Bool
+    @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto)
+}
 
 open class SAPhotoPicker: NSObject {
+    
+    open weak var delegate: SAPhotoPickerDelegate?
     
     open func show(in viewController: UIViewController) {
         // 授权完成之后再弹出
@@ -22,6 +38,7 @@ open class SAPhotoPicker: NSObject {
                 let nav = UINavigationController()
                 let vc = SAPhotoPickerAlbums()
                 
+                vc.photoDelegate = self
 //            let v1 = UIViewController()
 //            let v2 = UIViewController()
 //            
@@ -33,5 +50,35 @@ open class SAPhotoPicker: NSObject {
                 viewController.present(nav, animated: true, completion: nil)
             }
         }
+    }
+}
+
+// MARK: - SAPhotoViewDelegate(Forwarding)
+
+extension SAPhotoPicker: SAPhotoViewDelegate {
+    
+    func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto) {
+        delegate?.photoPicker?(self, previewItem: photo, in: photoView)
+    }
+    
+    func photoView(_ photoView: SAPhotoView, indexOfSelectedItem photo: SAPhoto) -> Int {
+        return delegate?.photoPicker?(self, indexOfSelectedItem: photo) ?? 0
+    }
+    func photoView(_ photoView: SAPhotoView, isSelectedOfItem photo: SAPhoto) -> Bool{
+        return delegate?.photoPicker?(self, isSelectedOfItem: photo) ?? true
+    }
+    
+    func photoView(_ photoView: SAPhotoView, shouldSelectItem photo: SAPhoto) -> Bool {
+        return delegate?.photoPicker?(self, shouldSelectItem: photo) ?? true
+    }
+    func photoView(_ photoView: SAPhotoView, shouldDeselectItem photo: SAPhoto) -> Bool {
+        return delegate?.photoPicker?(self, shouldDeselectItem: photo) ?? true
+    }
+    
+    func photoView(_ photoView: SAPhotoView, didSelectItem photo: SAPhoto) {
+        delegate?.photoPicker?(self, didSelectItem: photo)
+    }
+    func photoView(_ photoView: SAPhotoView, didDeselectItem photo: SAPhoto)  {
+        delegate?.photoPicker?(self, didDeselectItem: photo)
     }
 }

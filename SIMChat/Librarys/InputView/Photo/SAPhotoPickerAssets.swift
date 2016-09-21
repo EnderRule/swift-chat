@@ -8,78 +8,94 @@
 
 import UIKit
 
-internal class SAPhotoPickerAssets: UICollectionViewController {
+internal class SAPhotoPickerAssets: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    
+    func onRefresh(_ sender: Any) {
+        _logger.trace()
+        
+    }
+    
+    weak var photoDelegate: SAPhotoViewDelegate? {
+        willSet {
+            collectionView?.visibleCells.forEach {
+                ($0 as? SAPhotoPickerAssetsCell)?.delegate = newValue
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = _album.title
         
-        view.backgroundColor = .random
-
-        collectionView?.backgroundColor = .clear
-        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Item")
+        collectionView?.backgroundColor = .white
+        collectionView?.allowsSelection = false
+        collectionView?.allowsMultipleSelection = false
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.register(SAPhotoPickerAssetsCell.self, forCellWithReuseIdentifier: "Item")
+        
+        onRefresh(self)
     }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
 
     // MARK: UICollectionViewDataSource
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return _album.photos.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
-    
-        return cell
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
     }
     
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? SAPhotoPickerAssetsCell else {
+            return
+        }
+        cell.album = _album
+        cell.photo = _album.photos[indexPath.item]
+        cell.delegate = photoDelegate
     }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+            return .zero
+        }
+        let rect = UIEdgeInsetsInsetRect(collectionView.bounds, collectionView.contentInset)
+        guard _cacheBounds?.width != rect.width else {
+            return _itemSize
+        }
+        let mis = layout.minimumInteritemSpacing
+        let size = layout.itemSize
+        
+        let column = Int((rect.width + mis) / (size.width + mis))
+        let fcolumn = CGFloat(column)
+        let width = trunc(((rect.width + mis) / fcolumn) - mis)
+        
+        _cacheBounds = rect
+        _minimumInteritemSpacing = (rect.width - width * fcolumn) / (fcolumn - 1)
+        _minimumLineSpacing = _minimumInteritemSpacing
+        _itemSize = CGSize(width: width, height: width)
+        
+        return _itemSize
     }
-    */
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return _minimumLineSpacing
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return _minimumInteritemSpacing
+    }
     
     init(album: SAPhotoAlbum) {
         _album = album
-        let layout = UICollectionViewFlowLayout()
+        let layout = SAPhotoPickerAssetsLayout()
+        
+        layout.itemSize = CGSize(width: 78, height: 78)
+        layout.minimumLineSpacing = 2
+        layout.minimumInteritemSpacing = 2
+        layout.headerReferenceSize = CGSize(width: 0, height: 10)
+        layout.footerReferenceSize = CGSize.zero
+        
         super.init(collectionViewLayout: layout)
     }
     required init?(coder aDecoder: NSCoder) {
@@ -88,7 +104,12 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError()
     }
-
     
+    private var _itemSize: CGSize = .zero
+    private var _minimumLineSpacing: CGFloat = 0
+    private var _minimumInteritemSpacing: CGFloat = 0
+    private var _cacheBounds: CGRect?
+
     private var _album: SAPhotoAlbum
 }
+

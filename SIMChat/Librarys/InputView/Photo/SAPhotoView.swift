@@ -11,37 +11,42 @@ import Photos
 
 internal protocol SAPhotoViewDelegate: NSObjectProtocol {
     
-    func photoView(_ photoView: SAPhotoView, indexForSelectWith photo: SAPhoto) -> Int
+    func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto)
     
-    func photoView(_ photoView: SAPhotoView, shouldSelectFor photo: SAPhoto) -> Bool
-    func photoView(_ photoView: SAPhotoView, didSelectFor photo: SAPhoto)
+    func photoView(_ photoView: SAPhotoView, indexOfSelectedItem photo: SAPhoto) -> Int
+    func photoView(_ photoView: SAPhotoView, isSelectedOfItem photo: SAPhoto) -> Bool
     
-    func photoView(_ photoView: SAPhotoView, shouldDeselectFor photo: SAPhoto) -> Bool
-    func photoView(_ photoView: SAPhotoView, didDeselectFor photo: SAPhoto)
+    func photoView(_ photoView: SAPhotoView, shouldSelectItem photo: SAPhoto) -> Bool
+    func photoView(_ photoView: SAPhotoView, didSelectItem photo: SAPhoto)
+    
+    func photoView(_ photoView: SAPhotoView, shouldDeselectItem photo: SAPhoto) -> Bool
+    func photoView(_ photoView: SAPhotoView, didDeselectItem photo: SAPhoto)
 }
 
 internal class SAPhotoView: UIView {
     
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        updateEdge()
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        _hightlightLayer.frame = _imageView.bounds
-    }
-    
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard _selectedView.isUserInteractionEnabled else {
-            return nil
+    var photo: SAPhoto? {
+        willSet {
+            guard let newValue = newValue, photo !== newValue else {
+                return
+            }
+            // 初始化选中状态
+            isSelected = delegate?.photoView(self, isSelectedOfItem: newValue) ?? false
+            
+            let options = PHImageRequestOptions()
+            options.deliveryMode = .fastFormat
+            options.resizeMode = .fast
+            
+            let scale = UIScreen.main.scale
+            let size = CGSize(width: bounds.width * scale, height: bounds.height * scale)
+            
+            SAPhotoLibrary.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
+                //self._logger.trace(img)
+                self._imageView.image = img
+            }
         }
-        let rect = UIEdgeInsetsInsetRect(_selectedView.frame, UIEdgeInsetsMake(-8, -8, -8, -8))
-        if rect.contains(point) {
-            return _selectedView
-        }
-        return nil
     }
-    
+    weak var delegate: SAPhotoViewDelegate?
     
     func updateEdge() {
         guard let window = window else {
@@ -83,47 +88,52 @@ internal class SAPhotoView: UIView {
         _updateIndex()
     }
     
-    var photo: SAPhoto? {
-        willSet {
-            guard let newValue = newValue, photo !== newValue else {
-                return
-            }
-            
-            let options = PHImageRequestOptions()
-            options.deliveryMode = .fastFormat
-            options.resizeMode = .fast
-            
-            SAPhotoLibrary.requestImage(for: newValue, targetSize: bounds.size, contentMode: .aspectFill, options: nil) { img, _ in
-                //self._logger.trace(img)
-                self._imageView.image = img
-            }
+    func onClickItem(_ sender: Any) {
+        guard let photo = photo else {
+            return
         }
+        delegate?.photoView(self, previewItem: photo)
     }
-    weak var delegate: SAPhotoViewDelegate?
     
     func onSelectItem(_ sender: Any) {
         guard let photo = photo else {
             return
         }
         if _isSelected {
-            if delegate?.photoView(self, shouldDeselectFor: photo) ?? true {
+            if delegate?.photoView(self, shouldDeselectItem: photo) ?? true {
                 _setIsSelected(false, animated: true)
-                delegate?.photoView(self, didDeselectFor: photo)
+                delegate?.photoView(self, didDeselectItem: photo)
             }
         } else {
-            if delegate?.photoView(self, shouldSelectFor: photo) ?? true {
+            if delegate?.photoView(self, shouldSelectItem: photo) ?? true {
                 _setIsSelected(true, animated: true)
-                delegate?.photoView(self, didSelectFor: photo)
+                delegate?.photoView(self, didSelectItem: photo)
                 _updateIndex()
             }
         }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _hightlightLayer.frame = _imageView.bounds
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard _selectedView.isUserInteractionEnabled else {
+            return nil
+        }
+        let rect = UIEdgeInsetsInsetRect(_selectedView.frame, UIEdgeInsetsMake(-8, -8, -8, -8))
+        if rect.contains(point) {
+            return _selectedView
+        }
+        return self
     }
     
     private func _updateIndex() {
         guard let photo = photo, isSelected else {
             return
         }
-        let idx = delegate?.photoView(self, indexForSelectWith: photo) ?? 0
+        let idx = delegate?.photoView(self, indexOfSelectedItem: photo) ?? 0
         // 添加数字
         _selectedView.setTitle("\(idx + 1)", for: .selected)
     }
@@ -151,6 +161,8 @@ internal class SAPhotoView: UIView {
     private func _init() {
         
         _imageView.frame = bounds
+        _imageView.contentMode = .scaleAspectFill
+        _imageView.clipsToBounds = true
         _imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         _hightlightLayer.isHidden = true
@@ -171,10 +183,12 @@ internal class SAPhotoView: UIView {
         
         addSubview(_imageView)
         addSubview(_selectedView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onClickItem(_:)))
+        addGestureRecognizer(tap)
     }
     
     private var _isSelected: Bool = false
-    
     
     private lazy var _imageView: UIImageView = UIImageView()
     private lazy var _selectedView: UIButton = UIButton()

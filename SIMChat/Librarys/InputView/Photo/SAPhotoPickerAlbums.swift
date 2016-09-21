@@ -10,6 +10,8 @@ import UIKit
 
 internal class SAPhotoPickerAlbums: UITableViewController {
 
+    weak var photoDelegate: SAPhotoViewDelegate?
+    
     func onCancel(_ sender: Any) {
         _logger.trace()
         
@@ -34,7 +36,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.register(SAPhotoAlbumView.self, forCellReuseIdentifier: "Item")
+        tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
         
@@ -52,7 +54,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         return tableView.dequeueReusableCell(withIdentifier: "Item", for: indexPath)
     }
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoAlbumView else {
+        guard let cell = cell as? SAPhotoPickerAlbumsCell else {
             return
         }
         cell.album = _albums[indexPath.row]
@@ -68,6 +70,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         
         // equ
         viewController.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
+        viewController.photoDelegate = photoDelegate
         
         show(viewController, sender: indexPath)
     }

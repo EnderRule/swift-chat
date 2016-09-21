@@ -18,7 +18,10 @@ import UIKit
 // [x] SAPhotoView - SelectView悬停
 // [ ] SAPhotoView - iClound图片下载进度显示
 // [ ] SAPhotoBrowser - 实现
-// [ ] SAPhotoInputView - 横屏支持
+// [ ] SAPhotoBrowser - 错误显示(无权限显示)
+// [ ] SAPhotoBrowser - 图片更新通知
+// [x] SAPhotoRecentlyView - 分离实现
+// [x] SAPhotoInputView - 横屏支持
 // [ ] SAPhotoInputView - 错误显示
 // [ ] SAPhotoInputView - 初次加载页面
 // [ ] * - 发送图片(读取)
@@ -36,30 +39,41 @@ open class SAPhotoInputView: UIView {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
     
-    open override func didMoveToWindow() {
-        super.didMoveToWindow()
-        if !_isInitPhoto {
-            _isInitPhoto = true
-            _initPhoto()
-        }
-    }
-    
     open weak var delegate: SAPhotoInputViewDelegate?
     
     
-    private func _reloadData() {
-        _logger.trace()
+    fileprivate func _updateFileSize() {
+        var title = "原图"
         
-        _photos = SAPhotoAlbum.recentlyAlbum?.photos.reversed()
-        _contentView.reloadData()
+        if _isOriginalImage && !_selectedPhotos.isEmpty {
+            title += "(\(_selectedPhotos.count)M)"
+        }
+        
+        _originalBarItem.titleLabel?.text = title // 先更新titleLabel是因为防止系统执行更新title的动画
+        _originalBarItem.setTitle(title, for: .normal)
+        _originalBarItem.sizeToFit()
     }
     
-    private func _initPhoto() {
-        SAPhotoLibrary.requestAuthorization { b in
-            DispatchQueue.main.async {
-                self._reloadData()
-            }
+    fileprivate func _updatePhotoCount() {
+        
+        if !_selectedPhotos.isEmpty {
+            _sendBarItem.isEnabled = true
+            _sendBarItem.setTitle("发送(\(_selectedPhotos.count))", for: .normal)
+            _sendBarItem.sizeToFit()
+        } else {
+            _sendBarItem.isEnabled = false
+            _sendBarItem.setTitle("发送", for: .normal)
+            _sendBarItem.sizeToFit()
         }
+//        if _isOriginalImage {
+//            _updateFileSize()
+//        }
+        
+        _editorBarItem.isEnabled = _selectedPhotos.count == 1
+        
+        var nframe = _sendBarItem.frame
+        nframe.size.width = max(nframe.width, 70)
+        _sendBarItem.frame = nframe
     }
     
     private func _init() {
@@ -126,20 +140,8 @@ open class SAPhotoInputView: UIView {
             _editorBarItem.isEnabled = false
         }
         
-        _contentViewLayout.scrollDirection = .horizontal
-        _contentViewLayout.minimumLineSpacing = 0
-        _contentViewLayout.minimumInteritemSpacing = 4
-        
-        _contentView.backgroundColor = .clear
-        _contentView.translatesAutoresizingMaskIntoConstraints = false
-        _contentView.showsVerticalScrollIndicator = false
-        _contentView.showsHorizontalScrollIndicator = false
-        _contentView.scrollsToTop = false
-        _contentView.allowsMultipleSelection = false
-        _contentView.register(SAPhotoRecentView.self, forCellWithReuseIdentifier: "Item")
-        _contentView.contentInset = UIEdgeInsetsMake(0, 4, 0, 4)
-        _contentView.dataSource = self
         _contentView.delegate = self
+        _contentView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(_contentView)
         addSubview(_tabbar)
@@ -156,8 +158,6 @@ open class SAPhotoInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 44))
     }
     
-    fileprivate var _photos: [SAPhoto]?
-    fileprivate var _isInitPhoto: Bool = false
     fileprivate var _isOriginalImage: Bool = false
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
@@ -169,10 +169,10 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _originalBarItem = UIButton(type: .system)
     
     fileprivate lazy var _tabbar: UIToolbar = UIToolbar()
+    fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
     
-    fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
+    fileprivate var _picker: SAPhotoPicker?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -181,61 +181,6 @@ open class SAPhotoInputView: UIView {
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
-    }
-}
-
-// MARK: - UICollectionViewDataSource, UICollectionViewDelegate
-
-extension SAPhotoInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        _contentView.visibleCells.forEach { 
-            ($0 as? SAPhotoRecentView)?.updateEdge()
-        }
-    }
-   
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return _photos?.count ?? 0
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoRecentView else {
-            return
-        }
-        guard let photo = _photos?[indexPath.item] else {
-            cell.isSelected = false
-            cell.delegate = nil
-            cell.photo = nil
-            return 
-        }
-        cell.photo = photo
-        cell.delegate = self
-        cell.isCheck = _selectedPhotos.contains(photo)
-        cell.updateIndex()
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        guard let cell = collectionView.cellForItem(at: indexPath) else {
-            return
-        }
-        onPreviewer(cell)
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let photo = _photos?[indexPath.item] else {
-            return .zero
-        }
-        let pwidth = Double(photo.pixelWidth)
-        let pheight = Double(photo.pixelHeight)
-        let height = collectionView.frame.height
-        let scale = Double(height) / pheight
-        
-        return CGSize(width: CGFloat(pwidth * scale), height: height)
     }
 }
 
@@ -259,91 +204,93 @@ extension SAPhotoInputView {
     }
     
     func onEditor(_ sender: Any) {
-        _logger.trace()
+        _logger.trace(sender)
     }
     func onPicker(_ sender: Any) {
         guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
             return
         }
         let picker = SAPhotoPicker()
-        
+        picker.delegate = self
         picker.show(in: viewController)
-        
+        _picker = picker
     }
     func onPreviewer(_ sender: Any) {
-        _logger.trace()
-    }
-}
-
-// MARK: - SAPhotoRecentViewDelegate
-
-extension SAPhotoInputView: SAPhotoRecentViewDelegate {
-    
-    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, indexForSelectWith photo: SAPhoto) -> Int {
-        return _selectedPhotos.index(of: photo) ?? 0
+        _logger.trace(sender)
     }
     
-    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, shouldSelectFor photo: SAPhoto) -> Bool {
-        return true
-    }
-    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, didSelectFor photo: SAPhoto) {
+    func onSelectItem(_ photo: SAPhoto) {
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
-            _updateIndex()
+            _updatePhotoCount()
         }
-        guard let idx = _photos?.index(of: photo) else {
-            return
-        }
-        _contentView.scrollToItem(at: IndexPath(item: idx, section: 0), at: .centeredHorizontally, animated: true)
     }
-    
-    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, shouldDeselectFor photo: SAPhoto) -> Bool {
-        return true
-    }
-    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, didDeselectFor photo: SAPhoto) {
+    func onDeselectItem(_ photo: SAPhoto) {
         if let idx = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: idx)
-            _updateIndex()
+            _updatePhotoCount()
         }
     }
+}
+
+// MARK: - SAPhotoPickerDelegate
+
+extension SAPhotoInputView: SAPhotoPickerDelegate {
     
-    
-    fileprivate func _updateFileSize() {
-        var title = "原图"
-        
-        if _isOriginalImage && !_selectedPhotos.isEmpty {
-            title += "(\(_selectedPhotos.count)M)"
-        }
-        
-        _originalBarItem.titleLabel?.text = title // 先更新titleLabel是因为防止系统执行更新title的动画
-        _originalBarItem.setTitle(title, for: .normal)
-        _originalBarItem.sizeToFit()
+    public func photoPicker(_ photoPicker: SAPhotoPicker, indexOfSelectedItem photo: SAPhoto) -> Int {
+        return _selectedPhotos.index(of: photo) ?? 0
+    }
+    public func photoPicker(_ photoPicker: SAPhotoPicker, isSelectedOfItem photo: SAPhoto) -> Bool {
+        return _selectedPhotoSets.contains(photo)
     }
     
-    fileprivate func _updateIndex() {
-        _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentView)?.updateIndex()
-        }
-        
-        if !_selectedPhotos.isEmpty {
-            _sendBarItem.isEnabled = true
-            _sendBarItem.setTitle("发送(\(_selectedPhotos.count))", for: .normal)
-            _sendBarItem.sizeToFit()
-        } else {
-            _sendBarItem.isEnabled = false
-            _sendBarItem.setTitle("发送", for: .normal)
-            _sendBarItem.sizeToFit()
-        }
-        if _isOriginalImage {
-            _updateFileSize()
-        }
-        
-        _editorBarItem.isEnabled = _selectedPhotos.count == 1
-        
-        var nframe = _sendBarItem.frame
-        nframe.size.width = max(nframe.width, 70)
-        _sendBarItem.frame = nframe
+    public func photoPicker(_ photoPicker: SAPhotoPicker, previewItem photo: SAPhoto, in view: UIView) {
+        onPreviewer(photo)
+    }
+    
+    public func photoPicker(_ photoPicker: SAPhotoPicker, shouldSelectItem photo: SAPhoto) -> Bool {
+        return true
+    }
+    public func photoPicker(_ photoPicker: SAPhotoPicker, didSelectItem photo: SAPhoto) {
+        onSelectItem(photo)
+    }
+    
+    public func photoPicker(_ photoPicker: SAPhotoPicker, shouldDeselectItem photo: SAPhoto) -> Bool {
+        return true
+    }
+    public func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto) {
+        onDeselectItem(photo)
+    }
+}
+
+// MARK: - SAPhotoRecentlyViewDelegate
+
+extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
+    
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItem photo: SAPhoto) -> Int {
+        return _selectedPhotos.index(of: photo) ?? 0
+    }
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, isSelectedOfItem photo: SAPhoto) -> Bool {
+        return _selectedPhotoSets.contains(photo)
+    }
+    
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, previewItem photo: SAPhoto, in view: UIView) {
+        onPreviewer(photo)
+    }
+    
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItem photo: SAPhoto) -> Bool {
+        return true
+    }
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItem photo: SAPhoto) {
+        onSelectItem(photo)
+    }
+    
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItem photo: SAPhoto) -> Bool {
+        return true
+    }
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItem photo: SAPhoto) {
+        onDeselectItem(photo)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SAPhotoAlbumView.swift
+//  SAPhotoPickerAlbumsCell.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Photos
 
-internal class SAPhotoAlbumView: UITableViewCell {
+internal class SAPhotoPickerAlbumsCell: UITableViewCell {
 
     var album: SAPhotoAlbum? {
         willSet {
@@ -24,6 +25,7 @@ internal class SAPhotoAlbumView: UITableViewCell {
         _titleLabel.text = newValue.title
         _descriptionLabel.text = "\(newValue.photos.count)"
         
+        _stackView.layoutIfNeeded()
         
         let count = newValue.photos.count
         
@@ -36,8 +38,15 @@ internal class SAPhotoAlbumView: UITableViewCell {
             }
             layer.isHidden = false
             let photo = newValue.photos[count - index - 1]
-            SAPhotoLibrary.requestImage(for: photo, targetSize: _stackView.bounds.size, contentMode: .aspectFill) { img, _ in
-                layer.contents = img?.cgImage
+            
+            let scale = UIScreen.main.scale
+            let size = CGSize(width: _stackView.bounds.width * scale, 
+                              height: _stackView.bounds.height * scale)
+            
+            SAPhotoLibrary.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
+                DispatchQueue.main.async {
+                    layer.contents = img?.cgImage
+                }
             }
         }
     }
