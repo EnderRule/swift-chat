@@ -78,6 +78,10 @@ internal class SAPhotoView: UIView {
             }
             _selectedView.isHidden = !newValue
             _selectedView.isUserInteractionEnabled = newValue
+            
+            if !_hightlightLayer.isHidden && !newValue {
+                _hightlightLayer.isHidden = true
+            }
         }
     }
     
@@ -121,8 +125,11 @@ internal class SAPhotoView: UIView {
     }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard _selectedView.isUserInteractionEnabled else {
+        guard isUserInteractionEnabled else {
             return nil
+        }
+        guard _selectedView.isUserInteractionEnabled else {
+            return self
         }
         let rect = UIEdgeInsetsInsetRect(_selectedView.frame, UIEdgeInsetsMake(-8, -8, -8, -8))
         if rect.contains(point) {

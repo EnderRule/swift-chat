@@ -15,6 +15,10 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
         set { return _photoView.photo = newValue }
         get { return _photoView.photo }
     }
+    var allowsSelection: Bool {
+        set { return _photoView.allowsSelection = newValue }
+        get { return _photoView.allowsSelection }
+    }
     
     weak var delegate: SAPhotoViewDelegate? {
         set { return _photoView.delegate = newValue }

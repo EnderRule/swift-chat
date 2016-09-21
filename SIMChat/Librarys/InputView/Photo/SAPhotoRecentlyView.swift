@@ -26,6 +26,14 @@ public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
 
 open class SAPhotoRecentlyView: UIView {
     
+    open var allowsMultipleSelection: Bool = true {
+        willSet {
+            _contentView.visibleCells.forEach { 
+                ($0 as? SAPhotoRecentlyViewCell)?.allowsSelection = newValue
+            }
+        }
+    }
+    
     open weak var delegate: SAPhotoRecentlyViewDelegate?
     
     open override func didMoveToWindow() {
@@ -136,8 +144,9 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
             cell.photo = nil
             return 
         }
-        cell.photo = photo
+        cell.allowsSelection = allowsMultipleSelection
         cell.delegate = self
+        cell.photo = photo
         cell.updateIndex()
     }
     
