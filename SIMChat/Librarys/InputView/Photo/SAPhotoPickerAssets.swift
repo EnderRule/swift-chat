@@ -52,9 +52,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UICollectionView
         guard let cell = cell as? SAPhotoPickerAssetsCell else {
             return
         }
+        cell.delegate = photoDelegate
         cell.album = _album
         cell.photo = _album.photos[indexPath.item]
-        cell.delegate = photoDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

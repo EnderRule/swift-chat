@@ -63,13 +63,19 @@ open class SAPhoto: NSObject {
     }
     
     open override var hash: Int {
-        return asset.hash
+        return identifier.hash
     }
     open override var hashValue: Int {
-        return asset.hashValue
+        return identifier.hashValue
     }
     open override var description: String {
         return asset.description
+    }
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let photo = object as? SAPhoto else {
+            return false
+        }
+        return identifier == photo.identifier
     }
     
     internal var asset: PHAsset

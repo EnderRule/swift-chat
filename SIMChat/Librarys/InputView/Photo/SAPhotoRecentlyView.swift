@@ -69,7 +69,6 @@ open class SAPhotoRecentlyView: UIView {
             return
         }
         let indexPath = IndexPath(item: index, section: 0)
-        _logger.trace(indexPath)
         _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
