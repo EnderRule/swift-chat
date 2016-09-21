@@ -16,8 +16,12 @@ import UIKit
 // [x] SAPhotoView - 选中支持
 // [x] SAPhotoView - 选中高亮支持
 // [x] SAPhotoView - SelectView悬停
+// [ ] SAPhotoView - iClound图片下载进度显示
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoInputView - 横屏支持
+// [ ] SAPhotoInputView - 错误显示
+// [ ] SAPhotoInputView - 初次加载页面
+// [ ] * - 发送图片(读取)
 
 
 @objc
@@ -61,8 +65,33 @@ open class SAPhotoInputView: UIView {
     private func _init() {
         _logger.trace()
         
-        _tabbar.backgroundColor = .random
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
+        
+        let button1 = UIButton()
+        
+        button1.setTitle("原图(999K)", for: .normal)
+        button1.setTitleColor(.blue, for: .normal)
+        button1.setImage(UIImage(named: "photo_small_checkbox_normal"), for: .normal)
+        button1.setImage(UIImage(named: "photo_small_checkbox_selected"), for: .selected)
+        button1.setImage(UIImage(named: "photo_small_checkbox_disabled"), for: .disabled)
+        
+        let button2 = UIButton()
+        
+        button2.contentEdgeInsets = UIEdgeInsetsMake(4, 8, 4, 8)
+        button2.setTitle("发送", for: .normal)
+        button2.setTitleColor(.white, for: .normal)
+        button2.setTitleColor(.gray, for: .disabled)
+        button2.setBackgroundImage(UIImage(named: "photo_button_nor"), for: .normal)
+        button2.setBackgroundImage(UIImage(named: "photo_button_press"), for: .highlighted)
+        button2.setBackgroundImage(UIImage(named: "photo_button_disabled"), for: .disabled)
+        
+        _tabbar.items = [
+            UIBarButtonItem(title: "相册", style: .plain, target: nil, action: nil),
+            UIBarButtonItem(title: "编辑", style: .plain, target: nil, action: nil),
+            UIBarButtonItem(customView: button1),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(customView: button2),
+        ]
         
         _contentViewLayout.scrollDirection = .horizontal
         _contentViewLayout.minimumLineSpacing = 0
@@ -102,7 +131,7 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
-    private lazy var _tabbar: UIView = UIView()
+    private lazy var _tabbar: UIToolbar = UIToolbar()
     
     fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)

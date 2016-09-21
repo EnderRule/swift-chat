@@ -161,10 +161,10 @@ internal class SAPhotoView: UIView {
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
         _selectedView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         _selectedView.setTitleColor(.white, for: .normal)
-        _selectedView.setBackgroundImage(UIImage(named: "aio_photo_checkbox_gray"), for: .normal)
-        _selectedView.setBackgroundImage(UIImage(named: "aio_photo_checkbox_gray"), for: .highlighted)
-        _selectedView.setBackgroundImage(UIImage(named: "aio_photo_checkbox_blue"), for: [.selected, .normal])
-        _selectedView.setBackgroundImage(UIImage(named: "aio_photo_checkbox_blue"), for: [.selected, .highlighted])
+        _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_normal"), for: .normal)
+        _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_normal"), for: .highlighted)
+        _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .normal])
+        _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .highlighted])
         _selectedView.addTarget(self, action: #selector(onSelectItem(_:)), for: .touchUpInside)
         
         _imageView.layer.addSublayer(_hightlightLayer)
