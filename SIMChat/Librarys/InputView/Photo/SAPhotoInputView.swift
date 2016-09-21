@@ -221,7 +221,7 @@ extension SAPhotoInputView: UICollectionViewDataSource, UICollectionViewDelegate
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         guard let cell = collectionView.cellForItem(at: indexPath) else {
-            return 
+            return
         }
         onPreviewer(cell)
     }
@@ -262,7 +262,19 @@ extension SAPhotoInputView {
         _logger.trace()
     }
     func onPicker(_ sender: Any) {
+        guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController else {
+            return
+        }
         _logger.trace()
+        
+        let nav = UINavigationController()
+        
+        let v1 = UIViewController()
+        let v2 = UIViewController()
+        
+        nav.setViewControllers([v1, v2], animated: false)
+        
+        rootViewController.present(nav, animated: true, completion: nil)
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace()
