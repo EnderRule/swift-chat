@@ -62,6 +62,12 @@ open class SAPhoto: NSObject {
         return asset.representsBurst
     }
     
+    open override var hash: Int {
+        return asset.hash
+    }
+    open override var hashValue: Int {
+        return asset.hashValue
+    }
     open override var description: String {
         return asset.description
     }

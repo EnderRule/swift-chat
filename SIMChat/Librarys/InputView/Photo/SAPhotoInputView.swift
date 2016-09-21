@@ -12,9 +12,12 @@ import UIKit
 // # TODO
 // [ ] SAPhotoView - 异步加载
 // [ ] SAPhotoView - 渐进式解码
+// [x] SAPhotoView - 选择顺序
+// [x] SAPhotoView - 选中支持
+// [x] SAPhotoView - 选中高亮支持
+// [x] SAPhotoView - SelectView悬停
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoInputView - 横屏支持
-// [x] SAPhotoInputView - SelectView悬停
 
 
 @objc
@@ -70,6 +73,7 @@ open class SAPhotoInputView: UIView {
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.scrollsToTop = false
+        _contentView.allowsMultipleSelection = false
         _contentView.register(SAPhotoRecentView.self, forCellWithReuseIdentifier: "Item")
         _contentView.contentInset = UIEdgeInsetsMake(0, 4, 0, 4)
         _contentView.dataSource = self
@@ -88,10 +92,15 @@ open class SAPhotoInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
         
         addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 44))
+        
+        
     }
     
     fileprivate var _photos: [SAPhoto]?
     fileprivate var _isInitPhoto: Bool = false
+    
+    fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
+    fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
     private lazy var _tabbar: UIView = UIView()
     
@@ -131,7 +140,22 @@ extension SAPhotoInputView: UICollectionViewDataSource, UICollectionViewDelegate
         guard let cell = cell as? SAPhotoRecentView else {
             return
         }
-        cell.photo = _photos?[indexPath.item]
+        guard let photo = _photos?[indexPath.item] else {
+            cell.isSelected = false
+            cell.delegate = nil
+            cell.photo = nil
+            return 
+        }
+        cell.photo = photo
+        cell.delegate = self
+        cell.isCheck = _selectedPhotos.contains(photo)
+        cell.updateIndex()
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        _logger.debug(indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -144,5 +168,44 @@ extension SAPhotoInputView: UICollectionViewDataSource, UICollectionViewDelegate
         let scale = Double(height) / pheight
         
         return CGSize(width: CGFloat(pwidth * scale), height: height)
+    }
+}
+
+extension SAPhotoInputView: SAPhotoRecentViewDelegate {
+    
+    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, indexForSelectWith photo: SAPhoto) -> Int {
+        return _selectedPhotos.index(of: photo) ?? 0
+    }
+    
+    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, shouldSelectFor photo: SAPhoto) -> Bool {
+        return true
+    }
+    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, didSelectFor photo: SAPhoto) {
+        if !_selectedPhotoSets.contains(photo) {
+            _selectedPhotoSets.insert(photo)
+            _selectedPhotos.append(photo)
+            _updateIndex()
+        }
+        guard let idx = _photos?.index(of: photo) else {
+            return
+        }
+        _contentView.scrollToItem(at: IndexPath(item: idx, section: 0), at: .centeredHorizontally, animated: true)
+    }
+    
+    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, shouldDeselectFor photo: SAPhoto) -> Bool {
+        return true
+    }
+    func recentView(_ recentView: SAPhotoRecentView, photoView: SAPhotoView, didDeselectFor photo: SAPhoto) {
+        if let idx = _selectedPhotos.index(of: photo) {
+            _selectedPhotoSets.remove(photo)
+            _selectedPhotos.remove(at: idx)
+            _updateIndex()
+        }
+    }
+    
+    private func _updateIndex() {
+        _contentView.visibleCells.forEach {
+            ($0 as? SAPhotoRecentView)?.updateIndex()
+        }
     }
 }
