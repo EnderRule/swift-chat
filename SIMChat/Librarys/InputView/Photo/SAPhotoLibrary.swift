@@ -23,7 +23,7 @@ open class SAPhotoLibrary: NSObject {
     //open static func cancelImageRequest(_ requestID: PHImageRequestID) { }
     
     open static func requestAuthorization(clouser: @escaping (Bool) -> Void) {
-        PHPhotoLibrary.requestAuthorization { 
+        PHPhotoLibrary.requestAuthorization {
             clouser($0 == .authorized)
         }
     }

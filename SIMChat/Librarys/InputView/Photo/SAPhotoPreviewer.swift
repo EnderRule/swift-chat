@@ -8,6 +8,6 @@
 
 import UIKit
 
-open class SAPhotoPreviewer: UIViewController {
+open class SAPhotoPreviewer: NSObject {
     
 }

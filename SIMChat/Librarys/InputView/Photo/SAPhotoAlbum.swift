@@ -81,7 +81,7 @@ private extension SAPhotoAlbum {
     
     static func _loadPhotos(with collection: PHAssetCollection) -> [SAPhoto] {
         var photos: [SAPhoto] = []
-        PHAsset.fetchAssets(in: collection, options: nil).enumerateObjects(options: .reverse, using: { 
+        PHAsset.fetchAssets(in: collection, options: nil).enumerateObjects({ 
             photos.append(SAPhoto(asset: $0.0))
         })
         return photos

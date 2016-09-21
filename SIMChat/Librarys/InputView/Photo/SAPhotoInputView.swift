@@ -50,7 +50,7 @@ open class SAPhotoInputView: UIView {
     private func _reloadData() {
         _logger.trace()
         
-        _photos = SAPhotoAlbum.recentlyAlbum?.photos
+        _photos = SAPhotoAlbum.recentlyAlbum?.photos.reversed()
         _contentView.reloadData()
     }
     
@@ -262,19 +262,13 @@ extension SAPhotoInputView {
         _logger.trace()
     }
     func onPicker(_ sender: Any) {
-        guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController else {
+        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
             return
         }
-        _logger.trace()
+        let picker = SAPhotoPicker()
         
-        let nav = UINavigationController()
+        picker.show(in: viewController)
         
-        let v1 = UIViewController()
-        let v2 = UIViewController()
-        
-        nav.setViewControllers([v1, v2], animated: false)
-        
-        rootViewController.present(nav, animated: true, completion: nil)
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace()
