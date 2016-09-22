@@ -22,6 +22,11 @@ internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
         get { return _photoView.delegate }
     }
     
+    var isCheck: Bool {
+        set { return _photoView.isSelected = newValue }
+        get { return _photoView.isSelected }
+    }
+    
     func updateEdge() {
         _photoView.updateEdge()
     }

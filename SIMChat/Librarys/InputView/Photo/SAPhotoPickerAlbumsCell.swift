@@ -12,39 +12,36 @@ import Photos
 internal class SAPhotoPickerAlbumsCell: UITableViewCell {
 
     var album: SAPhotoAlbum? {
-        willSet {
-            guard let newValue = newValue, newValue !== album else {
+        didSet {
+            guard let newValue = album, newValue !== oldValue else {
                 return
             }
-            _updateAlbum(newValue)
-        }
-    }
-    
-    private func _updateAlbum(_ newValue: SAPhotoAlbum) {
-        
-        _titleLabel.text = newValue.title
-        _descriptionLabel.text = "\(newValue.photos.count)"
-        
-        _stackView.layoutIfNeeded()
-        
-        let count = newValue.photos.count
-        
-        (0 ..< 3).forEach { index in
-            let layer = _stackView.layers[index]
-            guard index < count else {
-                layer.isHidden = true
-                layer.contents = nil
-                return
-            }
-            layer.isHidden = false
-            let photo = newValue.photos[count - index - 1]
             
-            let scale = UIScreen.main.scale
-            let size = CGSize(width: _stackView.bounds.width * scale, 
-                              height: _stackView.bounds.height * scale)
+            _titleLabel.text = newValue.title
+            _descriptionLabel.text = "\(newValue.photos.count)"
             
-            SAPhotoLibrary.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
-                DispatchQueue.main.async {
+            _stackView.layoutIfNeeded()
+            
+            let count = newValue.photos.count
+            
+            (0 ..< 3).forEach { index in
+                let layer = _stackView.layers[index]
+                guard index < count else {
+                    layer.isHidden = true
+                    layer.contents = nil
+                    return
+                }
+                layer.isHidden = false
+                let photo = newValue.photos[count - index - 1]
+                
+                let scale = UIScreen.main.scale
+                let size = CGSize(width: _stackView.bounds.width * scale, 
+                                  height: _stackView.bounds.height * scale)
+                
+                SAPhotoLibrary.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
+                    guard newValue == self.album else {
+                        return
+                    }
                     layer.contents = img?.cgImage
                 }
             }

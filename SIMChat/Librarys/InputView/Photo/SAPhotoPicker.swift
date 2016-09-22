@@ -21,6 +21,9 @@ public protocol SAPhotoPickerDelegate: NSObjectProtocol {
     
     @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, shouldDeselectItem photo: SAPhoto) -> Bool
     @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto)
+    
+    @objc optional func photoPicker(didCancel photoPicker: SAPhotoPicker)
+    @objc optional func photoPicker(didFininsh photoPicker: SAPhotoPicker)
 }
 
 open class SAPhotoPicker: NSObject {
@@ -28,9 +31,11 @@ open class SAPhotoPicker: NSObject {
     open weak var delegate: SAPhotoPickerDelegate?
     
     open func show(in viewController: UIViewController) {
+        _SAPhotoPickerActivatedInstance = self
         // 授权完成之后再弹出
         SAPhotoLibrary.requestAuthorization { hasPermission in
             DispatchQueue.main.async {
+                
                 guard hasPermission else {
                     // 授权失败. 或许需要显示错误页面, 因为他可以恢复的
                     return
@@ -82,3 +87,6 @@ extension SAPhotoPicker: SAPhotoViewDelegate {
         delegate?.photoPicker?(self, didDeselectItem: photo)
     }
 }
+
+private var _SAPhotoPickerActivatedInstance: SAPhotoPicker?
+

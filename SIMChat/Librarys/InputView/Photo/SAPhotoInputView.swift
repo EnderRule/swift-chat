@@ -172,7 +172,6 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
     
     
-    fileprivate var _picker: SAPhotoPicker?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -213,7 +212,6 @@ extension SAPhotoInputView {
         let picker = SAPhotoPicker()
         picker.delegate = self
         picker.show(in: viewController)
-        _picker = picker
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
@@ -224,6 +222,7 @@ extension SAPhotoInputView {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
             _updatePhotoCount()
+            _updateFileSize()
         }
     }
     func onDeselectItem(_ photo: SAPhoto) {
@@ -231,6 +230,7 @@ extension SAPhotoInputView {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: idx)
             _updatePhotoCount()
+            _updateFileSize()
         }
     }
 }
@@ -251,6 +251,15 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     }
     
     public func photoPicker(_ photoPicker: SAPhotoPicker, shouldSelectItem photo: SAPhoto) -> Bool {
+        // 可以在这里进行数量限制, 图片类型限制
+        
+//        if _selectedPhotoSets.count >= 9 {
+//            return false // 只能选择9张图片
+//        }
+//        if photo.mediaType != .image {
+//            return false // 只能选择图片
+//        }
+        
         return true
     }
     public func photoPicker(_ photoPicker: SAPhotoPicker, didSelectItem photo: SAPhoto) {
@@ -262,6 +271,13 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     }
     public func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto) {
         onDeselectItem(photo)
+    }
+    
+    public func photoPicker(didCancel photoPicker: SAPhotoPicker) {
+        _logger.trace()
+    }
+    public func photoPicker(didFininsh photoPicker: SAPhotoPicker) {
+        _logger.trace()
     }
 }
 

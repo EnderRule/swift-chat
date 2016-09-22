@@ -26,8 +26,8 @@ internal protocol SAPhotoViewDelegate: NSObjectProtocol {
 internal class SAPhotoView: UIView {
     
     var photo: SAPhoto? {
-        willSet {
-            guard let newValue = newValue, photo !== newValue else {
+        didSet {
+            guard let newValue = photo, newValue !== oldValue else {
                 return
             }
             // 初始化选中状态
@@ -43,6 +43,9 @@ internal class SAPhotoView: UIView {
             let size = CGSize(width: bounds.width * scale, height: bounds.height * scale)
             
             SAPhotoLibrary.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
+                guard self.photo == newValue else {
+                    return
+                }
                 //self._logger.trace(img)
                 self._imageView.image = img
             }
