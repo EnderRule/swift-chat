@@ -85,6 +85,7 @@
 		0C1A177F1D7724880093EE12 /* SAInputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17741D7724880093EE12 /* SAInputTextField.swift */; };
 		0C1A17801D7724880093EE12 /* SAInputTextFieldItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17751D7724880093EE12 /* SAInputTextFieldItem.swift */; };
 		0C1A17811D7724880093EE12 /* SAInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1A17761D7724880093EE12 /* SAInputView.swift */; };
+		0C1C4E5A1D93CD5E0023211B /* SAPhotoBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1C4E591D93CD5E0023211B /* SAPhotoBarButtonItem.swift */; };
 		0C228B9D1D90CD7E000F919D /* SAAudioSpectrumMiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C228B9C1D90CD7E000F919D /* SAAudioSpectrumMiniView.swift */; };
 		0C228BA11D912734000F919D /* SAPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C228BA01D912734000F919D /* SAPhoto.swift */; };
 		0C228BA31D912EA2000F919D /* SAPhotoRecentlyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C228BA21D912EA2000F919D /* SAPhotoRecentlyViewCell.swift */; };
@@ -233,6 +234,7 @@
 		0C1A17741D7724880093EE12 /* SAInputTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputTextField.swift; sourceTree = "<group>"; };
 		0C1A17751D7724880093EE12 /* SAInputTextFieldItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputTextFieldItem.swift; sourceTree = "<group>"; };
 		0C1A17761D7724880093EE12 /* SAInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputView.swift; sourceTree = "<group>"; };
+		0C1C4E591D93CD5E0023211B /* SAPhotoBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoBarButtonItem.swift; sourceTree = "<group>"; };
 		0C228B9C1D90CD7E000F919D /* SAAudioSpectrumMiniView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSpectrumMiniView.swift; sourceTree = "<group>"; };
 		0C228BA01D912734000F919D /* SAPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhoto.swift; sourceTree = "<group>"; };
 		0C228BA21D912EA2000F919D /* SAPhotoRecentlyViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyViewCell.swift; sourceTree = "<group>"; };
@@ -545,6 +547,7 @@
 				0C228BA61D913532000F919D /* SAPhotoAlbum.swift */,
 				0C779C151D91759E0044D7AF /* SAPhotoLibrary.swift */,
 				0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */,
+				0C1C4E591D93CD5E0023211B /* SAPhotoBarButtonItem.swift */,
 				0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */,
 				0C228BA21D912EA2000F919D /* SAPhotoRecentlyViewCell.swift */,
 				0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */,
@@ -894,6 +897,7 @@
 				0C1A17791D7724880093EE12 /* SAInputAccessoryViewLayout.swift in Sources */,
 				0C9E3DBF1D8BA7F700F4DEE6 /* SAEmoticonPage.swift in Sources */,
 				0CBCE6081D9231CA003EC410 /* SAPhotoPreviewer.swift in Sources */,
+				0C1C4E5A1D93CD5E0023211B /* SAPhotoBarButtonItem.swift in Sources */,
 				0C5EBFB61C8966BD00E0B923 /* SIMChatBaseFileResource.swift in Sources */,
 				0C1A177B1D7724880093EE12 /* SAInputBar.swift in Sources */,
 				0C159F501D8FD1EC00B80EC8 /* SAAudioEffect.swift in Sources */,

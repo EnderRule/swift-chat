@@ -9,6 +9,9 @@
 import UIKit
 
 internal class SAPhotoPickerAlbums: UITableViewController {
+    
+    /// 强引用picker, 因为需要实现取消之后自动销毁picker
+    var picker: SAPhotoPicker?
 
     var albums: [SAPhotoAlbum] {
         if let albums = _albums {
@@ -20,9 +23,6 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         _albums = albums
         return albums
     }
-    
-    // 强引用!!!
-    var picker: SAPhotoPicker?
     
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
         let vc = SAPhotoPickerAssets(album: album)
@@ -36,15 +36,10 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     
     
     func onCancel(_ sender: Any) {
-        _logger.trace()
-        
-        if let picker = picker {
-            picker.delegate?.photoPicker?(didCancel: picker)
-        }
-        
-        navigationController?.dismiss(animated: true, completion: nil)
-        
+        picker?.dismiss()
+        picker?.onDidDismiss(self)
     }
+    
     func onRefresh(_ sender: Any) {
         _logger.trace()
         
@@ -53,8 +48,6 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = "Albums"
         
         view.backgroundColor = .white
         
@@ -98,6 +91,8 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     private func _init() {
+        
+        title = "Albums"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
     }
     

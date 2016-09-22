@@ -49,96 +49,60 @@ open class SAPhotoInputView: UIView {
             title += "(\(_selectedPhotos.count)M)"
         }
         
-        _originalBarItem.titleLabel?.text = title // 先更新titleLabel是因为防止系统执行更新title的动画
-        _originalBarItem.setTitle(title, for: .normal)
-        _originalBarItem.sizeToFit()
+        _original1BarItem.title = title
+        _original2BarItem.title = title
     }
     
     fileprivate func _updatePhotoCount() {
         
         if !_selectedPhotos.isEmpty {
-            _sendBarItem.isEnabled = true
-            _sendBarItem.setTitle("发送(\(_selectedPhotos.count))", for: .normal)
-            _sendBarItem.sizeToFit()
+            _send1BarItem.title = "发送(\(_selectedPhotos.count))"
+            _send2BarItem.title = "发送(\(_selectedPhotos.count))"
         } else {
-            _sendBarItem.isEnabled = false
-            _sendBarItem.setTitle("发送", for: .normal)
-            _sendBarItem.sizeToFit()
+            _send1BarItem.title = "发送"
+            _send2BarItem.title = "发送"
         }
-//        if _isOriginalImage {
-//            _updateFileSize()
-//        }
+        if _isOriginalImage {
+            _updateFileSize()
+        }
         
-        _editorBarItem.isEnabled = _selectedPhotos.count == 1
+        _send1BarItem.isEnabled = !_selectedPhotos.isEmpty
+        _send2BarItem.isEnabled = !_selectedPhotos.isEmpty
         
-        var nframe = _sendBarItem.frame
-        nframe.size.width = max(nframe.width, 70)
-        _sendBarItem.frame = nframe
+        _edit1BarItem.isEnabled = _selectedPhotos.count == 1
+        _edit2BarItem.isEnabled = _selectedPhotos.count == 1
+        
+        _previewBarItem.isEnabled = !_selectedPhotos.isEmpty
+        
+        _original1BarItem.isEnabled = !_selectedPhotos.isEmpty
+        _original2BarItem.isEnabled = !_selectedPhotos.isEmpty
     }
+    
     
     private func _init() {
         _logger.trace()
         
-        _tabbar.translatesAutoresizingMaskIntoConstraints = false
+        let color = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
         
-        autoreleasepool {
-            
-            let font = UIFont.systemFont(ofSize: 17)
-            let color = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
-            let dcolor = UIColor.lightGray
-            
-            _pickerbarItem.titleLabel?.font = font
-            _pickerbarItem.setTitle("相册", for: .normal)
-            _pickerbarItem.setTitleColor(color, for: .normal)
-            _pickerbarItem.setTitleColor(dcolor, for: .disabled)
-            _pickerbarItem.addTarget(self, action: #selector(onPicker(_:)), for: .touchUpInside)
-            _pickerbarItem.sizeToFit()
-            
-            _editorBarItem.titleLabel?.font = font
-            _editorBarItem.setTitle("编辑", for: .normal)
-            _editorBarItem.setTitleColor(color, for: .normal)
-            _editorBarItem.setTitleColor(dcolor, for: .disabled)
-            _editorBarItem.addTarget(self, action: #selector(onEditor(_:)), for: .touchUpInside)
-            _editorBarItem.sizeToFit()
-            
-            let smn = UIImage(named: "photo_small_checkbox_normal")
-            let smh = UIImage(named: "photo_small_checkbox_selected")
-            let smd = UIImage(named: "photo_small_checkbox_disabled")
-            
-            _originalBarItem.titleLabel?.font = font
-            _originalBarItem.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
-            _originalBarItem.setTitle("原图", for: .normal)
-            _originalBarItem.setTitleColor(color, for: .normal)
-            _originalBarItem.setTitleColor(dcolor, for: .disabled)
-            _originalBarItem.setImage(smn?.withRenderingMode(.alwaysOriginal), for: .normal)
-            _originalBarItem.setImage(smh?.withRenderingMode(.alwaysOriginal), for: .selected)
-            _originalBarItem.setImage(smd?.withRenderingMode(.alwaysOriginal), for: .disabled)
-            _originalBarItem.addTarget(self, action: #selector(onChangeOriginal(_:)), for: .touchUpInside)
-            _originalBarItem.sizeToFit()
-            
-            _sendBarItem.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            _sendBarItem.setTitle("发送", for: .normal)
-            _sendBarItem.setTitleColor(.white, for: .normal)
-            _sendBarItem.setTitleColor(.lightGray, for: .disabled)
-            _sendBarItem.contentEdgeInsets = UIEdgeInsetsMake(6, 8, 6, 8)
-            _sendBarItem.setBackgroundImage(UIImage(named: "photo_button_nor"), for: .normal)
-            _sendBarItem.setBackgroundImage(UIImage(named: "photo_button_press"), for: .highlighted)
-            _sendBarItem.setBackgroundImage(UIImage(named: "photo_button_disabled"), for: .disabled)
-            _sendBarItem.addTarget(self, action: #selector(onSend(_:)), for: .touchUpInside)
-            _sendBarItem.sizeToFit()
-            _sendBarItem.frame = CGRect(x: 0, y: 0, width: 70, height: _sendBarItem.frame.height)
-            
-            _tabbar.items = [
-                UIBarButtonItem(customView: _pickerbarItem),
-                UIBarButtonItem(customView: _editorBarItem),
-                UIBarButtonItem(customView: _originalBarItem),
-                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-                UIBarButtonItem(customView: _sendBarItem),
-            ]
-            
-            _sendBarItem.isEnabled = false
-            _editorBarItem.isEnabled = false
-        }
+        tintColor = color
+        
+        _pickBarItem = SAPhotoBarButtonItem(title: "相册", type: .normal, target: self, action: #selector(onPicker(_:)))
+        _edit1BarItem = SAPhotoBarButtonItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
+        _edit2BarItem = SAPhotoBarButtonItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
+        _send1BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForInputView(_:)))
+        _send2BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
+        _previewBarItem = SAPhotoBarButtonItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewer(_:)))
+        _original1BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
+        _original2BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
+        
+        _tabbar.translatesAutoresizingMaskIntoConstraints = false
+        _tabbar.items = [
+            _pickBarItem,
+            _edit1BarItem,
+            _original1BarItem,
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            _send1BarItem,
+        ]
         
         _contentView.delegate = self
         _contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -156,6 +120,9 @@ open class SAPhotoInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_tabbar, .bottom, .equal, self, .bottom))
         
         addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 44))
+        
+        
+        _updatePhotoCount()
     }
     
     fileprivate var _isOriginalImage: Bool = false
@@ -163,15 +130,22 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
-    fileprivate lazy var _sendBarItem = UIButton()
-    fileprivate lazy var _pickerbarItem = UIButton(type: .system)
-    fileprivate lazy var _editorBarItem = UIButton(type: .system)
-    fileprivate lazy var _originalBarItem = UIButton(type: .system)
+    fileprivate var _pickBarItem: SAPhotoBarButtonItem!
+    fileprivate var _previewBarItem: SAPhotoBarButtonItem!
+    
+    fileprivate var _edit1BarItem: SAPhotoBarButtonItem!
+    fileprivate var _edit2BarItem: SAPhotoBarButtonItem!
+    
+    fileprivate var _original1BarItem: SAPhotoBarButtonItem!
+    fileprivate var _original2BarItem: SAPhotoBarButtonItem!
+    
+    fileprivate var _send1BarItem: SAPhotoBarButtonItem!
+    fileprivate var _send2BarItem: SAPhotoBarButtonItem!
+    
+    fileprivate weak var _picker: SAPhotoPicker?
     
     fileprivate lazy var _tabbar: UIToolbar = UIToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
-    
-    
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -187,7 +161,13 @@ open class SAPhotoInputView: UIView {
 
 extension SAPhotoInputView {
     
-    func onSend(_ sender: Any) {
+    func onSendForPicker(_ sender: Any) {
+        _logger.trace()
+        
+        _picker?.dismiss()
+        _contentView.updateItemsSelection()
+    }
+    func onSendForInputView(_ sender: Any) {
         _logger.trace()
     }
     func onChangeOriginal(_ sender: UIButton) {
@@ -195,8 +175,11 @@ extension SAPhotoInputView {
         
         let n = sender.image(for: .normal)
         let s = sender.image(for: .selected)
-        sender.setImage(s, for: .normal)
-        sender.setImage(n, for: .selected)
+        
+        _original1BarItem.button.setImage(s, for: .normal)
+        _original1BarItem.button.setImage(n, for: .selected)
+        _original2BarItem.button.setImage(s, for: .normal)
+        _original2BarItem.button.setImage(n, for: .selected)
         
         // 更新文件大小
         _updateFileSize()
@@ -211,7 +194,16 @@ extension SAPhotoInputView {
         }
         let picker = SAPhotoPicker()
         picker.delegate = self
+        picker.tintColor = tintColor
+        picker.toolbarItems = [
+            _previewBarItem,
+            _edit2BarItem,
+            _original2BarItem,
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            _send2BarItem,
+        ]
         picker.show(in: viewController)
+        _picker = picker
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
@@ -273,7 +265,7 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
         onDeselectItem(photo)
     }
     
-    public func photoPicker(didCancel photoPicker: SAPhotoPicker) {
+    public func photoPicker(didDismiss photoPicker: SAPhotoPicker) {
         _logger.trace()
         _contentView.updateItemsSelection()
     }
@@ -308,3 +300,4 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
         onDeselectItem(photo)
     }
 }
+

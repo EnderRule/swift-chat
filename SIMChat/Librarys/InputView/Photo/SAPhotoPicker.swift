@@ -22,20 +22,38 @@ public protocol SAPhotoPickerDelegate: NSObjectProtocol {
     @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, shouldDeselectItem photo: SAPhoto) -> Bool
     @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto)
     
-    @objc optional func photoPicker(didCancel photoPicker: SAPhotoPicker)
+    @objc optional func photoPicker(willShow photoPicker: SAPhotoPicker)
+    @objc optional func photoPicker(didShow photoPicker: SAPhotoPicker)
+    
+    @objc optional func photoPicker(didDismiss photoPicker: SAPhotoPicker)
 }
 
 open class SAPhotoPicker: NSObject {
     
-    open var items: [UIBarButtonItem]? {
+    
+    open var tintColor: UIColor! {
         willSet {
-            _rootViewController?.toolbarItems = newValue
+            navgationController?.view.tintColor = tintColor
+        }
+    }
+    
+    /// 工具栏Items, 如果为nil则不显示
+    open var toolbarItems: [UIBarButtonItem]? {
+        willSet {
+            rootViewController?.toolbarItems = newValue
         }
     }
     
     open weak var delegate: SAPhotoPickerDelegate?
     
+    ///
+    /// 显示图片选择器
+    ///
+    /// - parameter viewController: present的位置
+    ///
     open func show(in viewController: UIViewController) {
+        _logger.trace()
+        
         // 授权完成之后再弹出
         SAPhotoLibrary.requestAuthorization { hasPermission in
             DispatchQueue.main.async {
@@ -48,7 +66,7 @@ open class SAPhotoPicker: NSObject {
                 let albumsVC = SAPhotoPickerAlbums()
                 
                 albumsVC.picker = self
-                albumsVC.toolbarItems = self.items
+                albumsVC.toolbarItems = self.toolbarItems
                 
                 var viewControllers: [UIViewController] = [albumsVC]
                 
@@ -58,20 +76,45 @@ open class SAPhotoPicker: NSObject {
                     viewControllers.append(picker)
                 }
                 
+                nav.view.tintColor = self.tintColor
                 nav.setViewControllers(viewControllers, animated: false)
-                viewController.present(nav, animated: true, completion: nil)
                 
-                self._rootViewController = albumsVC
+                self.onWillShow(albumsVC)
+                self.rootViewController = albumsVC
+                self.navgationController = nav
+                viewController.present(nav, animated: true) {
+                    self.onDidShow(albumsVC)
+                }
             }
         }
     }
+    ///
+    /// 隐藏
+    ///
+    open func dismiss() {
+        _logger.trace()
+        
+        navgationController?.dismiss(animated: true, completion: nil)
+    }
     
-    private weak var _rootViewController: SAPhotoPickerAlbums?
+    weak var rootViewController: SAPhotoPickerAlbums?
+    weak var navgationController: UINavigationController?
 }
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
 extension SAPhotoPicker: SAPhotoViewDelegate {
+    
+    func onWillShow(_ sender: Any) {
+        delegate?.photoPicker?(willShow: self)
+    }
+    func onDidShow(_ sender: Any) {
+        delegate?.photoPicker?(didShow: self)
+    }
+    
+    func onDidDismiss(_ sender: Any) {
+        delegate?.photoPicker?(didDismiss: self)
+    }
     
     func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto) {
         delegate?.photoPicker?(self, previewItem: photo, in: photoView)
