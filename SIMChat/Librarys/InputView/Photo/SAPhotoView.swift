@@ -30,10 +30,8 @@ internal class SAPhotoView: UIView {
             guard let newValue = photo, newValue !== oldValue else {
                 return
             }
-            // 初始化选中状态
-            let issel = delegate?.photoView(self, isSelectedOfItem: newValue) ?? false
-            _setIsSelected(issel, animated: false)
-            _updateIndex(newValue)
+            updateSelection()
+            updateIndex()
             
             let options = PHImageRequestOptions()
             options.deliveryMode = .fastFormat
@@ -72,6 +70,14 @@ internal class SAPhotoView: UIView {
         }
     }
     func updateIndex() {
+        _updateIndex(photo)
+    }
+    func updateSelection() {
+        guard let photo = photo else {
+            return
+        }
+        let issel = delegate?.photoView(self, isSelectedOfItem: photo) ?? false
+        _setIsSelected(issel, animated: false)
         _updateIndex(photo)
     }
     

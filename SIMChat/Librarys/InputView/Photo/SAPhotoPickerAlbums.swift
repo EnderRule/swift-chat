@@ -10,26 +10,50 @@ import UIKit
 
 internal class SAPhotoPickerAlbums: UITableViewController {
 
-    weak var photoDelegate: SAPhotoViewDelegate?
+    var albums: [SAPhotoAlbum] {
+        if let albums = _albums {
+            return albums
+        }
+        let albums = SAPhotoAlbum.albums.filter {
+            !$0.photos.isEmpty
+        }
+        _albums = albums
+        return albums
+    }
+    
+    // 强引用!!!
+    var picker: SAPhotoPicker?
+    
+    func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
+        let vc = SAPhotoPickerAssets(album: album)
+        
+        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
+        vc.photoDelegate = picker
+        vc.toolbarItems = toolbarItems
+        
+        return vc
+    }
+    
     
     func onCancel(_ sender: Any) {
         _logger.trace()
         
+        if let picker = picker {
+            picker.delegate?.photoPicker?(didCancel: picker)
+        }
+        
         navigationController?.dismiss(animated: true, completion: nil)
+        
     }
     func onRefresh(_ sender: Any) {
         _logger.trace()
-        
-        _albums = SAPhotoAlbum.albums.filter {
-            !$0.photos.isEmpty
-        }
         
         tableView.reloadData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = "Albums"
         
         view.backgroundColor = .white
@@ -38,16 +62,19 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         tableView.separatorStyle = .none
         tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
-        
         // 更新
         onRefresh(self)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = true
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return _albums.count
+        return albums.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,7 +84,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         guard let cell = cell as? SAPhotoPickerAlbumsCell else {
             return
         }
-        cell.album = _albums[indexPath.row]
+        cell.album = albums[indexPath.row]
         cell.accessoryType = .disclosureIndicator
     }
     
@@ -66,16 +93,26 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewController = SAPhotoPickerAssets(album: _albums[indexPath.row])
-        
-        // equ
-        viewController.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
-        viewController.photoDelegate = photoDelegate
-        
-        show(viewController, sender: indexPath)
+        let picker = makeAssetsPicker(with: albums[indexPath.row])
+        show(picker, sender: indexPath)
     }
     
+    private func _init() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
+    }
     
-    private lazy var _albums: [SAPhotoAlbum] = []
-
+    private var _albums: [SAPhotoAlbum]?
+    
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        _init()
+    }
 }

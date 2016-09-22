@@ -23,15 +23,19 @@ public protocol SAPhotoPickerDelegate: NSObjectProtocol {
     @objc optional func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto)
     
     @objc optional func photoPicker(didCancel photoPicker: SAPhotoPicker)
-    @objc optional func photoPicker(didFininsh photoPicker: SAPhotoPicker)
 }
 
 open class SAPhotoPicker: NSObject {
     
+    open var items: [UIBarButtonItem]? {
+        willSet {
+            _rootViewController?.toolbarItems = newValue
+        }
+    }
+    
     open weak var delegate: SAPhotoPickerDelegate?
     
     open func show(in viewController: UIViewController) {
-        _SAPhotoPickerActivatedInstance = self
         // 授权完成之后再弹出
         SAPhotoLibrary.requestAuthorization { hasPermission in
             DispatchQueue.main.async {
@@ -41,21 +45,28 @@ open class SAPhotoPicker: NSObject {
                     return
                 }
                 let nav = UINavigationController()
-                let vc = SAPhotoPickerAlbums()
+                let albumsVC = SAPhotoPickerAlbums()
                 
-                vc.photoDelegate = self
-//            let v1 = UIViewController()
-//            let v2 = UIViewController()
-//            
-//            v1.view.backgroundColor = .random
-//            v2.view.backgroundColor = .random
+                albumsVC.picker = self
+                albumsVC.toolbarItems = self.items
                 
-                nav.setViewControllers([vc], animated: false)
+                var viewControllers: [UIViewController] = [albumsVC]
                 
+                if let album = albumsVC.albums.first {
+                    let picker = albumsVC.makeAssetsPicker(with: album)
+                    picker.scrollsToBottomOfLoad = true
+                    viewControllers.append(picker)
+                }
+                
+                nav.setViewControllers(viewControllers, animated: false)
                 viewController.present(nav, animated: true, completion: nil)
+                
+                self._rootViewController = albumsVC
             }
         }
     }
+    
+    private weak var _rootViewController: SAPhotoPickerAlbums?
 }
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
@@ -87,6 +98,4 @@ extension SAPhotoPicker: SAPhotoViewDelegate {
         delegate?.photoPicker?(self, didDeselectItem: photo)
     }
 }
-
-private var _SAPhotoPickerActivatedInstance: SAPhotoPicker?
 

@@ -31,6 +31,9 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
     func updateIndex() {
         _photoView.updateIndex()
     }
+    func updateSelection() {
+        _photoView.updateSelection()
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()

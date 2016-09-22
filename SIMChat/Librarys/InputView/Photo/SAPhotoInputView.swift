@@ -275,9 +275,7 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     
     public func photoPicker(didCancel photoPicker: SAPhotoPicker) {
         _logger.trace()
-    }
-    public func photoPicker(didFininsh photoPicker: SAPhotoPicker) {
-        _logger.trace()
+        _contentView.updateItemsSelection()
     }
 }
 

@@ -10,6 +10,8 @@ import UIKit
 
 internal class SAPhotoPickerAssets: UICollectionViewController {
     
+    var scrollsToBottomOfLoad: Bool = false
+    
     weak var photoDelegate: SAPhotoViewDelegate?
     
     func updateItmesIndex() {
@@ -82,7 +84,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = _album.title
         
         collectionView?.backgroundColor = .white
@@ -99,6 +101,12 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
         collectionView?.addGestureRecognizer(pan)
         
         onRefresh(self)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
     }
     
     
