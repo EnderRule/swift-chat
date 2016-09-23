@@ -91,7 +91,7 @@ internal class SAPhotoBarButtonItem: UIBarButtonItem {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         button.setTitleColor(.white, for: .normal)
         button.setTitleColor(.lightGray, for: .disabled)
-        button.contentEdgeInsets = UIEdgeInsetsMake(6, 8, 6, 8)
+        button.contentEdgeInsets = UIEdgeInsetsMake(4, 8, 4, 8)
         button.setBackgroundImage(UIImage(named: "photo_button_nor"), for: .normal)
         button.setBackgroundImage(UIImage(named: "photo_button_press"), for: .highlighted)
         button.setBackgroundImage(UIImage(named: "photo_button_disabled"), for: .disabled)

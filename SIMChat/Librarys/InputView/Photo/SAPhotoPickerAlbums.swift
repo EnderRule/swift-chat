@@ -10,8 +10,7 @@ import UIKit
 
 internal class SAPhotoPickerAlbums: UITableViewController {
     
-    /// 强引用picker, 因为需要实现取消之后自动销毁picker
-    var picker: SAPhotoPicker?
+    weak var picker: SAPhotoPicker?
 
     var albums: [SAPhotoAlbum] {
         if let albums = _albums {
@@ -27,16 +26,21 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
         let vc = SAPhotoPickerAssets(album: album)
         
-        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
+        vc.picker = picker
         vc.photoDelegate = picker
-        vc.toolbarItems = toolbarItems
+        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
         
         return vc
     }
     
+    override var toolbarItems: [UIBarButtonItem]? {
+        set { }
+        get { return picker?.toolbarItems }
+    }
+    
     
     func onCancel(_ sender: Any) {
-        picker?.dismiss()
+        picker?.dismiss(animated: true, completion: nil)
         picker?.onDidDismiss(self)
     }
     

@@ -91,7 +91,7 @@ open class SAPhotoInputView: UIView {
         _edit2BarItem = SAPhotoBarButtonItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
         _send1BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForInputView(_:)))
         _send2BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
-        _previewBarItem = SAPhotoBarButtonItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewer(_:)))
+        _previewBarItem = SAPhotoBarButtonItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewerForPicker(_:)))
         _original1BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
         _original2BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
         
@@ -143,6 +143,7 @@ open class SAPhotoInputView: UIView {
     fileprivate var _send2BarItem: SAPhotoBarButtonItem!
     
     fileprivate weak var _picker: SAPhotoPicker?
+    fileprivate weak var _previewer: SAPhotoPreviewer?
     
     fileprivate lazy var _tabbar: UIToolbar = UIToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
@@ -164,7 +165,7 @@ extension SAPhotoInputView {
     func onSendForPicker(_ sender: Any) {
         _logger.trace()
         
-        _picker?.dismiss()
+        _picker?.dismiss(animated: true, completion: nil)
         _contentView.updateItemsSelection()
     }
     func onSendForInputView(_ sender: Any) {
@@ -193,8 +194,9 @@ extension SAPhotoInputView {
             return
         }
         let picker = SAPhotoPicker()
+        
         picker.delegate = self
-        picker.tintColor = tintColor
+        picker.view.tintColor = tintColor
         picker.toolbarItems = [
             _previewBarItem,
             _edit2BarItem,
@@ -202,11 +204,31 @@ extension SAPhotoInputView {
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             _send2BarItem,
         ]
-        picker.show(in: viewController)
         _picker = picker
+        
+        viewController.present(picker, animated: true, completion: nil)
     }
-    func onPreviewer(_ sender: Any) {
-        _logger.trace(sender)
+    func onPreviewerForInputView(_ sender: Any) {
+        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
+            return
+        }
+        let previewer = SAPhotoPreviewer()
+        let nav = UINavigationController(rootViewController: previewer)
+        
+        viewController.present(nav, animated: true, completion: nil)
+        _previewer = previewer
+    }
+    func onPreviewerForPicker(_ sender: Any) {
+        guard let viewController = _picker else {
+            return
+        }
+        let previewer = SAPhotoPreviewer()
+        let nav = UINavigationController(rootViewController: previewer)
+        viewController.present(nav, animated: true, completion: nil)
+        _previewer = previewer
+//        let previewer = SAPhotoPreviewer()
+//        
+//        _previewer = previewer
     }
     
     func onSelectItem(_ photo: SAPhoto) {
@@ -218,6 +240,19 @@ extension SAPhotoInputView {
         }
     }
     func onDeselectItem(_ photo: SAPhoto) {
+        
+//        
+//        picker.delegate = self
+//        picker.tintColor = tintColor
+//        picker.toolbarItems = [
+//            _previewBarItem,
+//            _edit2BarItem,
+//            _original2BarItem,
+//            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+//            _send2BarItem,
+//        ]
+//        _picker = picker
+        
         if let idx = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: idx)
@@ -239,7 +274,7 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     }
     
     public func photoPicker(_ photoPicker: SAPhotoPicker, previewItem photo: SAPhoto, in view: UIView) {
-        onPreviewer(photo)
+        onPreviewerForPicker(photo)
     }
     
     public func photoPicker(_ photoPicker: SAPhotoPicker, shouldSelectItem photo: SAPhoto) -> Bool {
@@ -283,7 +318,7 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     }
     
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, previewItem photo: SAPhoto, in view: UIView) {
-        onPreviewer(photo)
+        onPreviewerForInputView(photo)
     }
     
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItem photo: SAPhoto) -> Bool {

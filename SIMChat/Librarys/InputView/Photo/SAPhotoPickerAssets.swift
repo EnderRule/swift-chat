@@ -10,6 +10,8 @@ import UIKit
 
 internal class SAPhotoPickerAssets: UICollectionViewController {
     
+    weak var picker: SAPhotoPicker?
+    
     var scrollsToBottomOfLoad: Bool = false
     
     weak var photoDelegate: SAPhotoViewDelegate?
@@ -79,13 +81,13 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
     func onRefresh(_ sender: Any) {
         _logger.trace()
         
-        _photos = _album.photos
+        _photos = _album?.photos ?? []
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = _album.title
+        title = _album?.title
         
         collectionView?.backgroundColor = .white
         collectionView?.allowsSelection = false
@@ -109,8 +111,12 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
         navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
     }
     
+    override var toolbarItems: [UIBarButtonItem]? {
+        set { }
+        get { return picker?.toolbarItems }
+    }
     
-    init(album: SAPhotoAlbum) {
+    init(album: SAPhotoAlbum?) {
         _album = album
         let layout = SAPhotoPickerAssetsLayout()
         
@@ -191,7 +197,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
     fileprivate var _batchIsSelectOperator: Bool? // true选中操作，false取消操作
     fileprivate var _batchOperatorItems: Set<Int> = []
 
-    fileprivate var _album: SAPhotoAlbum
+    fileprivate var _album: SAPhotoAlbum?
     fileprivate var _photos: [SAPhoto] = []
 }
 
@@ -232,7 +238,7 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
         }
         cell.delegate = self
         cell.album = _album
-        cell.photo = _album.photos[indexPath.item]
+        cell.photo = _photos[indexPath.item]
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -298,135 +304,3 @@ extension SAPhotoPickerAssets: SAPhotoViewDelegate {
     }
     
 }
-//    private dynamic func onSelectItems(_ sender: UIPanGestureRecognizer) {
-//        let pt = sender.location(in: collectionView)
-//        // 离开作用哉的时候检查状态
-//        defer {
-//            if sender.state == .ended || sender.state == .failed || sender.state == .cancelled {
-//                // 如果为空就跳过事件处理
-//                if let sb = selectedBegin, let se = selectedEnd {
-//                    // 如果是结束, 那就提交选中区域
-//                    for i in min(sb, se) ... max(sb, se) {
-//                        guard let cell = collectionView?.cellForItem(at: IndexPath(item: i, section: 0)) as? AssetCell else {
-//                            continue
-//                        }
-//                        // 不能选择隐藏的元素
-//                        guard !cell.markView.isHidden else {
-//                            continue
-//                        }
-//                        if let asset = cell.asset, let mark = selectedType {
-//                            // 检查状态
-//                            if mark {
-//                                cell.mark = picker?.selectItem(asset) ?? false
-//                            } else {
-//                                picker?.deselectItem(asset)
-//                                cell.mark = false
-//                            }
-//                        }
-//                    }
-//                }
-//                
-//                selectedBegin = nil
-//                selectedEnd = nil
-//                selectedType = nil
-//            }
-//        }
-//        
-//        // 转为indexPath
-//        var currentIndexPath = collectionView?.indexPathForItem(at: pt)
-//        
-//        // 检查边界
-//        if let collectionView = collectionView, let layout = collectionViewLayout as? UICollectionViewFlowLayout , currentIndexPath == nil {
-//            if pt.y <= 0 {
-//                // 小于头
-//                if collectionView.numberOfItems(inSection: 0) > 0 {
-//                    currentIndexPath = IndexPath(item: 0, section: 0)
-//                }
-//            } else {
-//                let size = self.collectionView(collectionView, layout: layout, sizeForItemAt: IndexPath())
-//                
-//                // 计算这个点虚拟的index
-//                let row = Int((pt.y + layout.minimumLineSpacing) / (size.height + layout.minimumLineSpacing))
-//                let column = Int((pt.x + layout.minimumInteritemSpacing) / (size.width + layout.minimumInteritemSpacing))
-//                let columnMax = self.columnMax()
-//                let index = (row * columnMax) + column
-//                
-//                // 超出末尾
-//                if index >= collectionView.numberOfItems(inSection: 0) {
-//                    // 大于尾
-//                    let idx = max(collectionView.numberOfItems(inSection: 0) - 1, 0)
-//                    currentIndexPath = IndexPath(item: idx, section: 0)
-//                }
-//            }
-//        }
-//        
-//        // 先转为indexPath, 必须成功
-//        guard let indexPath = currentIndexPath  else {
-//            return
-//        }
-//        
-//        // 把上一次的结束做为取消
-//        let deselectedEnd = selectedEnd
-//        
-//        // 开始的时候必须重置选中区域
-//        if selectedBegin == nil {
-//            selectedBegin = (indexPath as NSIndexPath).row
-//            selectedEnd = (indexPath as NSIndexPath).row
-//        } else {
-//            selectedEnd = (indexPath as NSIndexPath).row
-//        }
-//        
-//        // 如果为空就跳过事件处理
-//        guard let sb = selectedBegin, let se = selectedEnd else {
-//            return
-//        }
-//        
-//        let begin = min(sb, se)
-//        let end = max(sb, se)
-//        var count = picker?.selectedItems.count ?? 0
-//        
-//        // 选中区域
-//        for i in begin ... end {
-//            guard let cell = collectionView?.cellForItem(at: IndexPath(item: i, section: 0)) as? AssetCell else {
-//                continue
-//            }
-//            // 不能选择隐藏的元素
-//            guard !cell.markView.isHidden else {
-//                continue
-//            }
-//            // 真实的状态
-//            let rmark = picker?.checkItem(cell.asset) ?? false
-//            // 取出
-//            if selectedType == nil {
-//                selectedType = !cell.mark
-//            }
-//            // 临时标记
-//            cell.mark = selectedType ?? true
-//            // 需要修改
-//            if let type = selectedType , cell.mark != rmark {
-//                if type {
-//                    count += 1
-//                } else {
-//                    count -= 1
-//                }
-//            }
-//        }
-//        
-//        // 计算需要取消的
-//        if let ce = deselectedEnd {
-//            for i in min(sb, ce) ... max(sb, ce) {
-//                // 如果这个区域在sb-se之内, 跳过
-//                if begin <= i && i <= end {
-//                    continue
-//                }
-//                guard let cell = collectionView?.cellForItem(at: IndexPath(item: i, section: 0)) as? AssetCell else {
-//                    continue
-//                }
-//                // 重新恢复标记
-//                cell.mark = picker?.checkItem(cell.asset) ?? false
-//            }
-//        }
-//        
-//        // 数量改变
-//        selectedCountChanged(count)
-//    }
