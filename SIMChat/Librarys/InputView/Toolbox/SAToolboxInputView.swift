@@ -21,8 +21,8 @@ import UIKit
 @objc 
 public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int
-    func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem?
+    func numberOfToolboxItems(in toolbox: SAToolboxInputView) -> Int
+    func toolbox(_ toolbox: SAToolboxInputView, toolboxItemForItemAt index: Int) -> SAToolboxItem
     
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfRowsForSectionAt index: Int) -> Int
     @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int
@@ -150,7 +150,7 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource?.numberOfItemsInToolbox(self) ?? 0
+        return dataSource?.numberOfToolboxItems(in: self) ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -160,7 +160,8 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
         guard let cell = cell as? SAToolboxItemView else {
             return
         }
-        cell.item = dataSource?.toolbox(self, itemAt: indexPath.row)
+        
+        cell.item = dataSource?.toolbox(self, toolboxItemForItemAt: indexPath.item)
         cell.handler = self
     }
     
@@ -177,7 +178,7 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        guard let item = dataSource?.toolbox(self, itemAt: indexPath.row) else {
+        guard let item = dataSource?.toolbox(self, toolboxItemForItemAt: indexPath.row) else {
             return
         }
         

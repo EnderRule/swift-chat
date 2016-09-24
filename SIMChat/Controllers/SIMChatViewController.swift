@@ -326,10 +326,10 @@ extension SIMChatViewController: SAInputBarDelegate, SAInputBarDisplayable {
 
 extension SIMChatViewController: SAAudioInputViewDataSource, SAAudioInputViewDelegate {
     
-    open func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int {
+    open func numberOfAudioTypes(in audio: SAAudioInputView) -> Int {
         return 3
     }
-    open func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudioType {
+    open func audio(_ audio: SAAudioInputView, audioTypeForItemAt index: Int) -> SAAudioType {
         return SAAudioType(rawValue: index)!
     }
     
@@ -357,11 +357,11 @@ extension SIMChatViewController: SAPhotoInputViewDelegate {
 // MARK: - SAEmoticonInputViewDataSource & SAEmoticonInputViewDelegate
 
 extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputViewDelegate {
-    
-    open func numberOfItemsInEmoticon(_ emoticon: SAEmoticonInputView) -> Int {
+ 
+    open func numberOfEmotionGroups(in emoticon: SAEmoticonInputView) -> Int {
         return _emoticonGroups.count
     }
-    open func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup {
+    open func emoticon(_ emoticon: SAEmoticonInputView, emotionGroupForItemAt index: Int) -> SAEmoticonGroup {
         return _emoticonGroups[index]
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int {
@@ -432,14 +432,10 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
 
 extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputViewDelegate {
     
-    open func numberOfItemsInToolbox(_ toolbox: SAToolboxInputView) -> Int {
+    open func numberOfToolboxItems(in toolbox: SAToolboxInputView) -> Int {
         return _toolboxItems.count
     }
-    
-    open func toolbox(_ toolbox: SAToolboxInputView, itemAt index: Int) -> SAToolboxItem? {
-        guard index < _toolboxItems.count else {
-            return nil
-        }
+    open func toolbox(_ toolbox: SAToolboxInputView, toolboxItemForItemAt index: Int) -> SAToolboxItem {
         return _toolboxItems[index]
     }
     

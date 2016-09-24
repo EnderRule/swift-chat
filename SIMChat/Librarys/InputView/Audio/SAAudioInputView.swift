@@ -55,9 +55,8 @@ public enum SAAudioType: Int, CustomStringConvertible {
 @objc
 public protocol SAAudioInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItemsInAudio(_ audio: SAAudioInputView) -> Int
-    func audio(_ audio: SAAudioInputView, itemAt index: Int) -> SAAudioType
-    
+    func numberOfAudioTypes(in audio: SAAudioInputView) -> Int
+    func audio(_ audio: SAAudioInputView, audioTypeForItemAt index: Int) -> SAAudioType
 }
 
 @objc 
@@ -186,11 +185,11 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource?.numberOfItemsInAudio(self) ?? 0
+        return dataSource?.numberOfAudioTypes(in: self) ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let type = dataSource?.audio(self, itemAt: indexPath.item) else {
+        guard let type = dataSource?.audio(self, audioTypeForItemAt: indexPath.item) else {
             fatalError()
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(type)", for: indexPath)
@@ -278,10 +277,10 @@ extension SAAudioInputView: SAAudioViewDelegate {
 extension SAAudioInputView: SAAudioTabbarDelegate {
     
     func numberOfItemsInTabbar(_ tabbar: SAAudioTabbar) -> Int {
-        return dataSource?.numberOfItemsInAudio(self) ?? 0
+        return dataSource?.numberOfAudioTypes(in: self) ?? 0
     }
     func tabbar(_ tabbar: SAAudioTabbar, titleAt index: Int) -> String {
-        guard let type = dataSource?.audio(self, itemAt: index) else {
+        guard let type = dataSource?.audio(self, audioTypeForItemAt: index) else {
             fatalError()
         }
         switch type {

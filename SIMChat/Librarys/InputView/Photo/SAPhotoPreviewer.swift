@@ -8,7 +8,22 @@
 
 import UIKit
 
+@objc
+public protocol SAPhotoPreviewerDataSource: NSObjectProtocol {
+    
+    func numberOfPhotos(in previewer: SAPhotoPreviewer) -> Int
+    func previewer(_ previewer: SAPhotoPreviewer, photoAt index: Int) -> SAPhoto
+    
+}
+
+@objc
+public protocol SAPhotoPreviewerDelegate: NSObjectProtocol {  
+}
+
 open class SAPhotoPreviewer: UIViewController {
+    
+    open weak var delegate: SAPhotoPreviewerDelegate?
+    open weak var dataSource: SAPhotoPreviewerDataSource?
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +46,7 @@ open class SAPhotoPreviewer: UIViewController {
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.scrollsToTop = false
-        _contentView.allowsSelection = false
+        _contentView.allowsSelection = true
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
         _contentView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Item")
@@ -48,7 +63,7 @@ open class SAPhotoPreviewer: UIViewController {
 extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return dataSource?.numberOfPhotos(in: self) ?? 0
     }
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)

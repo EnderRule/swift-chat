@@ -39,8 +39,8 @@ import UIKit
 @objc 
 public protocol SAEmoticonInputViewDataSource: NSObjectProtocol {
     
-    func numberOfItemsInEmoticon(_ emoticon: SAEmoticonInputView) -> Int
-    func emoticon(_ emoticon: SAEmoticonInputView, itemAt index: Int) -> SAEmoticonGroup
+    func numberOfEmotionGroups(in emoticon: SAEmoticonInputView) -> Int
+    func emoticon(_ emoticon: SAEmoticonInputView, emotionGroupForItemAt index: Int) -> SAEmoticonGroup
     
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int
     @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int
@@ -240,13 +240,13 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
             return 1
         }
         if collectionView === _contentView {
-            return dataSource?.numberOfItemsInEmoticon(self) ?? 0
+            return dataSource?.numberOfEmotionGroups(in: self) ?? 0
         }
         return 0
     }
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === _tabbar {
-            return dataSource?.numberOfItemsInEmoticon(self) ?? 0
+            return dataSource?.numberOfEmotionGroups(in: self) ?? 0
         }
         if collectionView === _contentView {
             let pageCount = _contentViewLayout.numberOfPages(in: section)
@@ -273,7 +273,7 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
             return
         } 
         if let cell = cell as? SAEmoticonTabItemView {
-            cell.group = dataSource?.emoticon(self, itemAt: indexPath.item)
+            cell.group = dataSource?.emoticon(self, emotionGroupForItemAt: indexPath.item)
             cell.selectedBackgroundView?.backgroundColor = _color
             return
         }
@@ -301,7 +301,7 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
         return .zero
     }
     internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup? {
-        return dataSource?.emoticon(self, itemAt: index)
+        return dataSource?.emoticon(self, emotionGroupForItemAt: index)
     }
     internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int {
         return dataSource?.emoticon?(self, numberOfRowsForGroupAt: index) ?? 3

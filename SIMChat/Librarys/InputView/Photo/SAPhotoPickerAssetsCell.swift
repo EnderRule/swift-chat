@@ -36,11 +36,11 @@ internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
     
     private func _init() {
         
-        _photoView.frame = bounds
+        _photoView.frame = contentView.bounds
         _photoView.allowsSelection = true
         _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        addSubview(_photoView)
+        contentView.addSubview(_photoView)
     }
     
     private lazy var _photoView: SAPhotoView = SAPhotoView()
