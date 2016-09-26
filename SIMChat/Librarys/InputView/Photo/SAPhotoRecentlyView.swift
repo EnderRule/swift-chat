@@ -27,7 +27,6 @@ public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
 
 open class SAPhotoRecentlyView: UIView {
     
-    
     open var allowsMultipleSelection: Bool = true {
         willSet {
             _contentView.visibleCells.forEach { 

@@ -31,11 +31,14 @@ public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
 
 open class SAPhotoPicker: UINavigationController {
     
+    open var allowsMultipleSelection: Bool = true
+    
+    
     open override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
-        
+        navigationItem.rightBarButtonItem = _cancelBarItem
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -47,20 +50,32 @@ open class SAPhotoPicker: UINavigationController {
         }
     }
     
+    func onCancel(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+        onDidDismiss(self)
+    }
+    
     private func _showErrorView() {
         _logger.trace()
         
-        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_error_permission"), title: nil)]
+        let vc = SAPhotoPickerError(image: UIImage(named: "photo_error_permission"), title: nil)
+        vc.navigationItem.rightBarButtonItem = _cancelBarItem
+        viewControllers = [vc]
     }
     private func _showEmptyView() {
         _logger.trace()
         
-        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_error_empty"), title: nil)]
+        let vc = SAPhotoPickerError(image: UIImage(named: "photo_error_empty"), title: nil)
+        vc.navigationItem.rightBarButtonItem = _cancelBarItem
+        viewControllers = [vc]
     }
     private func _showContentView() {
         _logger.trace()
         
-        self.viewControllers = [_albumnsViewController]
+        let vc = _albumnsViewController
+        vc.navigationItem.rightBarButtonItem = _cancelBarItem
+        vc.reloadData(with: _albums)
+        viewControllers = [vc]
     }
     
     fileprivate func _reloadAlbums(_ hasPermission: Bool) {
@@ -97,6 +112,7 @@ open class SAPhotoPicker: UINavigationController {
     private var _albums: [SAPhotoAlbum]?
     
     
+    private lazy var _cancelBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
     private lazy var _albumnsViewController: SAPhotoPickerAlbums = SAPhotoPickerAlbums()
     
     public required init?(coder aDecoder: NSCoder) {

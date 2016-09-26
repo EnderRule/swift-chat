@@ -13,17 +13,6 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     
     weak var picker: SAPhotoPicker?
 
-    var albums: [SAPhotoAlbum] {
-        if let albums = _albums {
-            return albums
-        }
-        let albums = SAPhotoAlbum.albums.filter {
-            !$0.photos.isEmpty
-        }
-        _albums = albums
-        return albums
-    }
-    
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
         let vc = SAPhotoPickerAssets(album: album)
         
@@ -39,29 +28,23 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         get { return picker?.toolbarItems }
     }
     
-    
-    func onCancel(_ sender: Any) {
-        picker?.dismiss(animated: true, completion: nil)
-        picker?.onDidDismiss(self)
-    }
-    
-    func onRefresh(_ sender: Any) {
+    func reloadData(with albums: [SAPhotoAlbum]?) {
         _logger.trace()
         
+        _albums = albums
         tableView.reloadData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Albums"
+        
         view.backgroundColor = .white
         
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
-        
-        // 更新
-        onRefresh(self)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -72,7 +55,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return albums.count
+        return _albums?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -82,7 +65,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         guard let cell = cell as? SAPhotoPickerAlbumsCell else {
             return
         }
-        cell.album = albums[indexPath.row]
+        cell.album = _albums?[indexPath.row]
         cell.accessoryType = .disclosureIndicator
     }
     
@@ -91,28 +74,12 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let picker = makeAssetsPicker(with: albums[indexPath.row])
+        guard let album = _albums?[indexPath.row] else {
+            return
+        }
+        let picker = makeAssetsPicker(with: album)
         show(picker, sender: indexPath)
     }
     
-    private func _init() {
-        
-        title = "Albums"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(onCancel(_:)))
-    }
-    
     private var _albums: [SAPhotoAlbum]?
-    
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
-        _init()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
-    }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        _init()
-    }
 }

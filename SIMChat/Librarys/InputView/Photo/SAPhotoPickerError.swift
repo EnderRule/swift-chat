@@ -67,6 +67,11 @@ internal class SAPhotoPickerError: UIViewController {
             _SALayoutConstraintMake(container, .centerY, .equal, view, .centerY),
         ])
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = true
+    }
 
     private lazy var _imageView: UIImageView = UIImageView()
     private lazy var _titleLabel: UILabel = UILabel()

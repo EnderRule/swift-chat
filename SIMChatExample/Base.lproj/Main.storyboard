@@ -61,7 +61,13 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="dpS-QI-548"/>
+                    <navigationItem key="navigationItem" id="dpS-QI-548">
+                        <barButtonItem key="rightBarButtonItem" title="H" id="a9K-Fh-uCw">
+                            <connections>
+                                <action selector="onPL:" destination="p2U-CA-r5F" id="hIr-Cm-BYK"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NxL-j5-BHm" userLabel="First Responder" sceneMemberID="firstResponder"/>
