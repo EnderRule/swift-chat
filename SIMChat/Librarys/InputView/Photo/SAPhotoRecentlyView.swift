@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 @objc
 public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
@@ -47,22 +48,82 @@ open class SAPhotoRecentlyView: UIView {
         super.didMoveToWindow()
         if !_isInitPhoto {
             _isInitPhoto = true
-            _initPhoto()
+            _loadPhotos()
         }
     }
     
-    private func _reloadData() {
+    private func _showErrorView() {
         _logger.trace()
         
-        _photos = SAPhotoAlbum.recentlyAlbum?.photos.reversed()
+        _tipsLabel.isHidden = false
+        
+        _tipsLabel.text = "照片被禁用, 请在设置-隐私中开启"
+        _tipsLabel.textAlignment = .center
+        _tipsLabel.textColor = .lightGray
+        _tipsLabel.font = UIFont.systemFont(ofSize: 15)
+        _tipsLabel.frame = bounds
+        _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        _contentView.isHidden = true
+        _contentView.reloadData()
+        
+        addSubview(_tipsLabel)
+    }
+    private func _showEmptyView() {
+        _logger.trace()
+        
+        _tipsLabel.isHidden = false
+        
+        _tipsLabel.text = "暂无图片"
+        _tipsLabel.textAlignment = .center
+        _tipsLabel.textColor = .lightGray
+        _tipsLabel.font = UIFont.systemFont(ofSize: 20)
+        _tipsLabel.frame = bounds
+        _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        _contentView.isHidden = true
+        _contentView.reloadData()
+        
+        addSubview(_tipsLabel)
+    }
+    private func _showContentView() {
+        _logger.trace()
+        
+        _tipsLabel.isHidden = true
+        _contentView.isHidden = false
+        
+        _tipsLabel.removeFromSuperview()
         _contentView.reloadData()
     }
     
-    private func _initPhoto() {
-        SAPhotoLibrary.requestAuthorization { b in
-            DispatchQueue.main.async {
-                self._reloadData()
-            }
+    fileprivate func _reloadPhotos(_ hasPermission: Bool) {
+        guard hasPermission else {
+            _showErrorView()
+            return
+        }
+        _album = SAPhotoAlbum.recentlyAlbum
+        _photos = _album?.photos.reversed()
+        guard let photos = _photos, !photos.isEmpty else {
+            _showEmptyView()
+            return
+        }
+        autoreleasepool {
+            // 缓存加速
+            let options = PHImageRequestOptions()
+            let scale = UIScreen.main.scale
+            let size = CGSize(width: 120 * scale, height: 120 * scale)
+            
+            options.deliveryMode = .fastFormat
+            options.resizeMode = .fast
+            
+            SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+            //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+        }
+        _showContentView()
+    }
+    fileprivate func _loadPhotos() {
+        SAPhotoLibrary.shared.requestAuthorization {
+            self._reloadPhotos($0)
         }
     }
     
@@ -90,7 +151,7 @@ open class SAPhotoRecentlyView: UIView {
     private func _init() {
         
         _contentViewLayout.scrollDirection = .horizontal
-        _contentViewLayout.minimumLineSpacing = 0
+        _contentViewLayout.minimumLineSpacing = 4
         _contentViewLayout.minimumInteritemSpacing = 4
         
         _contentView.frame = bounds
@@ -101,16 +162,24 @@ open class SAPhotoRecentlyView: UIView {
         _contentView.scrollsToTop = false
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
+        _contentView.alwaysBounceHorizontal = true
         _contentView.register(SAPhotoRecentlyViewCell.self, forCellWithReuseIdentifier: "Item")
         _contentView.contentInset = UIEdgeInsetsMake(0, 4, 0, 4)
         _contentView.dataSource = self
         _contentView.delegate = self
         
         addSubview(_contentView)
+        
+        SAPhotoLibrary.shared.register(self)
     }
     
+    
+    fileprivate var _album: SAPhotoAlbum?
     fileprivate var _photos: [SAPhoto]?
+    
     fileprivate var _isInitPhoto: Bool = false
+    
+    fileprivate lazy var _tipsLabel: UILabel = UILabel()
     
     fileprivate lazy var _contentViewLayout: SAPhotoRecentlyViewLayout = SAPhotoRecentlyViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
@@ -122,6 +191,9 @@ open class SAPhotoRecentlyView: UIView {
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
+    }
+    deinit {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
 }
 
@@ -182,6 +254,16 @@ extension SAPhotoRecentlyView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDeleg
         return _photos![index]
     }
    
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+
+extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async {
+            self._reloadPhotos(true)
+        }
+    }
 }
 
 // MARK: - SAPhotoViewDelegate(Forwarding)

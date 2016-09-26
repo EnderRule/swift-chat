@@ -10,5 +10,27 @@ import UIKit
 
 internal class SAPhotoPreviewerCell: UICollectionViewCell {
    
-    var photo: SAPhoto?
+    var photo: SAPhoto? {
+        set { return _photoView.photo = newValue }
+        get { return _photoView.photo }
+    }
+    
+    private func _init() {
+        
+        _photoView.frame = contentView.bounds
+        _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        contentView.addSubview(_photoView)
+    }
+    
+    private var _photoView: SAPhotoLargeView = SAPhotoLargeView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
 }

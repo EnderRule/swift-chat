@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoPickerAlbums: UITableViewController {
     

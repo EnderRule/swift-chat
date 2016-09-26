@@ -79,6 +79,7 @@ open class SAPhoto: NSObject {
     }
     
     internal var asset: PHAsset
+    internal weak var album: SAPhotoAlbum?
     
     public init(asset: PHAsset) {
         self.asset = asset

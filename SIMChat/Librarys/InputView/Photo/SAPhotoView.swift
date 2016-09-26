@@ -40,7 +40,7 @@ internal class SAPhotoView: UIView {
             let scale = UIScreen.main.scale
             let size = CGSize(width: bounds.width * scale, height: bounds.height * scale)
             
-            SAPhotoLibrary.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
+            SAPhotoLibrary.shared.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
                 guard self.photo == newValue else {
                     return
                 }

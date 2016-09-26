@@ -20,9 +20,13 @@ import UIKit
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
+
 // [x] SAPhotoRecentlyView - 分离实现
+// [x] SAPhotoRecentlyView - 错误显示 
+// [x] SAPhotoRecentlyView - 横屏支持
+// [x] SAPhotoRecentlyView - 图片变更
+
 // [x] SAPhotoInputView - 横屏支持
-// [ ] SAPhotoInputView - 错误显示
 // [ ] SAPhotoInputView - 初次加载页面
 // [ ] * - 发送图片(读取)
 

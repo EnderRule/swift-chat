@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 @objc
 public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
@@ -34,7 +35,69 @@ open class SAPhotoPicker: UINavigationController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        
     }
+    
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if !_isInitAlbums {
+            _isInitAlbums = true
+            _loadAlbums()
+        }
+    }
+    
+    private func _showErrorView() {
+        _logger.trace()
+        
+        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_permission"), title: nil)]
+    }
+    private func _showEmptyView() {
+        _logger.trace()
+        
+        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_permission"), title: nil)]
+    }
+    private func _showContentView() {
+        _logger.trace()
+        
+        self.viewControllers = [_albumnsViewController]
+    }
+    
+    fileprivate func _reloadAlbums(_ hasPermission: Bool) {
+        guard hasPermission else {
+            _showErrorView()
+            return
+        }
+        _albums = SAPhotoAlbum.albums.filter {
+            !$0.photos.isEmpty
+        }
+        guard let albums = _albums, !albums.isEmpty else {
+            _showEmptyView()
+            return
+        }
+        _showContentView()
+    }
+    fileprivate func _loadAlbums() {
+        SAPhotoLibrary.shared.requestAuthorization {
+            self._reloadAlbums($0)
+        }
+    }
+    
+    private func _init() {
+        
+        _albumnsViewController.picker = self
+        _albumnsViewController.toolbarItems = toolbarItems
+        
+        SAPhotoLibrary.shared.register(self)
+    }
+    
+    private var _isInitAlbums: Bool = false
+    private var _isFirstLoad: Bool = false
+    
+    private var _albums: [SAPhotoAlbum]?
+    
+    
+    private lazy var _albumnsViewController: SAPhotoPickerAlbums = SAPhotoPickerAlbums()
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -51,24 +114,9 @@ open class SAPhotoPicker: UINavigationController {
         super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
         _init()
     }
-    
-    private func _init() {
-        
-        _albumnsViewController.picker = self
-        _albumnsViewController.toolbarItems = toolbarItems
-        
-        var viewControllers: [UIViewController] = [_albumnsViewController]
-        
-        if let album = _albumnsViewController.albums.first {
-            let picker = _albumnsViewController.makeAssetsPicker(with: album)
-            picker.scrollsToBottomOfLoad = true
-            viewControllers.append(picker)
-        }
-        
-        self.viewControllers = viewControllers
+    deinit {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
-    
-    private var _albumnsViewController: SAPhotoPickerAlbums = SAPhotoPickerAlbums()
 }
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
@@ -112,3 +160,12 @@ extension SAPhotoPicker: SAPhotoViewDelegate {
     }
 }
 
+// MARK: - PHPhotoLibraryChangeObserver
+
+extension SAPhotoPicker: PHPhotoLibraryChangeObserver {
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async {
+            self._reloadAlbums(true)
+        }
+    }
+}

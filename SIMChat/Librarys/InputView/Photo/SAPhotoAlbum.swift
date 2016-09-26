@@ -12,6 +12,15 @@ import Photos
 
 open class SAPhotoAlbum: NSObject {
     
+    open static func reloadData() {
+        
+        _albums?.forEach {
+            $0._photos = nil
+        }
+        _albums = nil
+        _recentlyAlbum = nil
+    }
+    
     open var title: String? {
         return collection.localizedTitle
     }
@@ -34,7 +43,7 @@ open class SAPhotoAlbum: NSObject {
         if let photos = _photos {
             return photos
         }
-        let photos = SAPhotoAlbum._loadPhotos(with: collection)
+        let photos = SAPhotoAlbum._loadPhotos(with: self)
         _photos = photos
         return photos
     }
@@ -79,10 +88,12 @@ open class SAPhotoAlbum: NSObject {
 
 private extension SAPhotoAlbum {
     
-    static func _loadPhotos(with collection: PHAssetCollection) -> [SAPhoto] {
+    static func _loadPhotos(with album: SAPhotoAlbum) -> [SAPhoto] {
         var photos: [SAPhoto] = []
-        PHAsset.fetchAssets(in: collection, options: nil).enumerateObjects({ 
-            photos.append(SAPhoto(asset: $0.0))
+        PHAsset.fetchAssets(in: album.collection, options: nil).enumerateObjects({
+            let photo = SAPhoto(asset: $0.0)
+            photo.album = album
+            photos.append(photo)
         })
         return photos
     }

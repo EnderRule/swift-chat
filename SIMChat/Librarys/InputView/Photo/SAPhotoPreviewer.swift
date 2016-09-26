@@ -56,6 +56,15 @@ open class SAPhotoPreviewer: UIViewController {
         view.addSubview(_contentView)
     }
     
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isNavigationBarHidden = true
+        navigationController?.isToolbarHidden = true
+//        navigationController?.isNavigationBarHidden = false
+//        navigationController?.isToolbarHidden = false
+    }
+    
     private lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
 }

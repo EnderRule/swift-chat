@@ -38,7 +38,7 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
                 let size = CGSize(width: _stackView.bounds.width * scale, 
                                   height: _stackView.bounds.height * scale)
                 
-                SAPhotoLibrary.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
+                SAPhotoLibrary.shared.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
                     guard newValue == self.album else {
                         return
                     }
