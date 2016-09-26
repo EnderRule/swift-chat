@@ -50,12 +50,12 @@ open class SAPhotoPicker: UINavigationController {
     private func _showErrorView() {
         _logger.trace()
         
-        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_permission"), title: nil)]
+        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_error_permission"), title: nil)]
     }
     private func _showEmptyView() {
         _logger.trace()
         
-        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_permission"), title: nil)]
+        self.viewControllers = [SAPhotoPickerError(image: UIImage(named: "photo_error_permission"), title: nil)]
     }
     private func _showContentView() {
         _logger.trace()
