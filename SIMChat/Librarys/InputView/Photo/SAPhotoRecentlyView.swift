@@ -170,6 +170,20 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
     }
 }
 
+// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate 
+
+extension SAPhotoRecentlyView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate  {
+    
+    public func numberOfPhotos(in photoPreviewer: SAPhotoPreviewer) -> Int {
+        return _photos?.count ?? 0
+    }
+    
+    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+        return _photos![index]
+    }
+   
+}
+
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
 extension SAPhotoRecentlyView: SAPhotoViewDelegate {

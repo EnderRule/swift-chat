@@ -215,6 +215,9 @@ extension SAPhotoInputView {
         let previewer = SAPhotoPreviewer()
         let nav = UINavigationController(rootViewController: previewer)
         
+        previewer.dataSource = _contentView
+        previewer.delegate = _contentView 
+        
         viewController.present(nav, animated: true, completion: nil)
         _previewer = previewer
     }
@@ -305,6 +308,19 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
         _contentView.updateItemsSelection()
     }
 }
+
+// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate
+
+//extension SAPhotoInputView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate {
+    
+//    public func numberOfPhotos(in previewer: SAPhotoPreviewer) -> Int {
+//        return _selectedPhotos.count
+//    }
+//    
+//    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+//        return _
+//    }
+//}
 
 // MARK: - SAPhotoRecentlyViewDelegate
 
