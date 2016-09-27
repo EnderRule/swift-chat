@@ -43,7 +43,7 @@ open class SAPhotoAlbum: NSObject {
         if let photos = _photos {
             return photos
         }
-        let photos = SAPhotoAlbum._loadPhotos(with: self)
+        let photos = _loadPhotos()
         _photos = photos
         return photos
     }
@@ -52,7 +52,7 @@ open class SAPhotoAlbum: NSObject {
         if let albums = _albums {
             return albums
         }
-        let albums = SAPhotoAlbum._loadAlbums()
+        let albums = _loadAlbums()
         _albums = albums
         return albums
     }
@@ -71,12 +71,13 @@ open class SAPhotoAlbum: NSObject {
         return album
     }
     
-    private var _photos: [SAPhoto]?
+    open var collection: PHAssetCollection
+    open var result: PHFetchResult<PHAsset>?
+    
+    fileprivate var _photos: [SAPhoto]?
     
     private static var _albums: [SAPhotoAlbum]?
     private static var _recentlyAlbum: SAPhotoAlbum??
-    
-    internal var collection: PHAssetCollection
     
     public init(collection: PHAssetCollection) {
         self.collection = collection
@@ -86,13 +87,26 @@ open class SAPhotoAlbum: NSObject {
 
 // MARK: - Fetch
 
-private extension SAPhotoAlbum {
+extension SAPhotoAlbum {
     
-    static func _loadPhotos(with album: SAPhotoAlbum) -> [SAPhoto] {
+    func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
         var photos: [SAPhoto] = []
-        PHAsset.fetchAssets(in: album.collection, options: nil).enumerateObjects({
+        self.result = result
+        self.result?.enumerateObjects({
             let photo = SAPhoto(asset: $0.0)
-            photo.album = album
+            photo.album = self
+            photos.append(photo)
+        })
+        return photos
+    }
+    
+    
+    func _loadPhotos() -> [SAPhoto] {
+        var photos: [SAPhoto] = []
+        result = PHAsset.fetchAssets(in: collection, options: nil)
+        result?.enumerateObjects({
+            let photo = SAPhoto(asset: $0.0)
+            photo.album = self
             photos.append(photo)
         })
         return photos

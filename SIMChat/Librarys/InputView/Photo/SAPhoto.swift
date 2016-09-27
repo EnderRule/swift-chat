@@ -78,8 +78,8 @@ open class SAPhoto: NSObject {
         return identifier == photo.identifier
     }
     
-    internal var asset: PHAsset
-    internal weak var album: SAPhotoAlbum?
+    open var asset: PHAsset
+    open weak var album: SAPhotoAlbum?
     
     public init(asset: PHAsset) {
         self.asset = asset

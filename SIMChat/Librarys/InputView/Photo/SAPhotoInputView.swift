@@ -24,8 +24,8 @@ import UIKit
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
 // [x] SAPhotoRecentlyView - 横屏支持
-// [x] SAPhotoRecentlyView - 图片变更
-// [ ] SAPhotoRecentlyView - 图片变更时的选中问题
+// [x] SAPhotoRecentlyView - 图片变更(多张新增、多张删除、多张改变、同时改变)
+// [x] SAPhotoRecentlyView - 图片变更时的选中问题
 
 // [x] SAPhotoInputView - 横屏支持
 // [ ] SAPhotoInputView - 初次加载页面
