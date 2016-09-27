@@ -21,6 +21,16 @@ open class SAPhotoAlbum: NSObject {
         _recentlyAlbum = nil
     }
     
+    open func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
+        var photos: [SAPhoto] = []
+        result.enumerateObjects({
+            let photo = SAPhoto(asset: $0.0)
+            photo.album = self
+            photos.append(photo)
+        })
+        return photos
+    }
+    
     open var title: String? {
         return collection.localizedTitle
     }
@@ -43,8 +53,10 @@ open class SAPhotoAlbum: NSObject {
         if let photos = _photos {
             return photos
         }
-        let photos = _loadPhotos()
+        let rs = PHAsset.fetchAssets(in: collection, options: nil)
+        let photos = self.photos(with: rs)
         _photos = photos
+        self.result = rs
         return photos
     }
     
@@ -52,7 +64,7 @@ open class SAPhotoAlbum: NSObject {
         if let albums = _albums {
             return albums
         }
-        let albums = _loadAlbums()
+        let albums = _fetchAssetCollections()
         _albums = albums
         return albums
     }
@@ -60,13 +72,7 @@ open class SAPhotoAlbum: NSObject {
         if let album = _recentlyAlbum {
             return album
         }
-        var album: SAPhotoAlbum?
-        albums.forEach {
-            guard $0.subtype == .smartAlbumRecentlyAdded else {
-                return
-            }
-            album = $0
-        }
+        let album = _fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumRecentlyAdded).first
         _recentlyAlbum = album
         return album
     }
@@ -89,41 +95,24 @@ open class SAPhotoAlbum: NSObject {
 
 extension SAPhotoAlbum {
     
-    func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
-        var photos: [SAPhoto] = []
-        self.result = result
-        self.result?.enumerateObjects({
-            let photo = SAPhoto(asset: $0.0)
-            photo.album = self
-            photos.append(photo)
-        })
-        return photos
-    }
-    
-    
-    func _loadPhotos() -> [SAPhoto] {
-        var photos: [SAPhoto] = []
-        result = PHAsset.fetchAssets(in: collection, options: nil)
-        result?.enumerateObjects({
-            let photo = SAPhoto(asset: $0.0)
-            photo.album = self
-            photos.append(photo)
-        })
-        return photos
-    }
-    
-    static func _loadAlbums() -> [SAPhotoAlbum] {
-        var albums: [SAPhotoAlbum] = []
-        
-        PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil).enumerateObjects({
-            albums.append(SAPhotoAlbum(collection: $0.0))
-        })
-        PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: nil).enumerateObjects({
-            albums.append(SAPhotoAlbum(collection: $0.0))
-        })
-        
-        return albums.sorted { 
-            ($0.title ?? "") < ($1.title ?? "")
+    fileprivate static func _fetchAssetCollections() -> [SAPhotoAlbum] {
+        return [
+            (.smartAlbum, .smartAlbumUserLibrary),
+            (.album, .albumMyPhotoStream),
+            
+            (.smartAlbum, .smartAlbumRecentlyAdded),
+            (.album, .albumSyncedAlbum),
+            
+            (.album, .albumRegular),
+        ].reduce([]) {
+            $0 + _fetchAssetCollections(with: $1.0, subtype: $1.1)
         }
+    }
+    fileprivate static func _fetchAssetCollections(with type: PHAssetCollectionType, subtype: PHAssetCollectionSubtype, options: PHFetchOptions? = nil) -> [SAPhotoAlbum] {
+        var albums: [SAPhotoAlbum] = []
+        PHAssetCollection.fetchAssetCollections(with: type, subtype: subtype, options: nil).enumerateObjects({ 
+            albums.append(SAPhotoAlbum(collection: $0.0))
+        })
+        return albums
     }
 }

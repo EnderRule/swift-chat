@@ -23,27 +23,52 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
             _stackView.layoutIfNeeded()
             
             let count = newValue.photos.count
-            
-            (0 ..< 3).forEach { index in
-                let layer = _stackView.layers[index]
+            let photos = (0 ..< 3).flatMap { index -> SAPhoto? in
                 guard index < count else {
-                    layer.isHidden = true
-                    layer.contents = nil
+                    return nil
+                }
+                return newValue.photos[count - index - 1]
+            }
+            
+            _updatePhotos(photos)
+        }
+    }
+    
+    private func _updatePhotos(_ photos: [SAPhoto]) {
+        //_logger.trace(photos.count)
+        
+        _stackView.layers.forEach {
+            if photos.isEmpty {
+                $0.isHidden = false
+                $0.backgroundColor = UIColor.lightGray.cgColor
+            } else {
+                $0.isHidden = true
+                $0.backgroundColor = UIColor.white.cgColor
+            }
+        }
+        
+        guard !photos.isEmpty else {
+            return 
+        }
+        
+        let taskId = UUID().uuidString
+        _taskId = taskId
+        
+        photos.enumerated().forEach { 
+            
+            let layer = _stackView.layers[$0.offset]
+            
+            layer.isHidden = false
+            
+            let scale = UIScreen.main.scale
+            let size = CGSize(width: _stackView.bounds.width * scale, 
+                              height: _stackView.bounds.height * scale)
+            
+            SAPhotoLibrary.shared.requestImage(for: $0.element, targetSize: size, contentMode: .aspectFill) { img, _ in
+                guard self._taskId == taskId else {
                     return
                 }
-                layer.isHidden = false
-                let photo = newValue.photos[count - index - 1]
-                
-                let scale = UIScreen.main.scale
-                let size = CGSize(width: _stackView.bounds.width * scale, 
-                                  height: _stackView.bounds.height * scale)
-                
-                SAPhotoLibrary.shared.requestImage(for: photo, targetSize: size, contentMode: .aspectFill) { img, _ in
-                    guard newValue == self.album else {
-                        return
-                    }
-                    layer.contents = img?.cgImage
-                }
+                layer.contents = img?.cgImage
             }
         }
     }
@@ -78,6 +103,8 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
         addConstraint(_SALayoutConstraintMake(_descriptionLabel, .left, .equal, _stackView, .right, 8))
         addConstraint(_SALayoutConstraintMake(_descriptionLabel, .right, .equal, contentView, .right))
     }
+    
+    private var _taskId: String?
     
     private lazy var _stackView: SAPhotoStackView = SAPhotoStackView()
     private lazy var _titleLabel: UILabel = UILabel()

@@ -23,12 +23,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
     }
     
-    func refresh() {
-        _logger.trace()
-        
-        _photos = _album?.photos ?? []
-    }
-    
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
         get { return picker?.toolbarItems }
@@ -52,12 +46,17 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         collectionView?.panGestureRecognizer.require(toFail: pan)
         collectionView?.addGestureRecognizer(pan)
         
-        refresh()
+        _reloadPhotos()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
+    }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        _statusView?.frame = view.convert(CGRect(origin: .zero, size: view.bounds.size), from: view.window)
     }
     
     /// 手势将要开始的时候检查一下是否允许使用
@@ -141,7 +140,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         let x = point.x
         let y = point.y
         // 超出响应范围
-        guard point.y > 10 else {
+        guard point.y > 10 && _itemSize.width > 0 && _itemSize.height > 0 else {
             return nil
         }
         let column = Int(x / (_itemSize.width + _minimumInteritemSpacing))
@@ -152,6 +151,41 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
         
         return row * _columnCount + column
+    }
+    
+    private func _updateStatus(_ newValue: SAPhotoStatus) {
+        _logger.trace(newValue)
+        
+        _status = newValue
+        
+        switch newValue {
+        case .notError:
+            
+            _statusView?.removeFromSuperview()
+            _statusView = nil
+            collectionView?.isScrollEnabled = true
+            
+        case .notData:
+            let error = _statusView ?? SAPhotoPickerErrorView()
+        
+            error.title = "没有图片或视频"
+            error.subtitle = "拍点照片和朋友们分享吧"
+            
+            _statusView = error
+            
+            view.addSubview(error)
+            collectionView?.isScrollEnabled = false
+            
+        case .notPermission:
+            let error = _statusView ?? SAPhotoPickerErrorView()
+            
+            error.title = "没有权限"
+            error.subtitle = "此应用程序没有权限访问您的照片\n在\"设置-隐私-图片\"中开启后即可查看"
+            
+            _statusView = error
+            view.addSubview(error)
+            collectionView?.isScrollEnabled = false
+        }
     }
     private func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
         let photo = _photos[index]
@@ -184,6 +218,17 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         return true
     }
     
+    fileprivate func _reloadPhotos() {
+        _logger.trace()
+        
+        _photos = _album?.photos ?? []
+        guard !_photos.isEmpty else {
+            _updateStatus(.notData)
+            return
+        }
+        
+        _updateStatus(.notError)
+    }
     
     fileprivate var _itemSize: CGSize = .zero
     fileprivate var _columnCount: Int = 0
@@ -196,6 +241,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     private var _batchIsSelectOperator: Bool? // true选中操作，false取消操作
     private var _batchOperatorItems: Set<Int> = []
 
+    private var _status: SAPhotoStatus = .notError
+    private var _statusView: SAPhotoPickerErrorView?
+    
     fileprivate var _album: SAPhotoAlbum?
     fileprivate var _photos: [SAPhoto] = []
     

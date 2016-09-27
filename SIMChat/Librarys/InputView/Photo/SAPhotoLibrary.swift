@@ -9,6 +9,13 @@
 import UIKit
 import Photos
 
+public enum SAPhotoStatus {
+   
+    case notPermission
+    case notData
+    case notError
+}
+
 open class SAPhotoLibrary: NSObject {
    
     //PHPhotoLibraryChangeObserver

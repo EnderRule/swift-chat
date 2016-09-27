@@ -67,62 +67,65 @@ open class SAPhotoRecentlyView: UIView {
         }
     }
     
-    private func _showErrorView() {
-        _logger.trace()
-        
-        _tipsLabel.isHidden = false
-        
-        _tipsLabel.text = "照片被禁用, 请在设置-隐私中开启"
-        _tipsLabel.textAlignment = .center
-        _tipsLabel.textColor = .lightGray
-        _tipsLabel.font = UIFont.systemFont(ofSize: 15)
-        _tipsLabel.frame = bounds
-        _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        _contentView.isHidden = true
-        _contentView.reloadData()
-        
-        addSubview(_tipsLabel)
-    }
-    private func _showEmptyView() {
-        _logger.trace()
-        
-        _tipsLabel.isHidden = false
-        
-        _tipsLabel.text = "暂无图片"
-        _tipsLabel.textAlignment = .center
-        _tipsLabel.textColor = .lightGray
-        _tipsLabel.font = UIFont.systemFont(ofSize: 20)
-        _tipsLabel.frame = bounds
-        _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        _contentView.isHidden = true
-        _contentView.reloadData()
-        
-        addSubview(_tipsLabel)
-    }
-    private func _showContentView() {
-        _logger.trace()
-        
-        _tipsLabel.isHidden = true
-        _contentView.isHidden = false
-        
-        _tipsLabel.removeFromSuperview()
-        
-        updateEdgOfItems()
-    }
-    
     private func _cachePhotos(_ photos: [SAPhoto]) {
         // 缓存加速
-        let options = PHImageRequestOptions()
-        let scale = UIScreen.main.scale
-        let size = CGSize(width: 120 * scale, height: 120 * scale)
+//        let options = PHImageRequestOptions()
+//        let scale = UIScreen.main.scale
+//        let size = CGSize(width: 120 * scale, height: 120 * scale)
+//        
+//        options.deliveryMode = .fastFormat
+//        options.resizeMode = .fast
+//        
+//        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+//        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+    }
+    
+    private func _updateStatus(_ newValue: SAPhotoStatus) {
+        _logger.trace(newValue)
         
-        options.deliveryMode = .fastFormat
-        options.resizeMode = .fast
+        _status = newValue
         
-        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
-        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+        switch newValue {
+        case .notError:
+            
+            _tipsLabel.isHidden = true
+            _contentView.isHidden = false
+            
+            _tipsLabel.removeFromSuperview()
+            
+            updateEdgOfItems()
+            
+        case .notData:
+            _tipsLabel.isHidden = false
+            
+            _tipsLabel.text = "暂无图片"
+            _tipsLabel.textAlignment = .center
+            _tipsLabel.textColor = .lightGray
+            _tipsLabel.font = UIFont.systemFont(ofSize: 20)
+            _tipsLabel.frame = bounds
+            _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            _contentView.isHidden = true
+            _contentView.reloadData()
+            
+            addSubview(_tipsLabel)
+            
+        case .notPermission:
+            
+            _tipsLabel.isHidden = false
+            
+            _tipsLabel.text = "照片被禁用, 请在设置-隐私中开启"
+            _tipsLabel.textAlignment = .center
+            _tipsLabel.textColor = .lightGray
+            _tipsLabel.font = UIFont.systemFont(ofSize: 15)
+            _tipsLabel.frame = bounds
+            _tipsLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            _contentView.isHidden = true
+            _contentView.reloadData()
+            
+            addSubview(_tipsLabel)
+        }
     }
     
     fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
@@ -159,17 +162,17 @@ open class SAPhotoRecentlyView: UIView {
         }
         
         guard let photos = _photos, !photos.isEmpty else {
-            _showEmptyView()
+            _updateStatus(.notData)
             return
         }
 
         _cachePhotos(photos)
-        _showContentView()
+        _updateStatus(.notError)
     }
     
     private func _reloadPhotos(_ hasPermission: Bool) {
         guard hasPermission else {
-            _showErrorView()
+            _updateStatus(.notPermission)
             return
         }
         _album = SAPhotoAlbum.recentlyAlbum
@@ -177,13 +180,13 @@ open class SAPhotoRecentlyView: UIView {
         _photosResult = _album?.result
         
         guard let photos = _photos, !photos.isEmpty else {
-            _showEmptyView()
+            _updateStatus(.notData)
             return
         }
         _cachePhotos(photos)
         _contentView.reloadData()
         
-        _showContentView()
+        _updateStatus(.notError)
     }
     private func _loadPhotos() {
         SAPhotoLibrary.shared.requestAuthorization {
@@ -216,8 +219,9 @@ open class SAPhotoRecentlyView: UIView {
         SAPhotoLibrary.shared.register(self)
     }
     
+    private var _status: SAPhotoStatus = .notError
     
-    fileprivate var _album: SAPhotoAlbum?
+    private var _album: SAPhotoAlbum?
     
     
     fileprivate var _photos: [SAPhoto]?

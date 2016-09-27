@@ -62,7 +62,6 @@ open class SAPhotoPicker: UINavigationController {
         self.viewControllers = [_rootViewController]
     }
     private func _deinit() {
-        
         SAPhotoAlbum.reloadData()
     }
     
