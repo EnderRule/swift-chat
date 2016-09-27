@@ -20,16 +20,13 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
         get { return _photoView.allowsSelection }
     }
     
-    weak var delegate: SAPhotoViewDelegate? {
+    weak var delegate: SAPhotoSelectionable? {
         set { return _photoView.delegate = newValue }
         get { return _photoView.delegate }
     }
     
     func updateEdge() {
         _photoView.updateEdge()
-    }
-    func updateIndex() {
-        _photoView.updateIndex()
     }
     func updateSelection() {
         _photoView.updateSelection()
@@ -55,7 +52,6 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
         super.init(frame: frame)
         _init()
     }
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()

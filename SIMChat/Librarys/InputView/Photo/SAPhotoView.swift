@@ -9,48 +9,36 @@
 import UIKit
 import Photos
 
-internal protocol SAPhotoViewDelegate: NSObjectProtocol {
-    
-    func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto)
-    
-    func photoView(_ photoView: SAPhotoView, indexOfSelectedItem photo: SAPhoto) -> Int
-    func photoView(_ photoView: SAPhotoView, isSelectedOfItem photo: SAPhoto) -> Bool
-    
-    func photoView(_ photoView: SAPhotoView, shouldSelectItem photo: SAPhoto) -> Bool
-    func photoView(_ photoView: SAPhotoView, didSelectItem photo: SAPhoto)
-    
-    func photoView(_ photoView: SAPhotoView, shouldDeselectItem photo: SAPhoto) -> Bool
-    func photoView(_ photoView: SAPhotoView, didDeselectItem photo: SAPhoto)
-}
-
 internal class SAPhotoView: UIView {
     
     var photo: SAPhoto? {
         didSet {
-            guard let newValue = photo, newValue !== oldValue else {
-                return
+            if oldValue !== photo {
+                _updatePhoto(photo, animated: true)
             }
-            updateSelection()
-            updateIndex()
-            
-            let options = PHImageRequestOptions()
-            options.deliveryMode = .fastFormat
-            options.resizeMode = .fast
-            
-            let scale = UIScreen.main.scale
-            let size = CGSize(width: bounds.width * scale, height: bounds.height * scale)
-            
-            SAPhotoLibrary.shared.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
-                guard self.photo == newValue else {
-                    return
-                }
-                //self._logger.trace(img)
-                self._imageView.image = img
-            }
+            _updateSelection(_isSelected, animated: false)
         }
     }
     
-    weak var delegate: SAPhotoViewDelegate?
+    var isSelected: Bool {
+        set { return _updateSelection(newValue, animated: false) }
+        get { return _isSelected }
+    }
+    var allowsSelection: Bool = true {
+        willSet {
+            guard newValue != allowsSelection else {
+                return
+            }
+            _updateAllowsSelection(newValue, animated: false)
+        }
+    }
+    
+    weak var delegate: SAPhotoSelectionable?
+   
+    
+    func setSelected(_ newValue: Bool, animated: Bool) {
+        _updateSelection(newValue, animated: animated)
+    }
     
     func updateEdge() {
         guard let window = window else {
@@ -69,70 +57,10 @@ internal class SAPhotoView: UIView {
             _selectedView.frame = nframe
         }
     }
-    func updateIndex() {
-        _updateIndex(photo)
-    }
     func updateSelection() {
-        guard let photo = photo else {
-            return
-        }
-        let issel = delegate?.photoView(self, isSelectedOfItem: photo) ?? false
-        _setIsSelected(issel, animated: false)
-        _updateIndex(photo)
+        _updateSelection(_isSelected, animated: false)
     }
     
-    var allowsSelection: Bool = true {
-        willSet {
-            guard allowsSelection != newValue else {
-                return
-            }
-            _selectedView.isHidden = !newValue
-            _selectedView.isUserInteractionEnabled = newValue
-            
-            if !_hightlightLayer.isHidden && !newValue {
-                _hightlightLayer.isHidden = true
-            }
-        }
-    }
-    
-    var isSelected: Bool {
-        set { return _setIsSelected(newValue, animated: false) }
-        get { return _isSelected }
-    }
-    func setSelected(_ newValue: Bool, animated: Bool) {
-        _setIsSelected(newValue, animated: animated)
-        _updateIndex(photo)
-    }
-    
-    func onClickItem(_ sender: Any) {
-        guard let photo = photo else {
-            return
-        }
-        delegate?.photoView(self, previewItem: photo)
-    }
-    
-    func onSelectItem(_ sender: Any) {
-        guard let photo = photo else {
-            return
-        }
-        if _isSelected {
-            if delegate?.photoView(self, shouldDeselectItem: photo) ?? true {
-                _setIsSelected(false, animated: true)
-                delegate?.photoView(self, didDeselectItem: photo)
-            }
-        } else {
-            if delegate?.photoView(self, shouldSelectItem: photo) ?? true {
-                _setIsSelected(true, animated: true)
-                delegate?.photoView(self, didSelectItem: photo)
-                _updateIndex(photo)
-            }
-        }
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        _hightlightLayer.frame = _imageView.bounds
-    }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled else {
@@ -147,23 +75,76 @@ internal class SAPhotoView: UIView {
         }
         return self
     }
-    
-    private func _updateIndex(_ photo: SAPhoto?) {
-        guard let photo = photo, _isSelected else {
-            return
-        }
-        let idx = delegate?.photoView(self, indexOfSelectedItem: photo) ?? 0
-        // 添加数字
-        _selectedView.setTitle("\(idx + 1)", for: .selected)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _hightlightLayer.frame = _imageView.bounds
     }
-    private func _setIsSelected(_ newValue: Bool, animated: Bool) {
-        guard allowsSelection else {
+    
+    
+    @objc private func tapHandler(_ sender: Any) {
+        guard let photo = photo else {
             return
         }
+        delegate?.selection(self, tapItemFor: photo)
+    }
+    @objc private func selectHandler(_ sender: Any) {
+        guard let photo = photo else {
+            return
+        }
+        if _isSelected {
+            guard delegate?.selection(self, shouldDeselectItemFor: photo) ?? true else {
+                return
+            }
+            delegate?.selection(self, didDeselectItemFor: photo)
+        } else {
+            guard delegate?.selection(self, shouldSelectItemFor: photo) ?? true else {
+                return
+            }
+            delegate?.selection(self, didSelectItemFor: photo)
+        }
+        setSelected(!_isSelected, animated: true)
+    }
+    
+    private func _updatePhoto(_ newValue: SAPhoto?, animated: Bool) {
+        guard let newValue = newValue else {
+            return
+        }
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .fastFormat
+        options.resizeMode = .fast
         
-        _isSelected = newValue
-        _selectedView.isSelected = newValue
-        _hightlightLayer.isHidden = !newValue
+        let scale = UIScreen.main.scale
+        let size = CGSize(width: bounds.width * scale, height: bounds.height * scale)
+        
+        SAPhotoLibrary.shared.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
+            guard self.photo == newValue else {
+                return
+            }
+            //self._logger.trace(img)
+            self._imageView.image = img
+        }
+    }
+    
+    private func _updateSelection(_ newValue: Bool, animated: Bool) {
+        guard let photo = photo, allowsSelection else {
+            return
+        }
+        //_logger.trace()
+        
+        if let index = delegate?.selection(self, indexOfSelectedItemsFor: photo), index != NSNotFound {
+            
+            _isSelected = true
+            _selectedView.isSelected = _isSelected
+            _hightlightLayer.isHidden = !_isSelected
+            
+            _selectedView.setTitle("\(index + 1)", for: .selected)
+            
+        } else {
+            
+            _isSelected = false
+            _selectedView.isSelected = _isSelected
+            _hightlightLayer.isHidden = !_isSelected
+        }
         
         // 选中时, 加点特效
         if animated {
@@ -176,8 +157,19 @@ internal class SAPhotoView: UIView {
             _selectedView.layer.add(a, forKey: "v")
         }
     }
+    private func _updateAllowsSelection(_ newValue: Bool, animated: Bool) {
+        _logger.trace()
+        
+        _selectedView.isHidden = !newValue
+        _selectedView.isUserInteractionEnabled = newValue
+        
+        if !_hightlightLayer.isHidden && !newValue {
+            _hightlightLayer.isHidden = true
+        }
+    }
     
     private func _init() {
+        //_logger.trace()
         
         _imageView.frame = bounds
         _imageView.contentMode = .scaleAspectFill
@@ -196,14 +188,14 @@ internal class SAPhotoView: UIView {
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_normal"), for: .highlighted)
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .normal])
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .highlighted])
-        _selectedView.addTarget(self, action: #selector(onSelectItem(_:)), for: .touchUpInside)
+        _selectedView.addTarget(self, action: #selector(selectHandler(_:)), for: .touchUpInside)
         
         _imageView.layer.addSublayer(_hightlightLayer)
         
         addSubview(_imageView)
         addSubview(_selectedView)
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onClickItem(_:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
         addGestureRecognizer(tap)
     }
     

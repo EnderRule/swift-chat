@@ -171,10 +171,15 @@ extension SAPhotoInputView {
         _logger.trace()
         
         _picker?.dismiss(animated: true, completion: nil)
-        _contentView.updateItemsSelection()
+        
+        _contentView.updateSelectionOfItmes()
     }
     func onSendForInputView(_ sender: Any) {
         _logger.trace()
+        
+//        _selectedPhotos.removeAll()
+//        _selectedPhotoSets.removeAll()
+//        _contentView.updateSelectionOfItmes()
     }
     func onChangeOriginal(_ sender: UIButton) {
         _isOriginalImage = !_isOriginalImage
@@ -239,7 +244,9 @@ extension SAPhotoInputView {
 //        _previewer = previewer
     }
     
-    func onSelectItem(_ photo: SAPhoto) {
+    func selectItem(for photo: SAPhoto) {
+        _logger.trace(photo)
+        
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
@@ -247,19 +254,8 @@ extension SAPhotoInputView {
             _updateFileSize()
         }
     }
-    func onDeselectItem(_ photo: SAPhoto) {
-        
-//        
-//        picker.delegate = self
-//        picker.tintColor = tintColor
-//        picker.toolbarItems = [
-//            _previewBarItem,
-//            _edit2BarItem,
-//            _original2BarItem,
-//            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-//            _send2BarItem,
-//        ]
-//        _picker = picker
+    func deselectItem(for photo: SAPhoto) {
+        _logger.trace(photo)
         
         if let idx = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
@@ -268,92 +264,97 @@ extension SAPhotoInputView {
             _updateFileSize()
         }
     }
-}
-
-// MARK: - SAPhotoPickerDelegate
-
-extension SAPhotoInputView: SAPhotoPickerDelegate {
     
-    public func photoPicker(_ photoPicker: SAPhotoPicker, indexOfSelectedItem photo: SAPhoto) -> Int {
-        return _selectedPhotos.index(of: photo) ?? 0
-    }
-    public func photoPicker(_ photoPicker: SAPhotoPicker, isSelectedOfItem photo: SAPhoto) -> Bool {
-        return _selectedPhotoSets.contains(photo)
-    }
-    
-    public func photoPicker(_ photoPicker: SAPhotoPicker, previewItem photo: SAPhoto, in view: UIView) {
-        onPreviewerForPicker(photo)
-    }
-    
-    public func photoPicker(_ photoPicker: SAPhotoPicker, shouldSelectItem photo: SAPhoto) -> Bool {
-        // 可以在这里进行数量限制, 图片类型限制
-        
-//        if _selectedPhotoSets.count >= 9 {
-//            return false // 只能选择9张图片
-//        }
-//        if photo.mediaType != .image {
-//            return false // 只能选择图片
-//        }
-        
-        return true
-    }
-    public func photoPicker(_ photoPicker: SAPhotoPicker, didSelectItem photo: SAPhoto) {
-        onSelectItem(photo)
-    }
-    
-    public func photoPicker(_ photoPicker: SAPhotoPicker, shouldDeselectItem photo: SAPhoto) -> Bool {
-        return true
-    }
-    public func photoPicker(_ photoPicker: SAPhotoPicker, didDeselectItem photo: SAPhoto) {
-        onDeselectItem(photo)
-    }
-    
-    public func photoPicker(didDismiss photoPicker: SAPhotoPicker) {
-        _logger.trace()
-        _contentView.updateItemsSelection()
-    }
 }
 
 // MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate
 
 //extension SAPhotoInputView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate {
     
-//    public func numberOfPhotos(in previewer: SAPhotoPreviewer) -> Int {
+//    open func numberOfPhotos(in previewer: SAPhotoPreviewer) -> Int {
 //        return _selectedPhotos.count
 //    }
-//    
-//    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+//
+//    open func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
 //        return _
 //    }
 //}
+
+// MARK: - SAPhotoPickerDelegate
+
+extension SAPhotoInputView: SAPhotoPickerDelegate {
+    
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    open func picker(_ picker: SAPhotoPicker, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        return _selectedPhotos.index(of: photo) ?? NSNotFound
+    }
+   
+    // check whether item can select
+    open func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        // 可以在这里进行数量限制/图片类型限制
+        //
+        // if _selectedPhotoSets.count >= 9 {
+        //     return false // 只能选择9张图片
+        // }
+        // if photo.mediaType != .image {
+        //     return false // 只能选择图片
+        // }
+        return true
+    }
+    open func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
+        selectItem(for: photo)
+    }
+    
+    // check whether item can deselect
+    open func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+        return true
+    }
+    open func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
+        deselectItem(for: photo)
+    }
+    
+    // tap item
+    open func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any) {
+        _logger.trace()
+    }
+    
+    // MARK: Display
+    
+    open func picker(didDismiss picker: SAPhotoPicker) {
+        _logger.trace()
+        // 隐藏的时候同步更新选择的items
+        _contentView.updateSelectionOfItmes()
+    }
+}
 
 // MARK: - SAPhotoRecentlyViewDelegate
 
 extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItem photo: SAPhoto) -> Int {
-        return _selectedPhotos.index(of: photo) ?? 0
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        return _selectedPhotos.index(of: photo) ?? NSNotFound
     }
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, isSelectedOfItem photo: SAPhoto) -> Bool {
-        return _selectedPhotoSets.contains(photo)
-    }
-    
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, previewItem photo: SAPhoto, in view: UIView) {
-        onPreviewerForInputView(photo)
-    }
-    
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItem photo: SAPhoto) -> Bool {
+   
+    // check whether item can select
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItemFor photo: SAPhoto) -> Bool {
         return true
     }
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItem photo: SAPhoto) {
-        onSelectItem(photo)
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {
+        selectItem(for: photo)
     }
     
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItem photo: SAPhoto) -> Bool {
+    // check whether item can deselect
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItemFor photo: SAPhoto) -> Bool {
         return true
     }
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItem photo: SAPhoto) {
-        onDeselectItem(photo)
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
+        deselectItem(for: photo)
+    }
+    
+    // tap item
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any) {
+        _logger.trace()
     }
 }
 

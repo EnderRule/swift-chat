@@ -8,24 +8,81 @@
 
 import UIKit
 
-internal class SAPhotoPickerAssets: UICollectionViewController {
-    
-    weak var picker: SAPhotoPicker?
+internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecognizerDelegate {
     
     var scrollsToBottomOfLoad: Bool = false
     
-    weak var photoDelegate: SAPhotoViewDelegate?
+    var allowsMultipleSelection: Bool = true
     
-    func updateItmesIndex() {
+    weak var picker: SAPhotoPicker?
+    weak var selection: SAPhotoSelectionable?
+    
+    func updateSelectionOfItmes() {
         collectionView?.visibleCells.forEach {
-            guard let cell = $0 as? SAPhotoPickerAssetsCell else {
-                return
-            }
-            cell.updateIndex()
+            ($0 as? SAPhotoPickerAssetsCell)?.updateSelection()
         }
     }
     
-    func onPan(_ sender: UIPanGestureRecognizer) {
+    func refresh() {
+        _logger.trace()
+        
+        _photos = _album?.photos ?? []
+    }
+    
+    override var toolbarItems: [UIBarButtonItem]? {
+        set { }
+        get { return picker?.toolbarItems }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = _album?.title
+        
+        collectionView?.backgroundColor = .white
+        collectionView?.allowsSelection = false
+        collectionView?.allowsMultipleSelection = false
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.register(SAPhotoPickerAssetsCell.self, forCellWithReuseIdentifier: "Item")
+        
+        // 添加手势
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(_:)))
+        pan.delegate = self
+        //pan.isEnabled = picker?.allowsMultipleSelection ?? false
+        collectionView?.panGestureRecognizer.require(toFail: pan)
+        collectionView?.addGestureRecognizer(pan)
+        
+        refresh()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
+    }
+    
+    /// 手势将要开始的时候检查一下是否允许使用
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let pan = gestureRecognizer as? UIPanGestureRecognizer else {
+            return true
+        }
+        let velocity = pan.velocity(in: collectionView)
+        let point = pan.location(in: collectionView)
+        // 检测手势的方向
+        // 如果超出阀值视为放弃该手势
+        if fabs(velocity.y) > 80 || fabs(velocity.y / velocity.x) > 2.5 {
+            return false
+        }
+        guard let idx = _index(at: point), idx < (collectionView?.numberOfItems(inSection: 0) ?? 0) else {
+            return false
+        }
+        _batchStartIndex = idx
+        _batchIsSelectOperator = nil
+        _batchOperatorItems.removeAll()
+        return true
+    }
+    
+    
+    @objc private func panHandler(_ sender: UIPanGestureRecognizer) {
         guard let start = _batchStartIndex else {
             return
         }
@@ -59,7 +116,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
             guard !_batchOperatorItems.contains(idx) else {
                 return // 己经添加
             }
-            if _setIsSelect(operatorType, at: idx) {
+            if _updateSelection(operatorType, at: idx) {
                 _batchOperatorItems.insert(idx)
             }
         }
@@ -71,50 +128,76 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
             guard _batchOperatorItems.contains(idx) else {
                 return // 并没有添加
             }
-            if _setIsSelect(!operatorType, at: idx) {
+            if _updateSelection(!operatorType, at: idx) {
                 _batchOperatorItems.remove(idx)
             }
         }
         // step4: 更新结束点
         _batchEndIndex = nel
     }
-    func onRefresh(_ sender: Any) {
-        _logger.trace()
-        
-        _photos = _album?.photos ?? []
-    }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    
+    private func _index(at point: CGPoint) -> Int? {
+        let x = point.x
+        let y = point.y
+        // 超出响应范围
+        guard point.y > 10 else {
+            return nil
+        }
+        let column = Int(x / (_itemSize.width + _minimumInteritemSpacing))
+        let row = Int(y / (_itemSize.height + _minimumLineSpacing))
+        // 超出响应范围
+        guard row >= 0 else {
+            return nil
+        }
         
-        title = _album?.title
+        return row * _columnCount + column
+    }
+    private func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
+        let photo = _photos[index]
         
-        collectionView?.backgroundColor = .white
-        collectionView?.allowsSelection = false
-        collectionView?.allowsMultipleSelection = false
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.register(SAPhotoPickerAssetsCell.self, forCellWithReuseIdentifier: "Item")
-        
-        // 添加手势
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(onPan(_:)))
-        pan.delegate = self
-        //pan.isEnabled = picker?.allowsMultipleSelection ?? false
-        collectionView?.panGestureRecognizer.require(toFail: pan)
-        collectionView?.addGestureRecognizer(pan)
-        
-        onRefresh(self)
+        // step0: 查询选中的状态
+        let selected = selection(self, indexOfSelectedItemsFor: photo) != NSNotFound
+        // step1: 检查是否和newValue匹配, 如果匹配说明之前就是这个状态了, 更新失败
+        guard selected != newValue else {
+            return false
+        }
+        // step2: 更新状态, 如果被拒绝忽略该操作, 并且更新失败
+        if newValue {
+            guard selection(self, shouldSelectItemFor: photo) else {
+                return false
+            }
+            selection(self, didSelectItemFor: photo)
+        } else {
+            guard selection(self, shouldDeselectItemFor: photo) else {
+                return false
+            }
+            selection(self, didDeselectItemFor: photo)
+        }
+        // step4: 如果是正在显示的, 更新UI
+        let idx = IndexPath(item: index, section: 0)
+        if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerAssetsCell {
+            cell.isCheck = newValue
+            cell.updateSelection()
+        }
+        // step5: 更新成功
+        return true
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
-    }
     
-    override var toolbarItems: [UIBarButtonItem]? {
-        set { }
-        get { return picker?.toolbarItems }
-    }
+    fileprivate var _itemSize: CGSize = .zero
+    fileprivate var _columnCount: Int = 0
+    fileprivate var _minimumLineSpacing: CGFloat = 0
+    fileprivate var _minimumInteritemSpacing: CGFloat = 0
+    fileprivate var _cacheBounds: CGRect?
+    
+    private var _batchEndIndex: Int?
+    private var _batchStartIndex: Int?
+    private var _batchIsSelectOperator: Bool? // true选中操作，false取消操作
+    private var _batchOperatorItems: Set<Int> = []
+
+    fileprivate var _album: SAPhotoAlbum?
+    fileprivate var _photos: [SAPhoto] = []
     
     init(album: SAPhotoAlbum?) {
         _album = album
@@ -134,93 +217,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError()
     }
-    
-    fileprivate func _setIsSelect(_ newValue: Bool, at index: Int) -> Bool {
-        let photo = _photos[index]
-        
-        // step0: 查询选中的状态
-        let selected = photoView(_emptyPhotoView, isSelectedOfItem: photo)
-        // step1: 检查是否和newValue匹配, 如果匹配说明之前就是这个状态了, 更新失败
-        guard selected != newValue else {
-            return false
-        }
-        // step2: 更新状态, 如果被拒绝忽略该操作, 并且更新失败
-        if newValue {
-            guard photoView(_emptyPhotoView, shouldSelectItem: photo) else {
-                return false
-            }
-            photoView(_emptyPhotoView, didSelectItem: photo)
-        } else {
-            guard photoView(_emptyPhotoView, shouldDeselectItem: photo) else {
-                return false
-            }
-            photoView(_emptyPhotoView, didDeselectItem: photo)
-        }
-        // step4: 如果是正在显示的, 更新UI
-        let idx = IndexPath(item: index, section: 0)
-        if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerAssetsCell {
-            cell.isCheck = newValue
-            cell.updateIndex()
-        }
-        // step5: 更新成功
-        return true
-    }
-    
-    fileprivate func _index(at point: CGPoint) -> Int? {
-        let x = point.x
-        let y = point.y
-        
-        guard point.y > 10 else {
-            return nil
-        }
-        
-        let column = Int(x / (_itemSize.width + _minimumInteritemSpacing))
-        let row = Int(y / (_itemSize.height + _minimumLineSpacing))
-        
-        guard row >= 0 else {
-            return nil
-        }
-        
-        return row * _columnCount + column
-    }
-    
-    private lazy var _emptyPhotoView: SAPhotoView = SAPhotoView()
-    
-    fileprivate var _itemSize: CGSize = .zero
-    fileprivate var _columnCount: Int = 0
-    fileprivate var _minimumLineSpacing: CGFloat = 0
-    fileprivate var _minimumInteritemSpacing: CGFloat = 0
-    fileprivate var _cacheBounds: CGRect?
-    
-    fileprivate var _batchStartIndex: Int?
-    fileprivate var _batchEndIndex: Int?
-    fileprivate var _batchIsSelectOperator: Bool? // true选中操作，false取消操作
-    fileprivate var _batchOperatorItems: Set<Int> = []
-
-    fileprivate var _album: SAPhotoAlbum?
-    fileprivate var _photos: [SAPhoto] = []
 }
 
-extension SAPhotoPickerAssets: UIGestureRecognizerDelegate {
-    /// 手势将要开始的时候检查一下是否需要使用
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let pan = gestureRecognizer as? UIPanGestureRecognizer {
-            let pt = pan.velocity(in: collectionView)
-            // 检测手势的方向
-            // 如果超出阀值视为放弃该手势
-            if fabs(pt.y) > 80 || fabs(pt.y / pt.x) > 2.5 {
-                return false
-            }
-            guard let idx = _index(at: pan.location(in: collectionView)), idx < (collectionView?.numberOfItems(inSection: 0) ?? 0) else {
-                return false
-            }
-            _batchStartIndex = idx
-            _batchIsSelectOperator = nil
-            _batchOperatorItems.removeAll()
-        }
-        return true
-    }
-}
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
     
@@ -239,6 +238,7 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
         cell.delegate = self
         cell.album = _album
         cell.photo = _photos[indexPath.item]
+        cell.allowsSelection = allowsMultipleSelection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -265,6 +265,7 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
         return _itemSize
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
         return _minimumLineSpacing
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -274,33 +275,32 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
-extension SAPhotoPickerAssets: SAPhotoViewDelegate {
+extension SAPhotoPickerAssets: SAPhotoSelectionable {
     
-    func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto) {
-        photoDelegate?.photoView(photoView, previewItem: photo)
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    public func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        return self.selection?.selection(self, indexOfSelectedItemsFor: photo) ?? NSNotFound
     }
-    
-    func photoView(_ photoView: SAPhotoView, indexOfSelectedItem photo: SAPhoto) -> Int {
-        return photoDelegate?.photoView(photoView, indexOfSelectedItem: photo) ?? 0
+   
+    // check whether item can select
+    public func selection(_ selection: Any, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        return self.selection?.selection(self, shouldSelectItemFor: photo) ?? true
     }
-    func photoView(_ photoView: SAPhotoView, isSelectedOfItem photo: SAPhoto) -> Bool {
-        return photoDelegate?.photoView(photoView, isSelectedOfItem: photo) ?? false
-    }
-    
-    func photoView(_ photoView: SAPhotoView, shouldSelectItem photo: SAPhoto) -> Bool {
-        return photoDelegate?.photoView(photoView, shouldSelectItem: photo) ?? true
-    }
-    func photoView(_ photoView: SAPhotoView, shouldDeselectItem photo: SAPhoto) -> Bool {
-        return photoDelegate?.photoView(photoView, shouldDeselectItem: photo) ?? true
+    public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
+        self.selection?.selection(self, didSelectItemFor: photo)
     }
     
-    func photoView(_ photoView: SAPhotoView, didSelectItem photo: SAPhoto) {
-        photoDelegate?.photoView(photoView, didSelectItem: photo)
+    // check whether item can deselect
+    public func selection(_ selection: Any, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+        return self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true
+    }
+    public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
+        self.selection?.selection(self, didDeselectItemFor: photo)
+        self.updateSelectionOfItmes()
     }
     
-    func photoView(_ photoView: SAPhotoView, didDeselectItem photo: SAPhoto) {
-        photoDelegate?.photoView(photoView, didDeselectItem: photo)
-        updateItmesIndex()
+    // tap item
+    public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
+        self.selection?.selection(self, tapItemFor: photo)
     }
-    
 }

@@ -136,6 +136,7 @@
 		0CBCE6061D923141003EC410 /* SAPhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBCE6051D923141003EC410 /* SAPhotoPicker.swift */; };
 		0CBCE6081D9231CA003EC410 /* SAPhotoPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBCE6071D9231CA003EC410 /* SAPhotoPreviewer.swift */; };
 		0CBCE60A1D9232D1003EC410 /* SAPhotoEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */; };
+		0CBD26761D9A020200AC5C14 /* SAPhotoSelectionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */; };
 		0CCBC8681D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */; };
 		0CCBC86A1D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */; };
 		0CD61F8D1D92D986001EA1DC /* SAPhotoRecentlyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */; };
@@ -289,6 +290,7 @@
 		0CBCE6051D923141003EC410 /* SAPhotoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPicker.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CBCE6071D9231CA003EC410 /* SAPhotoPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPreviewer.swift; sourceTree = "<group>"; };
 		0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoEditor.swift; sourceTree = "<group>"; };
+		0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoSelectionable.swift; sourceTree = "<group>"; };
 		0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsLayout.swift; sourceTree = "<group>"; };
 		0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsCell.swift; sourceTree = "<group>"; };
 		0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyView.swift; sourceTree = "<group>"; };
@@ -551,14 +553,15 @@
 				0C228BA01D912734000F919D /* SAPhoto.swift */,
 				0C228BA41D912F67000F919D /* SAPhotoView.swift */,
 				0C4A26841D98AE650000AB24 /* SAPhotoLargeView.swift */,
+				0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */,
 				0C228BA61D913532000F919D /* SAPhotoAlbum.swift */,
 				0C779C151D91759E0044D7AF /* SAPhotoLibrary.swift */,
 				0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */,
 				0C1C4E591D93CD5E0023211B /* SAPhotoBarButtonItem.swift */,
+				0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */,
 				0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */,
 				0C228BA21D912EA2000F919D /* SAPhotoRecentlyViewCell.swift */,
 				0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */,
-				0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */,
 				0CBCE6051D923141003EC410 /* SAPhotoPicker.swift */,
 				0C687C3E1D9908F900C207AE /* SAPhotoPickerError.swift */,
 				0C16A2481D92999200E689F1 /* SAPhotoPickerAssets.swift */,
@@ -854,6 +857,7 @@
 				0C0DD6501C60B4A900AEC8C4 /* SIMChatMessage.swift in Sources */,
 				0C1654231D8B9C5000A92C86 /* SAAudioInputView.swift in Sources */,
 				0C0DD6511C60B4A900AEC8C4 /* SIMChatUserProtocol.swift in Sources */,
+				0CBD26761D9A020200AC5C14 /* SAPhotoSelectionable.swift in Sources */,
 				0C0DD6521C60B4A900AEC8C4 /* SIMChatMediaProvider.swift in Sources */,
 				0CBC0F3E1D8CD7EB00D05122 /* SAAudioRecorder.swift in Sources */,
 				0C0DD64C1C60B4A900AEC8C4 /* SIMChatMessageCellProtocol.swift in Sources */,

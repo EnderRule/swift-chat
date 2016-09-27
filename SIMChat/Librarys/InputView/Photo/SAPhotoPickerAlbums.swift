@@ -17,7 +17,8 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         let vc = SAPhotoPickerAssets(album: album)
         
         vc.picker = picker
-        vc.photoDelegate = picker
+        vc.selection = picker
+        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
         vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
         
         return vc

@@ -17,21 +17,27 @@ internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
         get { return _photoView.photo }
     }
     
-    weak var delegate: SAPhotoViewDelegate? {
-        set { return _photoView.delegate = newValue }
-        get { return _photoView.delegate }
-    }
-    
     var isCheck: Bool {
         set { return _photoView.isSelected = newValue }
         get { return _photoView.isSelected }
     }
+    var allowsSelection: Bool {
+        set { return _photoView.allowsSelection = newValue }
+        get { return _photoView.allowsSelection }
+    }
+    
+    weak var delegate: SAPhotoSelectionable? {
+        set { return _photoView.delegate = newValue }
+        get { return _photoView.delegate }
+    }
+    
+    
     
     func updateEdge() {
         _photoView.updateEdge()
     }
-    func updateIndex() {
-        _photoView.updateIndex()
+    func updateSelection() {
+        _photoView.updateSelection()
     }
     
     private func _init() {

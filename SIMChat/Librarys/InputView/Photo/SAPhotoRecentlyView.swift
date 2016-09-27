@@ -12,16 +12,19 @@ import Photos
 @objc
 public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItem photo: SAPhoto) -> Int
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, isSelectedOfItem photo: SAPhoto) -> Bool
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int
+   
+    // check whether item can select
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItemFor photo: SAPhoto) -> Bool
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto)
     
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, previewItem photo: SAPhoto, in view: UIView)
+    // check whether item can deselect
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItemFor photo: SAPhoto) -> Bool
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto)
     
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItem photo: SAPhoto) -> Bool
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItem photo: SAPhoto)
-    
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItem photo: SAPhoto) -> Bool
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItem photo: SAPhoto)
+    // tap item
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any)
 }
 
 
@@ -37,10 +40,23 @@ open class SAPhotoRecentlyView: UIView {
     
     open weak var delegate: SAPhotoRecentlyViewDelegate?
     
-    func updateItemsSelection() {
+    
+    open func updateEdgOfItems() {
+        _contentView.visibleCells.forEach {
+            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
+        }
+    }
+    open func updateSelectionOfItmes() {
         _contentView.visibleCells.forEach {
             ($0 as? SAPhotoRecentlyViewCell)?.updateSelection()
         }
+    }
+    open func updateContentOffset(of photo: SAPhoto) {
+        guard let index = _photos?.index(of: photo) else {
+            return
+        }
+        let indexPath = IndexPath(item: index, section: 0)
+        _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
     open override func didMoveToWindow() {
@@ -126,27 +142,6 @@ open class SAPhotoRecentlyView: UIView {
         }
     }
     
-    @inline(__always)
-    fileprivate func _updateItemsEdge() {
-        _contentView.visibleCells.forEach { 
-            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
-        }
-    }
-    @inline(__always)
-    fileprivate func _updateItemsIndex() {
-        _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentlyViewCell)?.updateIndex()
-        }
-    }
-    @inline(__always)
-    fileprivate func _updateCurrentItem(_ photo: SAPhoto) {
-        guard let index = _photos?.index(of: photo) else {
-            return
-        }
-        let indexPath = IndexPath(item: index, section: 0)
-        _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-    }
-    
     private func _init() {
         
         _contentViewLayout.scrollDirection = .horizontal
@@ -178,6 +173,9 @@ open class SAPhotoRecentlyView: UIView {
     
     fileprivate var _isInitPhoto: Bool = false
     
+    fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
+    fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
+    
     fileprivate lazy var _tipsLabel: UILabel = UILabel()
     
     fileprivate lazy var _contentViewLayout: SAPhotoRecentlyViewLayout = SAPhotoRecentlyViewLayout()
@@ -201,7 +199,7 @@ open class SAPhotoRecentlyView: UIView {
 extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        _updateItemsEdge()
+        updateEdgOfItems()
     }
    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -225,7 +223,6 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
         cell.allowsSelection = allowsMultipleSelection
         cell.delegate = self
         cell.photo = photo
-        cell.updateIndex()
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -258,6 +255,7 @@ extension SAPhotoRecentlyView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDeleg
 // MARK: - PHPhotoLibraryChangeObserver
 
 extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
+    // 图片发生改变
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
             self._reloadPhotos(true)
@@ -267,33 +265,41 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
-extension SAPhotoRecentlyView: SAPhotoViewDelegate {
+extension SAPhotoRecentlyView: SAPhotoSelectionable {
     
-    func photoView(_ photoView: SAPhotoView, previewItem photo: SAPhoto) {
-        delegate?.recentlyView?(self, previewItem: photo, in: photoView)
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    public func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        return delegate?.recentlyView?(self, indexOfSelectedItemsFor: photo) ?? _selectedPhotos.index(of: photo) ?? NSNotFound
+    }
+   
+    // check whether item can select
+    public func selection(_ selection: Any, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        return delegate?.recentlyView?(self, shouldSelectItemFor: photo) ?? true
+    }
+    public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
+        if !_selectedPhotoSets.contains(photo) {
+            _selectedPhotoSets.insert(photo)
+            _selectedPhotos.append(photo)
+        }
+        updateContentOffset(of: photo)
+        delegate?.recentlyView?(self, didSelectItemFor: photo)
     }
     
-    func photoView(_ photoView: SAPhotoView, indexOfSelectedItem photo: SAPhoto) -> Int {
-        return delegate?.recentlyView?(self, indexOfSelectedItem: photo) ?? 0
+    // check whether item can deselect
+    public func selection(_ selection: Any, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+        return delegate?.recentlyView?(self, shouldDeselectItemFor: photo) ?? true
     }
-    func photoView(_ photoView: SAPhotoView, isSelectedOfItem photo: SAPhoto) -> Bool{
-        return delegate?.recentlyView?(self, isSelectedOfItem: photo) ?? false
+    public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
+        if let index = _selectedPhotos.index(of: photo) {
+            _selectedPhotoSets.remove(photo)
+            _selectedPhotos.remove(at: index)
+        }
+        delegate?.recentlyView?(self, didDeselectItemFor: photo)
+        updateSelectionOfItmes()
     }
     
-    func photoView(_ photoView: SAPhotoView, shouldSelectItem photo: SAPhoto) -> Bool {
-        return delegate?.recentlyView?(self, shouldSelectItem: photo) ?? true
-    }
-    func photoView(_ photoView: SAPhotoView, shouldDeselectItem photo: SAPhoto) -> Bool {
-        return delegate?.recentlyView?(self, shouldDeselectItem: photo) ?? true
-    }
-    
-    func photoView(_ photoView: SAPhotoView, didSelectItem photo: SAPhoto) {
-        delegate?.recentlyView?(self, didSelectItem: photo)
-        _updateCurrentItem(photo)
-        _updateItemsIndex()
-    }
-    func photoView(_ photoView: SAPhotoView, didDeselectItem photo: SAPhoto)  {
-        delegate?.recentlyView?(self, didDeselectItem: photo)
-        _updateItemsIndex()
+    // tap item
+    public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
+        delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
     }
 }

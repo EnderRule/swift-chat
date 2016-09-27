@@ -86,3 +86,37 @@ open class SAPhoto: NSObject {
         super.init()
     }
 }
+
+//- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion
+//{
+//    __block NSInteger dataLength = 0;
+//    
+//    __block NSInteger count = photos.count;
+//    
+//    __weak typeof(self) weakSelf = self;
+//    for (int i = 0; i < photos.count; i++) {
+//        ZLSelectPhotoModel *model = photos[i];
+//        [[PHCachingImageManager defaultManager] requestImageDataForAsset:model.asset options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+//            __strong typeof(weakSelf) strongSelf = weakSelf;
+//            dataLength += imageData.length;
+//            count--;
+//            if (count <= 0) {
+//            if (completion) {
+//            completion([strongSelf transformDataLength:dataLength]);
+//            }
+//            }
+//            }];
+//    }
+//    }
+//    
+//    - (NSString *)transformDataLength:(NSInteger)dataLength {
+//        NSString *bytes = @"";
+//        if (dataLength >= 0.1 * (1024 * 1024)) {
+//            bytes = [NSString stringWithFormat:@"%.1fM",dataLength/1024/1024.0];
+//        } else if (dataLength >= 1024) {
+//            bytes = [NSString stringWithFormat:@"%.0fK",dataLength/1024.0];
+//        } else {
+//            bytes = [NSString stringWithFormat:@"%zdB",dataLength];
+//        }
+//        return bytes;
+//}
