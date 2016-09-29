@@ -10,31 +10,12 @@ import UIKit
 import Photos
 
 internal protocol SAPhotoImageLoader {
-    
     func loader(_ loader: Any)
-    
-}
-
-internal class SAPhotoImageView: UIImageView {
-    
-    override var transform: CGAffineTransform {
-        set {
-            guard !ignoreTransformChanges else {
-                return
-            }
-            return super.transform = newValue
-        }
-        get {
-            return super.transform
-        }
-    }
-    
-    
-    var ignoreTransformChanges: Bool = false
 }
 
 
-internal class SAPhotoBrowserView: UIScrollView {
+
+internal class SAPhotoBrowserView: UIView {
     
     var photo: SAPhoto? {
         didSet {
@@ -79,12 +60,12 @@ internal class SAPhotoBrowserView: UIScrollView {
         // 还有中心点问题
         let pt = CGPoint(x: max(fit.width, bounds.width) / 2, y: max(fit.height, bounds.height) / 2)
         
-        zoomScale = 1
-        minimumZoomScale = 1
-        maximumZoomScale = max(max(to.width / fit.width, to.height / fit.height), 2)
+        _scrollView.zoomScale = 1
+        _scrollView.minimumZoomScale = 1
+        _scrollView.maximumZoomScale = max(max(to.width / fit.width, to.height / fit.height), 2)
         
         
-        _logger.trace("from: \(from), to: \(to), scale: \(maximumZoomScale)")
+        _logger.trace("from: \(from), to: \(to), scale: \(_scrollView.maximumZoomScale)")
         
         if flag {
             UIView.animate(withDuration: 0.25) {
@@ -100,8 +81,8 @@ internal class SAPhotoBrowserView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let width = max(contentSize.width, bounds.width)
-        let height = max(contentSize.height, bounds.height)
+        let width = max(_scrollView.contentSize.width, _scrollView.bounds.width)
+        let height = max(_scrollView.contentSize.height, _scrollView.bounds.height)
         
         _imageView.center = CGPoint(x: width / 2, y: height / 2)
     }
@@ -115,59 +96,66 @@ internal class SAPhotoBrowserView: UIScrollView {
     @objc private func rotationHandler(_ sender: UIRotationGestureRecognizer) {
         _logger.trace(sender.rotation)
         
-        
         let isEnd = sender.state == .ended || sender.state == .cancelled || sender.state == .failed
         
-        _imageView.ignoreTransformChanges = !isEnd
-        ignoreContentOffsetChanges = !isEnd
+//        _imageView.ignoreTransformChanges = !isEnd
+//        ignoreContentOffsetChanges = !isEnd
         
-        self.transform = CGAffineTransform(rotationAngle: sender.rotation)
+        _scrollView.transform = CGAffineTransform(rotationAngle: angle + sender.rotation)
+        
+        if isEnd {
+            angle += sender.rotation
+        }
     }
     @objc private func doubleTapHandler(_ sender: Any) {
         _logger.trace()
         
-        if zoomScale > minimumZoomScale {
-            setZoomScale(minimumZoomScale, animated: true)
+        if _scrollView.zoomScale > _scrollView.minimumZoomScale {
+            _scrollView.setZoomScale(_scrollView.minimumZoomScale, animated: true)
         } else {
-            setZoomScale(maximumZoomScale, animated: true)
+            _scrollView.setZoomScale(_scrollView.maximumZoomScale, animated: true)
         }
+    }
+    
+    private func _updateContentSizeForRotation() {
     }
     
     private func _init() {
         
         _tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
-        
+        _rotationGestureRecognizer.delegate = self
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
-        //panGestureRecognizer.require(toFail: _rotationGestureRecognizer)
-        _rotationGestureRecognizer.delegate = self
+        _scrollView.frame = bounds
+        _scrollView.delegate = self
+        _scrollView.clipsToBounds = false
+        _scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _scrollView.delaysContentTouches = false
+        _scrollView.canCancelContentTouches = false
+        _scrollView.showsVerticalScrollIndicator = false
+        _scrollView.showsHorizontalScrollIndicator = false
+        _scrollView.addSubview(_imageView)
         
-        delegate = self
-        clipsToBounds = false
-        
-        delaysContentTouches = false
-        canCancelContentTouches = false
-        showsVerticalScrollIndicator = false
-        showsHorizontalScrollIndicator = false
-        
-        addSubview(_imageView)
+        addSubview(_scrollView)
         
         addGestureRecognizer(_tapGestureRecognizer)
         addGestureRecognizer(_doubleTapGestureRecognizer)
         addGestureRecognizer(_rotationGestureRecognizer)
     }
     
-    override var contentOffset: CGPoint {
-        set {
-            guard !ignoreContentOffsetChanges else {
-                return
-            }
-            return super.contentOffset = newValue
-        }
-        get {
-            return super.contentOffset
-        }
-    }
+//    override var contentOffset: CGPoint {
+//        set {
+//            guard !ignoreContentOffsetChanges else {
+//                return
+//            }
+//            return super.contentOffset = newValue
+//        }
+//        get {
+//            return super.contentOffset
+//        }
+//    }
+    
+    var angle: CGFloat = 0
     
     var ignoreContentOffsetChanges: Bool = false
     
@@ -176,7 +164,8 @@ internal class SAPhotoBrowserView: UIScrollView {
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))
     fileprivate lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
     
-    fileprivate lazy var _imageView: SAPhotoImageView = SAPhotoImageView()
+    fileprivate lazy var _imageView: UIImageView = UIImageView()
+    fileprivate lazy var _scrollView: UIScrollView = UIScrollView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -191,7 +180,7 @@ internal class SAPhotoBrowserView: UIScrollView {
 extension SAPhotoBrowserView: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if self === otherGestureRecognizer.view {
+        if otherGestureRecognizer.view === _scrollView {
             return true
         }
         return false
