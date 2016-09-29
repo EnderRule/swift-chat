@@ -280,7 +280,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     }
     
     fileprivate func _reloadPhotos() {
-        _logger.trace()
+        //_logger.trace()
         
         _photos = _album?.photos ?? []
         _photosResult = _album?.result

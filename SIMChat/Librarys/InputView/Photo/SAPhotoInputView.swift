@@ -21,11 +21,16 @@ import UIKit
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
 
-// [x] SAPhotoPicker - 错误显示 
-// [x] SAPhotoPicker - 横屏支持
+// [x] SAPhotoPicker - 相册列表
+// [x] SAPhotoPicker - 图片列表
+// [ ] SAPhotoPicker - 图片预览
+// [ ] SAPhotoPicker - 选择原图(文件大小)
 // [ ] SAPhotoPickerErrorView - 约束错误
+// [ ] SAPhotoPickerAssets - 选中
+// [ ] SAPhotoPickerAssets - 批量选中
 // [x] SAPhotoPickerAssets - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
-// [x] SAPhotoPickerAssets - 图片变更时的选中问题
+// [x] SAPhotoPickerAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
+// [ ] SAPhotoPickerAssets - UIToolbar支持
 // [ ] SAPhotoPickerAlbums - 图片变更
 // [x] SAPhotoPickerAlbumsCell - 空相册更新问题
 
@@ -33,7 +38,7 @@ import UIKit
 // [x] SAPhotoRecentlyView - 错误显示 
 // [x] SAPhotoRecentlyView - 横屏支持
 // [x] SAPhotoRecentlyView - 图片变更(多张新增、多张删除、多张改变、同时改变)
-// [x] SAPhotoRecentlyView - 图片变更时的选中问题
+// [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 
 // [x] SAPhotoInputView - 横屏支持
 // [ ] SAPhotoInputView - 初次加载页面

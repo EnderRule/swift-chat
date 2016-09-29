@@ -108,7 +108,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     fileprivate func _reloadAlbums(_ hasPermission: Bool) {
-        _logger.trace(hasPermission)
+        //_logger.trace(hasPermission)
         
         guard hasPermission else {
             _updateStatus(.notPermission)
