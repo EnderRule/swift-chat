@@ -36,7 +36,6 @@ internal class SAPhotoStackView: UIView {
             layer.masksToBounds = true
             layer.borderWidth = 0.5
             layer.borderColor = UIColor.white.cgColor
-            layer.backgroundColor = UIColor.random.cgColor
             layer.contentsGravity = kCAGravityResizeAspectFill 
             
             self.layer.insertSublayer(layer, at: 0)

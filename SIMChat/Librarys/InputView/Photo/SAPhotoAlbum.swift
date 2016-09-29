@@ -45,8 +45,20 @@ open class SAPhotoAlbum: NSObject {
         return collection.assetCollectionSubtype
     }
     
+    open override var hash: Int {
+        return identifier.hash
+    }
+    open override var hashValue: Int {
+        return identifier.hashValue
+    }
     open override var description: String {
         return collection.description
+    }
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let collection = object as? SAPhotoAlbum else {
+            return false
+        }
+        return identifier == collection.identifier
     }
     
     open var photos: [SAPhoto] {

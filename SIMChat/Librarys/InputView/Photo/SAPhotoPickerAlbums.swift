@@ -94,6 +94,19 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         }
     }
     
+    private func _albumsIsEmpty(_ albums: [SAPhotoAlbum]) -> Bool {
+        guard !albums.isEmpty else {
+            return true
+        }
+        for album in albums {
+            if !album.photos.isEmpty {
+                // 只要有一个不是空的就返回false
+                return false
+            }
+        }
+        return true
+    }
+    
     fileprivate func _reloadAlbums(_ hasPermission: Bool) {
         _logger.trace(hasPermission)
         
@@ -102,17 +115,40 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             return
         }
         _albums = SAPhotoAlbum.albums
-        guard let albums = _albums, !albums.isEmpty else {
+        guard let albums = _albums, !_albumsIsEmpty(albums) else {
             _updateStatus(.notData)
             return
         }
         _updateStatus(.notError)
     }
     
+    private func _init() {
+        SAPhotoLibrary.shared.register(self)
+    }
+    private func _deinit() {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+    }
+    
     private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPhotoPickerErrorView?
     
     fileprivate var _albums: [SAPhotoAlbum]?
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        _init()
+    }
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        _init()
+    }
+    deinit {
+        _deinit()
+    }
 }
 
 // MARK: - UITableViewDelegate & UITableViewDataSource 

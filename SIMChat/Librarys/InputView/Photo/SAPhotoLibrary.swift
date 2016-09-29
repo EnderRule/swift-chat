@@ -43,6 +43,10 @@ open class SAPhotoLibrary: NSObject {
 //        open func unregisterChangeObserver(_ observer: PHPhotoLibraryChangeObserver)
 //    }
     
+    open func isExists(of photo: SAPhoto) -> Bool {
+        return PHAsset.fetchAssets(withLocalIdentifiers: [photo.identifier], options: nil).count != 0
+    }
+    
     open func register(_ observer: PHPhotoLibraryChangeObserver) {
         let lib = PHPhotoLibrary.shared()
         lib.register(observer)
@@ -55,6 +59,7 @@ open class SAPhotoLibrary: NSObject {
     open func requestImage(for photo: SAPhoto, targetSize: CGSize, contentMode: PHImageContentMode = .default, options: PHImageRequestOptions? = nil, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
         let im = PHCachingImageManager.default()
         im.requestImage(for: photo.asset, targetSize: targetSize, contentMode: contentMode, options: options, resultHandler: resultHandler)
+        
     }
     open static func requestImageData(for photo: SAPhoto, options: PHImageRequestOptions? = nil, resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Swift.Void) {
         let im = PHCachingImageManager.default()

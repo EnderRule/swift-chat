@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecognizerDelegate {
     
@@ -153,7 +154,20 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         return row * _columnCount + column
     }
     
-    private func _updateStatus(_ newValue: SAPhotoStatus) {
+    private func _cachePhotos(_ photos: [SAPhoto]) {
+        // 缓存加速
+//        let options = PHImageRequestOptions()
+//        let scale = UIScreen.main.scale
+//        let size = CGSize(width: 120 * scale, height: 120 * scale)
+//        
+//        options.deliveryMode = .fastFormat
+//        options.resizeMode = .fast
+//        
+//        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+//        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+    }
+    
+    fileprivate func _updateStatus(_ newValue: SAPhotoStatus) {
         _logger.trace(newValue)
         
         _status = newValue
@@ -187,7 +201,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             collectionView?.isScrollEnabled = false
         }
     }
-    private func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
+    fileprivate func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
         let photo = _photos[index]
         
         // step0: 查询选中的状态
@@ -217,17 +231,87 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         // step5: 更新成功
         return true
     }
+    fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
+        _logger.trace(photo)
+        
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        // 检查有没有选中
+        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
+            return
+        }
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
+        }
+    }
+    fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
+        _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
+        
+        // 如果选的items中存在被删除的, 请求取消选中
+        removes.forEach {
+            _updateSelectionForRemove(_photos[$0.item])
+        }
+        
+        // 更新数据
+        _photos = _album?.photos(with: newResult) ?? []
+        _photosResult = newResult
+        
+        // 更新视图
+        if !(inserts.isEmpty && changes.isEmpty && removes.isEmpty) {
+            collectionView?.performBatchUpdates({ [collectionView] in
+                
+                collectionView?.reloadItems(at: changes)
+                collectionView?.deleteItems(at: removes)
+                collectionView?.insertItems(at: inserts)
+                
+            }, completion: nil)
+        }
+        
+        guard !_photos.isEmpty else {
+            _updateStatus(.notData)
+            return
+        }
+
+        _cachePhotos(_photos)
+        _updateStatus(.notError)
+    }
     
     fileprivate func _reloadPhotos() {
         _logger.trace()
         
         _photos = _album?.photos ?? []
+        _photosResult = _album?.result
+        
+        // 更新.
+        collectionView?.reloadData()
+        
         guard !_photos.isEmpty else {
             _updateStatus(.notData)
             return
         }
         
         _updateStatus(.notError)
+    }
+    fileprivate func _clearPhotos() {
+        _logger.trace()
+        
+        // 如果没有album被删除了, 所有的photo都会被取消
+        _photos.forEach {
+            _updateSelectionForRemove($0)
+        }
+        // 清空
+        _album = nil
+        _reloadPhotos()
+    }
+    
+    private func _init() {
+        SAPhotoLibrary.shared.register(self)
+    }
+    private func _deinit() {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     fileprivate var _itemSize: CGSize = .zero
@@ -245,7 +329,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     private var _statusView: SAPhotoPickerErrorView?
     
     fileprivate var _album: SAPhotoAlbum?
+    
     fileprivate var _photos: [SAPhoto] = []
+    fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
     init(album: SAPhotoAlbum?) {
         _album = album
@@ -258,12 +344,16 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         layout.footerReferenceSize = CGSize.zero
         
         super.init(collectionViewLayout: layout)
+        _init()
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError()
+    }
+    deinit {
+        _deinit()
     }
 }
 
@@ -350,5 +440,46 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
         self.selection?.selection(self, tapItemFor: photo)
+    }
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+
+extension SAPhotoPickerAssets: PHPhotoLibraryChangeObserver {
+    
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        guard let result = _photosResult else {
+            return
+        }
+        guard let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
+            if let album = _album, !SAPhotoAlbum.albums.contains(album) {
+                DispatchQueue.main.async {
+                    self._clearPhotos()
+                }
+            }
+            return
+        }
+        
+        let inserts = change.insertedIndexes?.map { idx -> IndexPath in
+            return IndexPath(item: idx, section: 0)
+        } ?? []
+        let changes = change.changedObjects.flatMap { asset -> IndexPath? in
+            if let idx = _photos.index(where: { $0.asset.localIdentifier == asset.localIdentifier }) {
+                return IndexPath(item: idx, section: 0)
+            }
+            return nil
+        }
+        let removes = change.removedObjects.flatMap { asset -> IndexPath? in
+            if let idx = _photos.index(where: { $0.asset.localIdentifier == asset.localIdentifier }) {
+                return IndexPath(item: idx, section: 0)
+            }
+            return nil
+        }
+        
+        _photosResult = change.fetchResultAfterChanges
+        
+        DispatchQueue.main.async {
+            self._updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+        }
     }
 }

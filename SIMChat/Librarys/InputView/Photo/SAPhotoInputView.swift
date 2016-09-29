@@ -21,6 +21,11 @@ import UIKit
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
 
+// [x] SAPhotoPicker - 错误显示 
+// [x] SAPhotoPicker - 横屏支持
+// [x] SAPhotoPicker - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
+// [x] SAPhotoPicker - 图片变更时的选中问题
+
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
 // [x] SAPhotoRecentlyView - 横屏支持

@@ -13,7 +13,7 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
 
     var album: SAPhotoAlbum? {
         didSet {
-            guard let newValue = album, newValue !== oldValue else {
+            guard let newValue = album else {
                 return
             }
             
@@ -40,7 +40,7 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
         _stackView.layers.forEach {
             if photos.isEmpty {
                 $0.isHidden = false
-                $0.backgroundColor = UIColor.lightGray.cgColor
+                $0.backgroundColor = UIColor(white: 0.8, alpha: 1).cgColor
             } else {
                 $0.isHidden = true
                 $0.backgroundColor = UIColor.white.cgColor
