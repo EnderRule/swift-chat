@@ -59,7 +59,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
 
     
     private func _updateStatus(_ newValue: SAPhotoStatus) {
-        _logger.trace(newValue)
+        //_logger.trace(newValue)
         
         _status = newValue
         

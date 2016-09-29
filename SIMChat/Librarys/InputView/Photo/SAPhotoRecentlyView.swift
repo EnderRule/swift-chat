@@ -81,7 +81,7 @@ open class SAPhotoRecentlyView: UIView {
     }
     
     private func _updateStatus(_ newValue: SAPhotoStatus) {
-        _logger.trace(newValue)
+        //_logger.trace(newValue)
         
         _status = newValue
         
@@ -128,7 +128,7 @@ open class SAPhotoRecentlyView: UIView {
         }
     }
     fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
-        _logger.trace(photo)
+        //_logger.trace(photo)
         
         // 检查这个图片有没有被删除
         guard !SAPhotoLibrary.shared.isExists(of: photo) else {

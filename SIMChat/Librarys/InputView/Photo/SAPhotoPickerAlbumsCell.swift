@@ -41,9 +41,11 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
             if photos.isEmpty {
                 $0.isHidden = false
                 $0.backgroundColor = UIColor(white: 0.8, alpha: 1).cgColor
+                $0.contents = nil
             } else {
                 $0.isHidden = true
                 $0.backgroundColor = UIColor.white.cgColor
+                $0.contents = nil
             }
         }
         

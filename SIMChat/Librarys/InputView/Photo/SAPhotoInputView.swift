@@ -23,8 +23,11 @@ import UIKit
 
 // [x] SAPhotoPicker - 错误显示 
 // [x] SAPhotoPicker - 横屏支持
-// [x] SAPhotoPicker - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
-// [x] SAPhotoPicker - 图片变更时的选中问题
+// [ ] SAPhotoPickerErrorView - 约束错误
+// [x] SAPhotoPickerAssets - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
+// [x] SAPhotoPickerAssets - 图片变更时的选中问题
+// [ ] SAPhotoPickerAlbums - 图片变更
+// [x] SAPhotoPickerAlbumsCell - 空相册更新问题
 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
