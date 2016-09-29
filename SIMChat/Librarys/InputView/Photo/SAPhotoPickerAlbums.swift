@@ -43,6 +43,11 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         // 检查权限
         SAPhotoLibrary.shared.requestAuthorization {
             self._reloadAlbums($0)
+            
+            guard let album = self._albums?.first else {
+                return
+            }
+            self.navigationController?.pushViewController(self.makeAssetsPicker(with: album), animated: false)
         }
     }
     

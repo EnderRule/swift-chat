@@ -33,6 +33,7 @@ import UIKit
 // [x] SAPhotoPickerAssets - UIToolbar支持
 // [x] SAPhotoPickerAlbums - 图片变更
 // [x] SAPhotoPickerAlbums - 空相册更新问题
+// [x] SAPhotoPickerAlbums - 默认显示第一个album
 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
