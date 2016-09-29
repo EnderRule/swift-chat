@@ -68,6 +68,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             
             _statusView?.removeFromSuperview()
             _statusView = nil
+            
             tableView.reloadData()
             tableView.isScrollEnabled = true
             
@@ -76,6 +77,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         
             error.title = "没有图片或视频"
             error.subtitle = "拍点照片和朋友们分享吧"
+            error.frame = CGRect(origin: .zero, size: view.frame.size)
             
             _statusView = error
             
@@ -87,6 +89,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             
             error.title = "没有权限"
             error.subtitle = "此应用程序没有权限访问您的照片\n在\"设置-隐私-图片\"中开启后即可查看"
+            error.frame = CGRect(origin: .zero, size: view.frame.size)
             
             _statusView = error
             view.addSubview(error)

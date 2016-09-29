@@ -60,9 +60,12 @@ open class SAPhotoPicker: UINavigationController {
         
         // :)
         self.viewControllers = [_rootViewController]
+        
+        SAPhotoLibrary.shared.register(self)
     }
     private func _deinit() {
         SAPhotoAlbum.reloadData()
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     
@@ -134,5 +137,33 @@ extension SAPhotoPicker: SAPhotoSelectionable {
     // tap item
     open func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
         _delegate?.picker?(self, tapItemFor: photo, with: selection)
+    }
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+
+extension SAPhotoPicker: PHPhotoLibraryChangeObserver {
+    
+    private func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查有没有选中
+        guard self.selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
+            return
+        }
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        // 需要强制删除?
+        if self.selection(self, shouldDeselectItemFor: photo) {
+            self.selection(self, didDeselectItemFor: photo)
+        }
+    }
+    
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async {
+            self._selectedPhotos.forEach {
+                self._updateSelectionForRemove($0)
+            }
+        }
     }
 }

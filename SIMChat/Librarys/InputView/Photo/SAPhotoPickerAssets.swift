@@ -184,6 +184,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         
             error.title = "没有图片或视频"
             error.subtitle = "拍点照片和朋友们分享吧"
+            error.frame = CGRect(origin: .zero, size: view.frame.size)
             
             _statusView = error
             
@@ -195,6 +196,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             
             error.title = "没有权限"
             error.subtitle = "此应用程序没有权限访问您的照片\n在\"设置-隐私-图片\"中开启后即可查看"
+            error.frame = CGRect(origin: .zero, size: view.frame.size)
             
             _statusView = error
             view.addSubview(error)
@@ -231,29 +233,8 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         // step5: 更新成功
         return true
     }
-    fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
-        //_logger.trace(photo)
-        
-        // 检查这个图片有没有被删除
-        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-            return
-        }
-        // 检查有没有选中
-        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-            return
-        }
-        // 需要强制删除?
-        if selection(self, shouldDeselectItemFor: photo) {
-            selection(self, didDeselectItemFor: photo)
-        }
-    }
     fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
-        _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
-        
-        // 如果选的items中存在被删除的, 请求取消选中
-        removes.forEach {
-            _updateSelectionForRemove(_photos[$0.item])
-        }
+        //_logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
         // 更新数据
         _photos = _album?.photos(with: newResult) ?? []
@@ -298,10 +279,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     fileprivate func _clearPhotos() {
         _logger.trace()
         
-        // 如果没有album被删除了, 所有的photo都会被取消
-        _photos.forEach {
-            _updateSelectionForRemove($0)
-        }
         // 清空
         _album = nil
         _reloadPhotos()
@@ -448,10 +425,9 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
 extension SAPhotoPickerAssets: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard let result = _photosResult else {
-            return
-        }
-        guard let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
+        // 检查有没有变更
+        guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
+            // 如果asset没有变量, 检查album是否存在
             if let album = _album, !SAPhotoAlbum.albums.contains(album) {
                 DispatchQueue.main.async {
                     self._clearPhotos()

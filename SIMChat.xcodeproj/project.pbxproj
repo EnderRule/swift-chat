@@ -139,6 +139,7 @@
 		0CBD26761D9A020200AC5C14 /* SAPhotoSelectionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */; };
 		0CCBC8681D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */; };
 		0CCBC86A1D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */; };
+		0CD537C81D9CE9F30036590F /* SAPhotoBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */; };
 		0CD61F8D1D92D986001EA1DC /* SAPhotoRecentlyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */; };
 		0CD61F8F1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */; };
 		0CEB6C281D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEB6C271D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift */; };
@@ -293,6 +294,7 @@
 		0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoSelectionable.swift; sourceTree = "<group>"; };
 		0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsLayout.swift; sourceTree = "<group>"; };
 		0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsCell.swift; sourceTree = "<group>"; };
+		0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoBrowserView.swift; sourceTree = "<group>"; };
 		0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyView.swift; sourceTree = "<group>"; };
 		0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyViewLayout.swift; sourceTree = "<group>"; };
 		0CEB6C271D88F2FB00C7BB34 /* SIMChatEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatEmoticonGroup.swift; sourceTree = "<group>"; };
@@ -570,6 +572,7 @@
 				0C16A2441D92843E00E689F1 /* SAPhotoPickerAlbumsCell.swift */,
 				0C539C5E1D9AD27600D91310 /* SAPhotoPickerErrorView.swift */,
 				0CBCE6031D92312B003EC410 /* SAPhotoBrowser.swift */,
+				0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */,
 				0CBCE6071D9231CA003EC410 /* SAPhotoPreviewer.swift */,
 				0CA633CD1D96ABD500DD26F2 /* SAPhotoPreviewerCell.swift */,
 				0C16541C1D8B9C5000A92C86 /* SAPhotoInputView.swift */,
@@ -809,6 +812,7 @@
 				0C1654241D8B9C5000A92C86 /* SAAudioRecordView.swift in Sources */,
 				0C0DD6461C60B4A900AEC8C4 /* SIMChatBaseMessageTipsContent.swift in Sources */,
 				0C0DD6601C60B4A900AEC8C4 /* UITableView+HeightCache.swift in Sources */,
+				0CD537C81D9CE9F30036590F /* SAPhotoBrowserView.swift in Sources */,
 				0C0DD6531C60B4A900AEC8C4 /* SIMChatClassProvider.swift in Sources */,
 				0C16A2431D9273B600E689F1 /* SAPhotoPickerAlbums.swift in Sources */,
 				0C8BF7BE1C6783F70060684D /* SIMHelper+Force.swift in Sources */,

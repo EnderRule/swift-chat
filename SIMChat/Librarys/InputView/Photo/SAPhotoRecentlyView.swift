@@ -127,32 +127,8 @@ open class SAPhotoRecentlyView: UIView {
             addSubview(_tipsLabel)
         }
     }
-    fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
-        //_logger.trace(photo)
-        
-        // 检查这个图片有没有被删除
-        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-            return
-        }
-        // 检查有没有选中
-        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-            return
-        }
-        // 需要强制删除?
-        if selection(self, shouldDeselectItemFor: photo) {
-            selection(self, didDeselectItemFor: photo)
-        }
-    }
     fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
-        _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
-        
-        // 如果选的items中存在被删除的, 请求取消选中
-        removes.forEach {
-            guard let photo = _photos?[$0.item] else {
-                return
-            }
-            _updateSelectionForRemove(photo)
-        }
+        //_logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
         // 更新数据
         _photos = _album?.photos(with: newResult).reversed()
@@ -321,12 +297,31 @@ extension SAPhotoRecentlyView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDeleg
 
 extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
     
-    // 图片发生改变
-    public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard let result = _photosResult else {
+    private func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查有没有选中
+        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
             return
         }
-        guard let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
+        }
+    }
+    
+    // 图片发生改变
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        // 检查选中的图片有没有被删除
+        DispatchQueue.main.async {
+            self._selectedPhotos.forEach {
+                self._updateSelectionForRemove($0)
+            }
+        }
+        
+        guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             return
         }
         

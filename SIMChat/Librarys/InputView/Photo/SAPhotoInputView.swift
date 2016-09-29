@@ -25,14 +25,14 @@ import UIKit
 // [x] SAPhotoPicker - 图片列表
 // [ ] SAPhotoPicker - 图片预览
 // [ ] SAPhotoPicker - 选择原图(文件大小)
-// [ ] SAPhotoPickerErrorView - 约束错误
-// [ ] SAPhotoPickerAssets - 选中
-// [ ] SAPhotoPickerAssets - 批量选中
+// [x] SAPhotoPickerErrorView - 约束错误
+// [x] SAPhotoPickerAssets - 选中
+// [x] SAPhotoPickerAssets - 批量选中
 // [x] SAPhotoPickerAssets - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
 // [x] SAPhotoPickerAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
-// [ ] SAPhotoPickerAssets - UIToolbar支持
-// [ ] SAPhotoPickerAlbums - 图片变更
-// [x] SAPhotoPickerAlbumsCell - 空相册更新问题
+// [x] SAPhotoPickerAssets - UIToolbar支持
+// [x] SAPhotoPickerAlbums - 图片变更
+// [x] SAPhotoPickerAlbums - 空相册更新问题
 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
@@ -232,26 +232,30 @@ extension SAPhotoInputView {
         viewController.present(picker, animated: true, completion: nil)
     }
     func onPreviewerForInputView(_ sender: Any) {
-        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
-            return
-        }
-        let previewer = SAPhotoPreviewer()
-        let nav = UINavigationController(rootViewController: previewer)
+        _logger.trace(sender)
         
-        previewer.dataSource = _contentView
-        previewer.delegate = _contentView 
-        
-        viewController.present(nav, animated: true, completion: nil)
-        _previewer = previewer
+//        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
+//            return
+//        }
+//        let previewer = SAPhotoPreviewer()
+//        let nav = UINavigationController(rootViewController: previewer)
+//        
+//        previewer.dataSource = _contentView
+//        previewer.delegate = _contentView 
+//        
+//        viewController.present(nav, animated: true, completion: nil)
+//        _previewer = previewer
     }
     func onPreviewerForPicker(_ sender: Any) {
-        guard let viewController = _picker else {
-            return
-        }
-        let previewer = SAPhotoPreviewer()
-        let nav = UINavigationController(rootViewController: previewer)
-        viewController.present(nav, animated: true, completion: nil)
-        _previewer = previewer
+        _logger.trace(sender)
+        
+//        guard let viewController = _picker else {
+//            return
+//        }
+//        let previewer = SAPhotoPreviewer()
+//        let nav = UINavigationController(rootViewController: previewer)
+//        viewController.present(nav, animated: true, completion: nil)
+//        _previewer = previewer
 //        let previewer = SAPhotoPreviewer()
 //        
 //        _previewer = previewer
