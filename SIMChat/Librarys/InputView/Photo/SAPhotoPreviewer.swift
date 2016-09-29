@@ -30,9 +30,10 @@ open class SAPhotoPreviewer: UIViewController {
         
         automaticallyAdjustsScrollViewInsets = false
 
-        view.backgroundColor = .white
+        //view.backgroundColor = .white
+        view.backgroundColor = .black
         
-        let ts: CGFloat = 8
+        let ts: CGFloat = 10
         
         _contentViewLayout.scrollDirection = .horizontal
         _contentViewLayout.minimumLineSpacing = ts * 2
@@ -46,12 +47,14 @@ open class SAPhotoPreviewer: UIViewController {
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
         _contentView.scrollsToTop = false
-        _contentView.allowsSelection = true
+        _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
         _contentView.register(SAPhotoPreviewerCell.self, forCellWithReuseIdentifier: "Item")
         _contentView.dataSource = self
         _contentView.delegate = self
+        //_contentView.isDirectionalLockEnabled = true
+        //_contentView.isScrollEnabled = false
         
         view.addSubview(_contentView)
     }
@@ -87,9 +90,5 @@ extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegate
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return view.frame.size
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.dismiss(animated: true, completion: nil)
     }
 }

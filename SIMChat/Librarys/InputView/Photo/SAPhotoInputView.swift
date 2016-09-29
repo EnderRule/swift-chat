@@ -21,6 +21,10 @@ import UIKit
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
 
+// [ ] SAPhotoBrowser - 预加载
+// [x] SAPhotoBrowserView - 图片缩放
+// [ ] SAPhotoBrowserView - 图片旋转
+
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
 // [ ] SAPhotoPicker - 图片预览
@@ -233,19 +237,18 @@ extension SAPhotoInputView {
         viewController.present(picker, animated: true, completion: nil)
     }
     func onPreviewerForInputView(_ sender: Any) {
-        _logger.trace(sender)
+        _logger.trace()
+        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
+            return
+        }
+        let previewer = SAPhotoPreviewer()
+        let nav = UINavigationController(rootViewController: previewer)
         
-//        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
-//            return
-//        }
-//        let previewer = SAPhotoPreviewer()
-//        let nav = UINavigationController(rootViewController: previewer)
-//        
-//        previewer.dataSource = _contentView
-//        previewer.delegate = _contentView 
-//        
-//        viewController.present(nav, animated: true, completion: nil)
-//        _previewer = previewer
+        previewer.dataSource = _contentView
+        previewer.delegate = _contentView 
+        
+        viewController.present(nav, animated: true, completion: nil)
+        _previewer = previewer
     }
     func onPreviewerForPicker(_ sender: Any) {
         _logger.trace(sender)
@@ -338,10 +341,13 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     
     // MARK: Display
     
-    open func picker(didDismiss picker: SAPhotoPicker) {
+    open func picker(willDismiss picker: SAPhotoPicker) {
         _logger.trace()
         // 隐藏的时候同步更新选择的items
         _contentView.updateSelectionOfItmes()
+    }
+    open func picker(didDismiss picker: SAPhotoPicker) {
+        _logger.trace()
     }
 }
 
@@ -373,6 +379,8 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     // tap item
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
+        
+        onPreviewerForInputView(photo)
     }
 }
 

@@ -21,9 +21,10 @@ internal class SAPhotoPreviewerCell: UICollectionViewCell {
         _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         contentView.addSubview(_photoView)
+        contentView.clipsToBounds = true
     }
     
-    private var _photoView: SAPhotoLargeView = SAPhotoLargeView()
+    private var _photoView: SAPhotoBrowserView = SAPhotoBrowserView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

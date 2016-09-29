@@ -12,6 +12,7 @@ import Photos
 @objc
 public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     
+    @objc optional func picker(willDismiss picker: SAPhotoPicker)
     @objc optional func picker(didDismiss picker: SAPhotoPicker)
     
     // MARK: Selection
@@ -44,8 +45,12 @@ open class SAPhotoPicker: UINavigationController {
     }
     
     open override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
-        _delegate?.picker?(didDismiss: self)
+        let delegate = _delegate
+        delegate?.picker?(willDismiss: self)
+        super.dismiss(animated: flag) {
+            completion?()
+            delegate?.picker?(didDismiss: self)
+        }
     }
     
     @objc private func cancelHandler(_ sender: Any) {
