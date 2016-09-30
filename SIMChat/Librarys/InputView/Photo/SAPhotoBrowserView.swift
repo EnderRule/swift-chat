@@ -61,8 +61,8 @@ internal class SAPhotoBrowserView: UIView {
         let pt = CGPoint(x: max(fit.width, bounds.width) / 2, y: max(fit.height, bounds.height) / 2)
         
         _scrollView.zoomScale = 1
-        _scrollView.minimumZoomScale = 1
-        _scrollView.maximumZoomScale = max(max(to.width / fit.width, to.height / fit.height), 2)
+        _scrollView.minimumZoomScale = _minimumZoomScale(to)
+        _scrollView.maximumZoomScale = _maximumZoomScale(to)
         
         _logger.trace("from: \(from), to: \(to), scale: \(_scrollView.maximumZoomScale)")
         
@@ -95,14 +95,12 @@ internal class SAPhotoBrowserView: UIView {
     @objc private func rotationHandler(_ sender: UIRotationGestureRecognizer) {
         //_logger.trace(sender.rotation)
         
-//        _imageView.ignoreTransformChanges = !isEnd
-//        ignoreContentOffsetChanges = !isEnd
-        
-        _scrollView.transform = CGAffineTransform(rotationAngle: angle + sender.rotation)
-        
         if sender.state == .ended || sender.state == .cancelled || sender.state == .failed {
-            _updateContentSize(for: angle + sender.rotation)
-            
+            _isRotationing = false
+            _updateContentSize(for: sender.rotation)
+        } else {
+            _isRotationing = true
+            _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
         }
     }
     @objc private func doubleTapHandler(_ sender: Any) {
@@ -143,20 +141,6 @@ internal class SAPhotoBrowserView: UIView {
 //        }
     }
     
-    private func _minimumZoomScale(_ size: CGSize) -> CGFloat {
-        return 1
-    }
-    private func _maximumZoomScale(_ size: CGSize) -> CGFloat {
-        let scale = _aspectFitZoomScale(size)
-        let width = max(size.width * scale, 1)
-        let height = max(size.height * scale, 1)
-        return max(max(bounds.width / width, bounds.height / height), 2)
-    }
-    private func _aspectFitZoomScale(_ size: CGSize) -> CGFloat {
-        let width = max(size.width, 1)
-        let height = max(size.height, 1)
-        return min(min(bounds.width, width) / width, min(bounds.height, height) / height)
-    }
     
     private func _rotation(for orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
@@ -184,6 +168,21 @@ internal class SAPhotoBrowserView: UIView {
         }
     }
     
+    private func _minimumZoomScale(_ size: CGSize) -> CGFloat {
+        return 1
+    }
+    private func _maximumZoomScale(_ size: CGSize) -> CGFloat {
+        let scale = _aspectFitZoomScale(size)
+        let width = max(size.width * scale, 1)
+        let height = max(size.height * scale, 1)
+        return max(max(size.width / width, size.height / height), 2)
+    }
+    private func _aspectFitZoomScale(_ size: CGSize) -> CGFloat {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        return min(min(bounds.width, width) / width, min(bounds.height, height) / height)
+    }
+    
     private func _updateContentSize(for size: CGSize) {
         
 //        _scrollView.minimumZoomScale = 1
@@ -197,10 +196,17 @@ internal class SAPhotoBrowserView: UIView {
         
         var image: UIImage?
         var nsize: CGSize = .zero
-        var osize: CGSize = _imageView.image?.size ?? .zero
         
         if let uiimg = _imageView.image, let cgimg = uiimg.cgImage {
-            let ori = _orientation(for: angle)
+            let ori = _orientation(for: _rotation(for: uiimg.imageOrientation) + angle)
+            
+            if uiimg.imageOrientation == ori {
+                UIView.animate(withDuration: 0.25) {
+                    self._scrollView.transform = .identity
+                }
+                return
+            }
+            
             let nimg = UIImage(cgImage: cgimg, scale: uiimg.scale, orientation: ori)
             
             //_logger.debug("\(ori.rawValue) => \(uiimg.size) => \(nimg.size)")
@@ -210,40 +216,35 @@ internal class SAPhotoBrowserView: UIView {
             nsize = nimg.size
         }
         
-        // vs
-        // hs 
-        
         let scale = _aspectFitZoomScale(nsize)
-        let nbounds = CGRect(x: 0, y: 0, width: nsize.width * scale, height: nsize.height * scale)
-        
-        
-        _logger.trace("\(osize) => \(nsize)(\(nbounds))")
-        
         let transform = CGAffineTransform(rotationAngle: angle)
+        let nbounds = CGRect(x: 0, y: 0, width: nsize.width * scale, height: nsize.height * scale)
         
         UIView.animate(withDuration: 0.25, animations: {
             
-            
-            //self._imageView.transform = .identity
             self._scrollView.transform = transform
             self._scrollView.frame = self.bounds
-            self._scrollView.contentSize = nsize
+            self._scrollView.contentSize = self.bounds.size
+            
+            self._scrollView.setZoomScale(1, animated: false)
+            self._scrollView.setContentOffset(.zero, animated: false)
             
             self._imageView.bounds = nbounds.applying(transform)
             self._imageView.center = CGPoint(x: self._scrollView.bounds.midX, y: self._scrollView.bounds.midY)
             
-            self._scrollView.zoomScale = 1
             self._scrollView.minimumZoomScale = self._minimumZoomScale(nsize)
             self._scrollView.maximumZoomScale = self._maximumZoomScale(nsize)
             
-            
         }, completion: { b in
             
-//            self._scrollView.transform = .identity
-            //self._imageView.transform = .identity
+            self._scrollView.transform = .identity
+            self._scrollView.frame = self.bounds
+            
+            self._imageView.image = image
+            self._imageView.bounds = nbounds
+            self._imageView.center = CGPoint(x: self._scrollView.bounds.midX, y: self._scrollView.bounds.midY)
         })
         
-        self.angle = angle.remainder(dividingBy: CGFloat(M_PI * 2))
     }
     
     private func _init() {
@@ -252,7 +253,6 @@ internal class SAPhotoBrowserView: UIView {
         _rotationGestureRecognizer.delegate = self
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
-        _scrollView.backgroundColor = .random
         _scrollView.frame = bounds
         _scrollView.delegate = self
         _scrollView.clipsToBounds = false
@@ -261,6 +261,8 @@ internal class SAPhotoBrowserView: UIView {
         _scrollView.canCancelContentTouches = false
         _scrollView.showsVerticalScrollIndicator = false
         _scrollView.showsHorizontalScrollIndicator = false
+        //_scrollView.alwaysBounceVertical = true
+        //_scrollView.alwaysBounceHorizontal = true
         _scrollView.addSubview(_imageView)
         
         addSubview(_scrollView)
@@ -282,17 +284,21 @@ internal class SAPhotoBrowserView: UIView {
 //        }
 //    }
     
-    var angle: CGFloat = 0
     
-    var ignoreContentOffsetChanges: Bool = false
-    
+    private var _isRotationing: Bool = false {
+        willSet {
+            // 旋转的时候锁定缩放和移动事件
+            //_imageView.ignoreTransformChanges = newValue
+            //_scrollView.ignoreContentOffsetChanges = newValue
+        }
+    }
     
     fileprivate lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))
     fileprivate lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
     
-    fileprivate lazy var _imageView: UIImageView = UIImageView()
-    fileprivate lazy var _scrollView: UIScrollView = UIScrollView()
+    fileprivate lazy var _imageView: SAPhotoImageView = SAPhotoImageView()
+    fileprivate lazy var _scrollView: SAPhotoScrollView = SAPhotoScrollView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
