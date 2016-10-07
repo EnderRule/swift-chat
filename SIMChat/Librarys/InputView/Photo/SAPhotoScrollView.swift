@@ -22,6 +22,14 @@ internal class SAPhotoScrollView: UIScrollView {
             return super.contentOffset
         }
     }
+    override var contentSize: CGSize  {
+        set {
+            return super.contentSize = newValue
+        }
+        get {
+            return super.contentSize
+        }
+    }
     
     var ignoreContentOffsetChanges: Bool = false
 }

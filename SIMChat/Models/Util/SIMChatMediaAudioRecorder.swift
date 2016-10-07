@@ -16,10 +16,10 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
         super.init()
         
         SIMChatMediaAudioRecorder.retainInstance = self
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(type(of: self).audioRecorderDidInterruption(_:)),
-            name: NSNotification.Name.AVAudioSessionInterruption,
-            object: nil)
+//        NotificationCenter.default.addObserver(self,
+//            selector: #selector(type(of: self).audioRecorderDidInterruption(_:)),
+//            name: NSNotification.Name.AVAudioSessionInterruption,
+//            object: nil)
         
         SIMLog.trace()
     }
@@ -275,19 +275,19 @@ public class SIMChatMediaAudioRecorder: NSObject, SIMChatMediaRecorderProtocol, 
             self._clear()
         }
     }
-    public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: NSError?) {
-        SIMLog.trace()
-        _stop(true)
-        _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
-    }
-    public func audioRecorderDidInterruption(_ sender: Notification) {
-        SIMLog.trace()
-        guard _isRecording else {
-            return
-        }
-        _stop(true)
-        _didErrorOccur(NSError(domain: "Interruption", code: -1, userInfo: nil))
-    }
+//    public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: NSError?) {
+//        SIMLog.trace()
+//        _stop(true)
+//        _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
+//    }
+//    public func audioRecorderDidInterruption(_ sender: Notification) {
+//        SIMLog.trace()
+//        guard _isRecording else {
+//            return
+//        }
+//        _stop(true)
+//        _didErrorOccur(NSError(domain: "Interruption", code: -1, userInfo: nil))
+//    }
     
     // 保存实例, 在录音完成后释放
     private static var retainInstance: SIMChatMediaAudioRecorder?

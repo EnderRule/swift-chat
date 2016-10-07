@@ -66,7 +66,7 @@ internal class SAPhotoPickerAlbumsCell: UITableViewCell {
             let size = CGSize(width: _stackView.bounds.width * scale, 
                               height: _stackView.bounds.height * scale)
             
-            SAPhotoLibrary.shared.requestImage(for: $0.element, targetSize: size, contentMode: .aspectFill) { img, _ in
+            _ = SAPhotoLibrary.shared.requestImage(for: $0.element, targetSize: size, contentMode: .aspectFill) { img, _ in
                 guard self._taskId == taskId else {
                     return
                 }

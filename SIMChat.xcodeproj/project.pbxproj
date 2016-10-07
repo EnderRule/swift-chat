@@ -140,6 +140,7 @@
 		0CBD26761D9A020200AC5C14 /* SAPhotoSelectionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */; };
 		0CCBC8681D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */; };
 		0CCBC86A1D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */; };
+		0CCBDDEC1DA528E9001F4403 /* SAPhotoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCBDDEB1DA528E9001F4403 /* SAPhotoLoader.swift */; };
 		0CD537C81D9CE9F30036590F /* SAPhotoBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */; };
 		0CD61F8D1D92D986001EA1DC /* SAPhotoRecentlyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */; };
 		0CD61F8F1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */; };
@@ -296,6 +297,7 @@
 		0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoSelectionable.swift; sourceTree = "<group>"; };
 		0CCBC8671D92B89D00C24B34 /* SAPhotoPickerAssetsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsLayout.swift; sourceTree = "<group>"; };
 		0CCBC8691D92B9FD00C24B34 /* SAPhotoPickerAssetsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerAssetsCell.swift; sourceTree = "<group>"; };
+		0CCBDDEB1DA528E9001F4403 /* SAPhotoLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoLoader.swift; sourceTree = "<group>"; };
 		0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoBrowserView.swift; sourceTree = "<group>"; };
 		0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyView.swift; sourceTree = "<group>"; };
 		0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoRecentlyViewLayout.swift; sourceTree = "<group>"; };
@@ -555,13 +557,14 @@
 			isa = PBXGroup;
 			children = (
 				0C228BA01D912734000F919D /* SAPhoto.swift */,
+				0CCBDDEB1DA528E9001F4403 /* SAPhotoLoader.swift */,
 				0C228BA41D912F67000F919D /* SAPhotoView.swift */,
 				0C228BA61D913532000F919D /* SAPhotoAlbum.swift */,
 				0C779C151D91759E0044D7AF /* SAPhotoLibrary.swift */,
 				0C1C4E591D93CD5E0023211B /* SAPhotoBarButtonItem.swift */,
 				0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */,
-				0C07A60F1D9E3AAA003A1F42 /* SAPhotoScrollView.swift */,
 				0C07A6111D9E3AB6003A1F42 /* SAPhotoImageView.swift */,
+				0C07A60F1D9E3AAA003A1F42 /* SAPhotoScrollView.swift */,
 				0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */,
 				0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */,
 				0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */,
@@ -746,7 +749,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = sagesse;
 				TargetAttributes = {
 					0C0DD5A31C60B28E00AEC8C4 = {
@@ -860,6 +863,7 @@
 				0C0DD6611C60B4A900AEC8C4 /* UIViewController+Transition.swift in Sources */,
 				0C1A177D1D7724880093EE12 /* SAInputItem.swift in Sources */,
 				0C0DD65B1C60B4A900AEC8C4 /* SIMLog.swift in Sources */,
+				0CCBDDEC1DA528E9001F4403 /* SAPhotoLoader.swift in Sources */,
 				0C228B9D1D90CD7E000F919D /* SAAudioSpectrumMiniView.swift in Sources */,
 				0C4070ED1C7ABF0100AEECB7 /* SIMChatMessageBox.swift in Sources */,
 				0C5EBFB81C89677F00E0B923 /* SIMChatBaseImageResource.swift in Sources */,
@@ -972,8 +976,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1021,8 +1027,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1056,6 +1064,7 @@
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1081,6 +1090,7 @@
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

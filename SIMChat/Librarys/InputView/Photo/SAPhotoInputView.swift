@@ -21,9 +21,15 @@ import UIKit
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
 
-// [ ] SAPhotoBrowser - 预加载
+// [ ] SAPhotoBrowser - 预加载(上下)
+// [ ] SAPhotoBrowser - 加载进度
+// [ ] SAPhotoBrowser - 视频
+// [ ] SAPhotoBrowser - 音频
+// [ ] SAPhotoBrowser - GIF
 // [x] SAPhotoBrowserView - 图片缩放
-// [ ] SAPhotoBrowserView - 图片旋转
+// [x] SAPhotoBrowserView - 图片旋转
+// [x] SAPhotoBrowserView - 双击放大
+// [ ] SAPhotoBrowserView - 双击放大(双击的地方要居中)
 
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
@@ -233,7 +239,7 @@ extension SAPhotoInputView {
             _send2BarItem,
         ]
         _picker = picker
-        
+     
         viewController.present(picker, animated: true, completion: nil)
     }
     func onPreviewerForInputView(_ sender: Any) {
@@ -242,12 +248,13 @@ extension SAPhotoInputView {
             return
         }
         let previewer = SAPhotoPreviewer()
-        let nav = UINavigationController(rootViewController: previewer)
+        let presentation = UINavigationController(rootViewController: previewer)
         
         previewer.dataSource = _contentView
         previewer.delegate = _contentView 
         
-        viewController.present(nav, animated: true, completion: nil)
+        //nav.viewControllers = [previewer]
+        viewController.present(presentation, animated: true, completion: nil)
         _previewer = previewer
     }
     func onPreviewerForPicker(_ sender: Any) {
@@ -332,11 +339,6 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     }
     open func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
         deselectItem(for: photo)
-    }
-    
-    // tap item
-    open func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any) {
-        _logger.trace()
     }
     
     // MARK: Display

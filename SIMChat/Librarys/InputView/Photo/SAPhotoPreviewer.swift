@@ -29,11 +29,14 @@ open class SAPhotoPreviewer: UIViewController {
         super.viewDidLoad()
         
         automaticallyAdjustsScrollViewInsets = false
+        
+        //navigationItem.leftBarButtonItem = 
+            //UIBarButtonItem(barButtonSystemItem: <#T##UIBarButtonSystemItem#>, target: <#T##Any?#>, action: <#T##Selector?#>)
 
         //view.backgroundColor = .white
         view.backgroundColor = .black
         
-        let ts: CGFloat = 10
+        let ts: CGFloat = 20
         
         _contentViewLayout.scrollDirection = .horizontal
         _contentViewLayout.minimumLineSpacing = ts * 2
@@ -62,14 +65,37 @@ open class SAPhotoPreviewer: UIViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.isNavigationBarHidden = true
-        navigationController?.isToolbarHidden = true
-//        navigationController?.isNavigationBarHidden = false
-//        navigationController?.isToolbarHidden = false
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.isToolbarHidden = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
     private lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
+    
+    fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
+}
+
+extension SAPhotoPreviewer: SAPhotoBrowserViewDelegate {
+    
+    func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject) {
+        let isHidden = navigationController?.isNavigationBarHidden ?? false
+        
+        navigationController?.setNavigationBarHidden(!isHidden, animated: true)
+        navigationController?.setToolbarHidden(!isHidden, animated: true)
+    }
+    
+    func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject) {
+        //_logger.trace()
+        
+        // 双击的时候隐藏
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
+    }
 }
 
 extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -85,7 +111,17 @@ extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegate
         guard let cell = cell as? SAPhotoPreviewerCell else {
             return
         }
-        cell.photo = dataSource?.photoPreviewer(self, photoForItemAt: indexPath.item)
+        if let photo = dataSource?.photoPreviewer(self, photoForItemAt: indexPath.item) {
+            cell.delegate = self
+            cell.loader = _allLoader[photo.hashValue] ?? {
+                let loader = SAPhotoLoader(photo: photo)
+                _allLoader[photo.hashValue] = loader
+                return loader
+            }()
+        } else {
+            cell.delegate = self
+            cell.loader = nil
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

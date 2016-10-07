@@ -141,7 +141,17 @@ extension SAPhotoPicker: SAPhotoSelectionable {
     
     // tap item
     open func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
-        _delegate?.picker?(self, tapItemFor: photo, with: selection)
+        guard !(_delegate?.responds(to: #selector(SAPhotoPickerDelegate.picker(_:tapItemFor:with:))) ?? false) else {
+            _delegate?.picker?(self, tapItemFor: photo, with: selection)
+            return
+        }
+        // 并没有实现, 使用默认的
+        let previewer = SAPhotoPreviewer()
+        
+        previewer.delegate = selection as? SAPhotoPreviewerDelegate
+        previewer.dataSource = selection as? SAPhotoPreviewerDataSource
+        
+        pushViewController(previewer, animated: true)
     }
 }
 

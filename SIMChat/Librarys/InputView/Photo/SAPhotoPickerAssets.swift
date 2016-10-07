@@ -33,6 +33,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         super.viewDidLoad()
         
         title = _album?.title
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         
         collectionView?.backgroundColor = .white
         collectionView?.allowsSelection = false
@@ -80,7 +81,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         _batchOperatorItems.removeAll()
         return true
     }
-    
     
     @objc private func panHandler(_ sender: UIPanGestureRecognizer) {
         guard let start = _batchStartIndex else {
@@ -417,6 +417,19 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
         self.selection?.selection(self, tapItemFor: photo)
+    }
+}
+
+// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate 
+
+extension SAPhotoPickerAssets: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate  {
+    
+    public func numberOfPhotos(in photoPreviewer: SAPhotoPreviewer) -> Int {
+        return _photos.count
+    }
+    
+    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+        return _photos[index]
     }
 }
 

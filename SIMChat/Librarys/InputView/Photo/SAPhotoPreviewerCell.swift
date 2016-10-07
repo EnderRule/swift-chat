@@ -10,9 +10,13 @@ import UIKit
 
 internal class SAPhotoPreviewerCell: UICollectionViewCell {
    
-    var photo: SAPhoto? {
-        set { return _photoView.photo = newValue }
-        get { return _photoView.photo }
+    var loader: SAPhotoLoaderType? {
+        set { return _photoView.loader = newValue }
+        get { return _photoView.loader }
+    }
+    weak var delegate: SAPhotoBrowserViewDelegate? {
+        set { return _photoView.delegate = newValue }
+        get { return _photoView.delegate }
     }
     
     private func _init() {

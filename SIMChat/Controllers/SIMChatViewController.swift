@@ -424,7 +424,7 @@ extension SIMChatViewController: SAEmoticonInputViewDataSource, SAEmoticonInputV
         return true
     }
     open func emoticon(_ emoticon: SAEmoticonInputView, didPreviewFor item: SAEmoticon?) {
-        _logger.debug(item)
+        _logger.debug("\(item)")
     }
 }
 

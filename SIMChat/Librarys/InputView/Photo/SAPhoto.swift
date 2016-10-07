@@ -79,6 +79,7 @@ open class SAPhoto: NSObject {
     }
     
     open var asset: PHAsset
+    
     open weak var album: SAPhotoAlbum?
     
     public init(asset: PHAsset) {
@@ -86,6 +87,7 @@ open class SAPhoto: NSObject {
         super.init()
     }
 }
+
 
 //- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion
 //{

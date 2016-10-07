@@ -15,10 +15,10 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         _resource = resource
         super.init()
         
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(type(of: self).audioPlayerDidInterruption(_:)),
-            name: NSNotification.Name.AVAudioSessionInterruption,
-            object: nil)
+//        NotificationCenter.default.addObserver(self,
+//            selector: #selector(type(of: self).audioPlayerDidInterruption(_:)),
+//            name: NSNotification.Name.AVAudioSessionInterruption,
+//            object: nil)
         
         SIMLog.trace()
     }
@@ -245,19 +245,19 @@ public class SIMChatMediaAudioPlayer: NSObject, SIMChatMediaPlayerProtocol, AVAu
         _stop()
         _didFinish()
     }
-    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: NSError?) {
-        SIMLog.trace()
-        _stop()
-        _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
-    }
-    public func audioPlayerDidInterruption(_ sender: Notification) {
-        SIMLog.trace()
-        guard _isPlaying else {
-            return
-        }
-        _stop()
-        _didErrorOccur(NSError(domain: "Interruption", code: -1, userInfo: nil))
-    }
+//    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: NSError?) {
+//        SIMLog.trace()
+//        _stop()
+//        _didErrorOccur(error ?? NSError(domain: "Unknow Error", code: -1, userInfo: nil))
+//    }
+//    public func audioPlayerDidInterruption(_ sender: Notification) {
+//        SIMLog.trace()
+//        guard _isPlaying else {
+//            return
+//        }
+//        _stop()
+//        _didErrorOccur(NSError(domain: "Interruption", code: -1, userInfo: nil))
+//    }
     
     // 保存实例, 在播放完成后释放
     private static var retainInstance: SIMChatMediaAudioPlayer?
