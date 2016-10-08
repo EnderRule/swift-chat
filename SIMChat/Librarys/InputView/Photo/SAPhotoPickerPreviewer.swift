@@ -1,5 +1,5 @@
 //
-//  SAPhotoPreviewer.swift
+//  SAPhotoPickerPreviewer.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,21 +9,34 @@
 import UIKit
 
 @objc
-public protocol SAPhotoPreviewerDataSource: NSObjectProtocol {
+public protocol SAPhotoPickerPreviewerDataSource: NSObjectProtocol {
     
-    func numberOfPhotos(in photoPreviewer: SAPhotoPreviewer) -> Int
-    func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto
-    
+    func numberOfPhotos(in photoPreviewer: SAPhotoPickerPreviewer) -> Int
+    func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto
 }
 
 @objc
-public protocol SAPhotoPreviewerDelegate: NSObjectProtocol {  
+public protocol SAPhotoPickerPreviewerDelegate: NSObjectProtocol {
+    
+    @objc optional func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
 }
 
-open class SAPhotoPreviewer: UIViewController {
+open class SAPhotoPickerPreviewer: UIViewController {
     
-    open weak var delegate: SAPhotoPreviewerDelegate?
-    open weak var dataSource: SAPhotoPreviewerDataSource?
+    open weak var delegate: SAPhotoPickerPreviewerDelegate?
+    open weak var dataSource: SAPhotoPickerPreviewerDataSource?
+    
+    open override var toolbarItems: [UIBarButtonItem]? {
+        set { }
+        get {
+            if let toolbarItems = _toolbarItems {
+                return toolbarItems
+            }
+            let toolbarItems = delegate?.photoPreviewer?(self, toolbarItemsFor: .preview)
+            _toolbarItems = toolbarItems
+            return toolbarItems
+        }
+    }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +63,7 @@ open class SAPhotoPreviewer: UIViewController {
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
-        _contentView.register(SAPhotoPreviewerCell.self, forCellWithReuseIdentifier: "Item")
+        _contentView.register(SAPhotoPickerPreviewerCell.self, forCellWithReuseIdentifier: "Item")
         _contentView.dataSource = self
         _contentView.delegate = self
         //_contentView.isDirectionalLockEnabled = true
@@ -65,7 +78,7 @@ open class SAPhotoPreviewer: UIViewController {
         _logger.trace()
         
         navigationController?.isNavigationBarHidden = false
-        navigationController?.isToolbarHidden = false
+        navigationController?.isToolbarHidden = (toolbarItems?.isEmpty ?? true)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     open override func viewWillDisappear(_ animated: Bool) {
@@ -76,13 +89,28 @@ open class SAPhotoPreviewer: UIViewController {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
+    private func _init() {
+        _logger.trace()
+    }
+    
+    private var _toolbarItems: [UIBarButtonItem]??
+    
     fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
+    
+    init(photo: SAPhoto) {
+        super.init(nibName: nil, bundle: nil)
+        _init()
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
-extension SAPhotoPreviewer: SAPhotoBrowserViewDelegate {
+extension SAPhotoPickerPreviewer: SAPhotoBrowserViewDelegate {
     
     func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject) {
         _logger.trace()
@@ -92,7 +120,7 @@ extension SAPhotoPreviewer: SAPhotoBrowserViewDelegate {
         navigationController?.navigationBar.isUserInteractionEnabled = isHidden
         navigationController?.toolbar.isUserInteractionEnabled = isHidden
         navigationController?.setNavigationBarHidden(!isHidden, animated: true)
-        navigationController?.setToolbarHidden(!isHidden, animated: true)
+        navigationController?.setToolbarHidden(!isHidden || (toolbarItems?.isEmpty ?? true), animated: true)
     }
     func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject) {
         _logger.trace()
@@ -116,7 +144,7 @@ extension SAPhotoPreviewer: SAPhotoBrowserViewDelegate {
     }
 }
 
-extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource?.numberOfPhotos(in: self) ?? 0
@@ -126,7 +154,7 @@ extension SAPhotoPreviewer: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoPreviewerCell else {
+        guard let cell = cell as? SAPhotoPickerPreviewerCell else {
             return
         }
         if let photo = dataSource?.photoPreviewer(self, photoForItemAt: indexPath.item) {

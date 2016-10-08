@@ -30,12 +30,49 @@ public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     
     // tap item
     @objc optional func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any)
+    
+    @objc optional func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
+    
+    
+    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim sender: AnyObject)
+    @objc optional func picker(_ picker: SAPhotoPicker, didCancel sender: AnyObject)
 }
 
 open class SAPhotoPicker: UINavigationController {
     
     open var allowsMultipleSelection: Bool = true
     
+    public init() {
+        super.init(navigationBarClass: nil, toolbarClass: SAPhotoToolbar.self)
+        _rootViewController = SAPhotoPickerAlbums()
+        _init()
+    }
+    public init(photo: SAPhoto) {
+        super.init(navigationBarClass: nil, toolbarClass: SAPhotoToolbar.self)
+        _rootViewController = SAPhotoPickerAlbums(photo: photo)
+        _init()
+    }
+    public init(album: SAPhotoAlbum) {
+        super.init(navigationBarClass: nil, toolbarClass: SAPhotoToolbar.self)
+        _rootViewController = SAPhotoPickerAlbums(album: album)
+        _init()
+    }
+    
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _rootViewController = SAPhotoPickerAlbums()
+        _init()
+    }
+    
+    deinit {
+        _logger.trace()
+        
+        SAPhotoAlbum.reloadData()
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+    }
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,56 +90,42 @@ open class SAPhotoPicker: UINavigationController {
         }
     }
     
-    @objc private func cancelHandler(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
+    func toolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return _delegate?.picker?(self, toolbarItemsFor: context)
     }
     
+    
     private func _init() {
+        _logger.trace()
         
         _rootViewController.picker = self
-        _rootViewController.toolbarItems = toolbarItems
         _rootViewController.navigationItem.rightBarButtonItem = _cancelBarItem
         
-        // :)
-        self.viewControllers = [_rootViewController]
+        viewControllers = [_rootViewController]
         
         SAPhotoLibrary.shared.register(self)
     }
-    private func _deinit() {
-        SAPhotoAlbum.reloadData()
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
-    }
     
     
-    fileprivate weak var _delegate: SAPhotoPickerDelegate? {
-        return delegate as? SAPhotoPickerDelegate
-    }
+    private var _rootViewController: SAPhotoPickerAlbums!
+    private var _cancelBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
-    private lazy var _cancelBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
-    private lazy var _rootViewController: SAPhotoPickerAlbums = SAPhotoPickerAlbums()
-    
-    
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
+    fileprivate weak var _delegate: SAPhotoPickerDelegate? {
+        return delegate as? SAPhotoPickerDelegate
     }
-    public override init(rootViewController: UIViewController) {
-        super.init(rootViewController: rootViewController)
-        _init()
-    }
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        _init()
-    }
-    public override init(navigationBarClass: Swift.AnyClass?, toolbarClass: Swift.AnyClass?) {
-        super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
-        _init()
-    }
-    deinit {
-        _deinit()
+}
+
+// MARK: - Event
+
+private extension SAPhotoPicker {
+
+    @objc func cancelHandler(_ sender: Any) {
+        _logger.trace()
+        
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -141,12 +164,11 @@ extension SAPhotoPicker: SAPhotoSelectionable {
     
     // tap item
     open func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
-        
-        let previewer = SAPhotoPreviewer()
-        
-        previewer.delegate = selection as? SAPhotoPreviewerDelegate
-        previewer.dataSource = selection as? SAPhotoPreviewerDataSource
-        
+        let previewer = SAPhotoPickerPreviewer(photo: photo)
+//
+//        previewer.delegate = selection as? SAPhotoPickerPreviewerDelegate
+//        previewer.dataSource = selection as? SAPhotoPickerPreviewerDataSource
+//        
         pushViewController(previewer, animated: true)
         
         _delegate?.picker?(self, tapItemFor: photo, with: selection)

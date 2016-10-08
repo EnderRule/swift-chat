@@ -8,14 +8,42 @@
 
 import UIKit
 
-internal class SAPhotoToolbar: UIToolbar {
+@objc
+public enum SAPhotoToolbarContext: Int {
+    case edit
+    case preview
+    case list
+    case panel
+}
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+
+open class SAPhotoToolbar: UIToolbar {
+    
+    open override var items: [UIBarButtonItem]? {
+        set {
+            return setItems(newValue, animated: false)
+        }
+        get {
+            return _items
+        }
     }
-    */
-
+    open override func setItems(_ items: [UIBarButtonItem]?, animated: Bool) {
+        guard (items ?? []) != (_items ?? []) else {
+            return
+        }
+        _items = items
+        _updateItems(items, animated: animated)
+    }
+    
+    private func _updateItems(_ newValue: [UIBarButtonItem]?, animated: Bool) {
+        let items: [UIBarButtonItem]? = newValue?.map {
+            guard let item = $0 as? SAPhotoBarItem else {
+                return $0
+            }
+            return item.toBarItem()
+        }
+        super.setItems(items, animated: animated)
+    }
+    
+    private var _items: [UIBarButtonItem]?
 }

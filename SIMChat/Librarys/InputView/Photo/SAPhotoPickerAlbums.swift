@@ -12,6 +12,12 @@ import Photos
 internal class SAPhotoPickerAlbums: UITableViewController {
     
     weak var picker: SAPhotoPicker?
+    
+    func makePhotoPreviewer(with photo: SAPhoto) -> SAPhotoPickerPreviewer {
+        let vc = SAPhotoPickerPreviewer(photo: photo)
+        //vc.dataSource = photo.album
+        return vc
+    }
 
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
         let vc = SAPhotoPickerAssets(album: album)
@@ -25,8 +31,15 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     override var toolbarItems: [UIBarButtonItem]? {
-        set { return super.toolbarItems = newValue }
-        get { return picker?.toolbarItems }
+        set { }
+        get {
+            if let toolbarItems = _toolbarItems {
+                return toolbarItems
+            }
+            let toolbarItems = picker?.toolbarItems(for: .list)
+            _toolbarItems = toolbarItems
+            return toolbarItems
+        }
     }
     
     override func viewDidLoad() {
@@ -43,11 +56,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         // 检查权限
         SAPhotoLibrary.shared.requestAuthorization {
             self._reloadAlbums($0)
-            
-            guard let album = self._albums?.first else {
-                return
-            }
-            self.navigationController?.pushViewController(self.makeAssetsPicker(with: album), animated: false)
+            self._initController($0)
         }
     }
     
@@ -131,32 +140,77 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     }
     
     private func _init() {
+        _logger.trace()
+        
         SAPhotoLibrary.shared.register(self)
     }
-    private func _deinit() {
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+    private func _initController(_ hasPermission: Bool) {
+        guard hasPermission else {
+            return
+        }
+        _logger.trace()
+        
+        var vcs = navigationController?.viewControllers ?? []
+        
+        if let album = _initWithAlbum ?? _albums?.first {
+            vcs.append(makeAssetsPicker(with: album))
+        }
+        if let photo = _initWithPhoto {
+            vcs.append(makePhotoPreviewer(with: photo))
+        }
+        
+        navigationController?.setViewControllers(vcs, animated: false)
     }
     
-    private var _status: SAPhotoStatus = .notError
-    private var _statusView: SAPhotoPickerErrorView?
-    
-    fileprivate var _albums: [SAPhotoAlbum]?
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        _init()
+    }
+    init(photo: SAPhoto) {
+        super.init(nibName: nil, bundle: nil)
+        _init()
+        _initWithPhoto = photo
+        _initWithAlbum = photo.album
+    }
+    init(album: SAPhotoAlbum) {
+        super.init(nibName: nil, bundle: nil)
+        _init()
+        _initWithAlbum = album
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
     }
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
-        _init()
-    }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        _init()
-    }
+    
     deinit {
-        _deinit()
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
+    
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//        _init()
+//    }
+//    override init(style: UITableViewStyle) {
+//        super.init(style: style)
+//        _init()
+//    }
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        _init()
+//    }
+    
+    private var _initWithPhoto: SAPhoto?
+    private var _initWithAlbum: SAPhotoAlbum?
+    
+    private var _status: SAPhotoStatus = .notError
+    private var _statusView: SAPhotoPickerErrorView?
+    
+    private var _toolbarItems: [UIBarButtonItem]??
+    
+    fileprivate var _albums: [SAPhotoAlbum]?
+    
+    
 }
 
 // MARK: - UITableViewDelegate & UITableViewDataSource 

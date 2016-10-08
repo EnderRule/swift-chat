@@ -1,5 +1,5 @@
 //
-//  SAPhotoPreviewerForModal.swift
+//  SAPhotoPickerPreviewerForModal.swift
 //  SIMChat
 //
 //  Created by sagesse on 10/8/16.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAPhotoPreviewerForModal: UINavigationController {
+internal class SAPhotoPickerPreviewerForModal: UINavigationController {
     
-    var previewer: SAPhotoPreviewer {
+    var previewer: SAPhotoPickerPreviewer {
         return _previewer
     }
     
@@ -43,7 +43,7 @@ internal class SAPhotoPreviewerForModal: UINavigationController {
     }
 
     private lazy var _temp: UIViewController = UIViewController()
-    private lazy var _previewer: SAPhotoPreviewer = SAPhotoPreviewer()
+    private var _previewer: SAPhotoPickerPreviewer!// = SAPhotoPickerPreviewer()
     
     private lazy var _viewControllers: [UIViewController] = []
     

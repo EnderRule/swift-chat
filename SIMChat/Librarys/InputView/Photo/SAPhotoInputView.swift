@@ -71,6 +71,15 @@ open class SAPhotoInputView: UIView {
     open weak var delegate: SAPhotoInputViewDelegate?
     
     
+    func toolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        switch context {
+        case .panel:    return [_pickBarItem, _editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
+        case .list:     return [_previewBarItem, _editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
+        case .preview:  return [_editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
+        default:        return nil
+        }
+    }
+    
     fileprivate func _updateFileSize() {
         var title = "原图"
         
@@ -78,60 +87,41 @@ open class SAPhotoInputView: UIView {
             title += "(\(_selectedPhotos.count)M)"
         }
         
-        _original1BarItem.title = title
-        _original2BarItem.title = title
+        _originalBarItem.title = title
     }
     
     fileprivate func _updatePhotoCount() {
         
         if !_selectedPhotos.isEmpty {
-            _send1BarItem.title = "发送(\(_selectedPhotos.count))"
-            _send2BarItem.title = "发送(\(_selectedPhotos.count))"
+            _sendBarItem.title = "发送(\(_selectedPhotos.count))"
         } else {
-            _send1BarItem.title = "发送"
-            _send2BarItem.title = "发送"
+            _sendBarItem.title = "发送"
         }
         if _isOriginalImage {
             _updateFileSize()
         }
         
-        _send1BarItem.isEnabled = !_selectedPhotos.isEmpty
-        _send2BarItem.isEnabled = !_selectedPhotos.isEmpty
-        
-        _edit1BarItem.isEnabled = _selectedPhotos.count == 1
-        _edit2BarItem.isEnabled = _selectedPhotos.count == 1
-        
+        _sendBarItem.isEnabled = !_selectedPhotos.isEmpty
+        _editBarItem.isEnabled = _selectedPhotos.count == 1
         _previewBarItem.isEnabled = !_selectedPhotos.isEmpty
-        
-        _original1BarItem.isEnabled = !_selectedPhotos.isEmpty
-        _original2BarItem.isEnabled = !_selectedPhotos.isEmpty
+        _originalBarItem.isEnabled = !_selectedPhotos.isEmpty
     }
     
     
     private func _init() {
         _logger.trace()
         
-        let color = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
+//        let color = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
+//        tintColor = color
         
-        tintColor = color
-        
-        _pickBarItem = SAPhotoBarButtonItem(title: "相册", type: .normal, target: self, action: #selector(onPicker(_:)))
-        _edit1BarItem = SAPhotoBarButtonItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
-        _edit2BarItem = SAPhotoBarButtonItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
-        _send1BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForInputView(_:)))
-        _send2BarItem = SAPhotoBarButtonItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
-        _previewBarItem = SAPhotoBarButtonItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewerForPicker(_:)))
-        _original1BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
-        _original2BarItem = SAPhotoBarButtonItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
+        _pickBarItem = SAPhotoBarItem(title: "相册", type: .normal, target: self, action: #selector(onPicker(_:)))
+        _editBarItem = SAPhotoBarItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
+        _sendBarItem = SAPhotoBarItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
+        _previewBarItem = SAPhotoBarItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewerForPicker(_:)))
+        _originalBarItem = SAPhotoBarItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
         
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
-        _tabbar.items = [
-            _pickBarItem,
-            _edit1BarItem,
-            _original1BarItem,
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            _send1BarItem,
-        ]
+        _tabbar.items = toolbarItems(for: .panel)
         
         _contentView.delegate = self
         _contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -159,20 +149,15 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
-    fileprivate var _pickBarItem: SAPhotoBarButtonItem!
-    fileprivate var _previewBarItem: SAPhotoBarButtonItem!
-    
-    fileprivate var _edit1BarItem: SAPhotoBarButtonItem!
-    fileprivate var _edit2BarItem: SAPhotoBarButtonItem!
-    
-    fileprivate var _original1BarItem: SAPhotoBarButtonItem!
-    fileprivate var _original2BarItem: SAPhotoBarButtonItem!
-    
-    fileprivate var _send1BarItem: SAPhotoBarButtonItem!
-    fileprivate var _send2BarItem: SAPhotoBarButtonItem!
+    fileprivate var _pickBarItem: SAPhotoBarItem!
+    fileprivate var _previewBarItem: SAPhotoBarItem!
+    fileprivate var _editBarItem: SAPhotoBarItem!
+    fileprivate var _originalBarItem: SAPhotoBarItem!
+    fileprivate var _sendBarItem: SAPhotoBarItem!
+    fileprivate var _spaceBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     
     fileprivate weak var _picker: SAPhotoPicker?
-    fileprivate weak var _previewer: SAPhotoPreviewer?
+    fileprivate weak var _previewer: SAPhotoPickerPreviewer?
     
     fileprivate lazy var _tabbar: SAPhotoToolbar = SAPhotoToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
@@ -208,13 +193,11 @@ extension SAPhotoInputView {
     func onChangeOriginal(_ sender: UIButton) {
         _isOriginalImage = !_isOriginalImage
         
-        let n = sender.image(for: .normal)
-        let s = sender.image(for: .selected)
-        
-        _original1BarItem.button.setImage(s, for: .normal)
-        _original1BarItem.button.setImage(n, for: .selected)
-        _original2BarItem.button.setImage(s, for: .normal)
-        _original2BarItem.button.setImage(n, for: .selected)
+        _originalBarItem.isSelected = _isOriginalImage
+//        _original1BarItem.button.setImage(s, for: .normal)
+//        _original1BarItem.button.setImage(n, for: .selected)
+//        _original2BarItem.button.setImage(s, for: .normal)
+//        _original2BarItem.button.setImage(n, for: .selected)
         
         // 更新文件大小
         _updateFileSize()
@@ -229,18 +212,22 @@ extension SAPhotoInputView {
         }
         let picker = SAPhotoPicker()
         
-        picker.delegate = self
-        picker.view.tintColor = tintColor
-        picker.toolbarItems = [
-            _previewBarItem,
-            _edit2BarItem,
-            _original2BarItem,
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            _send2BarItem,
-        ]
-        _picker = picker
-     
+        
+        //(viewController as? UINavigationController)?.pushViewController(picker, animated: true)
         viewController.present(picker, animated: true, completion: nil)
+//        let picker = SAPhotoPicker()
+//        
+//        picker.delegate = self
+//        picker.toolbarItems = [
+//            _previewBarItem,
+//            _editBarItem,
+//            _originalBarItem,
+//            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+//            _sendBarItem,
+//        ]
+//        _picker = picker
+//     
+//        viewController.present(picker, animated: true, completion: nil)
     }
     func onPreviewerForPicker(_ sender: Any) {
         _logger.trace(sender)
@@ -248,11 +235,11 @@ extension SAPhotoInputView {
 //        guard let viewController = _picker else {
 //            return
 //        }
-//        let previewer = SAPhotoPreviewer()
+//        let previewer = SAPhotoPickerPreviewer()
 //        let nav = UINavigationController(rootViewController: previewer)
 //        viewController.present(nav, animated: true, completion: nil)
 //        _previewer = previewer
-//        let previewer = SAPhotoPreviewer()
+//        let previewer = SAPhotoPickerPreviewer()
 //        
 //        _previewer = previewer
     }
@@ -280,15 +267,15 @@ extension SAPhotoInputView {
     
 }
 
-// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate
+// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate
 
-//extension SAPhotoInputView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate {
+//extension SAPhotoInputView: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate {
     
-//    open func numberOfPhotos(in previewer: SAPhotoPreviewer) -> Int {
+//    open func numberOfPhotos(in previewer: SAPhotoPickerPreviewer) -> Int {
 //        return _selectedPhotos.count
 //    }
 //
-//    open func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+//    open func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
 //        return _
 //    }
 //}
@@ -324,6 +311,10 @@ extension SAPhotoInputView: SAPhotoPickerDelegate {
     }
     open func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
         deselectItem(for: photo)
+    }
+    
+    public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return toolbarItems(for: context)
     }
     
     // MARK: Display
@@ -362,9 +353,11 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
         deselectItem(for: photo)
     }
+    
+    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return toolbarItems(for: context)
+    }
 }
-
-private var _UINavigationItemCanBack = "_UINavigationItemCanBack"
 
 
 

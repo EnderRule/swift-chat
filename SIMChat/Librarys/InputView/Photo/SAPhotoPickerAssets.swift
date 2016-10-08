@@ -26,14 +26,18 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
-        get { return picker?.toolbarItems }
+        get {
+            if let toolbarItems = _toolbarItems {
+                return toolbarItems
+            }
+            let toolbarItems = picker?.toolbarItems(for: .list)
+            _toolbarItems = toolbarItems
+            return toolbarItems
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = _album?.title
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         
         collectionView?.backgroundColor = .white
         collectionView?.allowsSelection = false
@@ -285,6 +289,11 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     }
     
     private func _init() {
+        _logger.trace()
+        
+        title = _album?.title
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+        
         SAPhotoLibrary.shared.register(self)
     }
     private func _deinit() {
@@ -304,6 +313,8 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
 
     private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPhotoPickerErrorView?
+    
+    private var _toolbarItems: [UIBarButtonItem]??
     
     fileprivate var _album: SAPhotoAlbum?
     
@@ -420,16 +431,20 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     }
 }
 
-// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate 
+// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate 
 
-extension SAPhotoPickerAssets: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate  {
+extension SAPhotoPickerAssets: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate  {
     
-    public func numberOfPhotos(in photoPreviewer: SAPhotoPreviewer) -> Int {
+    public func numberOfPhotos(in photoPreviewer: SAPhotoPickerPreviewer) -> Int {
         return _photos.count
     }
     
-    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
         return _photos[index]
+    }
+    
+    func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return picker?.toolbarItems(for: context)
     }
 }
 

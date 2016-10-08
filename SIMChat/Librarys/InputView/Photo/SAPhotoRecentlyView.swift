@@ -25,6 +25,8 @@ public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     
     // tap item
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any)
+    
+    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
 }
 
 
@@ -279,18 +281,21 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
     }
 }
 
-// MARK: - SAPhotoPreviewerDataSource & SAPhotoPreviewerDelegate 
+// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate 
 
-extension SAPhotoRecentlyView: SAPhotoPreviewerDataSource, SAPhotoPreviewerDelegate  {
+extension SAPhotoRecentlyView: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate  {
     
-    public func numberOfPhotos(in photoPreviewer: SAPhotoPreviewer) -> Int {
+    public func numberOfPhotos(in photoPreviewer: SAPhotoPickerPreviewer) -> Int {
         return _photos?.count ?? 0
     }
     
-    public func photoPreviewer(_ photoPreviewer: SAPhotoPreviewer, photoForItemAt index: Int) -> SAPhoto {
+    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
         return _photos![index]
     }
-   
+    
+    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return delegate?.recentlyView?(self, toolbarItemsFor: context)
+    }
 }
 
 // MARK: - PHPhotoLibraryChangeObserver
@@ -389,13 +394,13 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
         
         let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
-        let modal = SAPhotoPreviewerForModal()
+        let picker = SAPhotoPicker(photo: photo)
+        //let modal = SAPhotoPickerPreviewerForModal()
         
-        modal.view.tintColor = tintColor
-        modal.previewer.delegate = self
-        modal.previewer.dataSource = self
+        //modal.previewer.delegate = self
+        //modal.previewer.dataSource = self
         
-        rootViewController?.present(modal, animated: true, completion: nil)
+        rootViewController?.present(picker, animated: true, completion: nil)
         
         delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
     }
