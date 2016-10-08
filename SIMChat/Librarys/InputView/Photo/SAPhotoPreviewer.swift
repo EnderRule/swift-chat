@@ -28,12 +28,9 @@ open class SAPhotoPreviewer: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Preview"
         automaticallyAdjustsScrollViewInsets = false
         
-        //navigationItem.leftBarButtonItem = 
-            //UIBarButtonItem(barButtonSystemItem: <#T##UIBarButtonSystemItem#>, target: <#T##Any?#>, action: <#T##Selector?#>)
-
-        //view.backgroundColor = .white
         view.backgroundColor = .black
         
         let ts: CGFloat = 20
@@ -65,17 +62,22 @@ open class SAPhotoPreviewer: UIViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        _logger.trace()
+        
         navigationController?.isNavigationBarHidden = false
         navigationController?.isToolbarHidden = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        _logger.trace()
+        
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
-    private lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-    private lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
+    fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
 }
@@ -83,18 +85,34 @@ open class SAPhotoPreviewer: UIViewController {
 extension SAPhotoPreviewer: SAPhotoBrowserViewDelegate {
     
     func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject) {
+        _logger.trace()
+        
         let isHidden = navigationController?.isNavigationBarHidden ?? false
         
+        navigationController?.navigationBar.isUserInteractionEnabled = isHidden
+        navigationController?.toolbar.isUserInteractionEnabled = isHidden
         navigationController?.setNavigationBarHidden(!isHidden, animated: true)
         navigationController?.setToolbarHidden(!isHidden, animated: true)
     }
-    
     func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject) {
-        //_logger.trace()
+        _logger.trace()
         
         // 双击的时候隐藏
         navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    func browserView(_ browserView: SAPhotoBrowserView, shouldRotation orientation: UIImageOrientation) -> Bool {
+        _logger.trace()
+        
+        _contentView.isScrollEnabled = false
+        return true
+    }
+    
+    func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation) {
+        _logger.trace()
+        
+        _contentView.isScrollEnabled = true
     }
 }
 

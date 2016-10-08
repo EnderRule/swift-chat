@@ -65,11 +65,19 @@ open class SAPhotoLoader: NSObject, SAPhotoLoaderType {
             return
         }
         
+        let options = PHImageRequestOptions()
+        
+        options.deliveryMode = .highQualityFormat
+        options.resizeMode = .fast
+        options.isNetworkAccessAllowed = true
+        
 //        PHImageRequestOptions *imageRequestOptions = [[PHImageRequestOptions alloc] init];
 //        imageRequestOptions.networkAccessAllowed = YES; // 允许访问网络
 //        imageRequestOptions.progressHandler = phProgressHandler;
         
-        _requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: nil) { [weak self] in
+        _requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: options) { [weak self] in
+            self?.logger.trace()
+            
             guard let ss = self else {
                 return
             }

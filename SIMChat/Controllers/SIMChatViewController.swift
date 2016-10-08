@@ -95,6 +95,8 @@ open class SIMChatViewController: UIViewController {
         if let group = SIMChatEmoticonGroup(contentsOfFile: SIMChatBundle.resourcePath("Emoticons/cn.com.a-li/Info.plist")!) {
             _emoticonGroups.append(group)
         }
+        
+        title = "Chat"
     }
     open func inputViewContentSize(_ inputView: UIView) -> CGSize {
         if isLandscape {

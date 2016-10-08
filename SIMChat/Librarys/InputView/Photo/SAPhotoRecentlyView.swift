@@ -387,6 +387,16 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
+        
+        let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
+        let modal = SAPhotoPreviewerForModal()
+        
+        modal.view.tintColor = tintColor
+        modal.previewer.delegate = self
+        modal.previewer.dataSource = self
+        
+        rootViewController?.present(modal, animated: true, completion: nil)
+        
         delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
     }
 }

@@ -15,6 +15,8 @@ internal protocol SAPhotoBrowserViewDelegate: NSObjectProtocol {
     @objc optional func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject)
     @objc optional func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject)
     
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, shouldRotation orientation: UIImageOrientation) -> Bool
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation)
 }
 
 internal class SAPhotoBrowserView: UIView {
@@ -30,22 +32,33 @@ internal class SAPhotoBrowserView: UIView {
             loader?.requestImage()
         }
     }
-    weak var delegate: SAPhotoBrowserViewDelegate?
+    weak var delegate: SAPhotoBrowserViewDelegate? {
+        set { return _delegate = newValue }
+        get { return _delegate }
+    }
     
     
     @objc private func tapHandler(_ sender: AnyObject) {
         //_logger.trace()
         
-        delegate?.browserView?(self, didTapWith: sender)
+        _delegate?.browserView?(self, didTapWith: sender)
     }
     @objc private func rotationHandler(_ sender: UIRotationGestureRecognizer) {
         //_logger.trace(sender.rotation)
         
         guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
             // 开始旋转
-            _isRotationing = true
+            if !_isRotationing {
+                guard _delegate?.browserView?(self, shouldRotation: loader?.orientation ?? .up) ?? true else {
+                    return // .. 不允许旋转
+                }
+                _isRotationing = true
+            }
             _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
             return
+        }
+        guard _isRotationing else {
+            return // 并没有开始旋转
         }
         // 停止旋转
         _isRotationing = false
@@ -139,11 +152,14 @@ internal class SAPhotoBrowserView: UIView {
         guard oldOrientation != newOrientation else {
             guard animated else {
                 _scrollView.transform = .identity
+                _delegate?.browserView?(self, didRotation: newOrientation)
                 return
             }
-            UIView.animate(withDuration: 0.25) { [_scrollView] in
+            UIView.animate(withDuration: 0.25, animations: { [_scrollView] in
                 _scrollView.transform = .identity
-            }
+            }, completion: { [_delegate] b in
+                _delegate?.browserView?(self, didRotation: newOrientation)
+            })
             return
         }
         // 生成新的图片(符合方向的)
@@ -177,7 +193,7 @@ internal class SAPhotoBrowserView: UIView {
             _imageView.frame = nbounds.applying(transform)
             _imageView.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
             
-        }, completion: { [_scrollView, _imageView] b in
+        }, completion: { [_scrollView, _imageView, _delegate] b in
             
             _scrollView.transform = .identity
             _scrollView.frame = self.bounds
@@ -187,6 +203,8 @@ internal class SAPhotoBrowserView: UIView {
             _imageView.image = newImage
             _imageView.frame = nbounds
             _imageView.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
+            
+            _delegate?.browserView?(self, didRotation: newOrientation)
         })
     }
     
@@ -224,6 +242,8 @@ internal class SAPhotoBrowserView: UIView {
             //_scrollView.ignoreContentOffsetChanges = newValue
         }
     }
+    
+    fileprivate weak var _delegate: SAPhotoBrowserViewDelegate?
     
     fileprivate lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))

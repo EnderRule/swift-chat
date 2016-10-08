@@ -174,7 +174,7 @@ open class SAPhotoInputView: UIView {
     fileprivate weak var _picker: SAPhotoPicker?
     fileprivate weak var _previewer: SAPhotoPreviewer?
     
-    fileprivate lazy var _tabbar: UIToolbar = UIToolbar()
+    fileprivate lazy var _tabbar: SAPhotoToolbar = SAPhotoToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
     
     public override init(frame: CGRect) {
@@ -241,21 +241,6 @@ extension SAPhotoInputView {
         _picker = picker
      
         viewController.present(picker, animated: true, completion: nil)
-    }
-    func onPreviewerForInputView(_ sender: Any) {
-        _logger.trace()
-        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
-            return
-        }
-        let previewer = SAPhotoPreviewer()
-        let presentation = UINavigationController(rootViewController: previewer)
-        
-        previewer.dataSource = _contentView
-        previewer.delegate = _contentView 
-        
-        //nav.viewControllers = [previewer]
-        viewController.present(presentation, animated: true, completion: nil)
-        _previewer = previewer
     }
     func onPreviewerForPicker(_ sender: Any) {
         _logger.trace(sender)
@@ -377,12 +362,9 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
         deselectItem(for: photo)
     }
-    
-    // tap item
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any) {
-        _logger.trace()
-        
-        onPreviewerForInputView(photo)
-    }
 }
+
+private var _UINavigationItemCanBack = "_UINavigationItemCanBack"
+
+
 
