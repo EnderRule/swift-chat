@@ -47,7 +47,7 @@ public class SIMChatBrowseAnimatedTransitioning: NSObject, UIViewControllerTrans
     
     /// 转换
     private func __convertRect(view: UIImageView?) -> CGRect {
-        guard let view = view, image = view.image else {
+        guard let view = view, let image = view.image else {
             return CGRectZero
         }
         return __convertRect(image.size, rect: view.bounds, view.contentMode)
@@ -106,11 +106,11 @@ public class SIMChatBrowseAnimatedTransitioning: NSObject, UIViewControllerTrans
         return Imp(duration: duration) { context in
             // 获取上下文视图
             guard let fromVC = context.viewControllerForKey(UITransitionContextFromViewControllerKey),
-                toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey),
-                containerView = context.containerView() else {
+                let toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey) else {
                     context.completeTransition(false)
                     return
             }
+            let containerView = context.containerView()
             
             toVC.view.frame = fromVC.view.bounds
             
@@ -167,12 +167,12 @@ public class SIMChatBrowseAnimatedTransitioning: NSObject, UIViewControllerTrans
         return Imp(duration: duration) { context in
             // 获取上下文视图
             guard let fromVC = context.viewControllerForKey(UITransitionContextFromViewControllerKey),
-                containerView = context.containerView(),
-                fromView = self.to.targetView,
-                toView = self.from.targetView else {
+                let fromView = self.to.targetView,
+                let toView = self.from.targetView else {
                     context.completeTransition(false)
                     return
             }
+            let containerView = context.containerView()
             
             // 计算实际大小
             let fframe = self.__convertRect(fromView)

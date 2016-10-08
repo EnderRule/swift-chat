@@ -199,7 +199,7 @@ public class SIMChatPhotoAsset: NSObject {
         } else {
             if let v = self.data as? ALAsset {
                 if let url = v.valueForProperty(ALAssetPropertyAssetURL) as? NSURL {
-                    return url.absoluteString
+                    return url.absoluteString!
                 }
             }
         }

@@ -57,11 +57,11 @@ class ExConversation: SIMChatBaseConversation {
 //                closure?(.Failure(NSError(domain: error, code: Int(code), userInfo: nil)))
         //            })
         dispatch_after_at_now(0.5, dispatch_get_main_queue()) {
-            //                    if rand() % 3 == 0 {
+            //                    if arc4random() % 3 == 0 {
             //                        op.failure(NSError(domain: "", code: 0, userInfo: nil))
             //                        return
             //                    }
-            let ms = self.makeRandHistory()
+            let ms = self.makearc4randomHistory()
             self.messages.appendContentsOf(ms)
             closure?(.Success(ms))
         }
@@ -177,12 +177,12 @@ class ExConversation: SIMChatBaseConversation {
         "Error"
     ]
     
-    func makeRandText() -> String {
+    func makearc4randomText() -> String {
         var str = ""
-        let r = (rand() % 50) + 1
+        let r = (arc4random() % 50) + 1
         let count = self.dynamicType.ttv.count
         for _ in 0 ..< r {
-            let x = self.dynamicType.ttv[Int(rand()) % count]
+            let x = self.dynamicType.ttv[Int(arc4random()) % count]
             if str.isEmpty {
                 str = x
             } else {
@@ -195,7 +195,7 @@ class ExConversation: SIMChatBaseConversation {
    
     
     
-    func makeRandHistory() -> Array<SIMChatMessage> {
+    func makearc4randomHistory() -> Array<SIMChatMessage> {
         var rs: Array<SIMChatMessage> = []
         
         let path = SIMChatBaseImageResource(NSBundle.mainBundle().pathForResource("t1", ofType: "jpg")!)
@@ -210,7 +210,7 @@ class ExConversation: SIMChatBaseConversation {
         
         for r in 0 ..< (2 * 11) {
         //while rs.count < 10 {
-            //let r = rand()
+            //let r = arc4random()
             
             i += 999
             
@@ -228,8 +228,8 @@ class ExConversation: SIMChatBaseConversation {
                 rs.append(m)
             }
             
-            if true || (rand() % 10) < 6 {
-                let c = SIMChatBaseMessageTextContent(content: makeRandText())
+            if true || (arc4random() % 10) < 6 {
+                let c = SIMChatBaseMessageTextContent(content: makearc4randomText())
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
                 m.isSelf = (r % 2 == 0)
@@ -237,8 +237,8 @@ class ExConversation: SIMChatBaseConversation {
                 m.timestamp = NSDate(timeIntervalSinceNow: i + 0)
                 rs.append(m)
             }
-            if true || (rand() % 10) < 6 {
-                let c = SIMChatBaseMessageTextContent(content: makeRandText())
+            if true || (arc4random() % 10) < 6 {
+                let c = SIMChatBaseMessageTextContent(content: makearc4randomText())
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
                 m.isSelf = (r % 2 == 0)
@@ -247,7 +247,7 @@ class ExConversation: SIMChatBaseConversation {
                 rs.append(m)
             }
             
-            if true || (rand() % 10) == 2 {
+            if true || (arc4random() % 10) == 2 {
                 let c = SIMChatBaseMessageImageContent(origin: path, thumbnail: tpath, size: size)
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
@@ -256,7 +256,7 @@ class ExConversation: SIMChatBaseConversation {
                 m.timestamp = NSDate(timeIntervalSinceNow: i + 1)
                 rs.append(m)
             }
-            if true || (rand() % 10) == 2 {
+            if true || (arc4random() % 10) == 2 {
                 let c = SIMChatBaseMessageImageContent(origin: path2, thumbnail: tpath2, size: size2)
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
@@ -266,7 +266,7 @@ class ExConversation: SIMChatBaseConversation {
                 rs.append(m)
             }
             
-            if true || (rand() % 10) < 2 {
+            if true || (arc4random() % 10) < 2 {
                 let c = SIMChatBaseMessageAudioContent(origin: apath, duration: 6.2 * Double((r % 3600) + 1))
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
@@ -275,7 +275,7 @@ class ExConversation: SIMChatBaseConversation {
                 m.timestamp = NSDate(timeIntervalSinceNow: i + 2)
                 rs.append(m)
             }
-            if true || (rand() % 10) < 2 {
+            if true || (arc4random() % 10) < 2 {
                 let c = SIMChatBaseMessageAudioContent(origin: apath, duration: 6.2 * Double((r % 3600) + 1))
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.ContactShow]
@@ -285,7 +285,7 @@ class ExConversation: SIMChatBaseConversation {
                 rs.append(m)
             }
             
-            if true || (rand() % 10) < 3 {
+            if true || (arc4random() % 10) < 3 {
                 let c = SIMChatBaseMessageTipsContent(content: "this is a tips\nThis is a very long long long long long long long long the tips")
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.TimeLineHidden]
@@ -293,7 +293,7 @@ class ExConversation: SIMChatBaseConversation {
                 m.status = status
                 rs.append(m)
             }
-            if true || (rand() % 20) == 0  {
+            if true || (arc4random() % 20) == 0  {
                 let c = NSNull()
                 let m = SIMChatBaseMessage(content: c, receiver: o, sender: s)
                 m.option = [.TimeLineHidden]

@@ -45,7 +45,7 @@ class ExConversationViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        srand(UInt32(time(nil)))
+        //sarc4random(UInt32(time(nil)))
         
         SIMChatMessageBox.ActivityIndicator.begin()
         

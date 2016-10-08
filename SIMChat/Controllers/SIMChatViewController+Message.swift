@@ -227,7 +227,7 @@ extension SIMChatViewController.MessageManager: UITableViewDelegate, UITableView
                 return fabs(aafter.timestamp.timeIntervalSinceDate(before.timestamp)) < durationInterval
             }
         }
-        guard let after = after, before = before else {
+        guard let after = after, let before = before else {
             return false
         }
         // 计算

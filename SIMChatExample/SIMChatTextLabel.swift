@@ -21,35 +21,35 @@ public let SIMChatTextTruncationToken = "\u{2026}"
 private func _SIMChatTextDebug(path: CGPath?, _ size: CGSize) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    CGContextSaveGState(context!)
     
 //    CGContextTranslateCTM(context, 0, size.height)
-    CGContextScaleCTM(context, 1.0, -1.0)
+    CGContextScaleCTM(context!, 1.0, -1.0)
     
     // set attrib
     UIColor.redColor().setStroke()
-    CGContextSetLineWidth(context, 2)
+    CGContextSetLineWidth(context!, 2)
     // draw
-    CGContextAddPath(context, path)
-    CGContextStrokePath(context)
+    CGContextAddPath(context!, path!)
+    CGContextStrokePath(context!)
     
-    CGContextRestoreGState(context)
+    CGContextRestoreGState(context!)
     
 }
 
 private func _SIMChatTextDraw(frame: CTFrame, _ size: CGSize) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    CGContextSaveGState(context!)
     
     UIColor.purpleColor().setStroke()
     
 //    CGContextTranslateCTM(context, 0, size.height)
-    CGContextScaleCTM(context, 1.0, -1.0)
+    CGContextScaleCTM(context!, 1.0, -1.0)
     
     CTFrameDraw(frame, context!)
     
-    CGContextRestoreGState(context)
+    CGContextRestoreGState(context!)
 }
 //private func _SIMChatTextDraw(line: CTLine, _ size: CGSize) {
 //    let context = UIGraphicsGetCurrentContext()
@@ -69,20 +69,20 @@ private func _SIMChatTextDraw(frame: CTFrame, _ size: CGSize) {
 private func _SIMChatTextDebug(rect: CGRect) {
     let context = UIGraphicsGetCurrentContext()
     
-    CGContextSaveGState(context)
+    CGContextSaveGState(context!)
     
 //    CGContextTranslateCTM(context, 0, size.height)
 //    CGContextScaleCTM(context, 1.0, -1.0)
     
     // set attrib
     UIColor.redColor().setStroke()
-    CGContextSetLineWidth(context, 1)
+    CGContextSetLineWidth(context!, 1)
     // draw
-    CGContextAddRect(context, rect)
+    CGContextAddRect(context!, rect)
 //    CGContextAddPath(context, path)
-    CGContextStrokePath(context)
+    CGContextStrokePath(context!)
     
-    CGContextRestoreGState(context)
+    CGContextRestoreGState(context!)
     
 }
 
@@ -111,14 +111,14 @@ private func _SIMChatTextDraw(line: SIMChatTextLine, context: CGContext?, size: 
         let textMatrixIsId = CGAffineTransformIsIdentity(textMatrix)
         
         if !textMatrixIsId {
-            CGContextSaveGState(context)
-            CGContextSetTextMatrix(context, CGAffineTransformConcat(CGContextGetTextMatrix(context), textMatrix))
+            CGContextSaveGState(context!)
+            CGContextSetTextMatrix(context!, CGAffineTransformConcat(CGContextGetTextMatrix(context!), textMatrix))
         }
         
         CTRunDraw(run, context!, CFRangeMake(0, 0))
         
         if !textMatrixIsId {
-            CGContextRestoreGState(context)
+            CGContextRestoreGState(context!)
         }
     }
 }
@@ -703,7 +703,7 @@ public class SIMChatTextLayout {
             // add the exclusion path to canvas, if need
             if !container.exclusionPaths.isEmpty {
                 canvas = container.exclusionPaths.reduce(CGPathCreateMutableCopy(canvas)) {
-                    CGPathAddPath($0, nil, $1.CGPath)
+                    CGPathAddPath($0!, nil, $1.CGPath)
                     return $0
                     } ?? canvas
             }

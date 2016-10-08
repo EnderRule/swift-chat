@@ -266,7 +266,7 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
         }
     }
     
-    // MARK: - Private Method
+    // MARK: - private Method
     
     /// 键盘高度
     private dynamic var keyboardHeight: CGFloat {

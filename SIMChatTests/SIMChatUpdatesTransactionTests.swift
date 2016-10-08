@@ -166,7 +166,7 @@ class SIMChatUpdatesTransactionTests: XCTestCase {
         
     }
     // 综合测试: 插入和移动
-    func testUpdatesTransactionOfInserAndMove() {
+    func testUpdatesTransactionOfInsearc4randomMove() {
         updatesTransaction.resetData()
         SIMLog.debug("B: \(updatesTransaction.datas)")
         SIMChatUpdatesTransactionPerform(updatesTransaction.view, &updatesTransaction.datas, true) {

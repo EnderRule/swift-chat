@@ -16,8 +16,6 @@
 		0C2475771C87E073003077B2 /* t2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C2475751C87E073003077B2 /* t2.jpg */; };
 		0C4070F71C7B605900AEECB7 /* m1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 0C4070F61C7B605900AEECB7 /* m1.m4a */; };
 		0C48A89F1C79566B00571BF5 /* SIMChatExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C48A89E1C79566B00571BF5 /* SIMChatExampleTests.swift */; };
-		0C4C0C911C89CA3A00DC3D56 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C901C89CA3A00DC3D56 /* libstdc++.tbd */; };
-		0C4C0C931C89CA5400DC3D56 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C921C89CA5400DC3D56 /* libsqlite3.tbd */; };
 		0C4C0C951C89CA5F00DC3D56 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C941C89CA5F00DC3D56 /* libz.tbd */; };
 		0C4C0C971C89CA6B00DC3D56 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C961C89CA6B00DC3D56 /* SystemConfiguration.framework */; };
 		0C4C0C991C89CA7A00DC3D56 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C981C89CA7A00DC3D56 /* CoreTelephony.framework */; };
@@ -149,8 +147,6 @@
 				0C4C0C991C89CA7A00DC3D56 /* CoreTelephony.framework in Frameworks */,
 				0C4C0C971C89CA6B00DC3D56 /* SystemConfiguration.framework in Frameworks */,
 				0C4C0C951C89CA5F00DC3D56 /* libz.tbd in Frameworks */,
-				0C4C0C931C89CA5400DC3D56 /* libsqlite3.tbd in Frameworks */,
-				0C4C0C911C89CA3A00DC3D56 /* libstdc++.tbd in Frameworks */,
 				0C6B414D1C60B7A600085B66 /* SIMChat.framework in Frameworks */,
 				0CE522881C63341800EB284D /* AudioToolbox.framework in Frameworks */,
 				0C4C0C9D1C89D3DC00DC3D56 /* MMProgressHUD.framework in Frameworks */,
@@ -575,6 +571,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SA.SIMChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d5a320ab-193b-4995-9e46-6cadfc6634d8";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -598,6 +595,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SA.SIMChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d5a320ab-193b-4995-9e46-6cadfc6634d8";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -609,6 +607,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = SA.SIMChatExampleTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SIMChatExample.app/SIMChatExample";
 			};
 			name = Debug;
@@ -621,6 +620,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = SA.SIMChatExampleTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SIMChatExample.app/SIMChatExample";
 			};
 			name = Release;

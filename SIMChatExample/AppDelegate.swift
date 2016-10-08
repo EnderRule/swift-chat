@@ -390,7 +390,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        srand(UInt32(time(nil)))
+        //sarc4random(UInt32(time(nil)))
         
         print(dic.count)
         

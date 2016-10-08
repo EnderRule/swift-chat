@@ -89,7 +89,7 @@ public final class SIMChatLayout {
         
         public var centerX: Relation { return set(.CenterX) }
         public var centerY: Relation { return set(.CenterY) }
-        public var baseline: Relation { return set(.Baseline) }
+        public var baseline: Relation { return set(.LastBaseline) }
         
         public var width: RelationOfConst { return setV2(.Width) }
         public var height: RelationOfConst { return setV2(.Height) }
@@ -133,7 +133,7 @@ public final class SIMChatLayout {
         public func trailing(v:CGFloat) -> Config { return set(.Trailing, v) }
         public func centerX(v:CGFloat)  -> Config { return set(.CenterX, v) }
         public func centerY(v:CGFloat)  -> Config { return set(.CenterY, v) }
-        public func baseline(v:CGFloat) -> Config { return set(.Baseline, v) }
+        public func baseline(v:CGFloat) -> Config { return set(.LastBaseline, v) }
         public func width(v:CGFloat)    -> Config { return set(.Width, v) }
         public func height(v:CGFloat)   -> Config { return set(.Height, v) }
         
