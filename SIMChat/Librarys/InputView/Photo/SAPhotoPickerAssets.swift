@@ -51,7 +51,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.isToolbarHidden = toolbarItems?.isEmpty ?? true
+        
+        let isHidden = _photos.isEmpty || toolbarItems?.isEmpty ?? true
+        navigationController?.isToolbarHidden = isHidden
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -200,6 +202,9 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             view.addSubview(error)
             collectionView?.isScrollEnabled = false
         }
+        
+        let isHidden = _photos.isEmpty || toolbarItems?.isEmpty ?? true
+        navigationController?.isToolbarHidden = isHidden
     }
     
     
@@ -215,7 +220,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
     }
     func updateSelection(forDeselected item: SAPhoto?) {
-        _logger.trace(item?.identifier)
+        _logger.trace(item?.identifier ?? "<Unknow>")
         
         collectionView?.visibleCells.forEach {
             let cell = $0 as? SAPhotoPickerAssetsCell

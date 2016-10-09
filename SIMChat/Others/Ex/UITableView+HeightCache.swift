@@ -30,8 +30,8 @@ extension UITableView {
     /// - parameter identifier: Reuse identifier for cell which must be registered.
     ///
     private func fd_templateReusableCellForIdentifier(_ identifier: String) -> UITableViewCell {
-        let reusableCells = (objc_getAssociatedObject(self, &_UITableViewTemplateReusableCellForIdentifierKey) as? NSCache<NSString, AnyObject>) ?? {
-            let dic = NSCache<NSString, AnyObject>()
+        let reusableCells = (objc_getAssociatedObject(self, &_UITableViewTemplateReusableCellForIdentifierKey) as? NSMutableDictionary) ?? {
+            let dic = NSMutableDictionary()
             objc_setAssociatedObject(self, &_UITableViewTemplateReusableCellForIdentifierKey, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return dic
         }()

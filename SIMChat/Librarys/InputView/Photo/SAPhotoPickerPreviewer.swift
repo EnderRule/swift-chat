@@ -37,13 +37,11 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         
         let ts: CGFloat = 20
         
+        _logger.debug("toolbar: \(navigationController?.toolbar)")
+        
         _toolbar.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 44)
         _toolbar.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
         _toolbar.items = toolbarItems
-        
-        if !(toolbarItems?.isEmpty ?? true) {
-            _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
-        }
         
         _selectedView.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
@@ -83,6 +81,17 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         view.backgroundColor = .black
         view.addSubview(_contentView)
         view.addSubview(_toolbar)
+    }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        var nframe = navigationController?.toolbar.frame ?? .zero
+        nframe.origin.x = 0
+        nframe.origin.y = view.bounds.height
+        
+        _toolbar.transform = .identity
+        _toolbar.frame = nframe
+        _updateToolbar(_isFullscreen, animated: false)
     }
     
     @objc private func selectHandler(_ sender: Any) {
@@ -169,6 +178,24 @@ internal class SAPhotoPickerPreviewer: UIViewController {
             _selectedView.layer.add(a, forKey: "v")
         }
     }
+    fileprivate func _updateToolbar(_ newValue: Bool, animated: Bool) {
+        let block: ((Void) -> Void) = { [_toolbar] in
+            if newValue || (_toolbar.items?.isEmpty ?? true) {
+                // 隐藏
+                _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
+            } else {
+                // 显示
+                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
+            }
+        }
+        guard animated else {
+            block()
+            return
+        }
+        UIView.animate(withDuration: 0.25, animations: { 
+            block()
+        })
+    }
     fileprivate func _updateIsFullscreen(_ newValue: Bool, animated: Bool) {
         guard newValue != _isFullscreen else {
             return // no change
@@ -180,14 +207,7 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         
         navigationController?.setNavigationBarHidden(newValue, animated: true)
         
-        UIView.animate(withDuration: 0.25, animations: { [_toolbar] in
-            if newValue || (_toolbar.items?.isEmpty ?? true) {
-                _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
-            } else {
-                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
-            }
-        })
-        
+        _updateToolbar(newValue, animated: animated)
         _isFullscreen = newValue
     }
     
