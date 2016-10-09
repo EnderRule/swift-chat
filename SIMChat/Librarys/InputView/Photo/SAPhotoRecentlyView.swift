@@ -26,6 +26,7 @@ public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     // tap item
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any)
     
+    
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
 }
 
@@ -281,25 +282,6 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
     }
 }
 
-// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate 
-
-extension SAPhotoRecentlyView: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate  {
-    
-    public func numberOfPhotos(in photoPreviewer: SAPhotoPickerPreviewer) -> Int {
-        return _photos?.count ?? 0
-    }
-    
-    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
-        return _photos![index]
-    }
-    
-    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return delegate?.recentlyView?(self, toolbarItemsFor: context)
-    }
-}
-
-// MARK: - PHPhotoLibraryChangeObserver
-
 extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
     
     private func _updateSelectionForRemove(_ photo: SAPhoto) {
@@ -391,17 +373,52 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     }
     
     // tap item
-    public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
+    public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
+        guard let album = photo.album else {
+            return
+        }
+        
+        let picker = SAPhotoPicker(previewWithAlbum: album, in: photo, reverse: true)
+        
+        picker.delegate = self
+        picker.allowsMultipleSelection = allowsMultipleSelection
         
         let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
-        let picker = SAPhotoPicker(photo: photo)
-        //let modal = SAPhotoPickerPreviewerForModal()
-        
-        //modal.previewer.delegate = self
-        //modal.previewer.dataSource = self
-        
         rootViewController?.present(picker, animated: true, completion: nil)
         
         delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
+    }
+}
+
+// MARK: - SAPhotoPickerDelegate
+
+extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
+    
+    /// gets the index of the selected item, if item does not select to return NSNotFound
+    public func picker(_ picker: SAPhotoPicker, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        return selection(picker, indexOfSelectedItemsFor: photo)
+    }
+   
+    // check whether item can select
+    public func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        return selection(picker, shouldSelectItemFor: photo)
+    }
+    public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
+        selection(picker, didSelectItemFor: photo)
+        // 更新选中的选项
+        updateEdgOfItems()
+        updateSelectionOfItmes()
+    }
+    
+    // check whether item can deselect
+    public func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+        return selection(picker, shouldDeselectItemFor: photo)
+    }
+    public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
+        return selection(picker, didDeselectItemFor: photo)
+    }
+    
+    public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
+        return delegate?.recentlyView?(self, toolbarItemsFor: context)
     }
 }

@@ -11,14 +11,53 @@ import Photos
 
 internal class SAPhotoPickerAlbums: UITableViewController {
     
-    weak var picker: SAPhotoPicker?
+    weak var picker: SAPhotoPicker? {
+        didSet {
+            _previewer?.picker = picker
+            _previewer?.selection = picker
+        }
+    }
     
-    func makePhotoPreviewer(with photo: SAPhoto) -> SAPhotoPickerPreviewer {
-        let vc = SAPhotoPickerPreviewer(photo: photo)
-        //vc.dataSource = photo.album
+    init(pickWithAlbum album: SAPhotoAlbum? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        _albumForPicker = album
+        _init()
+    }
+    
+    init(previewWithAlbum album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool) {
+        super.init(nibName: nil, bundle: nil)
+        _previewer = makePhotoPreviewer(album: album, in: photo, reverse: reverse)
+        _init()
+    }
+    init(previewWithPhotos photos: [SAPhoto], in photo: SAPhoto? = nil, reverse: Bool) {
+        super.init(nibName: nil, bundle: nil)
+        _previewer = makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
+        _init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
+    deinit {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+    }
+    
+    
+    func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
+        let vc = SAPhotoPickerPreviewer(album: album, in: photo, reverse: reverse)
+        vc.picker = picker
+        vc.selection = picker
+        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
         return vc
     }
-
+    func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
+        let vc = SAPhotoPickerPreviewer(photos: photos, in: photo, reverse: reverse)
+        vc.picker = picker
+        vc.selection = picker
+        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
+        return vc
+    }
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
         let vc = SAPhotoPickerAssets(album: album)
         
@@ -46,17 +85,21 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         super.viewDidLoad()
         
         title = "Albums"
-        
         view.backgroundColor = .white
         
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
         
-        // 检查权限
-        SAPhotoLibrary.shared.requestAuthorization {
-            self._reloadAlbums($0)
-            self._initController($0)
+        if let previewer = _previewer  {
+            // 这个是预览模式
+            navigationController?.pushViewController(previewer, animated: false)
+        } else {
+            // 这个是选择模式
+            SAPhotoLibrary.shared.requestAuthorization {
+                self._reloadAlbums($0)
+                self._initController($0)
+            }
         }
     }
     
@@ -87,7 +130,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             tableView.isScrollEnabled = true
             
         case .notData:
-            let error = _statusView ?? SAPhotoPickerErrorView()
+            let error = _statusView ?? SAPhotoErrorView()
         
             error.title = "没有图片或视频"
             error.subtitle = "拍点照片和朋友们分享吧"
@@ -99,7 +142,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             tableView.isScrollEnabled = false
             
         case .notPermission:
-            let error = _statusView ?? SAPhotoPickerErrorView()
+            let error = _statusView ?? SAPhotoErrorView()
             
             error.title = "没有权限"
             error.subtitle = "此应用程序没有权限访问您的照片\n在\"设置-隐私-图片\"中开启后即可查看"
@@ -150,67 +193,22 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         }
         _logger.trace()
         
-        var vcs = navigationController?.viewControllers ?? []
-        
-        if let album = _initWithAlbum ?? _albums?.first {
-            vcs.append(makeAssetsPicker(with: album))
+        if let album = _albumForPicker ?? _albums?.first {
+            let assets = makeAssetsPicker(with: album)
+            
+            navigationController?.viewControllers = [self, assets]
         }
-        if let photo = _initWithPhoto {
-            vcs.append(makePhotoPreviewer(with: photo))
-        }
-        
-        navigationController?.setViewControllers(vcs, animated: false)
     }
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        _init()
-    }
-    init(photo: SAPhoto) {
-        super.init(nibName: nil, bundle: nil)
-        _init()
-        _initWithPhoto = photo
-        _initWithAlbum = photo.album
-    }
-    init(album: SAPhotoAlbum) {
-        super.init(nibName: nil, bundle: nil)
-        _init()
-        _initWithAlbum = album
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
-    }
-    
-    deinit {
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
-    }
-    
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//        _init()
-//    }
-//    override init(style: UITableViewStyle) {
-//        super.init(style: style)
-//        _init()
-//    }
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//        _init()
-//    }
-    
-    private var _initWithPhoto: SAPhoto?
-    private var _initWithAlbum: SAPhotoAlbum?
     
     private var _status: SAPhotoStatus = .notError
-    private var _statusView: SAPhotoPickerErrorView?
+    private var _statusView: SAPhotoErrorView?
+    
+    private var _previewer: SAPhotoPickerPreviewer?
     
     private var _toolbarItems: [UIBarButtonItem]??
     
     fileprivate var _albums: [SAPhotoAlbum]?
-    
-    
+    fileprivate var _albumForPicker: SAPhotoAlbum?
 }
 
 // MARK: - UITableViewDelegate & UITableViewDataSource 

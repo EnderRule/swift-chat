@@ -35,7 +35,7 @@ import UIKit
 // [x] SAPhotoPicker - 图片列表
 // [ ] SAPhotoPicker - 图片预览
 // [ ] SAPhotoPicker - 选择原图(文件大小)
-// [x] SAPhotoPickerErrorView - 约束错误
+// [x] SAPhotoErrorView - 约束错误
 // [x] SAPhotoPickerAssets - 选中
 // [x] SAPhotoPickerAssets - 批量选中
 // [x] SAPhotoPickerAssets - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
@@ -212,12 +212,12 @@ extension SAPhotoInputView {
         }
         let picker = SAPhotoPicker()
         
+        picker.delegate = _contentView //self
         
-        //(viewController as? UINavigationController)?.pushViewController(picker, animated: true)
         viewController.present(picker, animated: true, completion: nil)
+        
 //        let picker = SAPhotoPicker()
-//        
-//        picker.delegate = self
+//
 //        picker.toolbarItems = [
 //            _previewBarItem,
 //            _editBarItem,
@@ -225,9 +225,7 @@ extension SAPhotoInputView {
 //            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
 //            _sendBarItem,
 //        ]
-//        _picker = picker
-//     
-//        viewController.present(picker, animated: true, completion: nil)
+        _picker = picker
     }
     func onPreviewerForPicker(_ sender: Any) {
         _logger.trace(sender)
@@ -267,68 +265,6 @@ extension SAPhotoInputView {
     
 }
 
-// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate
-
-//extension SAPhotoInputView: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate {
-    
-//    open func numberOfPhotos(in previewer: SAPhotoPickerPreviewer) -> Int {
-//        return _selectedPhotos.count
-//    }
-//
-//    open func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
-//        return _
-//    }
-//}
-
-// MARK: - SAPhotoPickerDelegate
-
-extension SAPhotoInputView: SAPhotoPickerDelegate {
-    
-    /// gets the index of the selected item, if item does not select to return NSNotFound
-    open func picker(_ picker: SAPhotoPicker, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
-        return _selectedPhotos.index(of: photo) ?? NSNotFound
-    }
-   
-    // check whether item can select
-    open func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
-        // 可以在这里进行数量限制/图片类型限制
-        //
-        // if _selectedPhotoSets.count >= 9 {
-        //     return false // 只能选择9张图片
-        // }
-        // if photo.mediaType != .image {
-        //     return false // 只能选择图片
-        // }
-        return true
-    }
-    open func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
-        selectItem(for: photo)
-    }
-    
-    // check whether item can deselect
-    open func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool {
-        return true
-    }
-    open func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
-        deselectItem(for: photo)
-    }
-    
-    public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return toolbarItems(for: context)
-    }
-    
-    // MARK: Display
-    
-    open func picker(willDismiss picker: SAPhotoPicker) {
-        _logger.trace()
-        // 隐藏的时候同步更新选择的items
-        _contentView.updateSelectionOfItmes()
-    }
-    open func picker(didDismiss picker: SAPhotoPicker) {
-        _logger.trace()
-    }
-}
-
 // MARK: - SAPhotoRecentlyViewDelegate
 
 extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
@@ -340,6 +276,14 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
    
     // check whether item can select
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        // 可以在这里进行数量限制/图片类型限制
+        //
+        // if _selectedPhotoSets.count >= 9 {
+        //     return false // 只能选择9张图片
+        // }
+        // if photo.mediaType != .image {
+        //     return false // 只能选择图片
+        // }
         return true
     }
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {

@@ -39,7 +39,7 @@ open class SAPhotoLoader: NSObject, SAPhotoLoaderType {
     open var size: CGSize? 
     open var orientation: UIImageOrientation?
     
-    open let photo: SAPhoto
+    open let photo: SAPhoto 
     open weak var delegate: SAPhotoLoaderDelegate?
     
     open func rotation(_ orientation: UIImageOrientation) {
@@ -67,15 +67,18 @@ open class SAPhotoLoader: NSObject, SAPhotoLoaderType {
         
         let options = PHImageRequestOptions()
         
-        options.deliveryMode = .highQualityFormat
-        options.resizeMode = .fast
+        options.deliveryMode = .opportunistic
+        options.resizeMode = .none
         options.isNetworkAccessAllowed = true
+        
+        let size = PHImageManagerMaximumSize
+            //CGSize(width: CGFloat(photo.pixelWidth), height: CGFloat(photo.pixelHeight))
         
 //        PHImageRequestOptions *imageRequestOptions = [[PHImageRequestOptions alloc] init];
 //        imageRequestOptions.networkAccessAllowed = YES; // 允许访问网络
 //        imageRequestOptions.progressHandler = phProgressHandler;
         
-        _requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: options) { [weak self] in
+        _requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: size, contentMode: .aspectFill, options: options) { [weak self] in
             self?.logger.trace()
             
             guard let ss = self else {

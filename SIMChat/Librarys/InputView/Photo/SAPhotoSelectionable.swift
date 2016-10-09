@@ -23,6 +23,6 @@ internal protocol SAPhotoSelectionable: class {
     func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto)
     
     // tap item
-    func selection(_ selection: Any, tapItemFor photo: SAPhoto)
+    func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any)
 }
 

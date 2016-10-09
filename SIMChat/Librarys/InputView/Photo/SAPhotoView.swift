@@ -16,12 +16,12 @@ internal class SAPhotoView: UIView {
             if oldValue !== photo {
                 _updatePhoto(photo, animated: true)
             }
-            _updateSelection(_isSelected, animated: false)
+            _updateSelection(with: photo, animated: false)
         }
     }
     
     var isSelected: Bool {
-        set { return _updateSelection(newValue, animated: false) }
+        set { return _updateSelection(with: photo, animated: false) }
         get { return _isSelected }
     }
     var allowsSelection: Bool = true {
@@ -37,7 +37,7 @@ internal class SAPhotoView: UIView {
    
     
     func setSelected(_ newValue: Bool, animated: Bool) {
-        _updateSelection(newValue, animated: animated)
+        _updateSelection(with: photo, animated: animated)
     }
     
     func updateEdge() {
@@ -58,9 +58,8 @@ internal class SAPhotoView: UIView {
         }
     }
     func updateSelection() {
-        _updateSelection(_isSelected, animated: false)
+        _updateSelection(with: photo, animated: false)
     }
-    
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled else {
@@ -79,13 +78,18 @@ internal class SAPhotoView: UIView {
         super.layoutSubviews()
         _hightlightLayer.frame = _imageView.bounds
     }
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        // 重新添加回屏幕的时候检查一下有没有超出边界
+        updateEdge() 
+    }
     
     
     @objc private func tapHandler(_ sender: Any) {
         guard let photo = photo else {
             return
         }
-        delegate?.selection(self, tapItemFor: photo)
+        delegate?.selection(self, tapItemFor: photo, with: self)
     }
     @objc private func selectHandler(_ sender: Any) {
         guard let photo = photo else {
@@ -125,7 +129,7 @@ internal class SAPhotoView: UIView {
         }
     }
     
-    private func _updateSelection(_ newValue: Bool, animated: Bool) {
+    private func _updateSelection(with photo: SAPhoto?, animated: Bool) {
         guard let photo = photo, allowsSelection else {
             return
         }

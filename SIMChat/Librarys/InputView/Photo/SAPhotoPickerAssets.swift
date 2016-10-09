@@ -184,7 +184,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             collectionView?.isScrollEnabled = true
             
         case .notData:
-            let error = _statusView ?? SAPhotoPickerErrorView()
+            let error = _statusView ?? SAPhotoErrorView()
         
             error.title = "没有图片或视频"
             error.subtitle = "拍点照片和朋友们分享吧"
@@ -196,7 +196,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             collectionView?.isScrollEnabled = false
             
         case .notPermission:
-            let error = _statusView ?? SAPhotoPickerErrorView()
+            let error = _statusView ?? SAPhotoErrorView()
             
             error.title = "没有权限"
             error.subtitle = "此应用程序没有权限访问您的照片\n在\"设置-隐私-图片\"中开启后即可查看"
@@ -218,15 +218,15 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
         // step2: 更新状态, 如果被拒绝忽略该操作, 并且更新失败
         if newValue {
-            guard selection(self, shouldSelectItemFor: photo) else {
+            guard self.selection?.selection(self, shouldSelectItemFor: photo) ?? true else {
                 return false
             }
-            selection(self, didSelectItemFor: photo)
+            self.selection?.selection(self, didSelectItemFor: photo)
         } else {
-            guard selection(self, shouldDeselectItemFor: photo) else {
+            guard self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true else {
                 return false
             }
-            selection(self, didDeselectItemFor: photo)
+            self.selection?.selection(self, didDeselectItemFor: photo)
         }
         // step4: 如果是正在显示的, 更新UI
         let idx = IndexPath(item: index, section: 0)
@@ -312,7 +312,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     private var _batchOperatorItems: Set<Int> = []
 
     private var _status: SAPhotoStatus = .notError
-    private var _statusView: SAPhotoPickerErrorView?
+    private var _statusView: SAPhotoErrorView?
     
     private var _toolbarItems: [UIBarButtonItem]??
     
@@ -414,6 +414,7 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didSelectItemFor: photo)
+        self.updateSelectionOfItmes()
     }
     
     // check whether item can deselect
@@ -426,25 +427,8 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     }
     
     // tap item
-    public func selection(_ selection: Any, tapItemFor photo: SAPhoto) {
-        self.selection?.selection(self, tapItemFor: photo)
-    }
-}
-
-// MARK: - SAPhotoPickerPreviewerDataSource & SAPhotoPickerPreviewerDelegate 
-
-extension SAPhotoPickerAssets: SAPhotoPickerPreviewerDataSource, SAPhotoPickerPreviewerDelegate  {
-    
-    public func numberOfPhotos(in photoPreviewer: SAPhotoPickerPreviewer) -> Int {
-        return _photos.count
-    }
-    
-    public func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, photoForItemAt index: Int) -> SAPhoto {
-        return _photos[index]
-    }
-    
-    func photoPreviewer(_ photoPreviewer: SAPhotoPickerPreviewer, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return picker?.toolbarItems(for: context)
+    public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
+        self.selection?.selection(self, tapItemFor: photo, with: sender)
     }
 }
 

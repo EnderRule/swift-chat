@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerErrorView.swift
+//  SAPhotoErrorView.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/28/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAPhotoPickerErrorView: UIView {
+internal class SAPhotoErrorView: UIView {
     
     var title: String? {
         set { return _titleLabel.text = newValue }

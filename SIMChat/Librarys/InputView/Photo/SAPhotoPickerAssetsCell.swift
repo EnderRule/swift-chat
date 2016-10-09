@@ -31,8 +31,6 @@ internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
         get { return _photoView.delegate }
     }
     
-    
-    
     func updateEdge() {
         _photoView.updateEdge()
     }
