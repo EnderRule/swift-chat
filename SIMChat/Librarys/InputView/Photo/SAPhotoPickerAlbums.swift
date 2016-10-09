@@ -11,6 +11,12 @@ import Photos
 
 internal class SAPhotoPickerAlbums: UITableViewController {
     
+    var allowsMultipleSelection: Bool = true {
+        didSet {
+            _previewer?.allowsMultipleSelection = allowsMultipleSelection
+        }
+    }
+    
     weak var picker: SAPhotoPicker? {
         didSet {
             _previewer?.picker = picker
@@ -48,14 +54,14 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         let vc = SAPhotoPickerPreviewer(album: album, in: photo, reverse: reverse)
         vc.picker = picker
         vc.selection = picker
-        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
+        vc.allowsMultipleSelection = allowsMultipleSelection
         return vc
     }
     func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
         let vc = SAPhotoPickerPreviewer(photos: photos, in: photo, reverse: reverse)
         vc.picker = picker
         vc.selection = picker
-        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
+        vc.allowsMultipleSelection = allowsMultipleSelection
         return vc
     }
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
@@ -63,7 +69,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         
         vc.picker = picker
         vc.selection = picker
-        vc.allowsMultipleSelection = picker?.allowsMultipleSelection ?? true
+        vc.allowsMultipleSelection = allowsMultipleSelection
         vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
         
         return vc
@@ -249,6 +255,9 @@ extension SAPhotoPickerAlbums: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
+            // 清除无效的item
+            self.picker?.clearInvalidItems()
+            
             self._reloadAlbums(true)
         }
     }

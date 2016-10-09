@@ -12,10 +12,13 @@ import Photos
 
 open class SAPhotoAlbum: NSObject {
     
-    open static func reloadData() {
+    open func clearCache() {
+        _photos = nil
+    }
+    open static func clearCaches() {
         
         _albums?.forEach {
-            $0._photos = nil
+            $0.clearCache()
         }
         _albums = nil
         _recentlyAlbum = nil

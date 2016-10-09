@@ -107,7 +107,7 @@ open class SAPhotoLibrary: NSObject {
 extension SAPhotoLibrary: PHPhotoLibraryChangeObserver {
     // This callback is invoked on an arbitrary serial queue. If you need this to be handled on a specific queue, you should redispatch appropriately
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        SAPhotoAlbum.reloadData()
+        SAPhotoAlbum.clearCaches()
     }
 }
 

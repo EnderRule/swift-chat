@@ -12,15 +12,16 @@ import UIKit
 internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
     
     var album: SAPhotoAlbum?
+    
     var photo: SAPhoto? {
         set { return _photoView.photo = newValue }
         get { return _photoView.photo }
     }
-    
-    var isCheck: Bool {
+    var photoIsSelected: Bool {
         set { return _photoView.isSelected = newValue }
         get { return _photoView.isSelected }
     }
+    
     var allowsSelection: Bool {
         set { return _photoView.allowsSelection = newValue }
         get { return _photoView.allowsSelection }

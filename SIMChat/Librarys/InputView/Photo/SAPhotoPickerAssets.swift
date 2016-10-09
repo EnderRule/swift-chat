@@ -18,12 +18,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     weak var picker: SAPhotoPicker?
     weak var selection: SAPhotoSelectionable?
     
-    func updateSelectionOfItmes() {
-        collectionView?.visibleCells.forEach {
-            ($0 as? SAPhotoPickerAssetsCell)?.updateSelection()
-        }
-    }
-    
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
         get {
@@ -100,8 +94,8 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             guard let cell = collectionView?.cellForItem(at: IndexPath(item: nidx, section: 0)) as? SAPhotoPickerAssetsCell else {
                 return false
             }
-            _batchIsSelectOperator = !cell.isCheck
-            return !cell.isCheck
+            _batchIsSelectOperator = !cell.photoIsSelected
+            return !cell.photoIsSelected
         }()
         
         let sl = min(max(start, 0), count - 1)
@@ -207,6 +201,31 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             collectionView?.isScrollEnabled = false
         }
     }
+    
+    
+    func updateSelection(forSelected item: SAPhoto) {
+        _logger.trace(item.identifier)
+        
+        collectionView?.visibleCells.forEach {
+            let cell = $0 as? SAPhotoPickerAssetsCell
+            guard cell?.photo == item && !(cell?.photoIsSelected ?? false) else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
+    func updateSelection(forDeselected item: SAPhoto?) {
+        _logger.trace(item?.identifier)
+        
+        collectionView?.visibleCells.forEach {
+            let cell = $0 as? SAPhotoPickerAssetsCell
+            guard cell?.photoIsSelected ?? false else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
+    
     fileprivate func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
         let photo = _photos[index]
         
@@ -218,25 +237,25 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
         // step2: 更新状态, 如果被拒绝忽略该操作, 并且更新失败
         if newValue {
-            guard self.selection?.selection(self, shouldSelectItemFor: photo) ?? true else {
+            guard selection?.selection(self, shouldSelectItemFor: photo) ?? true else {
                 return false
             }
-            self.selection?.selection(self, didSelectItemFor: photo)
+            selection?.selection(self, didSelectItemFor: photo)
         } else {
-            guard self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true else {
+            guard selection?.selection(self, shouldDeselectItemFor: photo) ?? true else {
                 return false
             }
-            self.selection?.selection(self, didDeselectItemFor: photo)
+            selection?.selection(self, didDeselectItemFor: photo)
         }
         // step4: 如果是正在显示的, 更新UI
         let idx = IndexPath(item: index, section: 0)
         if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerAssetsCell {
-            cell.isCheck = newValue
-            cell.updateSelection()
+            cell.photoIsSelected = newValue
         }
         // step5: 更新成功
         return true
     }
+    
     fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
         //_logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
@@ -259,9 +278,12 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             _updateStatus(.notData)
             return
         }
-
+        
         _cachePhotos(_photos)
         _updateStatus(.notError)
+        
+        // update all
+        updateSelection(forDeselected: nil)
     }
     
     fileprivate func _reloadPhotos() {
@@ -414,7 +436,7 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didSelectItemFor: photo)
-        self.updateSelectionOfItmes()
+        self.updateSelection(forSelected: photo)
     }
     
     // check whether item can deselect
@@ -423,7 +445,7 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
     }
     public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didDeselectItemFor: photo)
-        self.updateSelectionOfItmes()
+        self.updateSelection(forDeselected: photo)
     }
     
     // tap item
@@ -439,7 +461,7 @@ extension SAPhotoPickerAssets: PHPhotoLibraryChangeObserver {
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         // 检查有没有变更
         guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
-            // 如果asset没有变量, 检查album是否存在
+            // 如果asset没有变更, 检查album是否存在
             if let album = _album, !SAPhotoAlbum.albums.contains(album) {
                 DispatchQueue.main.async {
                     self._clearPhotos()
@@ -464,6 +486,7 @@ extension SAPhotoPickerAssets: PHPhotoLibraryChangeObserver {
             return nil
         }
         
+        _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
         
         DispatchQueue.main.async {

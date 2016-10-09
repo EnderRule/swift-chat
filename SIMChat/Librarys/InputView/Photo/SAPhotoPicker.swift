@@ -42,7 +42,10 @@ public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
 
 open class SAPhotoPicker: UINavigationController {
     
-    open var allowsMultipleSelection: Bool = true
+    open var allowsMultipleSelection: Bool {
+        set { return _rootViewController.allowsMultipleSelection = newValue }
+        get { return _rootViewController.allowsMultipleSelection }
+    }
     
     public init(pickWithAlbum album: SAPhotoAlbum? = nil) {
         super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
@@ -73,8 +76,7 @@ open class SAPhotoPicker: UINavigationController {
     deinit {
         _logger.trace()
         
-        SAPhotoAlbum.reloadData()
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+        SAPhotoAlbum.clearCaches()
     }
     
     open override func viewDidLoad() {
@@ -97,6 +99,29 @@ open class SAPhotoPicker: UINavigationController {
         return _delegate?.picker?(self, toolbarItemsFor: context)
     }
     
+    func clearInvalidItems() {
+        _logger.trace()
+        
+        _selectedPhotos.forEach {
+            _updateSelectionForRemove($0)
+        }
+    }
+    
+    private func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查有没有选中
+        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
+            return
+        }
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        _logger.trace(photo)
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
+        }
+    }
     
     private func _init() {
         _logger.trace()
@@ -105,8 +130,6 @@ open class SAPhotoPicker: UINavigationController {
         _rootViewController.navigationItem.rightBarButtonItem = _cancelBarItem
         
         viewControllers = [_rootViewController]
-        
-        SAPhotoLibrary.shared.register(self)
     }
     
     
@@ -201,33 +224,5 @@ extension SAPhotoPicker: SAPhotoSelectionable {
         previewer.selection = selection as? SAPhotoSelectionable
         
         pushViewController(previewer, animated: true)
-    }
-}
-
-// MARK: - PHPhotoLibraryChangeObserver
-
-extension SAPhotoPicker: PHPhotoLibraryChangeObserver {
-    
-    private func _updateSelectionForRemove(_ photo: SAPhoto) {
-        // 检查有没有选中
-        guard self.selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-            return
-        }
-        // 检查这个图片有没有被删除
-        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-            return
-        }
-        // 需要强制删除?
-        if self.selection(self, shouldDeselectItemFor: photo) {
-            self.selection(self, didDeselectItemFor: photo)
-        }
-    }
-    
-    public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        DispatchQueue.main.async {
-            self._selectedPhotos.forEach {
-                self._updateSelectionForRemove($0)
-            }
-        }
     }
 }

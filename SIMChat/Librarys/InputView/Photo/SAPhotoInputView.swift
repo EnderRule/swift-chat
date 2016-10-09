@@ -20,8 +20,7 @@ import UIKit
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
-
-// [ ] SAPhotoBrowser - 预加载(上下)
+// [ ] SAPhotoBrowser - 预加载(左右)
 // [ ] SAPhotoBrowser - 加载进度
 // [ ] SAPhotoBrowser - 视频
 // [ ] SAPhotoBrowser - 音频
@@ -30,27 +29,38 @@ import UIKit
 // [x] SAPhotoBrowserView - 图片旋转
 // [x] SAPhotoBrowserView - 双击放大
 // [ ] SAPhotoBrowserView - 双击放大(双击的地方要居中)
-
+//
+// [x] SAPhotoToolbar - Item重用
+//
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
-// [ ] SAPhotoPicker - 图片预览
+// [x] SAPhotoPicker - 图片预览
 // [ ] SAPhotoPicker - 选择原图(文件大小)
-// [x] SAPhotoErrorView - 约束错误
+// [x] SAPhotoPicker - 拦截返回事件
+// [ ] SAPhotoPicker - 默认barItem
+// [x] SAPhotoPickerAlbums - 图片变更通知处理
+// [x] SAPhotoPickerAlbums - 空相册处理
+// [x] SAPhotoPickerAlbums - 默认显示album
+// [x] SAPhotoPickerAssets - 单选支持
 // [x] SAPhotoPickerAssets - 选中
 // [x] SAPhotoPickerAssets - 批量选中
-// [x] SAPhotoPickerAssets - 图片变更(多张新增、多张删除、多张改变、同时改变、删除Album)
+// [x] SAPhotoPickerAssets - 图片变更通知处理(多张新增、多张删除、多张改变、同时改变、删除Album)
 // [x] SAPhotoPickerAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 // [x] SAPhotoPickerAssets - UIToolbar支持
-// [x] SAPhotoPickerAlbums - 图片变更
-// [x] SAPhotoPickerAlbums - 空相册更新问题
-// [x] SAPhotoPickerAlbums - 默认显示第一个album
-
+// [x] SAPhotoPickerPreviewer - 单选支持
+// [ ] SAPhotoPickerPreviewer - 转场动画(弹出)
+// [ ] SAPhotoPickerPreviewer - 横屏支持
+// [ ] SAPhotoPickerPreviewer - 手势(下拉)隐藏
+// [x] SAPhotoPickerPreviewer - 图片变更通知处理
+// [x] SAPhotoPickerPreviewer - 选中事件处理
+// [x] SAPhotoPickerPreviewer - 自定义toolbar
+// 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
 // [x] SAPhotoRecentlyView - 横屏支持
 // [x] SAPhotoRecentlyView - 图片变更(多张新增、多张删除、多张改变、同时改变)
 // [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
-
+//
 // [x] SAPhotoInputView - 横屏支持
 // [ ] SAPhotoInputView - 初次加载页面
 // [ ] * - 发送图片(读取)
@@ -64,12 +74,19 @@ public protocol SAPhotoInputViewDelegate: NSObjectProtocol {
 
 open class SAPhotoInputView: UIView {
     
-    open override var intrinsicContentSize: CGSize {
-        return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
+    open var allowsMultipleSelection: Bool = true {
+        didSet {
+            _picker?.allowsMultipleSelection = allowsMultipleSelection
+            _contentView.allowsMultipleSelection = allowsMultipleSelection
+        }
     }
     
     open weak var delegate: SAPhotoInputViewDelegate?
-    
+        
+        
+    open override var intrinsicContentSize: CGSize {
+        return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
+    }
     
     func toolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
         switch context {
@@ -124,6 +141,7 @@ open class SAPhotoInputView: UIView {
         _tabbar.items = toolbarItems(for: .panel)
         
         _contentView.delegate = self
+        _contentView.allowsMultipleSelection = allowsMultipleSelection
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(_contentView)
@@ -181,14 +199,14 @@ extension SAPhotoInputView {
         
         _picker?.dismiss(animated: true, completion: nil)
         
-        _contentView.updateSelectionOfItmes()
+        //_contentView.updateSelectionOfItems()
     }
     func onSendForInputView(_ sender: Any) {
         _logger.trace()
         
 //        _selectedPhotos.removeAll()
 //        _selectedPhotoSets.removeAll()
-//        _contentView.updateSelectionOfItmes()
+//        _contentView.updateSelectionOfItems()
     }
     func onChangeOriginal(_ sender: UIButton) {
         _isOriginalImage = !_isOriginalImage
@@ -212,19 +230,11 @@ extension SAPhotoInputView {
         }
         let picker = SAPhotoPicker()
         
-        picker.delegate = _contentView //self
+        picker.delegate = _contentView
+        picker.allowsMultipleSelection = allowsMultipleSelection
         
         viewController.present(picker, animated: true, completion: nil)
         
-//        let picker = SAPhotoPicker()
-//
-//        picker.toolbarItems = [
-//            _previewBarItem,
-//            _editBarItem,
-//            _originalBarItem,
-//            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-//            _sendBarItem,
-//        ]
         _picker = picker
     }
     func onPreviewerForPicker(_ sender: Any) {
@@ -271,6 +281,7 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+        _logger.trace(photo.identifier)
         return _selectedPhotos.index(of: photo) ?? NSNotFound
     }
    

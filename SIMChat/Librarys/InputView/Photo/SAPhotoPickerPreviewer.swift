@@ -7,10 +7,15 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoPickerPreviewer: UIViewController {
     
-    var allowsMultipleSelection: Bool = true
+    var allowsMultipleSelection: Bool = true {
+        didSet {
+            _selectedView.isHidden = !allowsMultipleSelection
+        }
+    }
     
     weak var picker: SAPhotoPicker?
     weak var selection: SAPhotoSelectionable?
@@ -32,14 +37,19 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         
         let ts: CGFloat = 20
         
-        _toolbar.frame = CGRect(x: 0, y: view.frame.height - 44, width: view.frame.width, height: 44)
+        _toolbar.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 44)
         _toolbar.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
         _toolbar.items = toolbarItems
+        
+        if !(toolbarItems?.isEmpty ?? true) {
+            _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
+        }
         
         _selectedView.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
         _selectedView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         _selectedView.setTitleColor(.white, for: .normal)
+        _selectedView.isHidden = !allowsMultipleSelection
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_normal"), for: .normal)
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_normal"), for: .highlighted)
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .normal])
@@ -67,10 +77,8 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         //_contentView.isDirectionalLockEnabled = true
         //_contentView.isScrollEnabled = false
         
-        _contentView.contentOffset = CGPoint(x: _contentView.frame.width * CGFloat(_currentIndex), y: 0)
         
-        _updateIndex(at: _currentIndex)
-        _updateSelection(at: _currentIndex, animated: false)
+        _updatePage(at: _currentIndex, animated: false)
         
         view.backgroundColor = .black
         view.addSubview(_contentView)
@@ -78,10 +86,9 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     }
     
     @objc private func selectHandler(_ sender: Any) {
-        guard let photo = _photos?[_currentIndex] else {
-            return
-        }
-        if let index = selection?.selection(self, indexOfSelectedItemsFor: photo), index != NSNotFound {
+        let photo = _photos[_currentIndex]
+        // 直接读取缓存
+        if _selectedView.isSelected {
             guard selection?.selection(self, shouldDeselectItemFor: photo) ?? true else {
                 return
             }
@@ -115,20 +122,32 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     fileprivate func _updateIndex(at index: Int) {
         _logger.trace(index)
         
-        let count = _photos?.count ?? 0
+        let count = _photos.count
         var nindex = index
         if _isReverse {
             nindex = count - index - 1
         }
         title = "\(nindex + 1) / \(count)"
+        
+        _currentIndex = index
+    }
+    
+    
+    fileprivate func _updatePage(at index: Int, animated: Bool) {
+        _logger.trace(index)
+ 
+        let x = _contentView.frame.width * CGFloat(index)
+        
+        _updateIndex(at: index)
+        _updateSelection(at: index, animated: animated)
+        
+        _contentView.setContentOffset(CGPoint(x: x, y: 0), animated: animated)
     }
     
     fileprivate func _updateSelection(at index: Int, animated: Bool) {
-        guard let photo = _photos?[index] else {
-            return
-        }
-        //_logger.trace()
+        _logger.trace(index)
         
+        let photo = _photos[index]
         if let index = selection?.selection(self, indexOfSelectedItemsFor: photo), index != NSNotFound {
             
             _selectedView.isSelected = true
@@ -162,10 +181,10 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         navigationController?.setNavigationBarHidden(newValue, animated: true)
         
         UIView.animate(withDuration: 0.25, animations: { [_toolbar] in
-            if newValue {
-                _toolbar.transform = CGAffineTransform(translationX: 0, y: _toolbar.frame.height)
-            } else {
+            if newValue || (_toolbar.items?.isEmpty ?? true) {
                 _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
+            } else {
+                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
             }
         })
         
@@ -178,6 +197,11 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         title = "Preview"
         automaticallyAdjustsScrollViewInsets = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: _selectedView)
+        
+        SAPhotoLibrary.shared.register(self)
+    }
+    private func _deinit() {
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     private var _toolbarItems: [UIBarButtonItem]??
@@ -192,8 +216,10 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     fileprivate lazy var _selectedView: UIButton = UIButton()
     
     fileprivate var _album: SAPhotoAlbum?
-    fileprivate var _photos: Array<SAPhoto>?
     fileprivate var _currentIndex: Int = 0
+    
+    fileprivate var _photos: Array<SAPhoto> = []
+    fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
     fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
     
@@ -201,12 +227,13 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         super.init(nibName: nil, bundle: nil)
         _album = album
         _photos = album.photos
+        _photosResult = album.result
         _isReverse = reverse
         if reverse {
-            _photos?.reverse()
+            _photos.reverse()
         }
         if let photo = photo {
-            _currentIndex = _photos?.index(of: photo) ?? 0
+            _currentIndex = _photos.index(of: photo) ?? 0
         }
         _init()
     }
@@ -215,16 +242,19 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         _photos = photos
         _isReverse = reverse
         if reverse {
-            _photos?.reverse()
+            _photos.reverse()
         }
         if let photo = photo {
-            _currentIndex = photos.index(of: photo) ?? 0
+            _currentIndex = _photos.index(of: photo) ?? 0
         }
         _init()
     }
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    deinit {
+        _deinit()
     }
 }
 
@@ -268,7 +298,7 @@ extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDe
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return _photos?.count ?? 0
+        return _photos.count
     }
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
@@ -278,20 +308,104 @@ extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDe
         guard let cell = cell as? SAPhotoPickerPreviewerCell else {
             return
         }
-        if let photo = _photos?[indexPath.item] {
-            cell.delegate = self
-            cell.loader = _allLoader[photo.hashValue] ?? {
-                let loader = SAPhotoLoader(photo: photo)
-                _allLoader[photo.hashValue] = loader
-                return loader
-            }()
-        } else {
-            cell.delegate = self
-            cell.loader = nil
-        }
+        let photo = _photos[indexPath.item]
+        cell.delegate = self
+        cell.loader = _allLoader[photo.hashValue] ?? {
+            let loader = SAPhotoLoader(photo: photo)
+            _allLoader[photo.hashValue] = loader
+            return loader
+        }()
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return view.frame.size
+    }
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+
+extension SAPhotoPickerPreviewer: PHPhotoLibraryChangeObserver {
+    
+    private func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
+        _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
+        
+        
+        let oldPhotos = _photos
+        var newPhotos = _album?.photos(with: newResult) ?? []
+        
+        // 反转
+        if _isReverse {
+            newPhotos.reverse()
+        }
+        let remainingIndex: Int = {
+            var index = _currentIndex
+            guard index < oldPhotos.count else {
+                return 0
+            }
+            let step = _isReverse ? -1 : 1
+            
+            while index >= 0 && index < oldPhotos.count {
+                if let nidx = newPhotos.index(of: oldPhotos[index]) {
+                    return nidx
+                }
+                index += step
+            }
+            if index < 0 {
+                return 0
+            }
+            return newPhotos.count - 1
+        }()
+        
+        // 更新数据
+        _photos = newPhotos
+        _photosResult = newResult
+        
+        // 更新视图
+        if !(inserts.isEmpty && changes.isEmpty && removes.isEmpty) {
+            _contentView.performBatchUpdates({ [_contentView] in
+                
+                _contentView.reloadItems(at: changes)
+                _contentView.deleteItems(at: removes)
+                _contentView.insertItems(at: inserts)
+                
+            }, completion: nil)
+        }
+        
+        _updatePage(at: max(min(remainingIndex, newPhotos.count - 1), 0), animated: false)
+    }
+    
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        // 检查有没有变更
+        guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
+            // 如果asset没有变更, 检查album是否存在
+            if let album = _album, !SAPhotoAlbum.albums.contains(album) {
+                DispatchQueue.main.async {
+                    self._contentView.reloadData()
+                }
+            }
+            return
+        }
+        
+        let inserts = change.insertedIndexes?.map { idx -> IndexPath in
+            return IndexPath(item: idx, section: 0)
+        } ?? []
+        let changes = change.changedObjects.flatMap { asset -> IndexPath? in
+            if let idx = _photos.index(where: { $0.asset.localIdentifier == asset.localIdentifier }) {
+                return IndexPath(item: idx, section: 0)
+            }
+            return nil
+        }
+        let removes = change.removedObjects.flatMap { asset -> IndexPath? in
+            if let idx = _photos.index(where: { $0.asset.localIdentifier == asset.localIdentifier }) {
+                return IndexPath(item: idx, section: 0)
+            }
+            return nil
+        }
+        
+        _photosResult = change.fetchResultAfterChanges
+        
+        DispatchQueue.main.async {
+            self._updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+        }
     }
 }
