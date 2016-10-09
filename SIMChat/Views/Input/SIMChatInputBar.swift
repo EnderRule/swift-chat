@@ -145,6 +145,16 @@ public class SIMChatInputBar: UIView {
         }
     }
     
+    public override func setNeedsLayout() {
+        super.setNeedsLayout()
+        
+        _backgroundView.setNeedsLayout()
+        _textView.setNeedsLayout()
+        _leftBarButtonItemsView.setNeedsLayout()
+        _rightBarButtonItemsView.setNeedsLayout()
+        _bottomBarButtonItemsView.setNeedsLayout()
+    }
+    
     public override func isFirstResponder() -> Bool {
         if _selectedBarButton != nil {
             return true
@@ -614,10 +624,15 @@ internal class SIMChatInputBarTextView: UITextView {
                 return
             }
             UIView.animateWithDuration(0.25) {
+                
                 // 必须在更新父视图之前
-                self.layoutIfNeeded()
+                self.setNeedsLayout()
+                //self.layoutIfNeeded()
                 // 必须显示父视图, 因为这个改变会导致父视图大小改变
-                self.superview?.layoutIfNeeded()
+                self.superview?.setNeedsLayout()
+                self.superview?.superview?.setNeedsLayout()
+                self.superview?.superview?.layoutIfNeeded()
+                //self.superview?.layoutIfNeeded()
             }
             SIMChatNotificationCenter.postNotificationName(SIMChatInputBarFrameDidChangeNotification, object: superview)
         }
