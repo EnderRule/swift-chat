@@ -30,8 +30,14 @@ extension UITableView {
     /// - parameter identifier: Reuse identifier for cell which must be registered.
     ///
     private func fd_templateReusableCellForIdentifier(identifier: String) -> UITableViewCell {
-        let reusableCells = (objc_getAssociatedObject(self, self.dynamicType.fd_templateReusableCellForIdentifierKey) as? NSCache) ?? {
-            let dic = NSCache()
+        let reusableCells = (objc_getAssociatedObject(self, self.dynamicType.fd_templateReusableCellForIdentifierKey) as? NSMutableDictionary) ?? {
+            // 如果使用NSCache, 当应用进入后台时释放掉了TemplateCell
+            // 然后第二次获取的是界面上使用的Cell, 这种Cell和TemplateCell
+            // 不同的地方在于tableView会添加两处约束:
+            //  'UIView-Encapsulated-Layout-Width'
+            //  'UIView-Encapsulated-Layout-Width'
+            // 然后很自然的就出现了冲突
+            let dic = NSMutableDictionary()
             objc_setAssociatedObject(self, self.dynamicType.fd_templateReusableCellForIdentifierKey, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return dic
         }()
