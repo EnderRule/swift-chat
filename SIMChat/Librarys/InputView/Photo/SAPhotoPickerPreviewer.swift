@@ -138,7 +138,13 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
-    
+    override var prefersStatusBarHidden: Bool {
+        if _isFullscreen {
+            return true
+        }
+        return super.prefersStatusBarHidden
+    }
+
     fileprivate func _updateIndex(at index: Int) {
         _logger.trace(index)
         
@@ -208,7 +214,7 @@ internal class SAPhotoPickerPreviewer: UIViewController {
             block()
             return
         }
-        UIView.animate(withDuration: 0.25, animations: { 
+        UIView.animate(withDuration: 0.25, animations: {
             block()
         })
     }
@@ -224,7 +230,12 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         navigationController?.setNavigationBarHidden(newValue, animated: true)
         
         _updateToolbar(newValue, animated: animated)
+        
         _isFullscreen = newValue
+        
+        DispatchQueue.main.async {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }
     }
     
     private func _init() {
