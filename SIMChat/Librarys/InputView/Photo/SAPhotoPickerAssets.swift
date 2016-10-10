@@ -177,6 +177,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             
             _statusView?.removeFromSuperview()
             _statusView = nil
+            collectionView?.isHidden = false
             collectionView?.isScrollEnabled = true
             
         case .notData:
@@ -189,6 +190,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             _statusView = error
             
             view.addSubview(error)
+            collectionView?.isHidden = true
             collectionView?.isScrollEnabled = false
             
         case .notPermission:
@@ -200,6 +202,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             
             _statusView = error
             view.addSubview(error)
+            collectionView?.isHidden = true
             collectionView?.isScrollEnabled = false
         }
         
@@ -207,9 +210,8 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         navigationController?.isToolbarHidden = isHidden
     }
     
-    
-    func updateSelection(forSelected item: SAPhoto) {
-        _logger.trace(item.identifier)
+    fileprivate func _updateSelection(forSelected item: SAPhoto) {
+        _logger.trace()
         
         collectionView?.visibleCells.forEach {
             let cell = $0 as? SAPhotoPickerAssetsCell
@@ -219,8 +221,8 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             cell?.updateSelection()
         }
     }
-    func updateSelection(forDeselected item: SAPhoto?) {
-        _logger.trace(item?.identifier ?? "<Unknow>")
+    fileprivate func _updateSelection(forDeselected item: SAPhoto?) {
+        _logger.trace()
         
         collectionView?.visibleCells.forEach {
             let cell = $0 as? SAPhotoPickerAssetsCell
@@ -288,7 +290,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         _updateStatus(.notError)
         
         // update all
-        updateSelection(forDeselected: nil)
+        _updateSelection(forDeselected: nil)
     }
     
     fileprivate func _reloadPhotos() {
@@ -440,8 +442,10 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
         return self.selection?.selection(self, shouldSelectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
         self.selection?.selection(self, didSelectItemFor: photo)
-        self.updateSelection(forSelected: photo)
+        self._updateSelection(forSelected: photo)
     }
     
     // check whether item can deselect
@@ -449,12 +453,16 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
         return self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
         self.selection?.selection(self, didDeselectItemFor: photo)
-        self.updateSelection(forDeselected: photo)
+        self._updateSelection(forDeselected: photo)
     }
     
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
+        _logger.trace()
+        
         self.selection?.selection(self, tapItemFor: photo, with: sender)
     }
 }

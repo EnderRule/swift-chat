@@ -464,6 +464,11 @@ extension SIMChatViewController: SAToolboxInputViewDataSource, SAToolboxInputVie
     open func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) {
         _logger.debug(item.identifier)
     }
+    
+    open override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        
+        super.present(viewControllerToPresent, animated: flag, completion: completion)
+    }
 }
 
 

@@ -13,15 +13,21 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     
     var allowsMultipleSelection: Bool = true {
         didSet {
-            _previewer?.allowsMultipleSelection = allowsMultipleSelection
+            _previewerViewController?.allowsMultipleSelection = allowsMultipleSelection
         }
     }
     
     weak var picker: SAPhotoPicker? {
         didSet {
-            _previewer?.picker = picker
-            _previewer?.selection = picker
+            _previewerViewController?.picker = picker
+            _previewerViewController?.selection = picker
         }
+    }
+    weak var selection: SAPhotoSelectionable? {
+        if let assets = _assetsViewController {
+            return assets
+        }
+        return picker
     }
     
     init(pickWithAlbum album: SAPhotoAlbum? = nil) {
@@ -32,12 +38,12 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     
     init(previewWithAlbum album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool) {
         super.init(nibName: nil, bundle: nil)
-        _previewer = makePhotoPreviewer(album: album, in: photo, reverse: reverse)
+        _initPreviewer = makePhotoPreviewer(album: album, in: photo, reverse: reverse)
         _init()
     }
     init(previewWithPhotos photos: [SAPhoto], in photo: SAPhoto? = nil, reverse: Bool) {
         super.init(nibName: nil, bundle: nil)
-        _previewer = makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
+        _initPreviewer = makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
         _init()
     }
     
@@ -53,15 +59,21 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
         let vc = SAPhotoPickerPreviewer(album: album, in: photo, reverse: reverse)
         vc.picker = picker
-        vc.selection = picker
+        vc.selection = selection
         vc.allowsMultipleSelection = allowsMultipleSelection
+        
+        _previewerViewController = vc
+        
         return vc
     }
     func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
         let vc = SAPhotoPickerPreviewer(photos: photos, in: photo, reverse: reverse)
         vc.picker = picker
-        vc.selection = picker
+        vc.selection = selection
         vc.allowsMultipleSelection = allowsMultipleSelection
+        
+        _previewerViewController = vc
+        
         return vc
     }
     func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
@@ -71,6 +83,8 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         vc.selection = picker
         vc.allowsMultipleSelection = allowsMultipleSelection
         vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
+        
+        _assetsViewController = vc
         
         return vc
     }
@@ -97,7 +111,8 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         tableView.separatorStyle = .none
         tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
         
-        if let previewer = _previewer  {
+        if let previewer = _initPreviewer  {
+            _initPreviewer = nil
             // 这个是预览模式
             navigationController?.pushViewController(previewer, animated: false)
         } else {
@@ -201,7 +216,6 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         
         if let album = _albumForPicker ?? _albums?.first {
             let assets = makeAssetsPicker(with: album)
-            
             navigationController?.viewControllers = [self, assets]
         }
     }
@@ -209,9 +223,12 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPhotoErrorView?
     
-    private var _previewer: SAPhotoPickerPreviewer?
+    private weak var _assetsViewController: SAPhotoPickerAssets?
+    private weak var _previewerViewController: SAPhotoPickerPreviewer?
     
     private var _toolbarItems: [UIBarButtonItem]??
+    
+    fileprivate var _initPreviewer: SAPhotoPickerPreviewer?
     
     fileprivate var _albums: [SAPhotoAlbum]?
     fileprivate var _albumForPicker: SAPhotoAlbum?

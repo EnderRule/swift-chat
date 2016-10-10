@@ -44,14 +44,8 @@ open class SAPhotoRecentlyView: UIView {
     open weak var delegate: SAPhotoRecentlyViewDelegate?
     
     
-    open func updateEdgOfItems() {
-        _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
-        }
-    }
-    
-    func updateSelection(forSelected item: SAPhoto) {
-        _logger.trace(item.identifier)
+    fileprivate func _updateSelection(forSelected item: SAPhoto) {
+        _logger.trace()
         
         _contentView.visibleCells.forEach {
             let cell = $0 as? SAPhotoRecentlyViewCell
@@ -61,7 +55,7 @@ open class SAPhotoRecentlyView: UIView {
             cell?.updateSelection()
         }
     }
-    func updateSelection(forDeselected item: SAPhoto) {
+    fileprivate func _updateSelection(forDeselected item: SAPhoto) {
         _logger.trace(item.identifier)
         
         _contentView.visibleCells.forEach {
@@ -73,7 +67,12 @@ open class SAPhotoRecentlyView: UIView {
         }
     }
     
-    open func updateContentOffset(of photo: SAPhoto) {
+    fileprivate func _updateEdgOfItems() {
+        _contentView.visibleCells.forEach {
+            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
+        }
+    }
+    fileprivate func _updateContentOffset(of photo: SAPhoto) {
         guard let index = _photos?.index(of: photo) else {
             return
         }
@@ -115,7 +114,7 @@ open class SAPhotoRecentlyView: UIView {
             
             _tipsLabel.removeFromSuperview()
             
-            updateEdgOfItems()
+            _updateEdgOfItems()
             
         case .notData:
             _tipsLabel.isHidden = false
@@ -261,7 +260,7 @@ open class SAPhotoRecentlyView: UIView {
 extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateEdgOfItems()
+        _updateEdgOfItems()
     }
    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -377,13 +376,16 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
         return delegate?.recentlyView?(self, shouldSelectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
         }
-        updateContentOffset(of: photo)
         delegate?.recentlyView?(self, didSelectItemFor: photo)
-        updateSelection(forSelected: photo)
+        
+        _updateContentOffset(of: photo)
+        _updateSelection(forSelected: photo)
     }
     
     // check whether item can deselect
@@ -391,16 +393,20 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
         return delegate?.recentlyView?(self, shouldDeselectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
         if let index = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: index)
         }
         delegate?.recentlyView?(self, didDeselectItemFor: photo)
-        updateSelection(forDeselected: photo)
+        _updateSelection(forDeselected: photo)
     }
     
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
+        _logger.trace()
+        
         guard let album = photo.album else {
             return
         }
@@ -431,7 +437,9 @@ extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
         return selection(picker, shouldSelectItemFor: photo)
     }
     public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
-        selection(picker, didSelectItemFor: photo)
+        _logger.trace()
+        
+        return selection(picker, didSelectItemFor: photo)
     }
     
     // check whether item can deselect
@@ -439,10 +447,20 @@ extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
         return selection(picker, shouldDeselectItemFor: photo)
     }
     public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
         return selection(picker, didDeselectItemFor: photo)
     }
     
     public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
         return delegate?.recentlyView?(self, toolbarItemsFor: context)
     }
+    
+    
+    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        _logger.trace()
+        
+        return nil
+    }
+    
 }

@@ -113,4 +113,3 @@ internal class SAInputView: UIView {
     private var _inputView: UIView?
     private var _inputViewConstraints: [NSLayoutConstraint]?
 }
-

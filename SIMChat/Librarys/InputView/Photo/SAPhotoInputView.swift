@@ -43,6 +43,7 @@ import UIKit
 // [x] SAPhotoPickerAlbums - 图片变更通知处理
 // [x] SAPhotoPickerAlbums - 空相册处理
 // [x] SAPhotoPickerAlbums - 默认显示album
+// [x] SAPhotoPickerAssets - 数量
 // [x] SAPhotoPickerAssets - 单选支持
 // [x] SAPhotoPickerAssets - 选中
 // [x] SAPhotoPickerAssets - 批量选中
@@ -64,7 +65,7 @@ import UIKit
 // [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 //
 // [x] SAPhotoInputView - 横屏支持
-// [ ] SAPhotoInputView - 初次加载页面
+// [ ] SAPhotoInputView - 预览选中的图片
 // [ ] * - 发送图片(读取)
 
 
@@ -136,7 +137,7 @@ open class SAPhotoInputView: UIView {
         _pickBarItem = SAPhotoBarItem(title: "相册", type: .normal, target: self, action: #selector(onPicker(_:)))
         _editBarItem = SAPhotoBarItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
         _sendBarItem = SAPhotoBarItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
-        _previewBarItem = SAPhotoBarItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewerForPicker(_:)))
+        _previewBarItem = SAPhotoBarItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewer(_:)))
         _originalBarItem = SAPhotoBarItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
         
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
@@ -230,51 +231,28 @@ extension SAPhotoInputView {
         guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
             return
         }
-        let picker = SAPhotoPicker()
         
-        picker.delegate = _contentView
-        picker.allowsMultipleSelection = allowsMultipleSelection
+        let picker = SAPhotoPicker2()
         
-        viewController.present(picker, animated: true, completion: nil)
+        picker.delegate = picker
         
-        _picker = picker
+        (viewController as? UINavigationController)?.topViewController?.present(picker, animated: true, completion: nil)
+        //viewController.present(picker, animated: true, completion: nil)
+        
+//        let picker = SAPhotoPicker()
+//        
+//        picker.delegate = _contentView
+//        picker.allowsMultipleSelection = allowsMultipleSelection
+//
+//        viewController.present(picker, animated: true, completion: nil)
+//        
+//        _picker = picker
     }
-    func onPreviewerForPicker(_ sender: Any) {
+    func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
         
-//        guard let viewController = _picker else {
-//            return
-//        }
-//        let previewer = SAPhotoPickerPreviewer()
-//        let nav = UINavigationController(rootViewController: previewer)
-//        viewController.present(nav, animated: true, completion: nil)
-//        _previewer = previewer
-//        let previewer = SAPhotoPickerPreviewer()
-//        
-//        _previewer = previewer
+        _picker?.preview(photos: _selectedPhotos)
     }
-    
-    func selectItem(for photo: SAPhoto) {
-        _logger.trace(photo)
-        
-        if !_selectedPhotoSets.contains(photo) {
-            _selectedPhotoSets.insert(photo)
-            _selectedPhotos.append(photo)
-            _updatePhotoCount()
-            _updateFileSize()
-        }
-    }
-    func deselectItem(for photo: SAPhoto) {
-        _logger.trace(photo)
-        
-        if let idx = _selectedPhotos.index(of: photo) {
-            _selectedPhotoSets.remove(photo)
-            _selectedPhotos.remove(at: idx)
-            _updatePhotoCount()
-            _updateFileSize()
-        }
-    }
-    
 }
 
 // MARK: - SAPhotoRecentlyViewDelegate
@@ -283,7 +261,6 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
-        _logger.trace(photo.identifier)
         return _selectedPhotos.index(of: photo) ?? NSNotFound
     }
    
@@ -300,7 +277,14 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
         return true
     }
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {
-        selectItem(for: photo)
+        _logger.trace()
+        
+        if !_selectedPhotoSets.contains(photo) {
+            _selectedPhotoSets.insert(photo)
+            _selectedPhotos.append(photo)
+            _updatePhotoCount()
+            _updateFileSize()
+        }
     }
     
     // check whether item can deselect
@@ -308,7 +292,14 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
         return true
     }
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
-        deselectItem(for: photo)
+        _logger.trace()
+        
+        if let idx = _selectedPhotos.index(of: photo) {
+            _selectedPhotoSets.remove(photo)
+            _selectedPhotos.remove(at: idx)
+            _updatePhotoCount()
+            _updateFileSize()
+        }
     }
     
     open func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
