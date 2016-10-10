@@ -37,6 +37,15 @@ internal class SAPhotoBrowserView: UIView {
         get { return _delegate }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _cacheBounds?.width != bounds.width {
+            _restoreContent(loader?.size ?? .zero, oldBounds: _cacheBounds ?? bounds, animated: false)
+            _cacheBounds = bounds
+        }
+    }
+    
     
     @objc private func tapHandler(_ sender: AnyObject) {
         //_logger.trace()
@@ -64,13 +73,25 @@ internal class SAPhotoBrowserView: UIView {
         _isRotationing = false
         _updateOrientation(for: sender.rotation, animated: true)
     }
-    @objc private func doubleTapHandler(_ sender: AnyObject) {
-        //_logger.trace()
+    @objc private func doubleTapHandler(_ sender: UITapGestureRecognizer) {
+         //_logger.trace()
         
         if _scrollView.zoomScale > _scrollView.minimumZoomScale {
             _scrollView.setZoomScale(_scrollView.minimumZoomScale, animated: true)
         } else {
-            _scrollView.setZoomScale(_scrollView.maximumZoomScale, animated: true)
+            let pt = sender.location(in: _imageView)
+            let size = loader?.size ?? .zero
+            
+            let ratioX = max(min(pt.x, _imageView.bounds.width), 0) / max(_imageView.bounds.width, 1)
+            let ratioY = max(min(pt.y, _imageView.bounds.height), 0) / max(_imageView.bounds.height, 1)
+            
+            let x = max(min(size.width * ratioX - _scrollView.frame.width / 2, size.width - _scrollView.frame.width), 0)
+            let y = max(min(size.height * ratioY - _scrollView.frame.height / 2, size.height - _scrollView.frame.height), 0)
+            
+            UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
+                _scrollView.zoomScale = _scrollView.maximumZoomScale
+                _scrollView.contentOffset = CGPoint(x: x, y: y)
+            })
         }
         
         delegate?.browserView?(self, didDoubleTapWith: sender)
@@ -134,6 +155,29 @@ internal class SAPhotoBrowserView: UIView {
         _imageView.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
     }
     
+    private func _restoreContent(_ size: CGSize, oldBounds: CGRect, animated: Bool) {
+        _logger.trace()
+        
+        let fitZoomScale = _aspectFitZoomScale(size)
+        let minimumZoomScale = _minimumZoomScale(size)
+        let maximumZoomScale = _maximumZoomScale(size)
+        
+        let zoomScaleRatio = (_scrollView.zoomScale - _scrollView.minimumZoomScale) / (_scrollView.maximumZoomScale - _scrollView.minimumZoomScale)
+        let zoomScale = (minimumZoomScale + (maximumZoomScale - minimumZoomScale) * zoomScaleRatio)
+        
+        let pt = _scrollView.contentOffset
+        let npt = pt
+        
+        _imageView.bounds = CGRect(x: 0, y: 0, width: size.width * fitZoomScale, height: size.height * fitZoomScale)
+        _imageView.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
+        
+        _scrollView.minimumZoomScale = minimumZoomScale
+        _scrollView.maximumZoomScale = maximumZoomScale
+        _scrollView.zoomScale = zoomScale
+        
+        _scrollView.setContentOffset(npt, animated: animated)
+    }
+    
    
     fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
         //_logger.trace()
@@ -155,7 +199,7 @@ internal class SAPhotoBrowserView: UIView {
                 _delegate?.browserView?(self, didRotation: newOrientation)
                 return
             }
-            UIView.animate(withDuration: 0.25, animations: { [_scrollView] in
+            UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
                 _scrollView.transform = .identity
             }, completion: { [_delegate] b in
                 _delegate?.browserView?(self, didRotation: newOrientation)
@@ -177,7 +221,7 @@ internal class SAPhotoBrowserView: UIView {
         let ignoreContentOffsetChanges = _scrollView.ignoreContentOffsetChanges
         
         // version 2
-        UIView.animate(withDuration: 0.25, animations: { [_scrollView, _imageView] in
+        UIView.animate(withDuration: 0.35, animations: { [_scrollView, _imageView] in
             
             _scrollView.transform = transform
             _scrollView.frame = self.bounds
@@ -242,6 +286,8 @@ internal class SAPhotoBrowserView: UIView {
             //_scrollView.ignoreContentOffsetChanges = newValue
         }
     }
+    
+    private var _cacheBounds: CGRect?
     
     fileprivate weak var _delegate: SAPhotoBrowserViewDelegate?
     

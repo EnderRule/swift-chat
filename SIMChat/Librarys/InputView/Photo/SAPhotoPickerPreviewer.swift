@@ -85,13 +85,24 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        var nframe = navigationController?.toolbar.frame ?? .zero
-        nframe.origin.x = 0
-        nframe.origin.y = view.bounds.height
-        
-        _toolbar.transform = .identity
-        _toolbar.frame = nframe
-        _updateToolbar(_isFullscreen, animated: false)
+        if _cacheBounds?.width != view.bounds.width {
+            _cacheBounds = view.bounds
+            
+            if let idx = _contentViewLayout.lastIndexPath {
+                // 恢复contentOffset
+                _restorePage(at: idx.item, animated: false)
+                _contentViewLayout.lastIndexPath = nil
+            }
+            
+            // 更新toolbar
+            var nframe = navigationController?.toolbar.frame ?? .zero
+            nframe.origin.x = 0
+            nframe.origin.y = view.bounds.height
+            
+            _toolbar.transform = .identity
+            _toolbar.frame = nframe
+            _updateToolbar(_isFullscreen, animated: false)
+        }
     }
     
     @objc private func selectHandler(_ sender: Any) {
@@ -142,6 +153,11 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     }
     
     
+    fileprivate func _restorePage(at index: Int, animated: Bool) {
+        _logger.trace(index)
+        
+        _updatePage(at: index, animated: animated)
+    }
     fileprivate func _updatePage(at index: Int, animated: Bool) {
         _logger.trace(index)
  
@@ -224,12 +240,14 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
+    private var _cacheBounds: CGRect?
+    
     private var _toolbarItems: [UIBarButtonItem]??
     
     fileprivate var _isReverse: Bool = false
     fileprivate var _isFullscreen: Bool = false
     
-    fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+    fileprivate lazy var _contentViewLayout: SAPhotoPickerPreviewerLayout = SAPhotoPickerPreviewerLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     fileprivate lazy var _toolbar: SAPhotoToolbar = SAPhotoToolbar()

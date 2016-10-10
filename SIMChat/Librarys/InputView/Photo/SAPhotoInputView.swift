@@ -25,10 +25,12 @@ import UIKit
 // [ ] SAPhotoBrowser - 视频
 // [ ] SAPhotoBrowser - 音频
 // [ ] SAPhotoBrowser - GIF
+// [x] SAPhotoBrowserView - 横屏支持
+// [ ] SAPhotoBrowserView - 转屏后的图片中心位置
 // [x] SAPhotoBrowserView - 图片缩放
 // [x] SAPhotoBrowserView - 图片旋转
 // [x] SAPhotoBrowserView - 双击放大
-// [ ] SAPhotoBrowserView - 双击放大(双击的地方要居中)
+// [x] SAPhotoBrowserView - 双击放大(双击的地方要居中)
 //
 // [x] SAPhotoToolbar - Item重用
 //
@@ -49,7 +51,7 @@ import UIKit
 // [x] SAPhotoPickerAssets - UIToolbar支持
 // [x] SAPhotoPickerPreviewer - 单选支持
 // [ ] SAPhotoPickerPreviewer - 转场动画(弹出)
-// [ ] SAPhotoPickerPreviewer - 横屏支持
+// [x] SAPhotoPickerPreviewer - 横屏支持
 // [ ] SAPhotoPickerPreviewer - 手势(下拉)隐藏
 // [x] SAPhotoPickerPreviewer - 图片变更通知处理
 // [x] SAPhotoPickerPreviewer - 选中事件处理
