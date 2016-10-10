@@ -282,10 +282,13 @@ extension SIMChatViewController: SIMChatInputBarDelegate, SIMChatInputPanelToolB
             // 必须同时更新
             contentViewLayout?.top = -(newValue + inputBar.frame.height)
             contentViewLayout?.bottom = newValue + inputBar.frame.height
-            contentView.layoutIfNeeded()
+            contentView.setNeedsLayout()
+            view.setNeedsLayout()
             
             inputBarLayout?.bottom = newValue
-            inputBar.layoutIfNeeded()
+            inputBar.setNeedsLayout()
+            
+            view.layoutIfNeeded()
         }
         get {
             return inputBarLayout?.bottom ?? 0
