@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerAlbumsCell.swift
+//  SAPhotoPickerForAlbumsCell.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoPickerAlbumsCell: UITableViewCell {
+internal class SAPhotoPickerForAlbumsCell: UITableViewCell {
 
     var album: SAPhotoAlbum? {
         didSet {

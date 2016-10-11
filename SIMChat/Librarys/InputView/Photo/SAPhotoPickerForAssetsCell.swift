@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerAssetsCell.swift
+//  SAPhotoPickerForAssetsCell.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,7 +9,7 @@
 import UIKit
 
 
-internal class SAPhotoPickerAssetsCell: UICollectionViewCell {
+internal class SAPhotoPickerForAssetsCell: UICollectionViewCell {
     
     var album: SAPhotoAlbum?
     

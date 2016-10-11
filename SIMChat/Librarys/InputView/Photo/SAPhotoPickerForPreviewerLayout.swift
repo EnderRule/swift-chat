@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerPreviewerLayout.swift
+//  SAPhotoPickerForPreviewerLayout.swift
 //  SIMChat
 //
 //  Created by sagesse on 10/10/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAPhotoPickerPreviewerLayout: UICollectionViewFlowLayout {
+internal class SAPhotoPickerForPreviewerLayout: UICollectionViewFlowLayout {
     
     var lastIndexPath: IndexPath?
     

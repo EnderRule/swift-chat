@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerPreviewer.swift
+//  SAPhotoPickerForPreviewer.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoPickerPreviewer: UIViewController {
+internal class SAPhotoPickerForPreviewer: UIViewController {
     
     var allowsMultipleSelection: Bool = true {
         didSet {
@@ -17,7 +17,7 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         }
     }
     
-    weak var picker: SAPhotoPicker?
+    weak var picker: SAPhotoPickerForImp?
     weak var selection: SAPhotoSelectionable?
     
     override var toolbarItems: [UIBarButtonItem]? {
@@ -26,9 +26,10 @@ internal class SAPhotoPickerPreviewer: UIViewController {
             if let toolbarItems = _toolbarItems {
                 return toolbarItems
             }
-            let toolbarItems = picker?.toolbarItems(for: .preview)
-            _toolbarItems = toolbarItems
-            return toolbarItems
+            return nil
+//            let toolbarItems = picker?.toolbarItems(for: .preview)
+//            _toolbarItems = toolbarItems
+//            return toolbarItems
         }
     }
     
@@ -69,7 +70,7 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
-        _contentView.register(SAPhotoPickerPreviewerCell.self, forCellWithReuseIdentifier: "Item")
+        _contentView.register(SAPhotoPickerForPreviewerCell.self, forCellWithReuseIdentifier: "Item")
         _contentView.dataSource = self
         _contentView.delegate = self
         //_contentView.isDirectionalLockEnabled = true
@@ -176,6 +177,9 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     }
     
     fileprivate func _updateSelection(at index: Int, animated: Bool) {
+        guard index < _photos.count else {
+            return
+        }
         _logger.trace(index)
         
         let photo = _photos[index]
@@ -238,6 +242,8 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         }
     }
     
+    
+    
     private func _init() {
         _logger.trace()
         
@@ -251,6 +257,51 @@ internal class SAPhotoPickerPreviewer: UIViewController {
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
+    init(picker: SAPhotoPickerForImp) {
+        super.init(nibName: nil, bundle: nil)
+        logger.trace()
+        
+        self.title = "Albums"
+        self.picker = picker
+        
+        SAPhotoLibrary.shared.register(self)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) is not imp")
+    }
+    deinit {
+        logger.trace()
+        
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+    }
+//    init(album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
+//        super.init(nibName: nil, bundle: nil)
+//        _album = album
+//        _photos = album.photos
+//        _photosResult = album.result
+//        _isReverse = reverse
+//        if reverse {
+//            _photos.reverse()
+//        }
+//        if let photo = photo {
+//            _currentIndex = _photos.index(of: photo) ?? 0
+//        }
+//        _init()
+//    }
+//    init(photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
+//        super.init(nibName: nil, bundle: nil)
+//        _photos = photos
+//        _isReverse = reverse
+//        if reverse {
+//            _photos.reverse()
+//        }
+//        if let photo = photo {
+//            _currentIndex = _photos.index(of: photo) ?? 0
+//        }
+//        _init()
+//    }
+    
+    
     private var _cacheBounds: CGRect?
     
     private var _toolbarItems: [UIBarButtonItem]??
@@ -258,7 +309,7 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     fileprivate var _isReverse: Bool = false
     fileprivate var _isFullscreen: Bool = false
     
-    fileprivate lazy var _contentViewLayout: SAPhotoPickerPreviewerLayout = SAPhotoPickerPreviewerLayout()
+    fileprivate lazy var _contentViewLayout: SAPhotoPickerForPreviewerLayout = SAPhotoPickerForPreviewerLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     fileprivate lazy var _toolbar: SAPhotoToolbar = SAPhotoToolbar()
@@ -272,42 +323,9 @@ internal class SAPhotoPickerPreviewer: UIViewController {
     
     fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
     
-    init(album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
-        super.init(nibName: nil, bundle: nil)
-        _album = album
-        _photos = album.photos
-        _photosResult = album.result
-        _isReverse = reverse
-        if reverse {
-            _photos.reverse()
-        }
-        if let photo = photo {
-            _currentIndex = _photos.index(of: photo) ?? 0
-        }
-        _init()
-    }
-    init(photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
-        super.init(nibName: nil, bundle: nil)
-        _photos = photos
-        _isReverse = reverse
-        if reverse {
-            _photos.reverse()
-        }
-        if let photo = photo {
-            _currentIndex = _photos.index(of: photo) ?? 0
-        }
-        _init()
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    deinit {
-        _deinit()
-    }
 }
 
-extension SAPhotoPickerPreviewer: SAPhotoBrowserViewDelegate {
+extension SAPhotoPickerForPreviewer: SAPhotoBrowserViewDelegate {
     
     func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject) {
         _logger.trace()
@@ -335,7 +353,7 @@ extension SAPhotoPickerPreviewer: SAPhotoBrowserViewDelegate {
     }
 }
 
-extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAPhotoPickerForPreviewer: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let index = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
@@ -354,7 +372,7 @@ extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDe
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoPickerPreviewerCell else {
+        guard let cell = cell as? SAPhotoPickerForPreviewerCell else {
             return
         }
         let photo = _photos[indexPath.item]
@@ -373,7 +391,7 @@ extension SAPhotoPickerPreviewer: UICollectionViewDataSource, UICollectionViewDe
 
 // MARK: - PHPhotoLibraryChangeObserver
 
-extension SAPhotoPickerPreviewer: PHPhotoLibraryChangeObserver {
+extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
     
     private func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
         _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")

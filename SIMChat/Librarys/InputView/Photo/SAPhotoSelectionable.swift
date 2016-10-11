@@ -26,3 +26,9 @@ internal protocol SAPhotoSelectionable: class {
     func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any)
 }
 
+
+public extension Notification.Name {
+    
+    public static let SAPhotoSelectionableDidSelectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidSelectItem")
+    public static let SAPhotoSelectionableDidDeselectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidDeselectItem")
+}

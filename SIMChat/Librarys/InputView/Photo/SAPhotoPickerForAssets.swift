@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerAssets.swift
+//  SAPhotoPickerForAssets.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,14 +9,15 @@
 import UIKit
 import Photos
 
-internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecognizerDelegate {
+internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureRecognizerDelegate {
     
     var scrollsToBottomOfLoad: Bool = false
     
     var allowsMultipleSelection: Bool = true
     
-    weak var picker: SAPhotoPicker?
+    weak var picker: SAPhotoPickerForImp?
     weak var selection: SAPhotoSelectionable?
+    
     
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
@@ -24,7 +25,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             if let toolbarItems = _toolbarItems {
                 return toolbarItems
             }
-            let toolbarItems = picker?.toolbarItems(for: .list)
+            let toolbarItems = picker?.makeToolbarItems(for: .list)
             _toolbarItems = toolbarItems
             return toolbarItems
         }
@@ -33,11 +34,13 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItems = navigationController?.navigationItem.rightBarButtonItems
+        
         collectionView?.backgroundColor = .white
         collectionView?.allowsSelection = false
         collectionView?.allowsMultipleSelection = false
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(SAPhotoPickerAssetsCell.self, forCellWithReuseIdentifier: "Item")
+        collectionView?.register(SAPhotoPickerForAssetsCell.self, forCellWithReuseIdentifier: "Item")
         
         // 添加手势
         let pan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(_:)))
@@ -93,7 +96,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         // step1: 获取区域的第一个有效的元素为操作类型
         let operatorType = _batchIsSelectOperator ?? {
             let nidx = min(max(start, 0), count - 1)
-            guard let cell = collectionView?.cellForItem(at: IndexPath(item: nidx, section: 0)) as? SAPhotoPickerAssetsCell else {
+            guard let cell = collectionView?.cellForItem(at: IndexPath(item: nidx, section: 0)) as? SAPhotoPickerForAssetsCell else {
                 return false
             }
             _batchIsSelectOperator = !cell.photoIsSelected
@@ -177,7 +180,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             
             _statusView?.removeFromSuperview()
             _statusView = nil
-            collectionView?.isHidden = false
             collectionView?.isScrollEnabled = true
             
         case .notData:
@@ -190,7 +192,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             _statusView = error
             
             view.addSubview(error)
-            collectionView?.isHidden = true
             collectionView?.isScrollEnabled = false
             
         case .notPermission:
@@ -202,7 +203,6 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
             
             _statusView = error
             view.addSubview(error)
-            collectionView?.isHidden = true
             collectionView?.isScrollEnabled = false
         }
         
@@ -214,7 +214,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         _logger.trace()
         
         collectionView?.visibleCells.forEach {
-            let cell = $0 as? SAPhotoPickerAssetsCell
+            let cell = $0 as? SAPhotoPickerForAssetsCell
             guard cell?.photo == item && !(cell?.photoIsSelected ?? false) else {
                 return
             }
@@ -225,7 +225,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         _logger.trace()
         
         collectionView?.visibleCells.forEach {
-            let cell = $0 as? SAPhotoPickerAssetsCell
+            let cell = $0 as? SAPhotoPickerForAssetsCell
             guard cell?.photoIsSelected ?? false else {
                 return
             }
@@ -256,7 +256,7 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         }
         // step4: 如果是正在显示的, 更新UI
         let idx = IndexPath(item: index, section: 0)
-        if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerAssetsCell {
+        if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerForAssetsCell {
             cell.photoIsSelected = newValue
         }
         // step5: 更新成功
@@ -317,17 +317,37 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
         _reloadPhotos()
     }
     
-    private func _init() {
-        _logger.trace()
+    init(picker: SAPhotoPickerForImp, album: SAPhotoAlbum) {
+        super.init(collectionViewLayout: {
+            let layout = SAPhotoPickerForAssetsLayout()
+            
+            layout.itemSize = CGSize(width: 78, height: 78)
+            layout.minimumLineSpacing = 2
+            layout.minimumInteritemSpacing = 2
+            layout.headerReferenceSize = CGSize(width: 0, height: 10)
+            layout.footerReferenceSize = CGSize.zero
         
-        title = _album?.title
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+            return layout
+        }())
+        logger.trace()
+        
+        _album = album
+        
+        self.title = album.title
+        self.picker = picker
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         
         SAPhotoLibrary.shared.register(self)
     }
-    private func _deinit() {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) is not imp")
+    }
+    deinit {
+        logger.trace()
+        
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
+    
     
     fileprivate var _itemSize: CGSize = .zero
     fileprivate var _columnCount: Int = 0
@@ -345,38 +365,17 @@ internal class SAPhotoPickerAssets: UICollectionViewController, UIGestureRecogni
     
     private var _toolbarItems: [UIBarButtonItem]??
     
+    
     fileprivate var _album: SAPhotoAlbum?
     
     fileprivate var _photos: [SAPhoto] = []
     fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
-    init(album: SAPhotoAlbum?) {
-        _album = album
-        let layout = SAPhotoPickerAssetsLayout()
-        
-        layout.itemSize = CGSize(width: 78, height: 78)
-        layout.minimumLineSpacing = 2
-        layout.minimumInteritemSpacing = 2
-        layout.headerReferenceSize = CGSize(width: 0, height: 10)
-        layout.footerReferenceSize = CGSize.zero
-        
-        super.init(collectionViewLayout: layout)
-        _init()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
-    }
-    deinit {
-        _deinit()
-    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
-extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
+extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return _photos.count
@@ -387,7 +386,7 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoPickerAssetsCell else {
+        guard let cell = cell as? SAPhotoPickerForAssetsCell else {
             return
         }
         cell.delegate = self
@@ -430,7 +429,7 @@ extension SAPhotoPickerAssets: UICollectionViewDelegateFlowLayout {
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
-extension SAPhotoPickerAssets: SAPhotoSelectionable {
+extension SAPhotoPickerForAssets: SAPhotoSelectionable {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     public func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
@@ -469,7 +468,7 @@ extension SAPhotoPickerAssets: SAPhotoSelectionable {
 
 // MARK: - PHPhotoLibraryChangeObserver
 
-extension SAPhotoPickerAssets: PHPhotoLibraryChangeObserver {
+extension SAPhotoPickerForAssets: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         // 检查有没有变更

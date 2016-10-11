@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerAlbums.swift
+//  SAPhotoPickerForAlbums.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/21/16.
@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoPickerAlbums: UITableViewController {
+internal class SAPhotoPickerForAlbums: UITableViewController {
     
     var allowsMultipleSelection: Bool = true {
         didSet {
@@ -17,77 +17,43 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         }
     }
     
-    weak var picker: SAPhotoPicker? {
-        didSet {
-            _previewerViewController?.picker = picker
-            _previewerViewController?.selection = picker
-        }
-    }
-    weak var selection: SAPhotoSelectionable? {
-        if let assets = _assetsViewController {
-            return assets
-        }
-        return picker
-    }
-    
-    init(pickWithAlbum album: SAPhotoAlbum? = nil) {
-        super.init(nibName: nil, bundle: nil)
-        _albumForPicker = album
-        _init()
-    }
-    
-    init(previewWithAlbum album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool) {
-        super.init(nibName: nil, bundle: nil)
-        _initPreviewer = makePhotoPreviewer(album: album, in: photo, reverse: reverse)
-        _init()
-    }
-    init(previewWithPhotos photos: [SAPhoto], in photo: SAPhoto? = nil, reverse: Bool) {
-        super.init(nibName: nil, bundle: nil)
-        _initPreviewer = makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
-        _init()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _init()
-    }
-    deinit {
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
-    }
+    weak var picker: SAPhotoPickerForImp?
+    weak var selection: SAPhotoSelectionable?
     
     
-    func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
-        let vc = SAPhotoPickerPreviewer(album: album, in: photo, reverse: reverse)
-        vc.picker = picker
-        vc.selection = selection
-        vc.allowsMultipleSelection = allowsMultipleSelection
-        
-        _previewerViewController = vc
-        
-        return vc
-    }
-    func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerPreviewer {
-        let vc = SAPhotoPickerPreviewer(photos: photos, in: photo, reverse: reverse)
-        vc.picker = picker
-        vc.selection = selection
-        vc.allowsMultipleSelection = allowsMultipleSelection
-        
-        _previewerViewController = vc
-        
-        return vc
-    }
-    func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerAssets {
-        let vc = SAPhotoPickerAssets(album: album)
-        
-        vc.picker = picker
-        vc.selection = picker
-        vc.allowsMultipleSelection = allowsMultipleSelection
-        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
-        
-        _assetsViewController = vc
-        
-        return vc
-    }
+//    func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
+//        let vc = SAPhotoPickerForPreviewer(album: album, in: photo, reverse: reverse)
+////        vc.picker = picker
+////        vc.selection = selection
+////        vc.allowsMultipleSelection = allowsMultipleSelection
+//        
+//        _previewerViewController = vc
+//        
+//        return vc
+//    }
+//    func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
+//        let vc = SAPhotoPickerForPreviewer(photos: photos, in: photo, reverse: reverse)
+//        
+////        vc.picker = picker
+////        vc.selection = selection
+////        vc.allowsMultipleSelection = allowsMultipleSelection
+//        
+//        _previewerViewController = vc
+//        
+//        return vc
+//    }
+//    func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerForAssets {
+//        let vc = SAPhotoPickerForAssets(album: album)
+//        
+////        vc.picker = picker
+////        vc.selection = picker
+////        vc.allowsMultipleSelection = allowsMultipleSelection
+////        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
+//        
+//        _assetsViewController = vc
+//        
+//        return vc
+//    }
     
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
@@ -95,7 +61,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             if let toolbarItems = _toolbarItems {
                 return toolbarItems
             }
-            let toolbarItems = picker?.toolbarItems(for: .list)
+            let toolbarItems = picker?.makeToolbarItems(for: .list)
             _toolbarItems = toolbarItems
             return toolbarItems
         }
@@ -104,12 +70,12 @@ internal class SAPhotoPickerAlbums: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Albums"
         view.backgroundColor = .white
+        navigationItem.rightBarButtonItems = navigationController?.navigationItem.rightBarButtonItems
         
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.register(SAPhotoPickerAlbumsCell.self, forCellReuseIdentifier: "Item")
+        tableView.register(SAPhotoPickerForAlbumsCell.self, forCellReuseIdentifier: "Item")
         
         if let previewer = _initPreviewer  {
             _initPreviewer = nil
@@ -119,7 +85,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
             // 这个是选择模式
             SAPhotoLibrary.shared.requestAuthorization {
                 self._reloadAlbums($0)
-                self._initController($0)
+//                self._initController($0)
             }
         }
     }
@@ -203,32 +169,44 @@ internal class SAPhotoPickerAlbums: UITableViewController {
         _updateStatus(.notError)
     }
     
-    private func _init() {
-        _logger.trace()
-        
-        SAPhotoLibrary.shared.register(self)
-    }
     private func _initController(_ hasPermission: Bool) {
+        //_logger.trace()
+        
         guard hasPermission else {
             return
         }
-        _logger.trace()
-        
-        if let album = _albumForPicker ?? _albums?.first {
-            let assets = makeAssetsPicker(with: album)
-            navigationController?.viewControllers = [self, assets]
+        if let album = _albumForPicker ?? _albums?.first, let vc = picker?.makePickerForAssets(with: album) {
+            navigationController?.pushViewController(vc, animated: false)
         }
+    }
+    
+    init(picker: SAPhotoPickerForImp) {
+        super.init(nibName: nil, bundle: nil)
+        logger.trace()
+        
+        self.title = "Albums"
+        self.picker = picker
+        
+        SAPhotoLibrary.shared.register(self)
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) is not imp")
+    }
+    deinit {
+        logger.trace()
+        
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPhotoErrorView?
     
-    private weak var _assetsViewController: SAPhotoPickerAssets?
-    private weak var _previewerViewController: SAPhotoPickerPreviewer?
+    private weak var _assetsViewController: SAPhotoPickerForAssets?
+    private weak var _previewerViewController: SAPhotoPickerForPreviewer?
     
     private var _toolbarItems: [UIBarButtonItem]??
     
-    fileprivate var _initPreviewer: SAPhotoPickerPreviewer?
+    fileprivate var _initPreviewer: SAPhotoPickerForPreviewer?
     
     fileprivate var _albums: [SAPhotoAlbum]?
     fileprivate var _albumForPicker: SAPhotoAlbum?
@@ -236,7 +214,7 @@ internal class SAPhotoPickerAlbums: UITableViewController {
 
 // MARK: - UITableViewDelegate & UITableViewDataSource 
 
-extension SAPhotoPickerAlbums {
+extension SAPhotoPickerForAlbums {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return _albums?.count ?? 0
@@ -246,7 +224,7 @@ extension SAPhotoPickerAlbums {
         return tableView.dequeueReusableCell(withIdentifier: "Item", for: indexPath)
     }
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? SAPhotoPickerAlbumsCell else {
+        guard let cell = cell as? SAPhotoPickerForAlbumsCell else {
             return
         }
         cell.album = _albums?[indexPath.row]
@@ -258,23 +236,22 @@ extension SAPhotoPickerAlbums {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let album = _albums?[indexPath.row] else {
+        guard let album = _albums?[indexPath.row], let vc = picker?.makePickerForAssets(with: album) else {
             return
         }
-        let picker = makeAssetsPicker(with: album)
-        show(picker, sender: indexPath)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 // MARK: - PHPhotoLibraryChangeObserver
 
-extension SAPhotoPickerAlbums: PHPhotoLibraryChangeObserver {
+extension SAPhotoPickerForAlbums: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
-            // 清除无效的item
-            self.picker?.clearInvalidItems()
-            
+//            // 清除无效的item
+//            self.picker?.clearInvalidItems()
+//            
             self._reloadAlbums(true)
         }
     }

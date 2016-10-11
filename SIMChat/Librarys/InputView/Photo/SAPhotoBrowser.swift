@@ -10,8 +10,8 @@ import UIKit
 
 open class SAPhotoBrowser: UIViewController {
 //    
-////    open weak var delegate: SAPhotoPickerPreviewerDelegate?
-////    open weak var dataSource: SAPhotoPickerPreviewerDataSource?
+////    open weak var delegate: SAPhotoPickerForPreviewerDelegate?
+////    open weak var dataSource: SAPhotoPickerForPreviewerDataSource?
 //    
 //    open override func viewDidLoad() {
 //        super.viewDidLoad()
@@ -38,7 +38,7 @@ open class SAPhotoBrowser: UIViewController {
 //        _contentView.allowsSelection = false
 //        _contentView.allowsMultipleSelection = false
 //        _contentView.isPagingEnabled = true
-//        _contentView.register(SAPhotoPickerPreviewerCell.self, forCellWithReuseIdentifier: "Item")
+//        _contentView.register(SAPhotoPickerForPreviewerCell.self, forCellWithReuseIdentifier: "Item")
 //        _contentView.dataSource = self
 //        _contentView.delegate = self
 //        //_contentView.isDirectionalLockEnabled = true
@@ -114,7 +114,7 @@ open class SAPhotoBrowser: UIViewController {
 //    }
 //    
 //    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        guard let cell = cell as? SAPhotoPickerPreviewerCell else {
+//        guard let cell = cell as? SAPhotoPickerForPreviewerCell else {
 //            return
 //        }
 ////        if let photo = dataSource?.photoPreviewer(self, photoForItemAt: indexPath.item) {

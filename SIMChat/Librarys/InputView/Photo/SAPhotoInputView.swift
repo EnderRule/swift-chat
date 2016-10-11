@@ -40,23 +40,23 @@ import UIKit
 // [ ] SAPhotoPicker - 选择原图(文件大小)
 // [x] SAPhotoPicker - 拦截返回事件
 // [ ] SAPhotoPicker - 默认barItem
-// [x] SAPhotoPickerAlbums - 图片变更通知处理
-// [x] SAPhotoPickerAlbums - 空相册处理
-// [x] SAPhotoPickerAlbums - 默认显示album
-// [x] SAPhotoPickerAssets - 数量
-// [x] SAPhotoPickerAssets - 单选支持
-// [x] SAPhotoPickerAssets - 选中
-// [x] SAPhotoPickerAssets - 批量选中
-// [x] SAPhotoPickerAssets - 图片变更通知处理(多张新增、多张删除、多张改变、同时改变、删除Album)
-// [x] SAPhotoPickerAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
-// [x] SAPhotoPickerAssets - UIToolbar支持
-// [x] SAPhotoPickerPreviewer - 单选支持
-// [ ] SAPhotoPickerPreviewer - 转场动画(弹出)
-// [x] SAPhotoPickerPreviewer - 横屏支持
-// [ ] SAPhotoPickerPreviewer - 手势(下拉)隐藏
-// [x] SAPhotoPickerPreviewer - 图片变更通知处理
-// [x] SAPhotoPickerPreviewer - 选中事件处理
-// [x] SAPhotoPickerPreviewer - 自定义toolbar
+// [x] SAPhotoPickerForAlbums - 图片变更通知处理
+// [x] SAPhotoPickerForAlbums - 空相册处理
+// [x] SAPhotoPickerForAlbums - 默认显示album
+// [x] SAPhotoPickerForAssets - 数量
+// [x] SAPhotoPickerForAssets - 单选支持
+// [x] SAPhotoPickerForAssets - 选中
+// [x] SAPhotoPickerForAssets - 批量选中
+// [x] SAPhotoPickerForAssets - 图片变更通知处理(多张新增、多张删除、多张改变、同时改变、删除Album)
+// [x] SAPhotoPickerForAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
+// [x] SAPhotoPickerForAssets - UIToolbar支持
+// [x] SAPhotoPickerForPreviewer - 单选支持
+// [ ] SAPhotoPickerForPreviewer - 转场动画(弹出)
+// [x] SAPhotoPickerForPreviewer - 横屏支持
+// [ ] SAPhotoPickerForPreviewer - 手势(下拉)隐藏
+// [x] SAPhotoPickerForPreviewer - 图片变更通知处理
+// [x] SAPhotoPickerForPreviewer - 选中事件处理
+// [x] SAPhotoPickerForPreviewer - 自定义toolbar
 // 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
@@ -79,7 +79,7 @@ open class SAPhotoInputView: UIView {
     
     open var allowsMultipleSelection: Bool = true {
         didSet {
-            _picker?.allowsMultipleSelection = allowsMultipleSelection
+            //_picker?.allowsMultipleSelection = allowsMultipleSelection
             _contentView.allowsMultipleSelection = allowsMultipleSelection
         }
     }
@@ -178,7 +178,7 @@ open class SAPhotoInputView: UIView {
     fileprivate var _spaceBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     
     fileprivate weak var _picker: SAPhotoPicker?
-    fileprivate weak var _previewer: SAPhotoPickerPreviewer?
+    fileprivate weak var _previewer: SAPhotoPickerForPreviewer?
     
     fileprivate lazy var _tabbar: SAPhotoToolbar = SAPhotoToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
@@ -200,7 +200,7 @@ extension SAPhotoInputView {
     func onSendForPicker(_ sender: Any) {
         _logger.trace()
         
-        _picker?.dismiss(animated: true, completion: nil)
+        //_picker?.dismiss(animated: true, completion: nil)
         
         //_contentView.updateSelectionOfItems()
     }
@@ -232,12 +232,12 @@ extension SAPhotoInputView {
             return
         }
         
-        let picker = SAPhotoPicker2()
+        let picker = SAPhotoPicker()
         
-        picker.delegate = picker
+        picker.delegate = _contentView
+        //picker.allowsMultipleSelection = true
         
-        (viewController as? UINavigationController)?.topViewController?.present(picker, animated: true, completion: nil)
-        //viewController.present(picker, animated: true, completion: nil)
+        viewController.present(picker, animated: true, completion: nil)
         
 //        let picker = SAPhotoPicker()
 //        
@@ -245,13 +245,13 @@ extension SAPhotoInputView {
 //        picker.allowsMultipleSelection = allowsMultipleSelection
 //
 //        viewController.present(picker, animated: true, completion: nil)
-//        
+//
 //        _picker = picker
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
         
-        _picker?.preview(photos: _selectedPhotos)
+        //_picker?.preview(photos: _selectedPhotos)
     }
 }
 

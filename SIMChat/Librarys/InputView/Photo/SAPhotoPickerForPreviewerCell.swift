@@ -1,5 +1,5 @@
 //
-//  SAPhotoPickerPreviewerCell.swift
+//  SAPhotoPickerForPreviewerCell.swift
 //  SIMChat
 //
 //  Created by sagesse on 9/24/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAPhotoPickerPreviewerCell: UICollectionViewCell {
+internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
    
     var loader: SAPhotoLoaderType? {
         set { return _photoView.loader = newValue }

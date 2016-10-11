@@ -383,6 +383,7 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
             _selectedPhotos.append(photo)
         }
         delegate?.recentlyView?(self, didSelectItemFor: photo)
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidSelectItem, object: photo)
         
         _updateContentOffset(of: photo)
         _updateSelection(forSelected: photo)
@@ -400,6 +401,8 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
             _selectedPhotos.remove(at: index)
         }
         delegate?.recentlyView?(self, didDeselectItemFor: photo)
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
+        
         _updateSelection(forDeselected: photo)
     }
     
@@ -411,15 +414,16 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
             return
         }
         
-        let picker = SAPhotoPicker(previewWithAlbum: album, in: photo, reverse: true)
-        
-        picker.delegate = self
-        picker.allowsMultipleSelection = allowsMultipleSelection
-        
-        let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
-        rootViewController?.present(picker, animated: true, completion: nil)
-        
-        delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
+        // NO IMP
+//        let picker = SAPhotoPicker(previewWithAlbum: album, in: photo, reverse: true)
+//        
+//        picker.delegate = self
+//        picker.allowsMultipleSelection = allowsMultipleSelection
+//        
+//        let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
+//        rootViewController?.present(picker, animated: true, completion: nil)
+//        
+//        delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
     }
 }
 
