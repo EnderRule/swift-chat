@@ -11,6 +11,7 @@ import Photos
 
 internal class SAPhotoPickerForAlbums: UITableViewController {
     
+    var allowsMultipleDisplay: Bool = true
     var allowsMultipleSelection: Bool = true {
         didSet {
             _previewerViewController?.allowsMultipleSelection = allowsMultipleSelection
@@ -77,16 +78,14 @@ internal class SAPhotoPickerForAlbums: UITableViewController {
         tableView.separatorStyle = .none
         tableView.register(SAPhotoPickerForAlbumsCell.self, forCellReuseIdentifier: "Item")
         
-        if let previewer = _initPreviewer  {
-            _initPreviewer = nil
-            // 这个是预览模式
-            navigationController?.pushViewController(previewer, animated: false)
-        } else {
-            // 这个是选择模式
-            SAPhotoLibrary.shared.requestAuthorization {
-                self._reloadAlbums($0)
-//                self._initController($0)
-            }
+        // 如果不允许显示多个(即可以选择用户提供的之外), 那么不请求权限
+        guard allowsMultipleDisplay else {
+            return
+        }
+        // 如果不允许显示多个, 那么就需要请求权限了
+        SAPhotoLibrary.shared.requestAuthorization {
+            self._reloadAlbums($0)
+            self._initController($0)
         }
     }
     
@@ -171,7 +170,6 @@ internal class SAPhotoPickerForAlbums: UITableViewController {
     
     private func _initController(_ hasPermission: Bool) {
         //_logger.trace()
-        
         guard hasPermission else {
             return
         }
@@ -186,16 +184,12 @@ internal class SAPhotoPickerForAlbums: UITableViewController {
         
         self.title = "Albums"
         self.picker = picker
-        
-        SAPhotoLibrary.shared.register(self)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
     }
     deinit {
         logger.trace()
-        
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     private var _status: SAPhotoStatus = .notError

@@ -9,8 +9,14 @@
 import UIKit
 import Photos
 
+internal enum SAPhotoPickerPreviewDirection {
+    case normal
+    case reverse
+}
+
 internal class SAPhotoPickerForPreviewer: UIViewController {
     
+    var direction: SAPhotoPickerPreviewDirection = .normal
     var allowsMultipleSelection: Bool = true {
         didSet {
             _selectedView.isHidden = !allowsMultipleSelection
@@ -26,11 +32,23 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
             if let toolbarItems = _toolbarItems {
                 return toolbarItems
             }
-            return nil
-//            let toolbarItems = picker?.toolbarItems(for: .preview)
-//            _toolbarItems = toolbarItems
-//            return toolbarItems
+            let toolbarItems = picker?.makeToolbarItems(for: .preview)
+            _toolbarItems = toolbarItems
+            return toolbarItems
         }
+    }
+    
+    
+    func scroll(to photo: SAPhoto?, animated: Bool) {
+        guard let photo = photo, let index = _photos.index(of: photo) else {
+            return
+        }
+        _logger.trace(index)
+        guard isViewLoaded else {
+            _currentIndex = index
+            return
+        }
+        _updatePage(at: _currentIndex, animated: animated)
     }
     
     override func viewDidLoad() {
@@ -76,12 +94,11 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         //_contentView.isDirectionalLockEnabled = true
         //_contentView.isScrollEnabled = false
         
-        
-        _updatePage(at: _currentIndex, animated: false)
-        
         view.backgroundColor = .black
         view.addSubview(_contentView)
         view.addSubview(_toolbar)
+        
+        _updatePage(at: _currentIndex, animated: false)
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -151,7 +168,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         
         let count = _photos.count
         var nindex = index
-        if _isReverse {
+        if !_ascending {
             nindex = count - index - 1
         }
         title = "\(nindex + 1) / \(count)"
@@ -243,26 +260,25 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     }
     
     
-    
-    private func _init() {
-        _logger.trace()
-        
-        title = "Preview"
-        automaticallyAdjustsScrollViewInsets = false
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: _selectedView)
-        
-        SAPhotoLibrary.shared.register(self)
-    }
-    private func _deinit() {
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
-    }
-    
-    init(picker: SAPhotoPickerForImp) {
+    init(picker: SAPhotoPickerForImp, options: SAPhotoPickerOptions) {
         super.init(nibName: nil, bundle: nil)
         logger.trace()
         
-        self.title = "Albums"
+        _album = options.album
+        _photos = options.photos ?? options.album?.photos ?? []
+        _photosResult = options.album?.result
+        _ascending = options.ascending
+        
         self.picker = picker
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: _selectedView)
+        self.automaticallyAdjustsScrollViewInsets = false
+        
+        // 反转显示
+        if !_ascending {
+            _photos.reverse()
+        }
+        // 显示默认的.
+        self.scroll(to: options.default, animated: false)
         
         SAPhotoLibrary.shared.register(self)
     }
@@ -274,39 +290,11 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
-//    init(album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        super.init(nibName: nil, bundle: nil)
-//        _album = album
-//        _photos = album.photos
-//        _photosResult = album.result
-//        _isReverse = reverse
-//        if reverse {
-//            _photos.reverse()
-//        }
-//        if let photo = photo {
-//            _currentIndex = _photos.index(of: photo) ?? 0
-//        }
-//        _init()
-//    }
-//    init(photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        super.init(nibName: nil, bundle: nil)
-//        _photos = photos
-//        _isReverse = reverse
-//        if reverse {
-//            _photos.reverse()
-//        }
-//        if let photo = photo {
-//            _currentIndex = _photos.index(of: photo) ?? 0
-//        }
-//        _init()
-//    }
-    
     
     private var _cacheBounds: CGRect?
     
     private var _toolbarItems: [UIBarButtonItem]??
     
-    fileprivate var _isReverse: Bool = false
     fileprivate var _isFullscreen: Bool = false
     
     fileprivate lazy var _contentViewLayout: SAPhotoPickerForPreviewerLayout = SAPhotoPickerForPreviewerLayout()
@@ -323,6 +311,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     
     fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
     
+    fileprivate var _ascending: Bool = true
 }
 
 extension SAPhotoPickerForPreviewer: SAPhotoBrowserViewDelegate {
@@ -401,7 +390,7 @@ extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
         var newPhotos = _album?.photos(with: newResult) ?? []
         
         // 反转
-        if _isReverse {
+        if !_ascending {
             newPhotos.reverse()
         }
         let remainingIndex: Int = {
@@ -409,7 +398,7 @@ extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
             guard index < oldPhotos.count else {
                 return 0
             }
-            let step = _isReverse ? -1 : 1
+            let step = _ascending ? 1 : -1
             
             while index >= 0 && index < oldPhotos.count {
                 if let nidx = newPhotos.index(of: oldPhotos[index]) {

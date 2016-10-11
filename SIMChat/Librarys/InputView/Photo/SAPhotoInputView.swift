@@ -235,23 +235,16 @@ extension SAPhotoInputView {
         let picker = SAPhotoPicker()
         
         picker.delegate = _contentView
-        //picker.allowsMultipleSelection = true
+        picker.allowsMultipleSelection = true
         
         viewController.present(picker, animated: true, completion: nil)
         
-//        let picker = SAPhotoPicker()
-//        
-//        picker.delegate = _contentView
-//        picker.allowsMultipleSelection = allowsMultipleSelection
-//
-//        viewController.present(picker, animated: true, completion: nil)
-//
-//        _picker = picker
+        _picker = picker
     }
     func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
         
-        //_picker?.preview(photos: _selectedPhotos)
+        _picker?.preview(with: SAPhotoPickerOptions(photos: _selectedPhotos))
     }
 }
 

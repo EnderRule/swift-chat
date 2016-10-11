@@ -7,15 +7,37 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoPickerForImp: UINavigationController {
     
-    dynamic var allowsMultipleSelection: Bool = true
+    dynamic var allowsMultipleSelection: Bool {
+        set { return (_rootViewController?.allowsMultipleSelection = newValue) ?? Void() }
+        get { return (_rootViewController?.allowsMultipleSelection) ?? false }
+    }
+    dynamic var allowsMultipleDisplay: Bool {
+        set { return (_rootViewController?.allowsMultipleDisplay = newValue) ?? Void() }
+        get { return (_rootViewController?.allowsMultipleDisplay) ?? false }
+    }
     
     dynamic weak var picker: SAPhotoPicker!
     dynamic weak var delegater: SAPhotoPickerDelegate?
-    dynamic weak var defaultCenter: NotificationCenter? { return NotificationCenter.default }
+    dynamic weak var defaultCenter: NotificationCenter? {
+        return NotificationCenter.default 
+    }
     
+    dynamic func pick(with album: SAPhotoAlbum) {
+        _logger.trace()
+        
+        let vc = makePickerForAssets(with: album)
+        pushViewController(vc, animated: true)
+    }
+    dynamic func preview(with options: SAPhotoPickerOptions) {
+        _logger.trace()
+        
+        let vc = makePreviewer(options)
+        pushViewController(vc, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,14 +100,25 @@ internal class SAPhotoPickerForImp: UINavigationController {
         let item = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
         let viewController = makePickerForAlbums()
         
-        //_picker = picker
         _rootViewController = viewController
-        self.navigationItem.rightBarButtonItem = item
         
         self.title = "Photos"
         //self.delegate = self
-        self.setValue(self, forKey: "picker")
+        self.setValue(self, forKey: "picker") // 强制更新转换(因为as会失败)
         self.setViewControllers([viewController], animated: false)
+        self.navigationItem.rightBarButtonItem = item
+        
+        SAPhotoLibrary.shared.register(self)
+    }
+    dynamic convenience init(pick album: SAPhotoAlbum) {
+        self.init()
+        self.pick(with: album)
+        self.allowsMultipleDisplay = false
+    }
+    dynamic convenience init(preview options: SAPhotoPickerOptions) {
+        self.init()
+        self.preview(with: options)
+        self.allowsMultipleDisplay = false
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
@@ -97,10 +130,12 @@ internal class SAPhotoPickerForImp: UINavigationController {
         logger.trace()
         
         SAPhotoAlbum.clearCaches()
+        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     fileprivate var _canBack: Bool = true
-    fileprivate var _rootViewController: SAPhotoPickerForAlbums!
+    
+    fileprivate weak var _rootViewController: SAPhotoPickerForAlbums?
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
@@ -239,15 +274,13 @@ private extension SAPhotoPickerForImp {
 extension SAPhotoPickerForImp {
     
     func makeToolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return nil
-        //return delegate?.picker?(self, toolbarItemsFor: context)
+        return delegater?.picker?(picker, toolbarItemsFor: context)
     }
     
     func makePickerForAlbums() -> SAPhotoPickerForAlbums {
         let vc = SAPhotoPickerForAlbums(picker: self)
         
         vc.selection = self
-        vc.allowsMultipleSelection = allowsMultipleSelection
         
         return vc
     }
@@ -259,8 +292,8 @@ extension SAPhotoPickerForImp {
         
         return vc
     }
-    func makePreviewer() -> SAPhotoPickerForPreviewer {
-        let vc = SAPhotoPickerForPreviewer(picker: self)
+    func makePreviewer(_ options: SAPhotoPickerOptions) -> SAPhotoPickerForPreviewer {
+        let vc = SAPhotoPickerForPreviewer(picker: self, options: options)
         
         vc.selection = self
         vc.allowsMultipleSelection = allowsMultipleSelection
@@ -269,28 +302,19 @@ extension SAPhotoPickerForImp {
     }
 }
 
-//    func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
-//        let vc = SAPhotoPickerForPreviewer(album: album, in: photo, reverse: reverse)
-////        vc.picker = picker
-////        vc.selection = selection
-////        vc.allowsMultipleSelection = allowsMultipleSelection
-//        
-//        _previewerViewController = vc
-//        
-//        return vc
-//    }
-//    func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
-//        let vc = SAPhotoPickerForPreviewer(photos: photos, in: photo, reverse: reverse)
-//        
-////        vc.picker = picker
-////        vc.selection = selection
-////        vc.allowsMultipleSelection = allowsMultipleSelection
-//        
-//        _previewerViewController = vc
-//        
-//        return vc
-//    }
-
+extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
+    
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async {
+            // 清除无效的item
+            
+            // 通知子控制器
+            self.viewControllers.forEach {
+                ($0 as? PHPhotoLibraryChangeObserver)?.photoLibraryDidChange(changeInstance)
+            }
+        }
+    }
+}
 
 // MARK: - UINavigationControllerDelegate & SAPhotoNavigationBarPopDelegate
 
@@ -299,7 +323,7 @@ extension SAPhotoPickerForImp: UINavigationControllerDelegate, SAPhotoNavigation
     // MARK: - SAPhotoNavigationBarPopDelegate
     
     func sa_navigationBar(_ navigationBar: SAPhotoNavigationBar, shouldPop item: UINavigationItem) -> Bool {
-        guard !_canBack else {
+        guard !allowsMultipleDisplay else {
             return true
         }
         backHandler(self)
@@ -365,16 +389,11 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
         
-        delegater?.picker?(picker, tapItemFor: photo, with: selection)
-        
-        guard let album = photo.album else {
-            return
+        if let album = photo.album  {
+            preview(with: SAPhotoPickerOptions(album: album, default: photo))
         }
-        let vc = makePreviewer()
         
-//        let previewer = //_rootViewController.makePhotoPreviewer(album: album, in: photo, reverse: false)
-        
-        pushViewController(vc, animated: true)
+        delegater?.picker?(picker, tapItemFor: photo, with: selection)
     }
 }
 

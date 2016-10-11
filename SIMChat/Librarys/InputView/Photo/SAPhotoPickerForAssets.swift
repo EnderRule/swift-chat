@@ -336,16 +336,12 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         self.title = album.title
         self.picker = picker
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-        
-        SAPhotoLibrary.shared.register(self)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
     }
     deinit {
         logger.trace()
-        
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     
     

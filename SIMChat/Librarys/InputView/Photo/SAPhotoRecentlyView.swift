@@ -410,20 +410,16 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
         
-        guard let album = photo.album else {
-            return
+        if let album = photo.album, let window = UIApplication.shared.delegate?.window {
+            let options = SAPhotoPickerOptions(album: album, default: photo, ascending: false)
+            let picker = SAPhotoPicker(preview: options)
+            
+            picker.delegate = self
+            
+            window?.rootViewController?.present(picker, animated: true, completion: nil)
         }
         
-        // NO IMP
-//        let picker = SAPhotoPicker(previewWithAlbum: album, in: photo, reverse: true)
-//        
-//        picker.delegate = self
-//        picker.allowsMultipleSelection = allowsMultipleSelection
-//        
-//        let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
-//        rootViewController?.present(picker, animated: true, completion: nil)
-//        
-//        delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
+        delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
     }
 }
 

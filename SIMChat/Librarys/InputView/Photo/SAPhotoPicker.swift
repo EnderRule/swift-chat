@@ -9,6 +9,28 @@
 import UIKit
 import Photos
 
+public class SAPhotoPickerOptions: NSObject {
+    
+    public init(album: SAPhotoAlbum, default: SAPhoto? = nil, ascending: Bool = true) {
+        super.init()
+        self.ascending = ascending
+        self.`default` = `default`
+        self.album = album
+    }
+    public init(photos: Array<SAPhoto>, default: SAPhoto? = nil, ascending: Bool = true) {
+        super.init()
+        self.ascending = ascending
+        self.`default` = `default`
+        self.photos = photos
+    }
+    
+    public var `default`: SAPhoto?
+    public var ascending: Bool = true
+    
+    public var album: SAPhotoAlbum?
+    public var photos: Array<SAPhoto>?
+}
+
 @objc
 public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     
@@ -48,6 +70,16 @@ public class SAPhotoPicker: UIViewController {
     @objc(delegater)
     public dynamic weak var delegate: SAPhotoPickerDelegate? 
     
+    
+    public dynamic func pick(with album: SAPhotoAlbum) {
+        fatalError()
+    }
+    public dynamic func preview(with options: SAPhotoPickerOptions) {
+        fatalError()
+    }
+    
+    
+    
     public override class func initialize() {
         // 替换类方法
         guard let metaClass = objc_getMetaClass(NSStringFromClass(self).cString(using: .utf8)) as? AnyClass else {
@@ -61,18 +93,25 @@ public class SAPhotoPicker: UIViewController {
         
         class_replaceMethod(metaClass, s1, method_getImplementation(m2), method_getTypeEncoding(m1))
     }
-    
     private dynamic class func _alloc(zone: NSZone) -> AnyObject? {
         let s1 = Selector(String("allocWithZone:"))
         let ret = SAPhotoPickerForImp.perform(s1, with: zone)
         return ret?.takeRetainedValue()
     }
     
+    
+    
     public dynamic init() {
-        fatalError("init() not imp")
+        fatalError()
+    }
+    public dynamic convenience init(pick album: SAPhotoAlbum) {
+        fatalError()
+    }
+    public dynamic init(preview options: SAPhotoPickerOptions) {
+        fatalError()
     }
     public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) not imp")
+        fatalError()
     }
 }
 
