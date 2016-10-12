@@ -242,11 +242,9 @@ extension SAPhotoPickerForAlbums {
 extension SAPhotoPickerForAlbums: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        DispatchQueue.main.async {
-//            // 清除无效的item
-//            self.picker?.clearInvalidItems()
-//            
-            self._reloadAlbums(true)
+        _albums?.forEach {
+            $0.clearCache()
         }
+        _reloadAlbums(true)
     }
 }

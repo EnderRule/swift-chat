@@ -69,30 +69,6 @@ internal class SAPhotoPickerForImp: UINavigationController {
 //        return delegate2?.picker?(self, toolbarItemsFor: context)
 //    }
     
-//    func clearInvalidItems() {
-//        _logger.trace()
-//        
-//        _selectedPhotos.forEach {
-//            _updateSelectionForRemove($0)
-//        }
-//    }
-//    
-//    private func _updateSelectionForRemove(_ photo: SAPhoto) {
-//        // 检查有没有选中
-//        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-//            return
-//        }
-//        // 检查这个图片有没有被删除
-//        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-//            return
-//        }
-//        _logger.trace(photo)
-//        // 需要强制删除?
-//        if selection(self, shouldDeselectItemFor: photo) {
-//            selection(self, didDeselectItemFor: photo)
-//        }
-//    }
-    
     dynamic init() {
         super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
         logger.trace()
@@ -251,25 +227,43 @@ internal class SAPhotoPickerForImp: UINavigationController {
 //    }
 //}
 //
-// MARK: - Event
+// MARK: - Events
 
 private extension SAPhotoPickerForImp {
     
-    @objc func backHandler(_ sender: Any) {
+    dynamic func backHandler(_ sender: Any) {
         _logger.trace()
         
         dismiss(animated: true, completion: nil)
     }
-
-    @objc func cancelHandler(_ sender: Any) {
+    dynamic func cancelHandler(_ sender: Any) {
         _logger.trace()
         
         dismiss(animated: true, completion: nil)
+    }
+    
+    dynamic func selectItem(_ photo: SAPhoto) {
+        //_logger.trace()
+        
+        if !_selectedPhotoSets.contains(photo) {
+            _selectedPhotoSets.insert(photo)
+            _selectedPhotos.append(photo)
+        }
+        delegater?.picker?(picker, didSelectItemFor: photo)
+    }
+    dynamic func deselectItem(_ photo: SAPhoto) {
+        //_logger.trace()
+        
+        if let index = _selectedPhotos.index(of: photo) {
+            _selectedPhotoSets.remove(photo)
+            _selectedPhotos.remove(at: index)
+        }
+        delegater?.picker?(picker, didDeselectItemFor: photo)
     }
 }
 
 
-// MARK:
+// MARK: - Maker
 
 extension SAPhotoPickerForImp {
     
@@ -307,11 +301,25 @@ extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
             // 清除无效的item
-            
+            self._selectedPhotos.forEach {
+                self._updateSelectionForRemove($0)
+            }
             // 通知子控制器
             self.viewControllers.forEach {
                 ($0 as? PHPhotoLibraryChangeObserver)?.photoLibraryDidChange(changeInstance)
             }
+        }
+    }
+    
+    private func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        _logger.trace(photo.identifier)
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
         }
     }
 }
@@ -360,13 +368,9 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
         _logger.trace()
         
-        if !_selectedPhotoSets.contains(photo) {
-            _selectedPhotoSets.insert(photo)
-            _selectedPhotos.append(photo)
-        }
-        
-        delegater?.picker?(picker, didSelectItemFor: photo)
-        defaultCenter?.post(name: .SAPhotoSelectionableDidSelectItem, object: photo)
+        selectItem(photo)
+        // 通知UI更新
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidSelectItem, object: photo)
     }
     
     // check whether item can deselect
@@ -376,13 +380,9 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
         _logger.trace()
         
-        if let index = _selectedPhotos.index(of: photo) {
-            _selectedPhotoSets.remove(photo)
-            _selectedPhotos.remove(at: index)
-        }
-        
-        delegater?.picker?(picker, didDeselectItemFor: photo)
-        defaultCenter?.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
+        deselectItem(photo)
+        // 通知UI更新
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
     }
     
     // tap item

@@ -44,42 +44,6 @@ open class SAPhotoRecentlyView: UIView {
     open weak var delegate: SAPhotoRecentlyViewDelegate?
     
     
-    fileprivate func _updateSelection(forSelected item: SAPhoto) {
-        _logger.trace()
-        
-        _contentView.visibleCells.forEach {
-            let cell = $0 as? SAPhotoRecentlyViewCell
-            guard cell?.photo == item && !(cell?.photoIsSelected ?? false) else {
-                return
-            }
-            cell?.updateSelection()
-        }
-    }
-    fileprivate func _updateSelection(forDeselected item: SAPhoto) {
-        _logger.trace(item.identifier)
-        
-        _contentView.visibleCells.forEach {
-            let cell = $0 as? SAPhotoRecentlyViewCell
-            guard cell?.photoIsSelected ?? false else {
-                return
-            }
-            cell?.updateSelection()
-        }
-    }
-    
-    fileprivate func _updateEdgOfItems() {
-        _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
-        }
-    }
-    fileprivate func _updateContentOffset(of photo: SAPhoto) {
-        guard let index = _photos?.index(of: photo) else {
-            return
-        }
-        let indexPath = IndexPath(item: index, section: 0)
-        _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-    }
-    
     open override func didMoveToWindow() {
         super.didMoveToWindow()
         if !_isInitPhoto {
@@ -114,7 +78,7 @@ open class SAPhotoRecentlyView: UIView {
             
             _tipsLabel.removeFromSuperview()
             
-            _updateEdgOfItems()
+            updateEdgOfItems()
             
         case .notData:
             _tipsLabel.isHidden = false
@@ -222,6 +186,9 @@ open class SAPhotoRecentlyView: UIView {
         addSubview(_contentView)
         
         SAPhotoLibrary.shared.register(self)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didSelectItem(_:)), name: .SAPhotoSelectionableDidSelectItem, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPhotoSelectionableDidDeselectItem, object: nil)
     }
     
     private var _status: SAPhotoStatus = .notError
@@ -255,12 +222,77 @@ open class SAPhotoRecentlyView: UIView {
     }
 }
 
+// MARK: - Events
+
+private extension SAPhotoRecentlyView {
+    
+    dynamic func selectItem(_ photo: SAPhoto) {
+        //_logger.trace()
+        
+        if !_selectedPhotoSets.contains(photo) {
+            _selectedPhotoSets.insert(photo)
+            _selectedPhotos.append(photo)
+        }
+        delegate?.recentlyView?(self, didSelectItemFor: photo)
+    }
+    dynamic func deselectItem(_ photo: SAPhoto) {
+        //_logger.trace()
+        
+        if let index = _selectedPhotos.index(of: photo) {
+            _selectedPhotoSets.remove(photo)
+            _selectedPhotos.remove(at: index)
+        }
+        delegate?.recentlyView?(self, didDeselectItemFor: photo)
+    }
+    
+    dynamic func didSelectItem(_ sender: Notification) {
+        guard let photo = sender.object as? SAPhoto else {
+            return
+        }
+        _logger.trace()
+        _contentView.visibleCells.forEach {
+            let cell = $0 as? SAPhotoRecentlyViewCell
+            guard cell?.photo == photo && !(cell?.photoIsSelected ?? false) else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
+    dynamic func didDeselectItem(_ sender: Notification) {
+        guard let _ = sender.object as? SAPhoto else {
+            return
+        }
+        _logger.trace()
+        _contentView.visibleCells.forEach {
+            let cell = $0 as? SAPhotoRecentlyViewCell
+            guard cell?.photoIsSelected ?? false else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
+    
+    func updateEdgOfItems() {
+        _contentView.visibleCells.forEach {
+            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
+        }
+    }
+    func updateContentOffset(of photo: SAPhoto) {
+        guard let index = _photos?.index(of: photo) else {
+            return
+        }
+        let indexPath = IndexPath(item: index, section: 0)
+        _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    }
+}
+
+
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 
 extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        _updateEdgOfItems()
+        updateEdgOfItems()
     }
    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -304,38 +336,26 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
 
 extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
     
-    private func _updateSelectionForRemove(_ photo: SAPhoto) {
-        // 检查有没有选中
-        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-            return
-        }
-        // 检查这个图片有没有被删除
-        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-            return
-        }
-        _logger.trace(photo)
-        // 需要强制删除?
-        if selection(self, shouldDeselectItemFor: photo) {
-            selection(self, didDeselectItemFor: photo)
+    // 图片发生改变
+    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        DispatchQueue.main.async {
+            self._photoLibraryDidChangeOnMainThread(changeInstance)
         }
     }
     
-    // 图片发生改变
-    public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
-            // 检查选中的图片有没有被删除
-            DispatchQueue.main.async {
-                self._selectedPhotos.forEach {
-                    self._updateSelectionForRemove($0)
-                }
-            }
+    private func _photoLibraryDidChangeOnMainThread(_ changeInstance: PHChange) {
+        // 检查选中的图片有没有被删除
+        _selectedPhotos.forEach {
+            _updateSelectionForRemove($0)
+        }
+        // 检查有没有发生改变
+        guard let result = self._photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             return
         }
-        
         let inserts = change.insertedIndexes?.map { idx -> IndexPath in
             // ... 这可能会产生bug
             return IndexPath(item: 0, section: 0)
-        } ?? []
+            } ?? []
         let changes = change.changedObjects.flatMap { asset -> IndexPath? in
             if let idx = _photos?.index(where: { $0.asset.localIdentifier == asset.localIdentifier }) {
                 return IndexPath(item: idx, section: 0)
@@ -348,16 +368,21 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
             }
             return nil
         }
-        
+            
         _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
-        
-        DispatchQueue.main.async {
-            self._updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
-            // 检查选中的图片有没有被删除
-            self._selectedPhotos.forEach {
-                self._updateSelectionForRemove($0)
-            }
+        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+    }
+    
+    private func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        _logger.trace(photo.identifier)
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
         }
     }
 }
@@ -365,6 +390,7 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
 extension SAPhotoRecentlyView: SAPhotoSelectionable {
+    
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     public func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
@@ -376,17 +402,13 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
         return delegate?.recentlyView?(self, shouldSelectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
-        _logger.trace()
+        //_logger.trace()
         
-        if !_selectedPhotoSets.contains(photo) {
-            _selectedPhotoSets.insert(photo)
-            _selectedPhotos.append(photo)
-        }
-        delegate?.recentlyView?(self, didSelectItemFor: photo)
+        selectItem(photo)
+        updateContentOffset(of: photo)
+        
+        // 通知UI更新
         NotificationCenter.default.post(name: .SAPhotoSelectionableDidSelectItem, object: photo)
-        
-        _updateContentOffset(of: photo)
-        _updateSelection(forSelected: photo)
     }
     
     // check whether item can deselect
@@ -394,16 +416,11 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
         return delegate?.recentlyView?(self, shouldDeselectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
-        _logger.trace()
+        //_logger.trace()
         
-        if let index = _selectedPhotos.index(of: photo) {
-            _selectedPhotoSets.remove(photo)
-            _selectedPhotos.remove(at: index)
-        }
-        delegate?.recentlyView?(self, didDeselectItemFor: photo)
+        deselectItem(photo)
+        // 通知UI更新
         NotificationCenter.default.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
-        
-        _updateSelection(forDeselected: photo)
     }
     
     // tap item
@@ -437,9 +454,8 @@ extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
         return selection(picker, shouldSelectItemFor: photo)
     }
     public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
-        _logger.trace()
-        
-        return selection(picker, didSelectItemFor: photo)
+        selectItem(photo)
+        updateContentOffset(of: photo) // 同步..
     }
     
     // check whether item can deselect
@@ -447,9 +463,7 @@ extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
         return selection(picker, shouldDeselectItemFor: photo)
     }
     public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
-        _logger.trace()
-        
-        return selection(picker, didDeselectItemFor: photo)
+        deselectItem(photo)
     }
     
     public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {

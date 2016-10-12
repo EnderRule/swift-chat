@@ -210,29 +210,6 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         navigationController?.isToolbarHidden = isHidden
     }
     
-    fileprivate func _updateSelection(forSelected item: SAPhoto) {
-        _logger.trace()
-        
-        collectionView?.visibleCells.forEach {
-            let cell = $0 as? SAPhotoPickerForAssetsCell
-            guard cell?.photo == item && !(cell?.photoIsSelected ?? false) else {
-                return
-            }
-            cell?.updateSelection()
-        }
-    }
-    fileprivate func _updateSelection(forDeselected item: SAPhoto?) {
-        _logger.trace()
-        
-        collectionView?.visibleCells.forEach {
-            let cell = $0 as? SAPhotoPickerForAssetsCell
-            guard cell?.photoIsSelected ?? false else {
-                return
-            }
-            cell?.updateSelection()
-        }
-    }
-    
     fileprivate func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
         let photo = _photos[index]
         
@@ -288,9 +265,6 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         
         _cachePhotos(_photos)
         _updateStatus(.notError)
-        
-        // update all
-        _updateSelection(forDeselected: nil)
     }
     
     fileprivate func _reloadPhotos() {
@@ -336,12 +310,17 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         self.title = album.title
         self.picker = picker
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didSelectItem(_:)), name: .SAPhotoSelectionableDidSelectItem, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPhotoSelectionableDidDeselectItem, object: nil)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
     }
     deinit {
         logger.trace()
+        
+        NotificationCenter.default.removeObserver(self)
     }
     
     
@@ -367,6 +346,38 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     fileprivate var _photos: [SAPhoto] = []
     fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
+}
+
+// MARK: - Events
+
+extension SAPhotoPickerForAssets {
+    
+    func didSelectItem(_ sender: Notification) {
+        guard let photo = sender.object as? SAPhoto else {
+            return
+        }
+        logger.trace()
+        collectionView?.visibleCells.forEach {
+            let cell = $0 as? SAPhotoPickerForAssetsCell
+            guard cell?.photo == photo && !(cell?.photoIsSelected ?? false) else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
+    func didDeselectItem(_ sender: Notification) {
+        guard let _ = sender.object as? SAPhoto else {
+            return
+        }
+        logger.trace()
+        collectionView?.visibleCells.forEach {
+            let cell = $0 as? SAPhotoPickerForAssetsCell
+            guard cell?.photoIsSelected ?? false else {
+                return
+            }
+            cell?.updateSelection()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -437,10 +448,7 @@ extension SAPhotoPickerForAssets: SAPhotoSelectionable {
         return self.selection?.selection(self, shouldSelectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
-        _logger.trace()
-        
         self.selection?.selection(self, didSelectItemFor: photo)
-        self._updateSelection(forSelected: photo)
     }
     
     // check whether item can deselect
@@ -448,16 +456,11 @@ extension SAPhotoPickerForAssets: SAPhotoSelectionable {
         return self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true
     }
     public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
-        _logger.trace()
-        
         self.selection?.selection(self, didDeselectItemFor: photo)
-        self._updateSelection(forDeselected: photo)
     }
     
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
-        _logger.trace()
-        
         self.selection?.selection(self, tapItemFor: photo, with: sender)
     }
 }
@@ -471,9 +474,7 @@ extension SAPhotoPickerForAssets: PHPhotoLibraryChangeObserver {
         guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             // 如果asset没有变更, 检查album是否存在
             if let album = _album, !SAPhotoAlbum.albums.contains(album) {
-                DispatchQueue.main.async {
-                    self._clearPhotos()
-                }
+                _clearPhotos()
             }
             return
         }
@@ -497,8 +498,6 @@ extension SAPhotoPickerForAssets: PHPhotoLibraryChangeObserver {
         _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
         
-        DispatchQueue.main.async {
-            self._updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
-        }
+        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
     }
 }

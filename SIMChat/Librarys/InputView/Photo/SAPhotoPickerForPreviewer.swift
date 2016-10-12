@@ -137,7 +137,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
             }
             selection?.selection(self, didSelectItemFor: photo)
         }
-        _updateSelection(at: _currentIndex, animated: true)
+        //_updateSelection(at: _currentIndex, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -280,7 +280,8 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         // 显示默认的.
         self.scroll(to: options.default, animated: false)
         
-        SAPhotoLibrary.shared.register(self)
+        NotificationCenter.default.addObserver(self, selector: #selector(didSelectItem(_:)), name: .SAPhotoSelectionableDidSelectItem, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPhotoSelectionableDidDeselectItem, object: nil)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
@@ -288,7 +289,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     deinit {
         logger.trace()
         
-        SAPhotoLibrary.shared.unregisterChangeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     private var _cacheBounds: CGRect?
@@ -313,6 +314,36 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     
     fileprivate var _ascending: Bool = true
 }
+
+// MARK: - Events
+
+extension SAPhotoPickerForPreviewer {
+    
+    func didSelectItem(_ sender: Notification) {
+        guard let photo = sender.object as? SAPhoto else {
+            return
+        }
+        // 检查是不是正在显示的
+        guard _currentIndex < _photos.count, _photos[_currentIndex] == photo else {
+            return
+        }
+        _logger.trace()
+        _updateSelection(at: _currentIndex, animated: true)
+    }
+    func didDeselectItem(_ sender: Notification) {
+        guard let photo = sender.object as? SAPhoto else {
+            return
+        }
+        // 检查是不是正在显示的
+        guard _currentIndex < _photos.count, _photos[_currentIndex] == photo else {
+            return
+        }
+        _logger.trace()
+        _updateSelection(at: _currentIndex, animated: true)
+    }
+}
+
+// MARK: - SAPhotoBrowserViewDelegate
 
 extension SAPhotoPickerForPreviewer: SAPhotoBrowserViewDelegate {
     
@@ -435,12 +466,11 @@ extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
         guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             // 如果asset没有变更, 检查album是否存在
             if let album = _album, !SAPhotoAlbum.albums.contains(album) {
-                DispatchQueue.main.async {
-                    self._contentView.reloadData()
-                }
+                _contentView.reloadData()
             }
             return
         }
+        
         
         let inserts = change.insertedIndexes?.map { idx -> IndexPath in
             return IndexPath(item: idx, section: 0)
@@ -460,8 +490,6 @@ extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
         
         _photosResult = change.fetchResultAfterChanges
         
-        DispatchQueue.main.async {
-            self._updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
-        }
+        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
     }
 }
