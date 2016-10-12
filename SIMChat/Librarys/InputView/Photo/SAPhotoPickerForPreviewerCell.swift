@@ -11,24 +11,24 @@ import UIKit
 internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
    
     var loader: SAPhotoLoaderType? {
-        set { return _photoView.loader = newValue }
-        get { return _photoView.loader }
+        set { return photoView.loader = newValue }
+        get { return photoView.loader }
     }
     weak var delegate: SAPhotoBrowserViewDelegate? {
-        set { return _photoView.delegate = newValue }
-        get { return _photoView.delegate }
+        set { return photoView.delegate = newValue }
+        get { return photoView.delegate }
     }
     
     private func _init() {
         
-        _photoView.frame = contentView.bounds
-        _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        photoView.frame = contentView.bounds
+        photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        contentView.addSubview(_photoView)
+        contentView.addSubview(photoView)
         contentView.clipsToBounds = true
     }
     
-    private var _photoView: SAPhotoBrowserView = SAPhotoBrowserView()
+    var photoView: SAPhotoBrowserView = SAPhotoBrowserView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -36,6 +36,7 @@ internal class SAPhotoPickerForImp: UINavigationController {
         _logger.trace()
         
         let vc = makePreviewer(options)
+        //vc.delegate = options._sender
         pushViewController(vc, animated: true)
     }
     
@@ -79,7 +80,7 @@ internal class SAPhotoPickerForImp: UINavigationController {
         _rootViewController = viewController
         
         self.title = "Photos"
-        //self.delegate = self
+        self.delegate = self
         self.setValue(self, forKey: "picker") // 强制更新转换(因为as会失败)
         self.setViewControllers([viewController], animated: false)
         self.navigationItem.rightBarButtonItem = item
@@ -290,6 +291,7 @@ extension SAPhotoPickerForImp {
         let vc = SAPhotoPickerForPreviewer(picker: self, options: options)
         
         vc.selection = self
+        vc.previewingDelegate = options.previewingDelegate
         vc.allowsMultipleSelection = allowsMultipleSelection
         
         return vc
@@ -326,9 +328,9 @@ extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
 
 // MARK: - UINavigationControllerDelegate & SAPhotoNavigationBarPopDelegate
 
-extension SAPhotoPickerForImp: UINavigationControllerDelegate, SAPhotoNavigationBarPopDelegate {
+extension SAPhotoPickerForImp: UINavigationControllerDelegate, UIViewControllerTransitioningDelegate, SAPhotoNavigationBarPopDelegate {
     
-    // MARK: - SAPhotoNavigationBarPopDelegate
+    // SAPhotoNavigationBarPopDelegate
     
     func sa_navigationBar(_ navigationBar: SAPhotoNavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard !allowsMultipleDisplay else {
@@ -341,16 +343,48 @@ extension SAPhotoPickerForImp: UINavigationControllerDelegate, SAPhotoNavigation
         // is empty
     }
     
+    // UIViewControllerTransitioningDelegate
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return nil
+    }
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return nil
+    }
+
+    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return nil
+    }
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return nil
+    }
+    
+    // UINavigationControllerDelegate
+    
     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        _logger.trace()
         return nil
     }
     
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        _logger.trace()
-        return nil
+        switch operation {
+        case .pop:
+            guard let previewer = fromVC as? SAPhotoPickerForPreviewer, let previewing = previewer.previewingDelegate, let item = previewer.previewingItem else {
+                return nil
+            }
+            return SAPhotoPreviewingAnimator.pop(item: item, from: previewer, to: previewing)
+            
+        case .push:
+            guard let previewer = toVC as? SAPhotoPickerForPreviewer, let previewing = previewer.previewingDelegate, let item = previewer.previewingItem else {
+                return nil
+            }
+            return SAPhotoPreviewingAnimator.push(item: item, from: previewing, to: previewer)
+            
+        case .none:
+            return nil
+        }
     }
 }
+
 
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
@@ -390,7 +424,9 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
         _logger.trace()
         
         if let album = photo.album  {
-            preview(with: SAPhotoPickerOptions(album: album, default: photo))
+            let options = SAPhotoPickerOptions(album: album, default: photo)
+            options.previewingDelegate = selection as? SAPhotoPreviewingDelegate
+            preview(with: options)
         }
         
         delegater?.picker?(picker, tapItemFor: photo, with: selection)

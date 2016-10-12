@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoView: UIView {
+internal class SAPhotoView: UIView, SAPhotoPreviewing {
     
     var photo: SAPhoto? {
         didSet {
@@ -33,8 +33,19 @@ internal class SAPhotoView: UIView {
         }
     }
     
+    override func snapshotView(afterScreenUpdates afterUpdates: Bool) -> UIView? {
+        let view = UIImageView()
+        
+        view.frame = frame
+        view.image = _imageView.image
+        view.contentMode = .scaleAspectFit
+        view.clipsToBounds = true
+        
+        return view
+    }
+    
     weak var delegate: SAPhotoSelectionable?
-   
+    
     
     func setSelected(_ newValue: Bool, animated: Bool) {
         _updateSelection(with: photo, animated: animated)

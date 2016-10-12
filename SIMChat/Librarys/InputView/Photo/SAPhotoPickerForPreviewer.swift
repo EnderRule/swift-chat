@@ -26,6 +26,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     weak var picker: SAPhotoPickerForImp?
     weak var selection: SAPhotoSelectionable?
     
+    var previewingItem: AnyObject?
+    weak var previewingDelegate: SAPhotoPreviewingDelegate?
+    
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
         get {
@@ -37,7 +40,6 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
             return toolbarItems
         }
     }
-    
     
     func scroll(to photo: SAPhoto?, animated: Bool) {
         guard let photo = photo, let index = _photos.index(of: photo) else {
@@ -56,11 +58,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         
         let ts: CGFloat = 20
         
-        _logger.debug("toolbar: \(navigationController?.toolbar)")
-        
-        _toolbar.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 44)
-        _toolbar.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
-        _toolbar.items = toolbarItems
+//        _toolbar.frame = CGRect(x: 0, y: view.frame.height, width: view.frame.width, height: 44)
+//        _toolbar.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+//        _toolbar.items = toolbarItems
         
         _selectedView.frame = CGRect(x: 0, y: 0, width: 23, height: 23)
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
@@ -94,9 +94,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         //_contentView.isDirectionalLockEnabled = true
         //_contentView.isScrollEnabled = false
         
-        view.backgroundColor = .black
+        view.backgroundColor = .white//.black
         view.addSubview(_contentView)
-        view.addSubview(_toolbar)
+//        view.addSubview(_toolbar)
         
         _updatePage(at: _currentIndex, animated: false)
     }
@@ -146,7 +146,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _logger.trace()
         
         navigationController?.isNavigationBarHidden = false
-        navigationController?.isToolbarHidden = true
+        navigationController?.isToolbarHidden = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -222,22 +222,24 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         }
     }
     fileprivate func _updateToolbar(_ newValue: Bool, animated: Bool) {
-        let block: ((Void) -> Void) = { [_toolbar] in
-            if newValue || (_toolbar.items?.isEmpty ?? true) {
-                // 隐藏
-                _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
-            } else {
-                // 显示
-                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
-            }
-        }
-        guard animated else {
-            block()
-            return
-        }
-        UIView.animate(withDuration: 0.25, animations: {
-            block()
-        })
+        
+        navigationController?.setToolbarHidden(newValue, animated: animated)
+//        let block: ((Void) -> Void) = { [_toolbar] in
+//            if newValue || (_toolbar.items?.isEmpty ?? true) {
+//                // 隐藏
+//                _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
+//            } else {
+//                // 显示
+//                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
+//            }
+//        }
+//        guard animated else {
+//            block()
+//            return
+//        }
+//        UIView.animate(withDuration: 0.25, animations: {
+//            block()
+//        })
     }
     fileprivate func _updateIsFullscreen(_ newValue: Bool, animated: Bool) {
         guard newValue != _isFullscreen else {
@@ -270,6 +272,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _ascending = options.ascending
         
         self.picker = picker
+        self.previewingItem = options.default
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: _selectedView)
         self.automaticallyAdjustsScrollViewInsets = false
         
@@ -341,6 +344,23 @@ extension SAPhotoPickerForPreviewer {
         _logger.trace()
         _updateSelection(at: _currentIndex, animated: true)
     }
+}
+
+extension SAPhotoPickerForPreviewer: SAPhotoPreviewingDelegate {
+    
+    func sourceView(of photo: AnyObject) -> UIView? {
+        guard let photo = photo as? SAPhoto else {
+            return nil
+        }
+        guard let index = _photos.index(of: photo) else {
+            return nil
+        }
+        guard let cell = _contentView.cellForItem(at: IndexPath(item: index, section: 0)) else {
+            return view // view还没有加载好
+        }
+        return (cell as? SAPhotoPickerForPreviewerCell)?.photoView
+    }
+    
 }
 
 // MARK: - SAPhotoBrowserViewDelegate

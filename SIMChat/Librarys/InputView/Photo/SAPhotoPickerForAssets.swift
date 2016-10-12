@@ -434,33 +434,49 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension SAPhotoPickerForAssets: SAPhotoPreviewingDelegate {
+    
+    func sourceView(of photo: AnyObject) -> UIView? {
+        guard let photo = photo as? SAPhoto else {
+            return nil
+        }
+        guard let index = _photos.index(of: photo) else {
+            return nil
+        }
+        guard let cell = collectionView?.cellForItem(at: IndexPath(item: index, section: 0)) else {
+            return nil
+        }
+        return (cell as? SAPhotoPickerForAssetsCell)?.photoView
+    }
+}
+
 // MARK: - SAPhotoViewDelegate(Forwarding)
 
 extension SAPhotoPickerForAssets: SAPhotoSelectionable {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
-    public func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
+    func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
         return self.selection?.selection(self, indexOfSelectedItemsFor: photo) ?? NSNotFound
     }
    
     // check whether item can select
-    public func selection(_ selection: Any, shouldSelectItemFor photo: SAPhoto) -> Bool {
+    func selection(_ selection: Any, shouldSelectItemFor photo: SAPhoto) -> Bool {
         return self.selection?.selection(self, shouldSelectItemFor: photo) ?? true
     }
-    public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
+    func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didSelectItemFor: photo)
     }
     
     // check whether item can deselect
-    public func selection(_ selection: Any, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+    func selection(_ selection: Any, shouldDeselectItemFor photo: SAPhoto) -> Bool {
         return self.selection?.selection(self, shouldDeselectItemFor: photo) ?? true
     }
-    public func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
+    func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didDeselectItemFor: photo)
     }
     
     // tap item
-    public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
+    func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         self.selection?.selection(self, tapItemFor: photo, with: sender)
     }
 }
@@ -469,7 +485,7 @@ extension SAPhotoPickerForAssets: SAPhotoSelectionable {
 
 extension SAPhotoPickerForAssets: PHPhotoLibraryChangeObserver {
     
-    public func photoLibraryDidChange(_ changeInstance: PHChange) {
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
         // 检查有没有变更
         guard let result = _photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             // 如果asset没有变更, 检查album是否存在

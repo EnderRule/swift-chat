@@ -19,7 +19,7 @@ internal protocol SAPhotoBrowserViewDelegate: NSObjectProtocol {
     @objc optional func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation)
 }
 
-internal class SAPhotoBrowserView: UIView {
+internal class SAPhotoBrowserView: UIView, SAPhotoPreviewing {
     
     var loader: SAPhotoLoaderType? {
         didSet {
@@ -44,6 +44,18 @@ internal class SAPhotoBrowserView: UIView {
             _restoreContent(loader?.size ?? .zero, oldBounds: _cacheBounds ?? bounds, animated: false)
             _cacheBounds = bounds
         }
+    }
+    
+    override func snapshotView(afterScreenUpdates afterUpdates: Bool) -> UIView? {
+        let view = UIImageView()
+        
+        view.frame = frame
+        view.image = _imageView.image
+        //view.contentMode = .scaleAspectFit
+        view.contentMode = .scaleAspectFill
+        view.clipsToBounds = true
+        
+        return view
     }
     
     private func _rotation(for orientation: UIImageOrientation) -> CGFloat {

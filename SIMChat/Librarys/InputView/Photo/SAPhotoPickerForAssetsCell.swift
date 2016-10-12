@@ -14,41 +14,41 @@ internal class SAPhotoPickerForAssetsCell: UICollectionViewCell {
     var album: SAPhotoAlbum?
     
     var photo: SAPhoto? {
-        set { return _photoView.photo = newValue }
-        get { return _photoView.photo }
+        set { return photoView.photo = newValue }
+        get { return photoView.photo }
     }
     var photoIsSelected: Bool {
-        set { return _photoView.isSelected = newValue }
-        get { return _photoView.isSelected }
+        set { return photoView.isSelected = newValue }
+        get { return photoView.isSelected }
     }
     
     var allowsSelection: Bool {
-        set { return _photoView.allowsSelection = newValue }
-        get { return _photoView.allowsSelection }
+        set { return photoView.allowsSelection = newValue }
+        get { return photoView.allowsSelection }
     }
     
     weak var delegate: SAPhotoSelectionable? {
-        set { return _photoView.delegate = newValue }
-        get { return _photoView.delegate }
+        set { return photoView.delegate = newValue }
+        get { return photoView.delegate }
     }
     
     func updateEdge() {
-        _photoView.updateEdge()
+        photoView.updateEdge()
     }
     func updateSelection() {
-        _photoView.updateSelection()
+        photoView.updateSelection()
     }
     
     private func _init() {
         
-        _photoView.frame = contentView.bounds
-        _photoView.allowsSelection = true
-        _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        photoView.frame = contentView.bounds
+        photoView.allowsSelection = true
+        photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        contentView.addSubview(_photoView)
+        contentView.addSubview(photoView)
     }
     
-    private lazy var _photoView: SAPhotoView = SAPhotoView()
+    lazy var photoView: SAPhotoView = SAPhotoView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
