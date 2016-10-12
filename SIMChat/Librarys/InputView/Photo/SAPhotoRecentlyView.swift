@@ -227,7 +227,7 @@ open class SAPhotoRecentlyView: UIView {
 private extension SAPhotoRecentlyView {
     
     dynamic func selectItem(_ photo: SAPhoto) {
-        //_logger.trace()
+        _logger.trace()
         
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
@@ -236,7 +236,7 @@ private extension SAPhotoRecentlyView {
         delegate?.recentlyView?(self, didSelectItemFor: photo)
     }
     dynamic func deselectItem(_ photo: SAPhoto) {
-        //_logger.trace()
+        _logger.trace()
         
         if let index = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)

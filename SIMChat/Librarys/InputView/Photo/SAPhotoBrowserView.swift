@@ -46,57 +46,6 @@ internal class SAPhotoBrowserView: UIView {
         }
     }
     
-    
-    @objc private func tapHandler(_ sender: AnyObject) {
-        //_logger.trace()
-        
-        _delegate?.browserView?(self, didTapWith: sender)
-    }
-    @objc private func rotationHandler(_ sender: UIRotationGestureRecognizer) {
-        //_logger.trace(sender.rotation)
-        
-        guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
-            // 开始旋转
-            if !_isRotationing {
-                guard _delegate?.browserView?(self, shouldRotation: loader?.orientation ?? .up) ?? true else {
-                    return // .. 不允许旋转
-                }
-                _isRotationing = true
-            }
-            _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
-            return
-        }
-        guard _isRotationing else {
-            return // 并没有开始旋转
-        }
-        // 停止旋转
-        _isRotationing = false
-        _updateOrientation(for: sender.rotation, animated: true)
-    }
-    @objc private func doubleTapHandler(_ sender: UITapGestureRecognizer) {
-         //_logger.trace()
-        
-        if _scrollView.zoomScale > _scrollView.minimumZoomScale {
-            _scrollView.setZoomScale(_scrollView.minimumZoomScale, animated: true)
-        } else {
-            let pt = sender.location(in: _imageView)
-            let size = loader?.size ?? .zero
-            
-            let ratioX = max(min(pt.x, _imageView.bounds.width), 0) / max(_imageView.bounds.width, 1)
-            let ratioY = max(min(pt.y, _imageView.bounds.height), 0) / max(_imageView.bounds.height, 1)
-            
-            let x = max(min(size.width * ratioX - _scrollView.frame.width / 2, size.width - _scrollView.frame.width), 0)
-            let y = max(min(size.height * ratioY - _scrollView.frame.height / 2, size.height - _scrollView.frame.height), 0)
-            
-            UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
-                _scrollView.zoomScale = _scrollView.maximumZoomScale
-                _scrollView.contentOffset = CGPoint(x: x, y: y)
-            })
-        }
-        
-        delegate?.browserView?(self, didDoubleTapWith: sender)
-    }
-    
     private func _rotation(for orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
         case .up,
@@ -279,7 +228,7 @@ internal class SAPhotoBrowserView: UIView {
         addGestureRecognizer(_rotationGestureRecognizer)
     }
     
-    private var _isRotationing: Bool = false {
+    fileprivate var _isRotationing: Bool = false {
         willSet {
             // 旋转的时候锁定缩放和移动事件
             //_imageView.ignoreTransformChanges = newValue
@@ -306,6 +255,61 @@ internal class SAPhotoBrowserView: UIView {
         super.init(coder: aDecoder)
         _init()
     }
+}
+
+private extension SAPhotoBrowserView {
+    
+    dynamic func tapHandler(_ sender: AnyObject) {
+        //_logger.trace()
+        
+        _delegate?.browserView?(self, didTapWith: sender)
+    }
+    dynamic func rotationHandler(_ sender: UIRotationGestureRecognizer) {
+        //_logger.trace(sender.rotation)
+        
+        guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
+            // 开始旋转
+            if !_isRotationing {
+                guard _delegate?.browserView?(self, shouldRotation: loader?.orientation ?? .up) ?? true else {
+                    return // .. 不允许旋转
+                }
+                _isRotationing = true
+            }
+            _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
+            return
+        }
+        guard _isRotationing else {
+            return // 并没有开始旋转
+        }
+        // 停止旋转
+        _isRotationing = false
+        _updateOrientation(for: sender.rotation, animated: true)
+    }
+    dynamic func doubleTapHandler(_ sender: UITapGestureRecognizer) {
+         //_logger.trace()
+        
+        if _scrollView.zoomScale > _scrollView.minimumZoomScale {
+            _scrollView.setZoomScale(_scrollView.minimumZoomScale, animated: true)
+        } else {
+            let scale = _scrollView.maximumZoomScale
+            let size = CGSize(width: _imageView.bounds.width * scale, height: _imageView.bounds.height * scale)
+            let pt = sender.location(in: _imageView)
+            
+            let ratioX = max(min(pt.x, _imageView.bounds.width), 0) / max(_imageView.bounds.width, 1)
+            let ratioY = max(min(pt.y, _imageView.bounds.height), 0) / max(_imageView.bounds.height, 1)
+            
+            let x = max(min(size.width * ratioX - _scrollView.frame.width / 2, size.width - _scrollView.frame.width), 0)
+            let y = max(min(size.height * ratioY - _scrollView.frame.height / 2, size.height - _scrollView.frame.height), 0)
+            
+            UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
+                _scrollView.zoomScale = _scrollView.maximumZoomScale
+                _scrollView.contentOffset = CGPoint(x: x, y: y)
+            })
+        }
+        
+        delegate?.browserView?(self, didDoubleTapWith: sender)
+    }
+    
 }
 
 extension SAPhotoBrowserView: SAPhotoLoaderDelegate {

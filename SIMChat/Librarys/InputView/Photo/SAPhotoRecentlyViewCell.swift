@@ -47,6 +47,7 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
         _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         addSubview(_photoView)
+        backgroundColor = .white
     }
     
     private lazy var _photoView: SAPhotoView = SAPhotoView()
