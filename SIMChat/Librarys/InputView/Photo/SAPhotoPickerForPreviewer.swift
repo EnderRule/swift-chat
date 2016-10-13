@@ -94,7 +94,8 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         //_contentView.isDirectionalLockEnabled = true
         //_contentView.isScrollEnabled = false
         
-        view.backgroundColor = .white//.black
+        //view.backgroundColor = .white//.black
+        view.backgroundColor = .black
         view.addSubview(_contentView)
 //        view.addSubview(_toolbar)
         
@@ -232,22 +233,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         
         let isHidden = newValue || toolbarItems?.isEmpty ?? true
         navigationController?.setToolbarHidden(isHidden, animated: animated)
-//        let block: ((Void) -> Void) = { [_toolbar] in
-//            if newValue || (_toolbar.items?.isEmpty ?? true) {
-//                // 隐藏
-//                _toolbar.transform = CGAffineTransform(translationX: 0, y: 0)
-//            } else {
-//                // 显示
-//                _toolbar.transform = CGAffineTransform(translationX: 0, y: -_toolbar.frame.height)
-//            }
-//        }
-//        guard animated else {
-//            block()
-//            return
-//        }
-//        UIView.animate(withDuration: 0.25, animations: {
-//            block()
-//        })
+
     }
     fileprivate func _updateIsFullscreen(_ newValue: Bool, animated: Bool) {
         guard newValue != _isFullscreen else {

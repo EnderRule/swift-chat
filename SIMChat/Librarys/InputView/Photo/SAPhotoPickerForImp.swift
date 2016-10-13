@@ -40,35 +40,11 @@ internal class SAPhotoPickerForImp: UINavigationController {
         pushViewController(vc, animated: true)
     }
     
-    override func viewDidLoad() {
+    dynamic override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
     }
-    
-//    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-//        let delegate = delegate2
-//        delegate?.picker?(willDismiss: self)
-//        super.dismiss(animated: flag) {
-//            completion?()
-//            delegate?.picker?(didDismiss: self)
-//        }
-//    }
-    
-    
-    
-//    func preview(album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        let previewer = _rootViewController.makePhotoPreviewer(album: album, in: photo, reverse: reverse)
-//        pushViewController(previewer, animated: true)
-//    }
-//    func preview(photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        let previewer = _rootViewController.makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
-//        pushViewController(previewer, animated: true)
-//    }
-//    
-//    func toolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-//        return delegate2?.picker?(self, toolbarItemsFor: context)
-//    }
     
     dynamic init() {
         super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
@@ -96,6 +72,9 @@ internal class SAPhotoPickerForImp: UINavigationController {
         self.init()
         self.preview(with: options)
         self.allowsMultipleDisplay = false
+        
+        self.transitioningDelegate = self
+        self.modalPresentationStyle = .custom
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not imp")
@@ -118,116 +97,6 @@ internal class SAPhotoPickerForImp: UINavigationController {
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
 }
 
-//class SAPhotoPicker: UINavigationController {
-//    
-//    
-//    var allowsMultipleSelection: Bool {
-//        set { return _rootViewController.allowsMultipleSelection = newValue }
-//        get { return _rootViewController.allowsMultipleSelection }
-//    }
-//    
-////    public init(pickWithAlbum album: SAPhotoAlbum? = nil) {
-////        super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
-////        _rootViewController = SAPhotoPickerForAlbums(pickWithAlbum: album)
-////        _init()
-////    }
-////    
-////    public init(previewWithAlbum album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
-////        super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
-////        _rootViewController = SAPhotoPickerForAlbums(previewWithAlbum: album, in: photo, reverse: reverse)
-////        _isPreviewMode = true
-////        _init()
-////    }
-////    public init(previewWithPhotos photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
-////        super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
-////        _rootViewController = SAPhotoPickerForAlbums(previewWithPhotos: photos, in: photo, reverse: reverse)
-////        _isPreviewMode = true
-////        _init()
-////    }
-////    
-////    public required init?(coder aDecoder: NSCoder) {
-////        fatalError("Can't use init?(coder:)")
-////    }
-////    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-////        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-////    }
-////    
-////    deinit {
-////        _logger.trace()
-////        
-////        SAPhotoAlbum.clearCaches()
-////    }
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        view.backgroundColor = .white
-//        navigationItem.rightBarButtonItem = _cancelBarItem
-//    }
-//    
-//    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-//        let delegate = delegate2
-//        delegate?.picker?(willDismiss: self)
-//        super.dismiss(animated: flag) {
-//            completion?()
-//            delegate?.picker?(didDismiss: self)
-//        }
-//    }
-//    
-//    func preview(album: SAPhotoAlbum, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        let previewer = _rootViewController.makePhotoPreviewer(album: album, in: photo, reverse: reverse)
-//        pushViewController(previewer, animated: true)
-//    }
-//    func preview(photos: Array<SAPhoto>, in photo: SAPhoto? = nil, reverse: Bool = false) {
-//        let previewer = _rootViewController.makePhotoPreviewer(photos: photos, in: photo, reverse: reverse)
-//        pushViewController(previewer, animated: true)
-//    }
-//    
-//    func clearInvalidItems() {
-//        _logger.trace()
-//        
-//        _selectedPhotos.forEach {
-//            _updateSelectionForRemove($0)
-//        }
-//    }
-//    
-//    private func _updateSelectionForRemove(_ photo: SAPhoto) {
-//        // 检查有没有选中
-//        guard selection(self, indexOfSelectedItemsFor: photo) != NSNotFound else {
-//            return
-//        }
-//        // 检查这个图片有没有被删除
-//        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-//            return
-//        }
-//        _logger.trace(photo)
-//        // 需要强制删除?
-//        if selection(self, shouldDeselectItemFor: photo) {
-//            selection(self, didDeselectItemFor: photo)
-//        }
-//    }
-//    
-//    private func _init() {
-//        _logger.trace()
-//        
-//        _rootViewController.picker = self
-//        _rootViewController.navigationItem.rightBarButtonItem = _cancelBarItem
-//        
-//        viewControllers = [_rootViewController]
-//    }
-//    
-//    
-//    fileprivate var _rootViewController: SAPhotoPickerForAlbums!
-//    fileprivate var _cancelBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
-//    
-//    fileprivate var _isPreviewMode: Bool = false
-//    
-//    
-//    fileprivate weak var delegate2: SAPhotoPickerDelegate? {
-//        return delegate as? SAPhotoPickerDelegate
-//    }
-//}
-//
 // MARK: - Events
 
 private extension SAPhotoPickerForImp {
@@ -326,11 +195,11 @@ extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
     }
 }
 
-// MARK: - UINavigationControllerDelegate & SAPhotoNavigationBarPopDelegate
+// MARK: - UINavigationControllerDelegate & SAPhotoNavigationBarDelegate
 
-extension SAPhotoPickerForImp: UINavigationControllerDelegate, UIViewControllerTransitioningDelegate, SAPhotoNavigationBarPopDelegate {
+extension SAPhotoPickerForImp: UINavigationControllerDelegate, UIViewControllerTransitioningDelegate, SAPhotoNavigationBarDelegate {
     
-    // SAPhotoNavigationBarPopDelegate
+    // SAPhotoNavigationBarDelegate
     
     func sa_navigationBar(_ navigationBar: SAPhotoNavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard !allowsMultipleDisplay else {

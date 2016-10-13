@@ -9,7 +9,7 @@
 import UIKit
 
 @objc
-internal protocol SAPhotoNavigationBarPopDelegate: UINavigationBarDelegate {
+internal protocol SAPhotoNavigationBarDelegate: UINavigationBarDelegate {
     
     @objc optional func sa_navigationBar(_ navigationBar: SAPhotoNavigationBar, shouldPop item: UINavigationItem) -> Bool
     @objc optional func sa_navigationBar(_ navigationBar: SAPhotoNavigationBar, didPop item: UINavigationItem)
@@ -17,7 +17,7 @@ internal protocol SAPhotoNavigationBarPopDelegate: UINavigationBarDelegate {
 }
 
 internal class SAPhotoNavigationBar: UINavigationBar {
-
+    
     override func popItem(animated: Bool) -> UINavigationItem? {
         if let item = self.topItem {
             guard _delegate?.sa_navigationBar?(self, shouldPop: item) ?? true else {
@@ -30,7 +30,7 @@ internal class SAPhotoNavigationBar: UINavigationBar {
         return super.popItem(animated: animated)
     }
     
-    private weak var _delegate: SAPhotoNavigationBarPopDelegate? {
-        return delegate as? SAPhotoNavigationBarPopDelegate
+    private weak var _delegate: SAPhotoNavigationBarDelegate? {
+        return delegate as? SAPhotoNavigationBarDelegate
     }
 }

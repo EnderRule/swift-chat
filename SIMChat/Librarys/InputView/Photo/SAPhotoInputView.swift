@@ -31,9 +31,6 @@ import UIKit
 // [x] SAPhotoBrowserView - 图片旋转
 // [x] SAPhotoBrowserView - 双击放大
 // [x] SAPhotoBrowserView - 双击放大(双击的地方要居中)
-//
-// [x] SAPhotoToolbar - Item重用
-//
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
 // [x] SAPhotoPicker - 图片预览
@@ -50,22 +47,26 @@ import UIKit
 // [x] SAPhotoPickerForAssets - 图片变更通知处理(多张新增、多张删除、多张改变、同时改变、删除Album)
 // [x] SAPhotoPickerForAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 // [x] SAPhotoPickerForAssets - UIToolbar支持
+// [ ] SAPhotoPickerForAssets - 预览的item超出visableCells时的处理
+// [ ] SAPhotoPickerForAssets - 跨界面转屏崩溃
 // [x] SAPhotoPickerForPreviewer - 单选支持
-// [ ] SAPhotoPickerForPreviewer - 转场动画(弹出)
+// [x] SAPhotoPickerForPreviewer - 转场动画(弹出)
 // [x] SAPhotoPickerForPreviewer - 横屏支持
 // [ ] SAPhotoPickerForPreviewer - 手势(下拉)隐藏
 // [x] SAPhotoPickerForPreviewer - 图片变更通知处理
 // [x] SAPhotoPickerForPreviewer - 选中事件处理
 // [x] SAPhotoPickerForPreviewer - 自定义toolbar
-// 
 // [x] SAPhotoRecentlyView - 分离实现
 // [x] SAPhotoRecentlyView - 错误显示 
 // [x] SAPhotoRecentlyView - 横屏支持
 // [x] SAPhotoRecentlyView - 图片变更(多张新增、多张删除、多张改变、同时改变)
 // [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
-//
+// [x] SAPhotoToolbar - Item重用
+// [ ] SAPhotoPreviewingAnimator - 图片变更动画
+// [x] SAPhotoPreviewingAnimator - 图片旋转动画
+// [x] SAPhotoPreviewingAnimator - contentMode变更
 // [x] SAPhotoInputView - 横屏支持
-// [ ] SAPhotoInputView - 预览选中的图片
+// [x] SAPhotoInputView - 预览选中的图片
 // [ ] * - 发送图片(读取)
 
 

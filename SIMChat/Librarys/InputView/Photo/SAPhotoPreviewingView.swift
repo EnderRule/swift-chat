@@ -12,29 +12,20 @@ import UIKit
 internal class SAPhotoPreviewingView: UIView {
     
     var image: UIImage? {
-        set {
-            _imageView.image = newValue
+        willSet {
+            let m = rotation(newValue)
             
-            setNeedsLayout()
-        }
-        get {
-            return _imageView.image
+            //let oldImage = image
+            let newImage = m.0
+            
+            contentView.image = newImage
+            transform = CGAffineTransform(rotationAngle: m.1)
         }
     }
     var previewing: SAPhotoPreviewingContext? {
-        set {
-            
+        willSet {
             image = newValue?.previewingImage ?? previewing?.previewingImage
             contentMode = newValue?.previewingContentMode ?? .scaleToFill
-            
-            return _previewing = newValue
-        }
-        get {
-            return _previewing
-        }
-    }
-    override var contentMode: UIViewContentMode {
-        willSet {
             setNeedsLayout()
         }
     }
@@ -42,10 +33,7 @@ internal class SAPhotoPreviewingView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        _imageView.backgroundColor = .random
-        _imageView.frame = align(bounds, with: image?.size ?? .zero, with: contentMode)
-        
-        _logger.trace("\(bounds) => \(_imageView.frame)")
+        contentView.frame = align(bounds, with: image?.size ?? .zero, with: contentMode)
     }
     
     func align(_ rect: CGRect, with size: CGSize, with contentMode: UIViewContentMode) -> CGRect {
@@ -99,19 +87,43 @@ internal class SAPhotoPreviewingView: UIView {
         }
         return CGRect(x: x, y: y, width: width, height: height)
     }
+    func rotation(_ image: UIImage?) -> (UIImage?, CGFloat) {
+        guard let img = image?.cgImage, let orientation = image?.imageOrientation else {
+            return (image, 0)
+        }
+        let nimage = UIImage(cgImage: img, scale: image?.scale ?? 1, orientation: .up)
+        
+        switch orientation {
+        case .up,
+             .upMirrored:
+            return (nimage, 0 * CGFloat(M_PI_2))
+            
+        case .right,
+             .rightMirrored:
+            return (nimage, 1 * CGFloat(M_PI_2))
+            
+        case .down,
+             .downMirrored:
+            return (nimage, 2 * CGFloat(M_PI_2))
+            
+        case .left,
+             .leftMirrored:
+            return (nimage, 3 * CGFloat(M_PI_2))
+        }
+    }
     
     init() {
         super.init(frame: .zero)
         
-        _imageView.contentMode = .scaleAspectFill
-        
-        addSubview(_imageView)
         clipsToBounds = true
+        
+        contentView.contentMode = .scaleAspectFill
+        
+        addSubview(contentView)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not support")
     }
     
-    private var _previewing: SAPhotoPreviewingContext?
-    private lazy var _imageView: UIImageView = UIImageView()
+    private lazy var contentView: UIImageView = UIImageView()
 }
