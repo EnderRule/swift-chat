@@ -67,8 +67,12 @@ open class SAPhotoLoader: NSObject, SAPhotoLoaderType {
         
         let options = PHImageRequestOptions()
         
+        //progressiveable
+        
+//        _options.resizeMode = PHImageRequestOptionsResizeModeExact;
+//        _options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
         options.deliveryMode = .opportunistic
-        options.resizeMode = .none
+        options.resizeMode = .fast
         options.isNetworkAccessAllowed = true
         
         let size = PHImageManagerMaximumSize

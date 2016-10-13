@@ -158,7 +158,7 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     }
     
     private func _cachePhotos(_ photos: [SAPhoto]) {
-        // 缓存加速
+//        // 缓存加速
 //        let options = PHImageRequestOptions()
 //        let scale = UIScreen.main.scale
 //        let size = CGSize(width: 120 * scale, height: 120 * scale)
@@ -167,7 +167,7 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
 //        options.resizeMode = .fast
 //        
 //        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
-//        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
     }
     
     fileprivate func _updateStatus(_ newValue: SAPhotoStatus) {

@@ -91,24 +91,26 @@ internal class SAPhotoPreviewingView: UIView {
         guard let img = image?.cgImage, let orientation = image?.imageOrientation else {
             return (image, 0)
         }
-        let nimage = UIImage(cgImage: img, scale: image?.scale ?? 1, orientation: .up)
+        var newImage: UIImage {
+            return UIImage(cgImage: img, scale: image?.scale ?? 1, orientation: .up)
+        }
         
         switch orientation {
         case .up,
              .upMirrored:
-            return (nimage, 0 * CGFloat(M_PI_2))
+            return (image, 0 * CGFloat(M_PI_2))
             
         case .right,
              .rightMirrored:
-            return (nimage, 1 * CGFloat(M_PI_2))
+            return (newImage, 1 * CGFloat(M_PI_2))
             
         case .down,
              .downMirrored:
-            return (nimage, 2 * CGFloat(M_PI_2))
+            return (newImage, 2 * CGFloat(M_PI_2))
             
         case .left,
              .leftMirrored:
-            return (nimage, 3 * CGFloat(M_PI_2))
+            return (newImage, 3 * CGFloat(M_PI_2))
         }
     }
     

@@ -26,7 +26,7 @@ import UIKit
 // [ ] SAPhotoBrowser - 音频
 // [ ] SAPhotoBrowser - GIF
 // [x] SAPhotoBrowserView - 横屏支持
-// [ ] SAPhotoBrowserView - 转屏后的图片中心位置
+// [ ] SAPhotoBrowserView - 转屏后的恢复图片中心位置
 // [x] SAPhotoBrowserView - 图片缩放
 // [x] SAPhotoBrowserView - 图片旋转
 // [x] SAPhotoBrowserView - 双击放大
@@ -37,6 +37,7 @@ import UIKit
 // [ ] SAPhotoPicker - 选择原图(文件大小)
 // [x] SAPhotoPicker - 拦截返回事件
 // [ ] SAPhotoPicker - 默认barItem
+// [ ] SAPhotoPicker - 支持Moments模式
 // [x] SAPhotoPickerForAlbums - 图片变更通知处理
 // [x] SAPhotoPickerForAlbums - 空相册处理
 // [x] SAPhotoPickerForAlbums - 默认显示album
@@ -64,7 +65,8 @@ import UIKit
 // [x] SAPhotoToolbar - Item重用
 // [ ] SAPhotoPreviewingAnimator - 图片变更动画
 // [x] SAPhotoPreviewingAnimator - 图片旋转动画
-// [x] SAPhotoPreviewingAnimator - contentMode变更
+// [x] SAPhotoPreviewingAnimator - contentMode变更动画
+// [ ] SAPhotoPreviewingAnimator - 移动选择视图
 // [x] SAPhotoInputView - 横屏支持
 // [x] SAPhotoInputView - 预览选中的图片
 // [ ] * - 发送图片(读取)

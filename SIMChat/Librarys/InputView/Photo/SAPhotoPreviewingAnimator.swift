@@ -84,7 +84,7 @@ internal class SAPhotoPreviewingContextPushAnimator: SAPhotoPreviewingAnimator {
         self.fromDelegate?.previewingContext?(self.fromContext, willShowItem: self.item)
         self.toDelegate?.previewingContext?(self.toContext, willShowItem: self.item)
         
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 20, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 15, options: .curveEaseInOut, animations: {
 
             previewView.previewing = self.toContext
             previewView.frame = toRect
