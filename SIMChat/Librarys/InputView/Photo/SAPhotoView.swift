@@ -9,7 +9,19 @@
 import UIKit
 import Photos
 
-internal class SAPhotoView: UIView, SAPhotoPreviewing {
+internal class SAPhotoView: UIView, SAPhotoPreviewingContext {
+    
+    var previewingImage: UIImage? {
+        return _imageView.image
+    }
+    var previewingFrame: CGRect {
+        let rect = convert(bounds, to: window)
+        
+        return rect
+    }
+    var previewingContentMode: UIViewContentMode {
+        return _imageView.contentMode
+    }
     
     var photo: SAPhoto? {
         didSet {

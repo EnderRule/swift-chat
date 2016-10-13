@@ -323,7 +323,6 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         NotificationCenter.default.removeObserver(self)
     }
     
-    
     fileprivate var _itemSize: CGSize = .zero
     fileprivate var _columnCount: Int = 0
     fileprivate var _minimumLineSpacing: CGFloat = 0
@@ -436,8 +435,8 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
 
 extension SAPhotoPickerForAssets: SAPhotoPreviewingDelegate {
     
-    func sourceView(of photo: AnyObject) -> UIView? {
-        guard let photo = photo as? SAPhoto else {
+    func previewingContext(with item: AnyObject) -> SAPhotoPreviewingContext? {
+        guard let photo = item as? SAPhoto else {
             return nil
         }
         guard let index = _photos.index(of: photo) else {
@@ -447,6 +446,21 @@ extension SAPhotoPickerForAssets: SAPhotoPreviewingDelegate {
             return nil
         }
         return (cell as? SAPhotoPickerForAssetsCell)?.photoView
+    }
+    
+    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, willShowItem item: AnyObject) {
+        _logger.trace()
+        guard let view = previewingContext as? UIView else {
+            return
+        }
+        view.isHidden = true
+    }
+    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, didShowItem item: AnyObject) {
+        _logger.trace()
+        guard let view = previewingContext as? UIView else {
+            return
+        }
+        view.isHidden = false
     }
 }
 

@@ -112,14 +112,14 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
                 _contentViewLayout.lastIndexPath = nil
             }
             
-            // 更新toolbar
-            var nframe = navigationController?.toolbar.frame ?? .zero
-            nframe.origin.x = 0
-            nframe.origin.y = view.bounds.height
-            
-            _toolbar.transform = .identity
-            _toolbar.frame = nframe
-            _updateToolbar(_isFullscreen, animated: false)
+//            // 更新toolbar
+//            var nframe = navigationController?.toolbar.frame ?? .zero
+//            nframe.origin.x = 0
+//            nframe.origin.y = view.bounds.height
+//            
+//            _toolbar.transform = .identity
+//            _toolbar.frame = nframe
+//            _updateToolbar(_isFullscreen, animated: false)
         }
     }
     
@@ -146,8 +146,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _logger.trace()
         
         navigationController?.isNavigationBarHidden = false
-        navigationController?.isToolbarHidden = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        
+        _updateToolbar(false, animated: false)
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -174,6 +175,12 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         title = "\(nindex + 1) / \(count)"
         
         _currentIndex = index
+        
+        if index < _photos.count {
+            previewingItem = _photos[index]
+        } else {
+            previewingItem = nil
+        }
     }
     
     
@@ -223,7 +230,8 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     }
     fileprivate func _updateToolbar(_ newValue: Bool, animated: Bool) {
         
-        navigationController?.setToolbarHidden(newValue, animated: animated)
+        let isHidden = newValue || toolbarItems?.isEmpty ?? true
+        navigationController?.setToolbarHidden(isHidden, animated: animated)
 //        let block: ((Void) -> Void) = { [_toolbar] in
 //            if newValue || (_toolbar.items?.isEmpty ?? true) {
 //                // 隐藏
@@ -348,20 +356,30 @@ extension SAPhotoPickerForPreviewer {
 
 extension SAPhotoPickerForPreviewer: SAPhotoPreviewingDelegate {
     
-    func sourceView(of photo: AnyObject) -> UIView? {
-        guard let photo = photo as? SAPhoto else {
+    func previewingContext(with item: AnyObject) -> SAPhotoPreviewingContext? {
+        guard let photo = item as? SAPhoto else {
             return nil
         }
         guard let index = _photos.index(of: photo) else {
             return nil
         }
         guard let cell = _contentView.cellForItem(at: IndexPath(item: index, section: 0)) else {
-            return view // view还没有加载好
+            // view还没有加载好
+            return SAPhotoBrowserViewFastPreviewing(photo: photo, view: view)
         }
         return (cell as? SAPhotoPickerForPreviewerCell)?.photoView
     }
     
+    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, willShowItem item: AnyObject) {
+        _logger.trace()
+        view.isHidden = true
+    }
+    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, didShowItem item: AnyObject) {
+        _logger.trace()
+        view.isHidden = false
+    }
 }
+
 
 // MARK: - SAPhotoBrowserViewDelegate
 

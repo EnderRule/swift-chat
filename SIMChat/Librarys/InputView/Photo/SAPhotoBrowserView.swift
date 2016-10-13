@@ -19,7 +19,59 @@ internal protocol SAPhotoBrowserViewDelegate: NSObjectProtocol {
     @objc optional func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation)
 }
 
-internal class SAPhotoBrowserView: UIView, SAPhotoPreviewing {
+internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewingContext {
+    
+    var view: UIView
+    var photo: SAPhoto
+    
+    var previewingImage: UIImage? {
+        return nil
+    }
+    var previewingFrame: CGRect {
+        
+        let width = CGFloat(self.photo.pixelWidth)
+        let height = CGFloat(self.photo.pixelHeight)
+        
+        if width < view.frame.width && height < view.frame.height {
+            var nframe = view.frame
+            
+            nframe.origin.x = (nframe.width - width) / 2
+            nframe.origin.y = (nframe.height - height) / 2
+            nframe.size.width = width
+            nframe.size.height = height
+            
+            return nframe
+        }
+        
+        return view.frame
+    }
+    var previewingIsHidden: Bool {
+        set { return view.isHidden = newValue }
+        get { return view.isHidden }
+    }
+    var previewingContentMode: UIViewContentMode {
+        return .scaleAspectFit
+    }
+    
+    init(photo: SAPhoto, view: UIView) {
+        self.view = view
+        self.photo = photo
+        super.init()
+    }
+}
+
+
+internal class SAPhotoBrowserView: UIView, SAPhotoPreviewingContext {
+    
+    var previewingImage: UIImage? {
+        return _imageView.image
+    }
+    var previewingFrame: CGRect {
+        return _scrollView.convert(_imageView.frame, to: window)
+    }
+    var previewingContentMode: UIViewContentMode {
+        return .scaleAspectFit
+    }
     
     var loader: SAPhotoLoaderType? {
         didSet {
