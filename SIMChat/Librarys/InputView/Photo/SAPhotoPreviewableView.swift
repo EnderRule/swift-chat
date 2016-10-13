@@ -1,5 +1,5 @@
 //
-//  SAPhotoPreviewingView.swift
+//  SAPhotoPreviewableView.swift
 //  SIMChat
 //
 //  Created by sagesse on 10/13/16.
@@ -9,34 +9,51 @@
 import UIKit
 
 
-internal class SAPhotoPreviewingView: UIView {
+internal class SAPhotoPreviewableView: UIView {
     
     var image: UIImage? {
         willSet {
-            let m = rotation(newValue)
+            setNeedsLayout()
             
-            //let oldImage = image
-            let newImage = m.0
-            
-            contentView.image = newImage
-            transform = CGAffineTransform(rotationAngle: m.1)
+            contentView.image = image(newValue, with: imageOrientation)
         }
     }
-    var previewing: SAPhotoPreviewingContext? {
+    var imageSize: CGSize = .zero {
         willSet {
-            image = newValue?.previewingImage ?? previewing?.previewingImage
-            contentMode = newValue?.previewingContentMode ?? .scaleToFill
             setNeedsLayout()
+        }
+    }
+    var imageOrientation: UIImageOrientation = .up {
+        willSet {
+            setNeedsLayout()
+            
+            transform = CGAffineTransform(rotationAngle: angle(orientation: newValue))
+        }
+    }
+    var imageContentMode: UIViewContentMode = .scaleToFill {
+        willSet {
+            setNeedsLayout()
+        }
+    }
+    
+    var previewing: SAPhotoPreviewable? {
+        willSet {
+            
+            imageContentMode = newValue?.previewingContentMode ?? .scaleToFill
+            
+            imageOrientation = newValue?.previewingImageOrientation ?? .up
+            imageSize = newValue?.previewingImageSize ?? .zero
+            image = newValue?.previewingImage
         }
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        contentView.frame = align(bounds, with: image?.size ?? .zero, with: contentMode)
+        contentView.frame = align(bounds, to: imageSize, with: imageContentMode)
     }
     
-    func align(_ rect: CGRect, with size: CGSize, with contentMode: UIViewContentMode) -> CGRect {
+    func align(_ rect: CGRect, to size: CGSize, with contentMode: UIViewContentMode) -> CGRect {
         // if contentMode is scale is used in all rect
         if contentMode == .scaleToFill {
             return rect
@@ -87,31 +104,19 @@ internal class SAPhotoPreviewingView: UIView {
         }
         return CGRect(x: x, y: y, width: width, height: height)
     }
-    func rotation(_ image: UIImage?) -> (UIImage?, CGFloat) {
-        guard let img = image?.cgImage, let orientation = image?.imageOrientation else {
-            return (image, 0)
-        }
-        var newImage: UIImage {
-            return UIImage(cgImage: img, scale: image?.scale ?? 1, orientation: .up)
-        }
-        
+    func angle(orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
-        case .up,
-             .upMirrored:
-            return (image, 0 * CGFloat(M_PI_2))
-            
-        case .right,
-             .rightMirrored:
-            return (newImage, 1 * CGFloat(M_PI_2))
-            
-        case .down,
-             .downMirrored:
-            return (newImage, 2 * CGFloat(M_PI_2))
-            
-        case .left,
-             .leftMirrored:
-            return (newImage, 3 * CGFloat(M_PI_2))
+        case .up, .upMirrored:  return 0 * CGFloat(M_PI_2)
+        case .right, .rightMirrored: return 1 * CGFloat(M_PI_2)
+        case .down, .downMirrored: return 2 * CGFloat(M_PI_2)
+        case .left, .leftMirrored: return 3 * CGFloat(M_PI_2)
         }
+    }
+    func image(_ image: UIImage?, with orientation: UIImageOrientation) -> UIImage? {
+        guard let cgimage = image?.cgImage, image?.imageOrientation != orientation else {
+            return image
+        }
+        return UIImage(cgImage: cgimage, scale: image?.scale ?? 1, orientation: .up)
     }
     
     init() {
@@ -119,6 +124,7 @@ internal class SAPhotoPreviewingView: UIView {
         
         clipsToBounds = true
         
+        contentView.backgroundColor = .random
         contentView.contentMode = .scaleAspectFill
         
         addSubview(contentView)

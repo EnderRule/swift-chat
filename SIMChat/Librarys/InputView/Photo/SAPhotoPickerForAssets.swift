@@ -433,9 +433,9 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension SAPhotoPickerForAssets: SAPhotoPreviewingDelegate {
+extension SAPhotoPickerForAssets: SAPhotoPreviewableDelegate {
     
-    func previewingContext(with item: AnyObject) -> SAPhotoPreviewingContext? {
+    func previewable(with item: AnyObject) -> SAPhotoPreviewable? {
         guard let photo = item as? SAPhoto else {
             return nil
         }
@@ -448,16 +448,16 @@ extension SAPhotoPickerForAssets: SAPhotoPreviewingDelegate {
         return (cell as? SAPhotoPickerForAssetsCell)?.photoView
     }
     
-    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, willShowItem item: AnyObject) {
+    func previewable(_ previewable: SAPhotoPreviewable, willShowItem item: AnyObject) {
         _logger.trace()
-        guard let view = previewingContext as? UIView else {
+        guard let view = previewable as? UIView else {
             return
         }
         view.isHidden = true
     }
-    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, didShowItem item: AnyObject) {
+    func previewable(_ previewable: SAPhotoPreviewable, didShowItem item: AnyObject) {
         _logger.trace()
-        guard let view = previewingContext as? UIView else {
+        guard let view = previewable as? UIView else {
             return
         }
         view.isHidden = false

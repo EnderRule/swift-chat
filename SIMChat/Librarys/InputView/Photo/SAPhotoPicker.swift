@@ -30,7 +30,7 @@ public class SAPhotoPickerOptions: NSObject {
     public var album: SAPhotoAlbum?
     public var photos: Array<SAPhoto>?
     
-    public weak var previewingDelegate: SAPhotoPreviewingDelegate?
+    public weak var previewingDelegate: SAPhotoPreviewableDelegate?
 }
 
 @objc

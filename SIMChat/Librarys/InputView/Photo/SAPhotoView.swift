@@ -9,11 +9,18 @@
 import UIKit
 import Photos
 
-internal class SAPhotoView: UIView, SAPhotoPreviewingContext {
+internal class SAPhotoView: UIView, SAPhotoPreviewable {
     
     var previewingImage: UIImage? {
         return _imageView.image
     }
+    var previewingImageSize: CGSize {
+        return _imageView.image?.size ?? .zero
+    }
+    var previewingImageOrientation: UIImageOrientation {
+        return .up
+    }
+    
     var previewingFrame: CGRect {
         let rect = convert(bounds, to: window)
         
@@ -23,6 +30,7 @@ internal class SAPhotoView: UIView, SAPhotoPreviewingContext {
         return _imageView.contentMode
     }
     
+    var photoContent: SAPhotoContent?
     var photo: SAPhoto? {
         didSet {
             if oldValue !== photo {
@@ -43,17 +51,6 @@ internal class SAPhotoView: UIView, SAPhotoPreviewingContext {
             }
             _updateAllowsSelection(newValue, animated: false)
         }
-    }
-    
-    override func snapshotView(afterScreenUpdates afterUpdates: Bool) -> UIView? {
-        let view = UIImageView()
-        
-        view.frame = frame
-        view.image = _imageView.image
-        view.contentMode = .scaleAspectFit
-        view.clipsToBounds = true
-        
-        return view
     }
     
     weak var delegate: SAPhotoSelectionable?

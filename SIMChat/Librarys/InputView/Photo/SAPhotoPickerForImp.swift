@@ -240,13 +240,13 @@ extension SAPhotoPickerForImp: UINavigationControllerDelegate, UIViewControllerT
             guard let previewer = fromVC as? SAPhotoPickerForPreviewer, let previewing = previewer.previewingDelegate, let item = previewer.previewingItem else {
                 return nil
             }
-            return SAPhotoPreviewingAnimator.pop(item: item, from: previewer, to: previewing)
+            return SAPhotoPreviewableAnimator.pop(item: item, from: previewer, to: previewing)
             
         case .push:
             guard let previewer = toVC as? SAPhotoPickerForPreviewer, let previewing = previewer.previewingDelegate, let item = previewer.previewingItem else {
                 return nil
             }
-            return SAPhotoPreviewingAnimator.push(item: item, from: previewing, to: previewer)
+            return SAPhotoPreviewableAnimator.push(item: item, from: previewing, to: previewer)
             
         case .none:
             return nil
@@ -294,7 +294,7 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
         
         if let album = photo.album  {
             let options = SAPhotoPickerOptions(album: album, default: photo)
-            options.previewingDelegate = selection as? SAPhotoPreviewingDelegate
+            options.previewingDelegate = selection as? SAPhotoPreviewableDelegate
             preview(with: options)
         }
         

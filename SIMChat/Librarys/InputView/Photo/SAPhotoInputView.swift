@@ -62,11 +62,12 @@ import UIKit
 // [x] SAPhotoRecentlyView - 横屏支持
 // [x] SAPhotoRecentlyView - 图片变更(多张新增、多张删除、多张改变、同时改变)
 // [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
+// [ ] SAPhotoRecentlyView - 大小变更处理(宽/高)
 // [x] SAPhotoToolbar - Item重用
-// [ ] SAPhotoPreviewingAnimator - 图片变更动画
-// [x] SAPhotoPreviewingAnimator - 图片旋转动画
-// [x] SAPhotoPreviewingAnimator - contentMode变更动画
-// [ ] SAPhotoPreviewingAnimator - 移动选择视图
+// [ ] SAPhotoPreviewableAnimator - 图片变更动画
+// [x] SAPhotoPreviewableAnimator - 图片旋转动画
+// [x] SAPhotoPreviewableAnimator - contentMode变更动画
+// [ ] SAPhotoPreviewableAnimator - 移动选择视图
 // [x] SAPhotoInputView - 横屏支持
 // [x] SAPhotoInputView - 预览选中的图片
 // [ ] * - 发送图片(读取)

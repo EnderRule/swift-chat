@@ -27,7 +27,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     weak var selection: SAPhotoSelectionable?
     
     var previewingItem: AnyObject?
-    weak var previewingDelegate: SAPhotoPreviewingDelegate?
+    weak var previewingDelegate: SAPhotoPreviewableDelegate?
     
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
@@ -307,9 +307,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     fileprivate var _photos: Array<SAPhoto> = []
     fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
-    fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
-    
     fileprivate var _ascending: Bool = true
+    
+    fileprivate var _allPhotoContents: [Int: SAPhotoContent] = [:]
 }
 
 // MARK: - Events
@@ -340,9 +340,9 @@ extension SAPhotoPickerForPreviewer {
     }
 }
 
-extension SAPhotoPickerForPreviewer: SAPhotoPreviewingDelegate {
+extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
     
-    func previewingContext(with item: AnyObject) -> SAPhotoPreviewingContext? {
+    func previewable(with item: AnyObject) -> SAPhotoPreviewable? {
         guard let photo = item as? SAPhoto else {
             return nil
         }
@@ -356,11 +356,11 @@ extension SAPhotoPickerForPreviewer: SAPhotoPreviewingDelegate {
         return (cell as? SAPhotoPickerForPreviewerCell)?.photoView
     }
     
-    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, willShowItem item: AnyObject) {
+    func previewable(_ previewable: SAPhotoPreviewable, willShowItem item: AnyObject) {
         _logger.trace()
         view.isHidden = true
     }
-    func previewingContext(_ previewingContext: SAPhotoPreviewingContext, didShowItem item: AnyObject) {
+    func previewable(_ previewable: SAPhotoPreviewable, didShowItem item: AnyObject) {
         _logger.trace()
         view.isHidden = false
     }
@@ -420,11 +420,13 @@ extension SAPhotoPickerForPreviewer: UICollectionViewDataSource, UICollectionVie
             return
         }
         let photo = _photos[indexPath.item]
+        
         cell.delegate = self
-        cell.loader = _allLoader[photo.hashValue] ?? {
-            let loader = SAPhotoLoader(photo: photo)
-            _allLoader[photo.hashValue] = loader
-            return loader
+        cell.photo = photo
+        cell.photoContent = _allPhotoContents[photo.hashValue] ?? {
+            let content = SAPhotoContent(photo: photo)
+            _allPhotoContents[photo.hashValue] = content
+            return content
         }()
     }
     

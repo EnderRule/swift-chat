@@ -9,6 +9,15 @@
 import UIKit
 
 internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
+    
+    var photo: SAPhoto? {
+        set { return photoView.photo = newValue }
+        get { return photoView.photo }
+    }
+    var photoContent: SAPhotoContent? {
+        set { return photoView.photoContent = newValue }
+        get { return photoView.photoContent }
+    }
    
     var loader: SAPhotoLoaderType? {
         set { return photoView.loader = newValue }

@@ -86,13 +86,6 @@ open class SAPhoto: NSObject {
         self.asset = asset
         super.init()
     }
-    
-    
-    
-    func cache(with targetSize: CGSize) {
-    }
-    func fetch(with targetSize: CGSize) {
-    }
 }
 
 

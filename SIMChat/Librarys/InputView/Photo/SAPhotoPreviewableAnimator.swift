@@ -1,5 +1,5 @@
 //
-//  SAPhotoPreviewingAnimator.swift
+//  SAPhotoPreviewableAnimator.swift
 //  SIMChat
 //
 //  Created by sagesse on 10/12/16.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-public class SAPhotoPreviewingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+public class SAPhotoPreviewableAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     var item: AnyObject
     
-    var toContext: SAPhotoPreviewingContext
-    var fromContext: SAPhotoPreviewingContext
+    var toContext: SAPhotoPreviewable
+    var fromContext: SAPhotoPreviewable
     
-    weak var toDelegate: SAPhotoPreviewingDelegate?
-    weak var fromDelegate: SAPhotoPreviewingDelegate?
+    weak var toDelegate: SAPhotoPreviewableDelegate?
+    weak var fromDelegate: SAPhotoPreviewableDelegate?
     
     public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
@@ -26,8 +26,8 @@ public class SAPhotoPreviewingAnimator: NSObject, UIViewControllerAnimatedTransi
         // is empty
     }
     
-    init?(item: AnyObject, from: SAPhotoPreviewingDelegate, to: SAPhotoPreviewingDelegate) {
-        guard let fp = from.previewingContext(with: item), let tp = to.previewingContext(with: item) else {
+    init?(item: AnyObject, from: SAPhotoPreviewableDelegate, to: SAPhotoPreviewableDelegate) {
+        guard let fp = from.previewable(with: item), let tp = to.previewable(with: item) else {
             return nil
         }
         self.item = item
@@ -38,15 +38,15 @@ public class SAPhotoPreviewingAnimator: NSObject, UIViewControllerAnimatedTransi
         self.fromDelegate = from
     }
     
-    public static func pop(item: AnyObject, from: SAPhotoPreviewingDelegate, to: SAPhotoPreviewingDelegate) -> SAPhotoPreviewingAnimator? {
-        return SAPhotoPreviewingContextPopAnimator(item: item, from: from, to: to)
+    public static func pop(item: AnyObject, from: SAPhotoPreviewableDelegate, to: SAPhotoPreviewableDelegate) -> SAPhotoPreviewableAnimator? {
+        return SAPhotoPreviewablePopAnimator(item: item, from: from, to: to)
     }
-    public static func push(item: AnyObject, from: SAPhotoPreviewingDelegate, to: SAPhotoPreviewingDelegate) -> SAPhotoPreviewingAnimator? {
-        return SAPhotoPreviewingContextPushAnimator(item: item, from: from, to: to)
+    public static func push(item: AnyObject, from: SAPhotoPreviewableDelegate, to: SAPhotoPreviewableDelegate) -> SAPhotoPreviewableAnimator? {
+        return SAPhotoPreviewablePushAnimator(item: item, from: from, to: to)
     }
 }
 
-internal class SAPhotoPreviewingContextPushAnimator: SAPhotoPreviewingAnimator {
+internal class SAPhotoPreviewablePushAnimator: SAPhotoPreviewableAnimator {
     // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
     override func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         //_logger.trace()
@@ -55,7 +55,7 @@ internal class SAPhotoPreviewingContextPushAnimator: SAPhotoPreviewingAnimator {
         //let fromView = transitionContext.view(forKey: .from)
         let toView = transitionContext.view(forKey: .to)
         
-        let previewView = SAPhotoPreviewingView()
+        let previewView = SAPhotoPreviewableView()
         let bakcgroundView = UIView()
         
         //添加toView到上下文
@@ -81,8 +81,8 @@ internal class SAPhotoPreviewingContextPushAnimator: SAPhotoPreviewingAnimator {
         
         toView?.isHidden = true
         
-        self.fromDelegate?.previewingContext?(self.fromContext, willShowItem: self.item)
-        self.toDelegate?.previewingContext?(self.toContext, willShowItem: self.item)
+        self.fromDelegate?.previewable?(self.fromContext, willShowItem: self.item)
+        self.toDelegate?.previewable?(self.toContext, willShowItem: self.item)
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 15, options: .curveEaseInOut, animations: {
 
@@ -97,14 +97,14 @@ internal class SAPhotoPreviewingContextPushAnimator: SAPhotoPreviewingAnimator {
             previewView.removeFromSuperview()
             bakcgroundView.removeFromSuperview()
             
-            self.toDelegate?.previewingContext?(self.toContext, didShowItem: self.item)
-            self.fromDelegate?.previewingContext?(self.fromContext, didShowItem: self.item)
+            self.toDelegate?.previewable?(self.toContext, didShowItem: self.item)
+            self.fromDelegate?.previewable?(self.fromContext, didShowItem: self.item)
             
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
 }
-internal class SAPhotoPreviewingContextPopAnimator: SAPhotoPreviewingAnimator {
+internal class SAPhotoPreviewablePopAnimator: SAPhotoPreviewableAnimator {
     // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
     override func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         //_logger.trace()
@@ -113,7 +113,7 @@ internal class SAPhotoPreviewingContextPopAnimator: SAPhotoPreviewingAnimator {
         let fromView = transitionContext.view(forKey: .from)
         let toView = transitionContext.view(forKey: .to)
         
-        let previewView = SAPhotoPreviewingView()
+        let previewView = SAPhotoPreviewableView()
         let bakcgroundView = UIView()
         
         //添加toView到上下文
@@ -139,8 +139,8 @@ internal class SAPhotoPreviewingContextPopAnimator: SAPhotoPreviewingAnimator {
         
         fromView?.isHidden = true
         
-        self.fromDelegate?.previewingContext?(self.fromContext, willShowItem: self.item)
-        self.toDelegate?.previewingContext?(self.toContext, willShowItem: self.item)
+        self.fromDelegate?.previewable?(self.fromContext, willShowItem: self.item)
+        self.toDelegate?.previewable?(self.toContext, willShowItem: self.item)
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: .curveEaseOut, animations: {
             
@@ -155,8 +155,8 @@ internal class SAPhotoPreviewingContextPopAnimator: SAPhotoPreviewingAnimator {
             previewView.removeFromSuperview()
             bakcgroundView.removeFromSuperview()
             
-            self.toDelegate?.previewingContext?(self.toContext, didShowItem: self.item)
-            self.fromDelegate?.previewingContext?(self.fromContext, didShowItem: self.item)
+            self.toDelegate?.previewable?(self.toContext, didShowItem: self.item)
+            self.fromDelegate?.previewable?(self.fromContext, didShowItem: self.item)
 
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
