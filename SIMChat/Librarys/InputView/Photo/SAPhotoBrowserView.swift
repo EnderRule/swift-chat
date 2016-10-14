@@ -24,17 +24,6 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
     var view: UIView
     
     var photo: SAPhoto
-    var photoContent: SAPhotoContent
-    
-    var previewingImage: UIImage? {
-        return nil
-    }
-    var previewingImageSize: CGSize { 
-        return photoContent.imageSize
-    }
-    var previewingImageOrientation: UIImageOrientation { 
-        return photoContent.imageOrientation
-    }
     
     var previewingFrame: CGRect {
         
@@ -54,60 +43,81 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
         
         return view.frame
     }
-    var previewingIsHidden: Bool {
-        set { return view.isHidden = newValue }
-        get { return view.isHidden }
+    
+    
+    var previewingContent: SAPhotoProgressiveable? {
+        return photo
     }
+    var previewingContentSize: CGSize {
+        return photo.imageSize
+    }
+    var previewingContentVisableSize: CGSize {
+        return SAPhotoMaximumSize
+    }
+    
     var previewingContentMode: UIViewContentMode {
         return .scaleAspectFit
+    }
+    var previewingContentOrientation: UIImageOrientation {
+        return .up
     }
     
     init(photo: SAPhoto, view: UIView) {
         self.view = view
         self.photo = photo
-        self.photoContent = SAPhotoContent(photo: photo)
         super.init()
     }
 }
 
 
-internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoProgressiveObserver {
+internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
     
-    var previewingImage: UIImage? {
-        return _imageView.image
+    var previewingContent: SAPhotoProgressiveable? {
+        return photo
     }
-    var previewingImageSize: CGSize {
-        return photoContent?.imageSize ?? .zero
+    var previewingContentSize: CGSize {
+        return photo?.imageSize ?? .zero
     }
-    var previewingImageOrientation: UIImageOrientation {
-        return photoContent?.imageOrientation ?? .up
+    var previewingContentVisableSize: CGSize {
+        return SAPhotoMaximumSize
+    }
+    
+    var previewingContentMode: UIViewContentMode {
+        return .scaleAspectFit
+    }
+    var previewingContentOrientation: UIImageOrientation {
+        // TODO: 获取方向
+        return .up
     }
     
     var previewingFrame: CGRect {
         return _scrollView.convert(_imageView.frame, to: window)
     }
-    var previewingContentMode: UIViewContentMode {
-        return .scaleAspectFit
-    }
     
-    var photo: SAPhoto?
-    var photoContent: SAPhotoContent? {
+    var photoContentOrientation: UIImageOrientation = .up
+    var photo: SAPhoto? {
         willSet {
-            newValue?.image(observer: self, size: PHImageManagerMaximumSize)
-            
+            task = newValue?.imageTask(SAPhotoMaximumSize)
+//            newValue?.requestImage(SAPhotoMaximumSize) { [weak _imageView] in
+//                _imageView?.image = $1
+//            }
             _sizeThatFits(newValue?.imageSize ?? .zero)
         }
     }
-    
-    func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeSize size: CGSize) {
+    weak var task: SAPhotoTask? {
+        willSet {
+            task?.detach(self)
+            newValue?.attach(self)
+        }
     }
-    func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeImage image: UIImage?) {
+    
+    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
         _imageView.image = image
     }
     
     var loader: SAPhotoLoaderType? {
         didSet {
-            oldValue?.delegate = nil 
+            oldValue?.delegate = nil
             oldValue?.cancelRequestImage()
             
             _imageView.image = nil
@@ -228,7 +238,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoProgressiv
         //_logger.trace(rotation)
         
         let angle = round(rotation / CGFloat(M_PI_2)) * CGFloat(M_PI_2)
-        let oldOrientation = photoContent?.imageOrientation ?? .up
+        let oldOrientation = photoContentOrientation
         let newOrientation = _orientation(for: _rotation(for: oldOrientation) + angle)
         
         // 如果旋转的角度没有超过阀值或者没有设置图片, 那么放弃手势
@@ -246,9 +256,9 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoProgressiv
             return
         }
         // 生成新的图片(符合方向的)
-        photoContent?.imageOrientation = newOrientation
+        photoContentOrientation = newOrientation
         
-        let newSize = photoContent?.imageSize ?? .zero
+        let newSize = photo?.imageSize ?? .zero
         let newImage = image(_imageView.image, orientation: newOrientation)
         
         let scale = _aspectFitZoomScale(newSize)

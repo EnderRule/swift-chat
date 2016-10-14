@@ -88,6 +88,96 @@ open class SAPhoto: NSObject {
     }
 }
 
+extension SAPhoto: SAPhotoProgressiveable {
+    
+    open var imageSize: CGSize {
+        return CGSize(width: pixelWidth, height: pixelHeight)
+    }
+    
+    public func imageTask(_ targetSize: CGSize) -> SAPhotoTask {
+        var size = targetSize
+        
+        if size != SAPhotoMaximumSize {
+            size.width = targetSize.width * UIScreen.main.scale
+            size.height = targetSize.height * UIScreen.main.scale
+        }
+        
+        return SAPhotoLibrary.shared.imageTask(with: self, targetSize: size)
+    }
+    
+//    public func requestImage(_ targetSize: CGSize, resultHandler: @escaping (SAPhotoProgressiveable, UIImage?) -> Void) {
+//        let options = PHImageRequestOptions()
+////        
+////        //progressiveable
+////        
+//////        _options.resizeMode = PHImageRequestOptionsResizeModeExact;
+//////        _options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
+//        options.deliveryMode = .opportunistic
+//        options.resizeMode = .fast
+//        options.isNetworkAccessAllowed = true
+////        
+//        var size = targetSize
+//        
+//        if size != SAPhotoMaximumSize {
+//            size.width = targetSize.width * UIScreen.main.scale
+//            size.height = targetSize.height * UIScreen.main.scale
+//        }
+//        
+////        let size = PHImageManagerMaximumSize
+////            //CGSize(width: CGFloat(photo.pixelWidth), height: CGFloat(photo.pixelHeight))
+////        
+//////        PHImageRequestOptions *imageRequestOptions = [[PHImageRequestOptions alloc] init];
+//////        imageRequestOptions.networkAccessAllowed = YES; // 允许访问网络
+//////        imageRequestOptions.progressHandler = phProgressHandler;
+////        
+//        _ = SAPhotoLibrary.shared.requestImage(for: self, targetSize: size, contentMode: .aspectFill, options: options) { [weak self] in
+//            
+//            _ = $1
+//            //print($1)
+//            
+//            print("\(size) => \($0)")
+//            
+//            guard let ss = self else {
+//                return
+//            }
+//            resultHandler(ss, $0)
+//            
+////            observer.progressiveable(ss, didChangeImage: $0)
+//            
+////            self?.logger.trace()
+////            
+////            let oldSize = ss.size
+////            let oldImage = ss.image
+////            
+////            ss.size = $0?.size
+////            ss.image = $0
+////            ss.orientation = $0?.imageOrientation
+////            
+////            let isError = ($1?[PHImageErrorKey] as? NSError) != nil
+////            let isCancel = ($1?[PHImageCancelledKey] as? Int) != nil
+////            let isDegraded = ($1?[PHImageResultIsDegradedKey] as? Int) == 1
+////            let isLoaded = isError || isCancel || !isDegraded
+////            
+////            // 检查有没有加载成功
+////            guard !isLoaded else {
+////                ss._requestId = nil
+////                ss._loaded = true
+////                ss.delegate?.loader(didComplate: ss, image: ss.image)
+////                return
+////            }
+////            // 如果图片大小发生改变通知用户
+////            if oldSize != ss.size {
+////                ss.delegate?.loader(ss, didChangeSize: ss.size)
+////            }
+////            // 如果图片发生改变通知用户
+////            if oldImage != ss.image {
+////                ss.delegate?.loader(ss, didChangeImage: ss.image)
+////            }
+//        }
+//    }
+//    public func cancelRequestImage() {
+//    }
+}
 
 //- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion
 //{

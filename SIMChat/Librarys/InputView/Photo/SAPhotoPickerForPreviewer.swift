@@ -309,7 +309,7 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     
     fileprivate var _ascending: Bool = true
     
-    fileprivate var _allPhotoContents: [Int: SAPhotoContent] = [:]
+    fileprivate var _allPhotoInfos: [Int: UIImageOrientation] = [:]
 }
 
 // MARK: - Events
@@ -422,12 +422,8 @@ extension SAPhotoPickerForPreviewer: UICollectionViewDataSource, UICollectionVie
         let photo = _photos[indexPath.item]
         
         cell.delegate = self
+        cell.photoContentOrientation = _allPhotoInfos[photo.hashValue] ?? .up
         cell.photo = photo
-        cell.photoContent = _allPhotoContents[photo.hashValue] ?? {
-            let content = SAPhotoContent(photo: photo)
-            _allPhotoContents[photo.hashValue] = content
-            return content
-        }()
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

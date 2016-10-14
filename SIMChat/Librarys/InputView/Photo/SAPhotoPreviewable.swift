@@ -12,11 +12,13 @@ import UIKit
 public protocol SAPhotoPreviewable: NSObjectProtocol {
     
     var previewingFrame: CGRect { get }
-    var previewingContentMode: UIViewContentMode { get }
     
-    var previewingImage: UIImage? { get }
-    var previewingImageSize: CGSize { get }
-    var previewingImageOrientation: UIImageOrientation { get }
+    var previewingContent: SAPhotoProgressiveable? { get }
+    var previewingContentSize: CGSize { get }
+    var previewingContentOrientation: UIImageOrientation { get }
+    var previewingContentMode: UIViewContentMode { get }
+
+    var previewingContentVisableSize: CGSize { get }
 }
 
 @objc

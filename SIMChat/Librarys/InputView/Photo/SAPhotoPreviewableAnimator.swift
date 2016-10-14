@@ -84,6 +84,7 @@ internal class SAPhotoPreviewablePushAnimator: SAPhotoPreviewableAnimator {
         self.fromDelegate?.previewable?(self.fromContext, willShowItem: self.item)
         self.toDelegate?.previewable?(self.toContext, willShowItem: self.item)
         
+        //UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 15, options: .curveEaseInOut, animations: {
 
             previewView.previewing = self.toContext
@@ -142,6 +143,7 @@ internal class SAPhotoPreviewablePopAnimator: SAPhotoPreviewableAnimator {
         self.fromDelegate?.previewable?(self.fromContext, willShowItem: self.item)
         self.toDelegate?.previewable?(self.toContext, willShowItem: self.item)
         
+        //UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: .curveEaseOut, animations: {
             
             previewView.previewing = self.toContext

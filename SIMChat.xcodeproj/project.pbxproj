@@ -96,7 +96,6 @@
 		0C228BA51D912F67000F919D /* SAPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C228BA41D912F67000F919D /* SAPhotoView.swift */; };
 		0C228BA71D913532000F919D /* SAPhotoAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C228BA61D913532000F919D /* SAPhotoAlbum.swift */; };
 		0C24757A1C892052003077B2 /* SIMChatResourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2475791C892052003077B2 /* SIMChatResourceProtocol.swift */; };
-		0C2CB2BE1DAFE82B007499A7 /* SAPhotoContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2CB2BD1DAFE82B007499A7 /* SAPhotoContent.swift */; };
 		0C368BB41C7D7986003755CC /* NSStringTransform+Heteronym.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C368BB31C7D7986003755CC /* NSStringTransform+Heteronym.swift */; };
 		0C4070ED1C7ABF0100AEECB7 /* SIMChatMessageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4070EC1C7ABF0100AEECB7 /* SIMChatMessageBox.swift */; };
 		0C4070F91C7B753200AEECB7 /* SIMChatMediaAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4070F81C7B753200AEECB7 /* SIMChatMediaAudioPlayer.swift */; };
@@ -261,7 +260,6 @@
 		0C228BA41D912F67000F919D /* SAPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoView.swift; sourceTree = "<group>"; };
 		0C228BA61D913532000F919D /* SAPhotoAlbum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoAlbum.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C2475791C892052003077B2 /* SIMChatResourceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatResourceProtocol.swift; sourceTree = "<group>"; };
-		0C2CB2BD1DAFE82B007499A7 /* SAPhotoContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoContent.swift; sourceTree = "<group>"; };
 		0C368BB31C7D7986003755CC /* NSStringTransform+Heteronym.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStringTransform+Heteronym.swift"; sourceTree = "<group>"; };
 		0C4070EC1C7ABF0100AEECB7 /* SIMChatMessageBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatMessageBox.swift; sourceTree = "<group>"; };
 		0C4070F81C7B753200AEECB7 /* SIMChatMediaAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatMediaAudioPlayer.swift; sourceTree = "<group>"; };
@@ -580,7 +578,6 @@
 				0CBD26751D9A020200AC5C14 /* SAPhotoSelectionable.swift */,
 				0CD578151DAF88DC0093C923 /* SAPhotoProgressiveable.swift */,
 				0C228BA01D912734000F919D /* SAPhoto.swift */,
-				0C2CB2BD1DAFE82B007499A7 /* SAPhotoContent.swift */,
 				0C228BA61D913532000F919D /* SAPhotoAlbum.swift */,
 				0C1C4E591D93CD5E0023211B /* SAPhotoBarItem.swift */,
 				0CBCE6031D92312B003EC410 /* SAPhotoBrowser.swift */,
@@ -924,7 +921,6 @@
 				0C0DD6681C60B4A900AEC8C4 /* SIMChatNotificationCenter.swift in Sources */,
 				0CF5CE4D1DAE118D0013884B /* SAPhotoPreviewable.swift in Sources */,
 				0C0DD6561C60B4A900AEC8C4 /* SIMChatResult.swift in Sources */,
-				0C2CB2BE1DAFE82B007499A7 /* SAPhotoContent.swift in Sources */,
 				0C24757A1C892052003077B2 /* SIMChatResourceProtocol.swift in Sources */,
 				0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */,
 				0C0697231D8F762600547588 /* SAAudioStatus.swift in Sources */,

@@ -9,15 +9,8 @@
 import UIKit
 
 
-internal class SAPhotoPreviewableView: UIView {
+internal class SAPhotoPreviewableView: UIView, SAPhotoTaskDelegate {
     
-    var image: UIImage? {
-        willSet {
-            setNeedsLayout()
-            
-            contentView.image = image(newValue, with: imageOrientation)
-        }
-    }
     var imageSize: CGSize = .zero {
         willSet {
             setNeedsLayout()
@@ -38,13 +31,48 @@ internal class SAPhotoPreviewableView: UIView {
     
     var previewing: SAPhotoPreviewable? {
         willSet {
+            setNeedsLayout()
+            
+            // TODO: 取消oldPreviewable中的所有请求
+            
+            let taskId = UUID().uuidString
+            
+            _oldTaskId = _newTaskId
+            _newTaskId = taskId
+            
+            let size = newValue?.previewingContentVisableSize ?? .zero
             
             imageContentMode = newValue?.previewingContentMode ?? .scaleToFill
+            imageOrientation = newValue?.previewingContentOrientation ?? .up
+            imageSize = newValue?.previewingContentSize ?? .zero
             
-            imageOrientation = newValue?.previewingImageOrientation ?? .up
-            imageSize = newValue?.previewingImageSize ?? .zero
-            image = newValue?.previewingImage
+            // 添加切换动画
+            UIView.performWithoutAnimation {
+                presentationView.alpha = 1
+                presentationView.image = contentView.image
+            }
+            presentationView.alpha = 0
+            
+            task = newValue?.previewingContent?.imageTask(size)
+//            // 请求新的内容
+//            newValue?.previewingContent?.requestImage(size) {
+//                if taskId == self._newTaskId {
+//                    self.contentView.image = self.reset($1)
+//                }
+//            }
+//            
+            logger.trace("\(presentationView.image) => \(contentView.image)")
         }
+    }
+    weak var task: SAPhotoTask? {
+        willSet {
+            task?.detach(self)
+            newValue?.attach(self)
+        }
+    }
+    
+    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
+        contentView.image = image
     }
     
     override func layoutSubviews() {
@@ -112,8 +140,8 @@ internal class SAPhotoPreviewableView: UIView {
         case .left, .leftMirrored: return 3 * CGFloat(M_PI_2)
         }
     }
-    func image(_ image: UIImage?, with orientation: UIImageOrientation) -> UIImage? {
-        guard let cgimage = image?.cgImage, image?.imageOrientation != orientation else {
+    func reset(_ image: UIImage?) -> UIImage? {
+        guard let cgimage = image?.cgImage, image?.imageOrientation != .up else {
             return image
         }
         return UIImage(cgImage: cgimage, scale: image?.scale ?? 1, orientation: .up)
@@ -124,8 +152,16 @@ internal class SAPhotoPreviewableView: UIView {
         
         clipsToBounds = true
         
+        presentationView.contentMode = .scaleAspectFill
+        presentationView.alpha = 0
+        presentationView.frame = contentView.bounds
+        presentationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //presentationView.backgroundColor = backgroundColor
+        presentationView.backgroundColor = .random
+        
         contentView.backgroundColor = .random
         contentView.contentMode = .scaleAspectFill
+        contentView.addSubview(presentationView)
         
         addSubview(contentView)
     }
@@ -134,4 +170,8 @@ internal class SAPhotoPreviewableView: UIView {
     }
     
     private lazy var contentView: UIImageView = UIImageView()
+    private lazy var presentationView: UIImageView = UIImageView()
+    
+    private var _newTaskId: String?
+    private var _oldTaskId: String?
 }

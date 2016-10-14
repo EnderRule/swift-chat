@@ -14,11 +14,11 @@ internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
         set { return photoView.photo = newValue }
         get { return photoView.photo }
     }
-    var photoContent: SAPhotoContent? {
-        set { return photoView.photoContent = newValue }
-        get { return photoView.photoContent }
+    var photoContentOrientation: UIImageOrientation {
+        set { return photoView.photoContentOrientation = newValue }
+        get { return photoView.photoContentOrientation }
     }
-   
+    
     var loader: SAPhotoLoaderType? {
         set { return photoView.loader = newValue }
         get { return photoView.loader }
