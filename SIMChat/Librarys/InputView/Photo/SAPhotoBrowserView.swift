@@ -97,6 +97,9 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
     var photoContentOrientation: UIImageOrientation = .up
     var photo: SAPhoto? {
         willSet {
+            
+            _imageView.image = nil // clear
+            
             task = newValue?.imageTask(SAPhotoMaximumSize)
 //            newValue?.requestImage(SAPhotoMaximumSize) { [weak _imageView] in
 //                _imageView?.image = $1

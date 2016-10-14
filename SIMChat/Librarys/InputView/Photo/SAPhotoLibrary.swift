@@ -85,8 +85,11 @@ public class SAPhotoTask: NSObject {
         options.resizeMode = .fast
         options.isNetworkAccessAllowed = true
         
-        // 如果任务没有开始, 启动任务并返回一个最接近的图片, 然后等待
+        // 如果任务没有开始, 启动任务并返回一个最接近的图片(如果有..), 然后等待
         _logger.trace("start task")
+        if let image = adjacentImage {
+            observer.task?(self, didReceive: image)
+        }
         requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: size, contentMode: .aspectFill, options: options) { [weak self](image, info) in
             self?.image = image
             self?.notifi(with: image, info: info)
