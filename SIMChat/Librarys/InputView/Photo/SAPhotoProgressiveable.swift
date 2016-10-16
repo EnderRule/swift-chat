@@ -8,20 +8,12 @@
 
 import UIKit
 
-@objc
-public protocol SAPhotoProgressiveable: NSObjectProtocol {
-    
-    var imageSize: CGSize { get }
-    //var imageOrientation: UIImageOrientation { get }
-    
-    func imageTask(_ size: CGSize) -> SAPhotoTask
-//    func requestImage(_ targetSize: CGSize, resultHandler: @escaping (SAPhotoProgressiveable, UIImage?) -> Void)
-//    func cancelRequestImage()
+@objc public protocol SAPhotoProgressiveable: NSObjectProtocol {
 }
 
-public protocol SAPhotoProgressiveObserver: NSObjectProtocol {
+
+@objc public protocol SAPhotoProgressiveableObserver: NSObjectProtocol {
     
-    func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeSize size: CGSize)
     func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeImage image: UIImage?)
-    
 }
+

@@ -94,16 +94,38 @@ extension SAPhoto: SAPhotoProgressiveable {
         return CGSize(width: pixelWidth, height: pixelHeight)
     }
     
-    public func imageTask(_ targetSize: CGSize) -> SAPhotoTask {
-        var size = targetSize
-        
-        if size != SAPhotoMaximumSize {
-            size.width = targetSize.width * UIScreen.main.scale
-            size.height = targetSize.height * UIScreen.main.scale
-        }
-        
-        return SAPhotoLibrary.shared.imageTask(with: self, targetSize: size)
+    open var size: CGSize {
+        return CGSize(width: pixelWidth, height: pixelHeight)
     }
+    open func size(with orientation: UIImageOrientation) -> CGSize {
+        switch orientation {
+        case .left, .leftMirrored, .right, .rightMirrored:
+            return CGSize(width: pixelHeight, height: pixelWidth)
+            
+        case .up, .upMirrored, .down, .downMirrored:
+            return CGSize(width: pixelWidth, height: pixelHeight)
+        }
+    }
+    
+    open var image: UIImage? {
+        return image(with: SAPhotoMaximumSize)
+    }
+    open func image(with size: CGSize) -> UIImage? {
+        let image = SAPhotoProgressiveableImage()
+        SAPhotoLibrary.shared.imageTask(with: self, targetSize: size).attach(image)
+        return image
+    }
+   
+//    public func imageTask(_ targetSize: CGSize) -> SAPhotoTask {
+//        var size = targetSize
+//        
+//        if size != SAPhotoMaximumSize {
+//            size.width = targetSize.width * UIScreen.main.scale
+//            size.height = targetSize.height * UIScreen.main.scale
+//        }
+//        
+//        return SAPhotoLibrary.shared.imageTask(with: self, targetSize: size)
+//    }
     
 //    public func requestImage(_ targetSize: CGSize, resultHandler: @escaping (SAPhotoProgressiveable, UIImage?) -> Void) {
 //        let options = PHImageRequestOptions()
@@ -177,6 +199,14 @@ extension SAPhoto: SAPhotoProgressiveable {
 //    }
 //    public func cancelRequestImage() {
 //    }
+}
+
+extension SAPhotoProgressiveableImage: SAPhotoTaskDelegate {
+    
+    /// 接收到新的图片
+    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
+        content = image
+    }
 }
 
 //- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion

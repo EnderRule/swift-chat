@@ -64,7 +64,7 @@ public class SAPhotoTask: NSObject {
     func attach(_ observer: SAPhotoTaskDelegate) {
         // 如果任务己经完成, 直接回调(不用添加)
         if let image = image {
-            _logger.trace("hit cache")
+            _logger.trace("hit cache \(size)")
             observer.task?(self, didReceive: image)
             observer.task?(self, didComplete: image)
             return
@@ -75,18 +75,18 @@ public class SAPhotoTask: NSObject {
         }
         // 如果任务己经开始, 返回最接近的图片, 然后等待
         if let _ = requestId {
-            _logger.trace("wait task")
+            _logger.trace("wait task \(size)")
             observer.task?(self, didReceive: adjacentImage)
             return
         }
         
         let options = PHImageRequestOptions()
-        options.deliveryMode = .opportunistic
+        options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
         options.resizeMode = .fast
-        options.isNetworkAccessAllowed = true
+        //options.isNetworkAccessAllowed = true
         
         // 如果任务没有开始, 启动任务并返回一个最接近的图片(如果有..), 然后等待
-        _logger.trace("start task")
+        _logger.trace("start task \(size)")
         if let image = adjacentImage {
             observer.task?(self, didReceive: image)
         }
@@ -179,9 +179,6 @@ internal class SAPhotoTaskQueue: NSObject {
         _allTasks[taskId] = task
         // 更新邻近的任务
         let _: SAPhotoTask? = _allTasks.keys.sorted(by: >).reduce(nil) {
-            guard $1 == -1 else {
-                return nil // 禁止依赖原图
-            }
             let sk = _allTasks[$1]
             $0?.adjacent = sk
             return sk
@@ -195,7 +192,7 @@ internal class SAPhotoTaskQueue: NSObject {
     }
     
     private var _photo: SAPhoto
-    private var _allTasks: [Int: SAPhotoTask] = [:]
+    private var _allTasks: [UInt: SAPhotoTask] = [:]
 }
 
 open class SAPhotoLibrary: NSObject {
@@ -259,6 +256,8 @@ open class SAPhotoLibrary: NSObject {
     
     private lazy var _allQueues: [String: SAPhotoTaskQueue] = [:]
     
+    private lazy var _allCaches: [String: AnyObject] = [:]
+    
     
     func imageTask(with photo: SAPhoto, targetSize: CGSize) -> SAPhotoTask {
         // 获取任务队列
@@ -270,6 +269,12 @@ open class SAPhotoLibrary: NSObject {
         // 向任务队列添加任务
         return queue.addTask(targetSize)
     }
+    
+//    func image(with photo: SAPhoto, size: CGSize) -> UIImage? {
+//        return SAPhotoCache.cache(with: photo).image(with: size)
+//    }
+    
+    //return SAPhotoLibrary.shared.imageTask(with: self, targetSize: size)
     
     
     
@@ -334,18 +339,18 @@ extension SAPhotoLibrary: PHPhotoLibraryChangeObserver {
 }
 
 
-private func _SAPhotoResouceId(_ photo: SAPhoto, size: CGSize) -> Int {
+private func _SAPhotoResouceId(_ photo: SAPhoto, size: CGSize) -> UInt {
     guard size != SAPhotoMaximumSize else {
-        return -1
+        return UInt.max
     }
     if size.width >= CGFloat(photo.pixelWidth) || size.height >= CGFloat(photo.pixelHeight) {
-        return -1
+        return UInt.max
     }
-    return Int(size.width / 16)
+    return UInt(size.width / 16)
 }
 private func _SAPhotoResouceSize(_ photo: SAPhoto, size: CGSize) -> CGSize {
     let id = _SAPhotoResouceId(photo, size: size)
-    guard id != -1 else {
+    guard id != .max else {
         return SAPhotoMaximumSize
     }
     let w = round(CGFloat(id + 1) * 16)

@@ -45,8 +45,8 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
     }
     
     
-    var previewingContent: SAPhotoProgressiveable? {
-        return photo
+    var previewingContent: UIImage? {
+        return photo.image
     }
     var previewingContentSize: CGSize {
         return photo.imageSize
@@ -72,8 +72,8 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
 
 internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
     
-    var previewingContent: SAPhotoProgressiveable? {
-        return photo
+    var previewingContent: UIImage? {
+        return _imageView.image
     }
     var previewingContentSize: CGSize {
         return photo?.imageSize ?? .zero
@@ -86,8 +86,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         return .scaleAspectFit
     }
     var previewingContentOrientation: UIImageOrientation {
-        // TODO: 获取方向
-        return .up
+        return photoContentOrientation
     }
     
     var previewingFrame: CGRect {
@@ -98,13 +97,8 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
     var photo: SAPhoto? {
         willSet {
             
-            _imageView.image = nil // clear
-            
-            task = newValue?.imageTask(SAPhotoMaximumSize)
-//            newValue?.requestImage(SAPhotoMaximumSize) { [weak _imageView] in
-//                _imageView?.image = $1
-//            }
-            _sizeThatFits(newValue?.imageSize ?? .zero)
+            _imageView.image = newValue?.image
+            _sizeThatFits(newValue?.size ?? .zero)
         }
     }
     weak var task: SAPhotoTask? {
@@ -223,14 +217,6 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         _scrollView.setContentOffset(npt, animated: animated)
     }
     
-    func image(_ image: UIImage?, orientation: UIImageOrientation) -> UIImage? {
-        guard let cgimage = image?.cgImage, image?.imageOrientation != orientation else {
-            return image
-        }
-        return UIImage(cgImage: cgimage, scale: image?.scale ?? 1, orientation: orientation)
-    }
-    
-   
     fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
         //_logger.trace()
         
@@ -241,6 +227,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         //_logger.trace(rotation)
         
         let angle = round(rotation / CGFloat(M_PI_2)) * CGFloat(M_PI_2)
+        
         let oldOrientation = photoContentOrientation
         let newOrientation = _orientation(for: _rotation(for: oldOrientation) + angle)
         
@@ -261,8 +248,10 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         // 生成新的图片(符合方向的)
         photoContentOrientation = newOrientation
         
-        let newSize = photo?.imageSize ?? .zero
-        let newImage = image(_imageView.image, orientation: newOrientation)
+        let oldImage = _imageView.image
+        
+        let newSize = photo?.size(with: newOrientation) ?? .zero
+        let newImage = oldImage?.withOrientation(newOrientation)
         
         let scale = _aspectFitZoomScale(newSize)
         let minimumZoomScale = _minimumZoomScale(newSize)

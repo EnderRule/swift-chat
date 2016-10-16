@@ -17,13 +17,10 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
         return rect
     }
     
-    var previewingContent: SAPhotoProgressiveable? {
-        return photo
+    var previewingContent: UIImage? {
+        return _imageView.image
     }
     var previewingContentSize: CGSize {
-        return _imageView.image?.size ?? .zero
-    }
-    var previewingContentVisableSize: CGSize {
         return bounds.size
     }
     
@@ -37,38 +34,16 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
     var photo: SAPhoto? {
         willSet {
             
-            task = newValue?.imageTask(bounds.size)
+            var size = bounds.size
             
-//            newValue?.requestImage(bounds.size) { [weak self] in
-//                self?._imageView.image = $1
-//            }
+            size.width *= UIScreen.main.scale
+            size.height *= UIScreen.main.scale
             
-//            let options = PHImageRequestOptions()
-//            options.deliveryMode = .fastFormat
-//            options.resizeMode = .fast
-//            
-//            _ = SAPhotoLibrary.shared.requestImage(for: newValue, targetSize: size, contentMode: .aspectFill, options: nil) { img, _ in
-//                guard self.photo == newValue else {
-//                    return
-//                }
-//                //self._logger.trace(img)
-//                self._imageView.image = img
-//            }
-            
+            _imageView.image = newValue?.image(with: size)
             _updateSelection(with: newValue, animated: false)
         }
     }
     
-    weak var task: SAPhotoTask? {
-        willSet {
-            task?.detach(self)
-            newValue?.attach(self)
-        }
-    }
-    
-    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
-        _imageView.image = image
-    }
     
     var isSelected: Bool {
         set { return _updateSelection(with: photo, animated: false) }
