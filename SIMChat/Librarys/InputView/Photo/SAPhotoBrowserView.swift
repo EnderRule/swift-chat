@@ -12,11 +12,11 @@ import Photos
 @objc
 internal protocol SAPhotoBrowserViewDelegate: NSObjectProtocol {
     
-    @objc optional func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject)
-    @objc optional func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject)
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didTapWith sender: AnyObject)
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didDoubleTapWith sender: AnyObject)
     
-    @objc optional func browserView(_ browserView: SAPhotoBrowserView, shouldRotation orientation: UIImageOrientation) -> Bool
-    @objc optional func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation)
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, shouldRotation orientation: UIImageOrientation) -> Bool
+    @objc optional func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didRotation orientation: UIImageOrientation)
 }
 
 internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
@@ -49,10 +49,7 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
         return photo.image
     }
     var previewingContentSize: CGSize {
-        return photo.imageSize
-    }
-    var previewingContentVisableSize: CGSize {
-        return SAPhotoMaximumSize
+        return photo.size
     }
     
     var previewingContentMode: UIViewContentMode {
@@ -70,13 +67,13 @@ internal class SAPhotoBrowserViewFastPreviewing: NSObject, SAPhotoPreviewable {
 }
 
 
-internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
+internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable {
     
     var previewingContent: UIImage? {
         return _imageView.image
     }
     var previewingContentSize: CGSize {
-        return photo?.imageSize ?? .zero
+        return photo?.size ?? .zero
     }
     var previewingContentVisableSize: CGSize {
         return SAPhotoMaximumSize
@@ -97,32 +94,11 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
     var photo: SAPhoto? {
         willSet {
             
-            _imageView.image = newValue?.image
-            _sizeThatFits(newValue?.size ?? .zero)
-        }
-    }
-    weak var task: SAPhotoTask? {
-        willSet {
-            task?.detach(self)
-            newValue?.attach(self)
+            _imageView.image = newValue?.image?.withOrientation(photoContentOrientation)
+            _sizeThatFits(newValue?.size(with: photoContentOrientation) ?? .zero)
         }
     }
     
-    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
-        _imageView.image = image
-    }
-    
-    var loader: SAPhotoLoaderType? {
-        didSet {
-            oldValue?.delegate = nil
-            oldValue?.cancelRequestImage()
-            
-            _imageView.image = nil
-            
-            loader?.delegate = self
-            loader?.requestImage()
-        }
-    }
     weak var delegate: SAPhotoBrowserViewDelegate? {
         set { return _delegate = newValue }
         get { return _delegate }
@@ -217,13 +193,17 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         _scrollView.setContentOffset(npt, animated: animated)
     }
     
-    fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
-        //_logger.trace()
-        
-        _imageView.image = loader.image
-        _sizeThatFits(loader.size ?? .zero)
-    }
+//    fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
+//        //_logger.trace()
+//        
+//        _imageView.image = loader.image
+//        _sizeThatFits(loader.size ?? .zero)
+//    }
     fileprivate func _updateOrientation(for rotation: CGFloat, animated: Bool) {
+        guard let photo = photo else {
+            return // is error
+        }
+        
         //_logger.trace(rotation)
         
         let angle = round(rotation / CGFloat(M_PI_2)) * CGFloat(M_PI_2)
@@ -235,13 +215,13 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         guard oldOrientation != newOrientation else {
             guard animated else {
                 _scrollView.transform = .identity
-                _delegate?.browserView?(self, didRotation: newOrientation)
+                _delegate?.browserView?(self, photo: photo, didRotation: newOrientation)
                 return
             }
             UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
                 _scrollView.transform = .identity
             }, completion: { [_delegate] b in
-                _delegate?.browserView?(self, didRotation: newOrientation)
+                _delegate?.browserView?(self, photo: photo, didRotation: newOrientation)
             })
             return
         }
@@ -250,7 +230,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
         
         let oldImage = _imageView.image
         
-        let newSize = photo?.size(with: newOrientation) ?? .zero
+        let newSize = photo.size(with: newOrientation)
         let newImage = oldImage?.withOrientation(newOrientation)
         
         let scale = _aspectFitZoomScale(newSize)
@@ -289,7 +269,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
             _imageView.frame = nbounds
             _imageView.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
             
-            _delegate?.browserView?(self, didRotation: newOrientation)
+            _delegate?.browserView?(self, photo: photo, didRotation: newOrientation)
         })
     }
     
@@ -352,17 +332,22 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable, SAPhotoTaskDelega
 private extension SAPhotoBrowserView {
     
     dynamic func tapHandler(_ sender: AnyObject) {
+        guard let photo = photo else {
+            return
+        }
         //_logger.trace()
-        
-        _delegate?.browserView?(self, didTapWith: sender)
+        _delegate?.browserView?(self, photo: photo, didTapWith: sender)
     }
     dynamic func rotationHandler(_ sender: UIRotationGestureRecognizer) {
+        guard let photo = photo else {
+            return
+        }
         //_logger.trace(sender.rotation)
         
         guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
             // 开始旋转
             if !_isRotationing {
-                guard _delegate?.browserView?(self, shouldRotation: loader?.orientation ?? .up) ?? true else {
+                guard _delegate?.browserView?(self, photo: photo, shouldRotation: photoContentOrientation) ?? true else {
                     return // .. 不允许旋转
                 }
                 _isRotationing = true
@@ -378,6 +363,9 @@ private extension SAPhotoBrowserView {
         _updateOrientation(for: sender.rotation, animated: true)
     }
     dynamic func doubleTapHandler(_ sender: UITapGestureRecognizer) {
+        guard let photo = photo else {
+            return
+        }
          //_logger.trace()
         
         if _scrollView.zoomScale > _scrollView.minimumZoomScale {
@@ -399,32 +387,9 @@ private extension SAPhotoBrowserView {
             })
         }
         
-        delegate?.browserView?(self, didDoubleTapWith: sender)
+        delegate?.browserView?(self, photo: photo, didDoubleTapWith: sender)
     }
     
-}
-
-extension SAPhotoBrowserView: SAPhotoLoaderDelegate {
-    
-    func loader(_ loader: SAPhotoLoaderType, didChangeSize size: CGSize?) {
-        _logger.trace()
-        
-        _updateContent(for: loader, animated: true)
-    }
-    func loader(_ loader: SAPhotoLoaderType, didChangeImage image: UIImage?) {
-        _logger.trace()
-        
-        _imageView.image = image
-    }
-    
-    func loader(didStart loader: SAPhotoLoader) {
-        _logger.trace()
-    }
-    func loader(didComplate loader: SAPhotoLoader, image: UIImage?) {
-        _logger.trace()
-        
-        _updateContent(for: loader, animated: false)
-    }
 }
 
 extension SAPhotoBrowserView: UIGestureRecognizerDelegate {

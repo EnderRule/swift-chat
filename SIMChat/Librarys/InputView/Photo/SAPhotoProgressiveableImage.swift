@@ -23,7 +23,7 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
             return _content 
         }
     }
-    /// 图片的大小
+    
     public override var size: CGSize {
         return content?.size ?? .zero
     }
@@ -48,8 +48,8 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
         _observers.remove(observer)
     }
     
-    /// 复制
-    private func _copy() -> SAPhotoProgressiveableImage {
+    
+    private func _mutableCopy() -> SAPhotoProgressiveableImage {
         let image = SAPhotoProgressiveableImage()
         
         image._parent = self
@@ -61,7 +61,6 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
         
         return image
     }
-    /// 通知变更
     private func _notify(_ image: UIImage?) {
         //_logger.trace()
         
@@ -81,7 +80,7 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
         guard imageOrientation != orientation else {
             return self
         }
-        let image = _parent?._copy() ?? _copy()
+        let image = _parent?._mutableCopy() ?? _mutableCopy()
         
         image._orientation = orientation
         image._content = _content?.withOrientation(orientation)

@@ -371,29 +371,30 @@ extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
 
 extension SAPhotoPickerForPreviewer: SAPhotoBrowserViewDelegate {
     
-    func browserView(_ browserView: SAPhotoBrowserView, didTapWith sender: AnyObject) {
+    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didTapWith sender: AnyObject) {
         _logger.trace()
         
         _updateIsFullscreen(!_isFullscreen, animated: true)
     }
-    func browserView(_ browserView: SAPhotoBrowserView, didDoubleTapWith sender: AnyObject) {
+    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didDoubleTapWith sender: AnyObject) {
         _logger.trace()
         
         // 双击的时候进入全屏
         _updateIsFullscreen(true, animated: true)
     }
     
-    func browserView(_ browserView: SAPhotoBrowserView, shouldRotation orientation: UIImageOrientation) -> Bool {
+    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, shouldRotation orientation: UIImageOrientation) -> Bool {
         _logger.trace()
         
         _contentView.isScrollEnabled = false
         return true
     }
     
-    func browserView(_ browserView: SAPhotoBrowserView, didRotation orientation: UIImageOrientation) {
+    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didRotation orientation: UIImageOrientation) {
         _logger.trace()
         
         _contentView.isScrollEnabled = true
+        _allPhotoInfos[photo.hashValue] = orientation
     }
 }
 

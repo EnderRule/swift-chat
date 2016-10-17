@@ -19,10 +19,6 @@ internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
         get { return photoView.photoContentOrientation }
     }
     
-    var loader: SAPhotoLoaderType? {
-        set { return photoView.loader = newValue }
-        get { return photoView.loader }
-    }
     weak var delegate: SAPhotoBrowserViewDelegate? {
         set { return photoView.delegate = newValue }
         get { return photoView.delegate }

@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoView: UIView, SAPhotoPreviewable, SAPhotoTaskDelegate {
+internal class SAPhotoView: UIView, SAPhotoPreviewable {
     
     var previewingFrame: CGRect {
         let rect = convert(bounds, to: window)

@@ -9,7 +9,7 @@
 import UIKit
 
 
-internal class SAPhotoPreviewableView: UIView, SAPhotoTaskDelegate {
+internal class SAPhotoPreviewableView: UIView {
     
     var image: UIImage? {
         willSet {
@@ -27,6 +27,7 @@ internal class SAPhotoPreviewableView: UIView, SAPhotoTaskDelegate {
             setNeedsLayout()
         }
     }
+    
     var imageOrientation: UIImageOrientation = .up {
         didSet {
             setNeedsLayout()
@@ -34,7 +35,6 @@ internal class SAPhotoPreviewableView: UIView, SAPhotoTaskDelegate {
             transform = CGAffineTransform(rotationAngle: angle(orientation: imageOrientation))
         }
     }
-    
     var imageContentMode: UIViewContentMode = .scaleToFill {
         didSet {
             setNeedsLayout()

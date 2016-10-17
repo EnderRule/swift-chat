@@ -90,10 +90,6 @@ open class SAPhoto: NSObject {
 
 extension SAPhoto: SAPhotoProgressiveable {
     
-    open var imageSize: CGSize {
-        return CGSize(width: pixelWidth, height: pixelHeight)
-    }
-    
     open var size: CGSize {
         return CGSize(width: pixelWidth, height: pixelHeight)
     }
