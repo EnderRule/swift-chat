@@ -444,12 +444,13 @@ extension SAPhotoPickerForAssets: SAPhotoPreviewableDelegate {
             return nil
         }
         let indexPath = IndexPath(item: index, section: 0)
-        // 滑动到这里
-        collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
-        collectionView?.layoutIfNeeded()
-        // 然后读取
-        guard let cell = collectionView?.cellForItem(at: indexPath) else {
-            return nil
+        var cell = collectionView?.cellForItem(at: indexPath)
+        // 只有当view超出视图的时候才会滑动
+        if cell == nil {
+            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            collectionView?.layoutIfNeeded()
+            // 再次读取, 必须在layoutIfNeeded之后, 否则cell并没有创建
+            cell = collectionView?.cellForItem(at: indexPath)
         }
         return (cell as? SAPhotoPickerForAssetsCell)?.photoView
     }
