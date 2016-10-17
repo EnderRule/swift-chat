@@ -48,7 +48,7 @@ import UIKit
 // [x] SAPhotoPickerForAssets - 图片变更通知处理(多张新增、多张删除、多张改变、同时改变、删除Album)
 // [x] SAPhotoPickerForAssets - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 // [x] SAPhotoPickerForAssets - UIToolbar支持
-// [ ] SAPhotoPickerForAssets - 预览的item超出visableCells时的处理
+// [x] SAPhotoPickerForAssets - 预览的item超出visableCells时的处理
 // [ ] SAPhotoPickerForAssets - 跨界面转屏崩溃
 // [x] SAPhotoPickerForPreviewer - 单选支持
 // [x] SAPhotoPickerForPreviewer - 转场动画(弹出)

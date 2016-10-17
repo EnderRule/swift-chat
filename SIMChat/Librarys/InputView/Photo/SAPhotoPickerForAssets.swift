@@ -443,7 +443,12 @@ extension SAPhotoPickerForAssets: SAPhotoPreviewableDelegate {
         guard let index = _photos.index(of: photo) else {
             return nil
         }
-        guard let cell = collectionView?.cellForItem(at: IndexPath(item: index, section: 0)) else {
+        let indexPath = IndexPath(item: index, section: 0)
+        // 滑动到这里
+        collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+        collectionView?.layoutIfNeeded()
+        // 然后读取
+        guard let cell = collectionView?.cellForItem(at: indexPath) else {
             return nil
         }
         return (cell as? SAPhotoPickerForAssetsCell)?.photoView
