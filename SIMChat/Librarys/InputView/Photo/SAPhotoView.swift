@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPhotoView: UIView, SAPhotoPreviewable {
+internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
     
     var previewingFrame: CGRect {
         let rect = convert(bounds, to: window)
@@ -18,14 +18,14 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
     }
     
     var previewingContent: UIImage? {
-        return _imageView.image
+        return image
     }
     var previewingContentSize: CGSize {
         return bounds.size
     }
     
     var previewingContentMode: UIViewContentMode {
-        return _imageView.contentMode
+        return contentMode
     }
     var previewingContentOrientation: UIImageOrientation {
         return .up
@@ -39,7 +39,8 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
             size.width *= UIScreen.main.scale + 1
             size.height *= UIScreen.main.scale + 1
             
-            _imageView.image = newValue?.image(with: size)
+            image = newValue?.image(with: size)
+            
             _updateSelection(with: newValue, animated: false)
         }
     }
@@ -101,7 +102,7 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
     }
     override func layoutSubviews() {
         super.layoutSubviews()
-        _hightlightLayer.frame = _imageView.bounds
+        _hightlightLayer.frame = bounds
     }
     override func didMoveToWindow() {
         super.didMoveToWindow()
@@ -180,15 +181,15 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
     private func _init() {
         //_logger.trace()
         
-        _imageView.frame = bounds
-        _imageView.contentMode = .scaleAspectFill
-        _imageView.clipsToBounds = true
-        _imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentMode = .scaleAspectFill
+        isUserInteractionEnabled = true
+        clipsToBounds = true
         
         _hightlightLayer.isHidden = true
         _hightlightLayer.backgroundColor = UIColor(white: 0, alpha: 0.2).cgColor
         
         let edg = _contentInset
+        
         _selectedView.frame = CGRect(x: bounds.width - edg.right - 23, y: edg.top, width: 23, height: 23)
         _selectedView.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
         _selectedView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
@@ -199,9 +200,8 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
         _selectedView.setBackgroundImage(UIImage(named: "photo_checkbox_selected"), for: [.selected, .highlighted])
         _selectedView.addTarget(self, action: #selector(selectHandler(_:)), for: .touchUpInside)
         
-        _imageView.layer.addSublayer(_hightlightLayer)
+        layer.addSublayer(_hightlightLayer)
         
-        addSubview(_imageView)
         addSubview(_selectedView)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
@@ -210,12 +210,16 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
     
     private var _isSelected: Bool = false
     
-    private lazy var _imageView: UIImageView = UIImageView()
     private lazy var _selectedView: UIButton = UIButton()
     private lazy var _hightlightLayer: CALayer = CALayer()
     
     private lazy var _contentInset: UIEdgeInsets = UIEdgeInsetsMake(4.5, 4.5, 4.5, 4.5)
     
+    
+    init() {
+        super.init(frame: .zero)
+        _init()
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         _init()

@@ -15,13 +15,18 @@ internal class SAPhotoPickerForAssetsCell: UICollectionViewCell {
     
     lazy var photoView: SAPhotoView = SAPhotoView()
     
+    override var contentView: UIView {
+        return photoView
+    }
+    
     private func _init() {
         
-        photoView.frame = contentView.bounds
+        photoView.frame = bounds
         photoView.allowsSelection = true
         photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        contentView.addSubview(photoView)
+        super.contentView.removeFromSuperview()
+        addSubview(contentView)
     }
     
     override init(frame: CGRect) {
