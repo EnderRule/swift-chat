@@ -123,16 +123,29 @@ open class SAPhotoLibrary: NSObject {
     
     
     func clearInvaildCaches() {
-        _logger.trace()
+        DispatchQueue.main.async {
+            self._clearInvaildCachesOnMainThread()
+        }
+    }
+    
+    private func _clearInvaildCachesOnMainThread() {
+        //_logger.trace()
         
-//        var caches: [String: SAPhotoWeakObject<UIImage>] = [:]
-//        _allCaches.forEach {
-//            guard let _ = $1.object else {
-//                return
-//            }
-//            caches[$0] = $1
-//        }
-//        _allCaches = caches
+        _allCaches.keys.forEach { key in
+            let keys: [String]? = _allCaches[key]?.flatMap {
+                if $1.object == nil {
+                    return $0
+                }
+                return nil
+            }
+            guard keys?.count != _allCaches[key]?.count else {
+                _allCaches.removeValue(forKey: key)
+                return
+            }
+            keys?.forEach {
+                _ = _allCaches[key]?.removeValue(forKey: $0)
+            }
+        }
     }
     
     open func requestImage(for photo: SAPhoto, targetSize: CGSize, contentMode: PHImageContentMode = .default, options: PHImageRequestOptions? = nil, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
