@@ -107,9 +107,7 @@ extension SAPhoto: SAPhotoProgressiveable {
         return image(with: SAPhotoMaximumSize)
     }
     open func image(with size: CGSize) -> UIImage? {
-        let image = SAPhotoProgressiveableImage()
-        SAPhotoLibrary.shared.imageTask(with: self, targetSize: size).attach(image)
-        return image
+        return SAPhotoLibrary.shared.image(with: self, size: size)
     }
    
 //    public func imageTask(_ targetSize: CGSize) -> SAPhotoTask {
@@ -197,13 +195,6 @@ extension SAPhoto: SAPhotoProgressiveable {
 //    }
 }
 
-extension SAPhotoProgressiveableImage: SAPhotoTaskDelegate {
-    
-    /// 接收到新的图片
-    func task(_ task: SAPhotoTask, didReceive image: UIImage?) {
-        content = image
-    }
-}
 
 //- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion
 //{

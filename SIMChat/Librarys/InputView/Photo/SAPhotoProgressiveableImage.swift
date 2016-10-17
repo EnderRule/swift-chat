@@ -73,6 +73,8 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
     }
     
     deinit {
+        _logger.trace()
+        
         _parent = nil
     }
     

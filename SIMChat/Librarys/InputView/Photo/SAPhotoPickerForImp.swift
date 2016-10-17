@@ -86,6 +86,8 @@ internal class SAPhotoPickerForImp: UINavigationController {
         logger.trace()
         
         SAPhotoAlbum.clearCaches()
+        
+        SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
     

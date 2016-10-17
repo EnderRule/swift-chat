@@ -16,30 +16,6 @@ public enum SAPhotoStatus {
     case notError
 }
 
-@objc
-internal protocol SAPhotoTaskDelegate: class {
-    
-    @objc optional func task(_ task: SAPhotoTask, didReceive image: UIImage?)
-    
-    @objc optional func task(_ task: SAPhotoTask, didComplete image: UIImage?)
-    @objc optional func task(_ task: SAPhotoTask, didCompleteWithError error: Error?)
-    
-    //    optional public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
-    
-//    @available(iOS 7.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Swift.Void)
-//    @available(iOS 7.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Swift.Void)
-//    @available(iOS 7.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, needNewBodyStream completionHandler: @escaping (InputStream?) -> Swift.Void)
-//    @available(iOS 7.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
-//    @available(iOS 10.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics)
-//    @available(iOS 7.0, *)
-//    optional public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
-}
-
 internal struct SAPhotoWeakObject<T: AnyObject>: Equatable {
     
     /// Returns a Boolean value indicating whether two values are equal.
@@ -57,171 +33,8 @@ internal struct SAPhotoWeakObject<T: AnyObject>: Equatable {
     weak var object: T?
 }
 
-
-public class SAPhotoTask: NSObject {
-    
-   
-    func attach(_ observer: SAPhotoTaskDelegate) {
-        // 如果任务己经完成, 直接回调(不用添加)
-        if let image = image {
-            _logger.trace("hit cache \(size)")
-            observer.task?(self, didReceive: image)
-            observer.task?(self, didComplete: image)
-            return
-        }
-        // 添加到队列中
-        if !observers.contains(where: { $0.object === observer }) {
-            observers.append(SAPhotoWeakObject(object: observer))
-        }
-        // 如果任务己经开始, 返回最接近的图片, 然后等待
-        if let _ = requestId {
-            _logger.trace("wait task \(size)")
-            observer.task?(self, didReceive: adjacentImage)
-            return
-        }
-        
-        let options = PHImageRequestOptions()
-        //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
-        options.deliveryMode = .opportunistic
-        options.resizeMode = .fast
-        options.isNetworkAccessAllowed = true
-        
-        // 如果任务没有开始, 启动任务并返回一个最接近的图片(如果有..), 然后等待
-        _logger.trace("start task \(size)")
-        if let image = adjacentImage {
-            observer.task?(self, didReceive: image)
-        }
-        requestId = SAPhotoLibrary.shared.requestImage(for: photo, targetSize: size, contentMode: .aspectFill, options: options) { [weak self](image, info) in
-            self?.image = image
-            self?.notifi(with: image, info: info)
-        }
-    }
-    func detach(_ observer: SAPhotoTaskDelegate) {
-        // 如果所有的observer都移除了, 取消任务
-        
-        // 移出队列
-        if let index = observers.index(where: { $0.object === observer }) {
-            observers.remove(at: index)
-        }
-    }
-    
-    func notifi(with image: UIImage?, info: [AnyHashable : Any]?) {
-        //_logger.trace("\(size) => \(image?.size)")
-        
-        // 通知变更
-        observers.forEach {
-            $0.object?.task?(self, didReceive: image)
-        }
-        // 通知邻近的任务
-        adjacents.forEach {
-            $0.object?.notifi(with: image, info: [PHImageResultIsDegradedKey: 1])
-        }
-        // 检查是否己经完成了任务
-        let isError = (info?[PHImageErrorKey] as? NSError) != nil
-        let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
-        let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
-        let isLoaded = isError || isCancel || !isDegraded
-        guard isLoaded else {
-            return
-        }
-        // 通知完成
-        observers.forEach {
-            $0.object?.task?(self, didComplete: image)
-        }
-        // 清除所有的任务
-        observers.removeAll()
-        requestId = nil
-    }
-    
-    init(queue: SAPhotoTaskQueue, photo: SAPhoto, size: CGSize) {
-        self.photo = photo
-        self.size = size
-        super.init()
-        self.queue = queue
-    }
-    var photo: SAPhoto
-    var size: CGSize
-    
-    var requestId: PHImageRequestID?
-    
-    weak var image: UIImage? // 请求到的图片(不缓存, 如果没有人使用了就自动释放)
-    weak var adjacentImage: UIImage? {
-        return adjacent?.image ?? adjacent?.adjacentImage
-    }
-    
-    weak var queue: SAPhotoTaskQueue?
-    weak var adjacent: SAPhotoTask? { // 邻近的任务
-        willSet {
-            if let oldValue = adjacent, let index = oldValue.adjacents.index(where: { $0.object === self }) {
-                oldValue.adjacents.remove(at: index)
-            }
-            if let newValue = newValue, !newValue.adjacents.contains(where: { $0.object === self }) {
-                newValue.adjacents.append(SAPhotoWeakObject(object: self))
-            }
-        }
-    }
-    
-    // 被依赖的
-    lazy var adjacents: [SAPhotoWeakObject<SAPhotoTask>] = []
-    lazy var observers: [SAPhotoWeakObject<SAPhotoTaskDelegate>] = []
-}
-
-internal class SAPhotoTaskQueue: NSObject {
-    
-    func addTask(_ size: CGSize) -> SAPhotoTask {
-        let taskId = _SAPhotoResouceId(_photo, size: size)
-        // 检查任务有没有添加
-        if let task = _allTasks[taskId] {
-            return task
-        }
-        logger.trace(taskId)
-        let algined = _SAPhotoResouceSize(_photo, size: size)
-        let task = SAPhotoTask(queue: self, photo: _photo, size: algined)
-        _allTasks[taskId] = task
-        // 更新邻近的任务
-        let _: SAPhotoTask? = _allTasks.keys.sorted(by: >).reduce(nil) {
-            let sk = _allTasks[$1]
-            $0?.adjacent = sk
-            return sk
-        }
-        return task
-    }
-    
-    init(photo: SAPhoto) {
-        _photo = photo
-        super.init()
-    }
-    
-    private var _photo: SAPhoto
-    private var _allTasks: [UInt: SAPhotoTask] = [:]
-}
-
 open class SAPhotoLibrary: NSObject {
    
-    //PHPhotoLibraryChangeObserver
-    
-//    open class PHPhotoLibrary : NSObject {
-//
-//        
-//        open class func shared() -> PHPhotoLibrary
-//        
-//        
-//        open class func authorizationStatus() -> PHAuthorizationStatus
-//        
-//        open class func requestAuthorization(_ handler: @escaping (PHAuthorizationStatus) -> Swift.Void)
-//        
-//        
-//        // handlers are invoked on an arbitrary serial queue
-//        // Nesting change requests will throw an exception
-//        open func performChanges(_ changeBlock: @escaping () -> Swift.Void, completionHandler: (@escaping (Bool, Error?) -> Swift.Void)? = nil)
-//        
-//        open func performChangesAndWait(_ changeBlock: @escaping () -> Swift.Void) throws
-//        
-//        
-//        open func register(_ observer: PHPhotoLibraryChangeObserver)
-//        
-//        open func unregisterChangeObserver(_ observer: PHPhotoLibraryChangeObserver)
-//    }
     
     open func isExists(of photo: SAPhoto) -> Bool {
         return PHAsset.fetchAssets(withLocalIdentifiers: [photo.identifier], options: nil).count != 0
@@ -236,53 +49,91 @@ open class SAPhotoLibrary: NSObject {
         lib.unregisterChangeObserver(observer)
     }
     
-    
-    func addTask(_ task: SAPhotoTask) {
+    open func image(with photo: SAPhoto, size: CGSize) -> UIImage? {
+        //_logger.trace()
+        
+        let name = "\(Int(size.width))x\(Int(size.height)).png"
+        // 读取缓存
+        if let image = _allCaches[photo.identifier]?[name]?.object {
+            return image
+        }
+        let image = SAPhotoProgressiveableImage()
+        let options = PHImageRequestOptions()
+        
+        // 获取最接近的一张图片
+        image.content = imageForAlmost(with: photo, size: size)
+        
+        //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
+        options.deliveryMode = .opportunistic
+        options.resizeMode = .fast
+        options.isNetworkAccessAllowed = true
+        
+        // 创建缓冲池
+        if _allCaches.index(forKey: photo.identifier) == nil {
+            _allCaches[photo.identifier] = [:]
+        }
+        
+        _allCaches[photo.identifier]?[name] = SAPhotoWeakObject(object: image)
+        _requestImage(photo, size, .aspectFill, options) { (img, info) in
+            let os = image.content?.size ?? .zero
+            let ns = img?.size ?? .zero
+            
+            if ns.width >= os.width && ns.height >= os.height {
+                image.content = img
+                
+                // // 检查是否己经完成了任务
+                // let isError = (info?[PHImageErrorKey] as? NSError) != nil
+                // let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
+                // let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+                // let isLoaded = isError || isCancel || !isDegraded
+            }
+        }
+        
+        return image
     }
-    func removeTask(_ task: SAPhotoTask) {
+    open func imageForAlmost(with photo: SAPhoto, size: CGSize) -> UIImage? {
+        //_logger.trace()
+        
+        guard let caches = _allCaches[photo.identifier] else {
+            return nil
+        }
+        var image: UIImage?
+        
+        // 查找
+        caches.forEach {
+            guard let img = ($1.object as? SAPhotoProgressiveableImage)?.content else {
+                return
+            }
+            let os = image?.size ?? .zero
+            let ns = img.size
+            // 必须小于或者等于size
+            guard (ns.width <= size.width && ns.height <= size.height) || (size == SAPhotoMaximumSize) else {
+                return
+            }
+            // 必须大于当前的图片
+            guard (ns.width >= os.width && ns.height >= os.height) else {
+                return
+            }
+            
+            image = img
+        }
+        
+        return image
     }
     
-    private var _allTask: [String: SAPhotoTask] = [:]
     
-    
-//    func cache(_ size: CGSize) -> SAPhotoCache? {
-//        return nil
-//    }
-//    func cache(_ size: CGSize, image: UIImage?) {
-//    }
-    
-    
-//    func align(_ size: CGSize) -> CGSize {
-//    }
-    
-    private lazy var _allQueues: [String: SAPhotoTaskQueue] = [:]
-    
-    private lazy var _allCaches: [String: AnyObject] = [:]
-    
-    
-    func imageTask(with photo: SAPhoto, targetSize: CGSize) -> SAPhotoTask {
-        // 获取任务队列
-        let queue = _allQueues[photo.identifier] ?? {
-            let queue = SAPhotoTaskQueue(photo: photo)
-            _allQueues[photo.identifier] = queue
-            return queue
-        }()
-        // 向任务队列添加任务
-        return queue.addTask(targetSize)
+    func clearInvaildCaches() {
+        _logger.trace()
+        
+//        var caches: [String: SAPhotoWeakObject<UIImage>] = [:]
+//        _allCaches.forEach {
+//            guard let _ = $1.object else {
+//                return
+//            }
+//            caches[$0] = $1
+//        }
+//        _allCaches = caches
     }
-    
-//    func image(with photo: SAPhoto, size: CGSize) -> UIImage? {
-//        return SAPhotoCache.cache(with: photo).image(with: size)
-//    }
-    
-    //return SAPhotoLibrary.shared.imageTask(with: self, targetSize: size)
-    
-    
-    
-//    func imageInfoTask(with photo: SAPhoto) -> SAPhotoTask {
-//        
-//    }
-    
     
     open func requestImage(for photo: SAPhoto, targetSize: CGSize, contentMode: PHImageContentMode = .default, options: PHImageRequestOptions? = nil, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
         let im = PHCachingImageManager.default()
@@ -291,6 +142,11 @@ open class SAPhotoLibrary: NSObject {
     open static func requestImageData(for photo: SAPhoto, options: PHImageRequestOptions? = nil, resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Swift.Void) {
         let im = PHCachingImageManager.default()
         im.requestImageData(for: photo.asset, options: options, resultHandler: resultHandler)
+    }
+    
+    private func _requestImage(_ photo: SAPhoto, _ size: CGSize, _ contentMode: PHImageContentMode, _ options: PHImageRequestOptions?, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
+        let im = PHCachingImageManager.default()
+        im.requestImage(for: photo.asset, targetSize: size, contentMode: contentMode, options: options, resultHandler: resultHandler)
     }
     
 //        // Asynchronous image preheating (aka caching), note that only image sources are cached (no crop or exact resize is ever done on them at the time of caching, only at the time of delivery when applicable).
@@ -330,6 +186,8 @@ open class SAPhotoLibrary: NSObject {
         PHPhotoLibrary.shared().register(lib)
         return lib
     }()
+    
+    private lazy var _allCaches: [String: [String: SAPhotoWeakObject<UIImage>]] = [:]
 }
 
 extension SAPhotoLibrary: PHPhotoLibraryChangeObserver {
@@ -338,7 +196,6 @@ extension SAPhotoLibrary: PHPhotoLibraryChangeObserver {
         SAPhotoAlbum.clearCaches()
     }
 }
-
 
 private func _SAPhotoResouceId(_ photo: SAPhoto, size: CGSize) -> UInt {
     guard size != SAPhotoMaximumSize else {
@@ -355,7 +212,8 @@ private func _SAPhotoResouceSize(_ photo: SAPhoto, size: CGSize) -> CGSize {
     let width = CGFloat(id + 1) * 16
     let height = round(width / ratio)
 
-    return CGSize(width: width, height: height)
+    return size
+    //return CGSize(width: width, height: height)
 }
 
 

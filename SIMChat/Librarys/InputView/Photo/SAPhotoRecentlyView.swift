@@ -218,6 +218,9 @@ open class SAPhotoRecentlyView: UIView {
         _init()
     }
     deinit {
+        logger.trace()
+        
+        SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
 }

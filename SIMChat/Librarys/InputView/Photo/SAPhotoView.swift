@@ -36,8 +36,8 @@ internal class SAPhotoView: UIView, SAPhotoPreviewable {
             
             var size = bounds.size
             
-            size.width *= UIScreen.main.scale
-            size.height *= UIScreen.main.scale
+            size.width *= UIScreen.main.scale + 1
+            size.height *= UIScreen.main.scale + 1
             
             _imageView.image = newValue?.image(with: size)
             _updateSelection(with: newValue, animated: false)
