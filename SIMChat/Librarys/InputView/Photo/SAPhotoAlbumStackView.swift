@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAPhotoAlbumStackView: UIView {
+internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
     
     /// 显示的图片
     var photos: [SAPhoto]? {
@@ -17,36 +17,16 @@ internal class SAPhotoAlbumStackView: UIView {
         }
     }
     
-    private func _updatePhotos(_ photos: [SAPhoto]) {
-        _logger.trace(photos.count)
-        
-        // 更新空白
-        _imageViews.forEach {
-            if photos.isEmpty {
-                $0.image = nil
-                $0.isHidden = false
-                $0.backgroundColor = UIColor(white: 0.8, alpha: 1)
-            } else {
-                $0.image = nil
-                $0.isHidden = true
-                $0.backgroundColor = UIColor.white
-            }
+    func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeContent content: Any?) {
+        guard let index = _images.index(where: { $1 === progressiveable }) else {
+            return
         }
-        // 更新内容
-        var size = bounds.size
-        
-        size.width *= UIScreen.main.scale
-        size.height *= UIScreen.main.scale
-        
-        photos.enumerated().forEach {
-            let photo = $0.element
-            let imageView = _imageViews[$0.offset]
-            
-            imageView.image = photo.image(with: size)
-            imageView.isHidden = false
+        let key = _images[index].key
+        guard key < _imageLayers.count else {
+            return
         }
+        _imageLayers[key].contents = (content as? UIImage)?.cgImage
     }
-    
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -55,7 +35,7 @@ internal class SAPhotoAlbumStackView: UIView {
         let w = bounds.width
         let sw: CGFloat = 4
         
-        _imageViews.enumerated().forEach {
+        _imageLayers.enumerated().forEach {
             let fidx = CGFloat($0)
             var nframe = CGRect(x: 0, y: 0, width: w - sw * fidx, height: h - sw * fidx)
             nframe.origin.x = (w - nframe.width) / 2
@@ -64,22 +44,66 @@ internal class SAPhotoAlbumStackView: UIView {
         }
     }
     
+    private func _updatePhotos(_ photos: [SAPhoto]) {
+        _logger.trace(photos.count)
+        
+        // 更新内容
+        var size = bounds.size
+        
+        size.width *= UIScreen.main.scale
+        size.height *= UIScreen.main.scale
+        
+        _imageLayers.enumerated().forEach { 
+            guard !photos.isEmpty else {
+                // 这是一个空的相册
+                $0.element.isHidden = false
+                $0.element.backgroundColor = UIColor(white: 0.8, alpha: 1).cgColor
+                
+                return _setImage(nil, at: $0.offset)
+            }
+            guard $0.offset < photos.count else {
+                // 这个相册并没有3张图片
+                $0.element.isHidden = true
+                
+                return _setImage(nil, at: $0.offset)
+            }
+            let photo = photos[$0.offset]
+            
+            $0.element.isHidden = false
+            $0.element.backgroundColor = UIColor.white.cgColor
+            
+            _setImage(photo.image(with: size) as? SAPhotoProgressiveableImage, at: $0.offset)
+        }
+    }
+    
+    private func _setImage(_ newValue: SAPhotoProgressiveableImage?, at index: Int) {
+        
+        let oldValue = _images[index] ?? nil
+        guard oldValue != newValue else {
+            return
+        }
+        
+        oldValue?.removeObserver(self)
+        newValue?.addObserver(self)
+        
+        _images[index] = newValue
+        _imageLayers[index].contents = (newValue?.content as? UIImage)?.cgImage
+    }
     
     private func _init() {
-        _logger.trace()
+        //_logger.trace()
         
-        
-        _imageViews = (0 ..< 3).map { index in
-            let imageView = UIImageView()
+        _imageLayers = (0 ..< 3).map { index in
+            let il = CALayer()
             
-            imageView.contentMode = .scaleAspectFill
-            imageView.clipsToBounds = true
-            imageView.layer.borderWidth = 0.5
-            imageView.layer.borderColor = UIColor.white.cgColor
+            il.masksToBounds = true
+            il.borderWidth = 0.5
+            il.borderColor = UIColor.white.cgColor
+            il.contentsGravity = kCAGravityResizeAspectFill
             
-            insertSubview(imageView, at: 0)
+            layer.insertSublayer(il, at: 0)
             
-            return imageView
+            return il
         }
     }
     
@@ -92,6 +116,6 @@ internal class SAPhotoAlbumStackView: UIView {
         _init()
     }
     
-    
-    private lazy var _imageViews: [UIImageView] = []
+    private lazy var _images: [Int: SAPhotoProgressiveableImage?] = [:]
+    private lazy var _imageLayers: [CALayer] = []
 }

@@ -36,7 +36,12 @@ internal class SAPhotoPickerForImp: UINavigationController {
         _logger.trace()
         
         let vc = makePreviewer(options)
-        //vc.delegate = options._sender
+        
+        // 因为设置delegate并实现animationControllerFor方法后,
+        // 侧滑返回事件将会无效, 所以在push的时候再设置delegate
+        // 然后在返回的时候清除delegate
+        delegate = self
+        
         pushViewController(vc, animated: true)
     }
     
@@ -56,7 +61,6 @@ internal class SAPhotoPickerForImp: UINavigationController {
         _rootViewController = viewController
         
         self.title = "Photos"
-        self.delegate = self
         self.setValue(self, forKey: "picker") // 强制更新转换(因为as会失败)
         self.setViewControllers([viewController], animated: false)
         self.navigationItem.rightBarButtonItem = item
@@ -229,6 +233,18 @@ extension SAPhotoPickerForImp: UINavigationControllerDelegate, UIViewControllerT
     }
     
     // UINavigationControllerDelegate
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        // ??
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // 清除代理, 让侧滑手势恢复
+        if viewController is SAPhotoPickerForAssets 
+            || viewController is SAPhotoPickerForAlbums {
+            delegate = nil
+        }
+    }
     
     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return nil

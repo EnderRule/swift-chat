@@ -147,16 +147,11 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _logger.trace()
         
         navigationController?.isNavigationBarHidden = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         
         _updateToolbar(false, animated: false)
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        _logger.trace()
-        
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     override var prefersStatusBarHidden: Bool {
         if _isFullscreen {
