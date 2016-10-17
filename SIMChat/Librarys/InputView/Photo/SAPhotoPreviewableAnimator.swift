@@ -34,7 +34,7 @@ public class SAPhotoPreviewableAnimator: NSObject, UIViewControllerAnimatedTrans
     fileprivate weak var _fDelegate: SAPhotoPreviewableDelegate?
     
     fileprivate init?(item: AnyObject, from: SAPhotoPreviewableDelegate, to: SAPhotoPreviewableDelegate) {
-        guard let fp = from.previewable(with: item), let tp = to.previewable(with: item) else {
+        guard let fp = from.fromPreviewable(with: item), let tp = to.toPreviewable(with: item) else {
             return nil
         }
         _item = item

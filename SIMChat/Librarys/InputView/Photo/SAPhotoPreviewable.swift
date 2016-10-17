@@ -23,7 +23,8 @@ public protocol SAPhotoPreviewable: NSObjectProtocol {
 @objc
 public protocol SAPhotoPreviewableDelegate: NSObjectProtocol {
     
-    func previewable(with item: AnyObject) -> SAPhotoPreviewable?
+    func toPreviewable(with item: AnyObject) -> SAPhotoPreviewable?
+    func fromPreviewable(with item: AnyObject) -> SAPhotoPreviewable?
     
     @objc optional func previewable(_ previewable: SAPhotoPreviewable, willShowItem item: AnyObject)
     @objc optional func previewable(_ previewable: SAPhotoPreviewable, didShowItem item: AnyObject)

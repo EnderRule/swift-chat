@@ -40,6 +40,8 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         collectionView?.allowsSelection = false
         collectionView?.allowsMultipleSelection = false
         collectionView?.alwaysBounceVertical = true
+        collectionView?.contentInset = UIEdgeInsetsMake(10, 0, 10, 0)
+        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(10, 0, 10, 0)
         collectionView?.register(SAPhotoPickerForAssetsCell.self, forCellWithReuseIdentifier: "Item")
         
         // 添加手势
@@ -300,8 +302,8 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
             layout.itemSize = CGSize(width: 78, height: 78)
             layout.minimumLineSpacing = 2
             layout.minimumInteritemSpacing = 2
-            layout.headerReferenceSize = CGSize(width: 0, height: 10)
-            layout.footerReferenceSize = CGSize.zero
+            //layout.headerReferenceSize = CGSize(width: 0, height: 10)
+            //layout.footerReferenceSize = CGSize.zero
         
             return layout
         }())
@@ -436,22 +438,68 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
 
 extension SAPhotoPickerForAssets: SAPhotoPreviewableDelegate {
     
-    func previewable(with item: AnyObject) -> SAPhotoPreviewable? {
+    /// 起点
+    func fromPreviewable(with item: AnyObject) -> SAPhotoPreviewable? {
+        _logger.trace()
+        
         guard let photo = item as? SAPhoto else {
             return nil
         }
         guard let index = _photos.index(of: photo) else {
             return nil
         }
-        let indexPath = IndexPath(item: index, section: 0)
-        var cell = collectionView?.cellForItem(at: indexPath)
-        // 只有当view超出视图的时候才会滑动
-        if cell == nil {
-            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
-            collectionView?.layoutIfNeeded()
-            // 再次读取, 必须在layoutIfNeeded之后, 否则cell并没有创建
-            cell = collectionView?.cellForItem(at: indexPath)
+        // 这个一定会存在的, 否则你点击不了
+        guard let cell = collectionView?.cellForItem(at: IndexPath(item: index, section: 0)) else {
+            return nil
         }
+        return (cell as? SAPhotoPickerForAssetsCell)?.photoView
+    }
+    
+    /// 终点
+    func toPreviewable(with item: AnyObject) -> SAPhotoPreviewable? {
+        _logger.trace()
+        
+        guard let photo = item as? SAPhoto else {
+            return nil
+        }
+        guard let collectionView = collectionView, let index = _photos.index(of: photo) else {
+            return nil
+        }
+        // 只有返回的时候才需要检查
+        let indexPath = IndexPath(item: index, section: 0)
+        if !collectionView.indexPathsForVisibleItems.contains(indexPath) {
+            // 是空的
+            collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            
+            var pt = collectionView.contentOffset 
+            pt.y += _itemSize.height / 2
+            collectionView.contentOffset = pt
+            
+            // 必须调用layoutIfNeeded, 否则cell并没有创建
+            collectionView.layoutIfNeeded()
+        }
+        // 检查这个indexPath是不是正在显示
+        guard let cell = collectionView.cellForItem(at: indexPath) else {
+            return nil
+        }
+        let frame = cell.convert(cell.bounds, to: view)
+        let height = view.frame.height - topLayoutGuide.length - bottomLayoutGuide.length 
+        
+        // 重置位置(如果需要的话)
+        if frame.minY < 0 {
+            // 上部越界
+            var pt = collectionView.contentOffset
+            pt.y += frame.minY
+            collectionView.contentOffset = pt
+            
+        } else if frame.maxY > height {
+            // 下部越界
+            var pt = collectionView.contentOffset 
+            pt.y += frame.maxY - height
+            collectionView.contentOffset = pt
+        }
+        
+        // 己找到
         return (cell as? SAPhotoPickerForAssetsCell)?.photoView
     }
     

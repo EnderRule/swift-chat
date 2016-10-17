@@ -350,7 +350,9 @@ extension SAPhotoPickerForPreviewer {
 
 extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
     
-    func previewable(with item: AnyObject) -> SAPhotoPreviewable? {
+    func fromPreviewable(with item: AnyObject) -> SAPhotoPreviewable? {
+        _logger.trace()
+        
         guard let photo = item as? SAPhoto else {
             return nil
         }
@@ -358,10 +360,22 @@ extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
             return nil
         }
         guard let cell = _contentView.cellForItem(at: IndexPath(item: index, section: 0)) else {
-            // view还没有加载好
-            return SAPhotoBrowserViewFastPreviewing(photo: photo, view: view)
+            return nil
         }
         return (cell as? SAPhotoPickerForPreviewerCell)?.photoView
+    }
+    
+    func toPreviewable(with item: AnyObject) -> SAPhotoPreviewable? {
+        _logger.trace()
+        
+        guard let photo = item as? SAPhoto else {
+            return nil
+        }
+        guard let _ = _photos.index(of: photo) else {
+            return nil
+        }
+        // 第一次肯定是没有加载的, 所以生成一个SAPhotoBrowserViewFastPreviewing
+        return SAPhotoBrowserViewFastPreviewing(photo: photo, view: view)
     }
     
     func previewable(_ previewable: SAPhotoPreviewable, willShowItem item: AnyObject) {
