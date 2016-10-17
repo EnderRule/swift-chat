@@ -94,8 +94,8 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         //_contentView.isDirectionalLockEnabled = true
         //_contentView.isScrollEnabled = false
         
-        //view.backgroundColor = .white//.black
-        view.backgroundColor = .black
+        view.backgroundColor = .white
+        //view.backgroundColor = .black
         view.addSubview(_contentView)
 //        view.addSubview(_toolbar)
         
@@ -249,6 +249,14 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _updateToolbar(newValue, animated: animated)
         
         _isFullscreen = newValue
+        
+        UIView.animate(withDuration: 0.2) {
+            if newValue {
+                self.view.backgroundColor = .black
+            } else {
+                self.view.backgroundColor = .white
+            }
+        }
         
         DispatchQueue.main.async {
             self.setNeedsStatusBarAppearanceUpdate()

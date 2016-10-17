@@ -81,9 +81,10 @@ public class SAPhotoTask: NSObject {
         }
         
         let options = PHImageRequestOptions()
-        options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
+        //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
+        options.deliveryMode = .opportunistic
         options.resizeMode = .fast
-        //options.isNetworkAccessAllowed = true
+        options.isNetworkAccessAllowed = true
         
         // 如果任务没有开始, 启动任务并返回一个最接近的图片(如果有..), 然后等待
         _logger.trace("start task \(size)")
@@ -105,7 +106,7 @@ public class SAPhotoTask: NSObject {
     }
     
     func notifi(with image: UIImage?, info: [AnyHashable : Any]?) {
-        _logger.trace("\(size) => \(image?.size)")
+        //_logger.trace("\(size) => \(image?.size)")
         
         // 通知变更
         observers.forEach {
@@ -343,22 +344,18 @@ private func _SAPhotoResouceId(_ photo: SAPhoto, size: CGSize) -> UInt {
     guard size != SAPhotoMaximumSize else {
         return UInt.max
     }
-    if size.width >= CGFloat(photo.pixelWidth) || size.height >= CGFloat(photo.pixelHeight) {
-        return UInt.max
-    }
-    return UInt(size.width / 16)
+    return UInt(size.width) / 16
 }
 private func _SAPhotoResouceSize(_ photo: SAPhoto, size: CGSize) -> CGSize {
     let id = _SAPhotoResouceId(photo, size: size)
     guard id != .max else {
         return SAPhotoMaximumSize
     }
-    let w = round(CGFloat(id + 1) * 16)
-    let h = round(CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight) * w)
-    if w >= CGFloat(photo.pixelWidth) || h >= CGFloat(photo.pixelHeight) {
-        return SAPhotoMaximumSize
-    }
-    return CGSize(width: w, height: h)
+    let ratio = CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight)
+    let width = CGFloat(id + 1) * 16
+    let height = round(width / ratio)
+
+    return CGSize(width: width, height: height)
 }
 
 
