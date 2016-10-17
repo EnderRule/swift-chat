@@ -75,7 +75,7 @@ open class SAPhotoLibrary: NSObject {
         
         _allCaches[photo.identifier]?[name] = SAPhotoWeakObject(object: image)
         _requestImage(photo, size, .aspectFill, options) { (img, info) in
-            let os = image.content?.size ?? .zero
+            let os = image.size
             let ns = img?.size ?? .zero
             
             if ns.width >= os.width && ns.height >= os.height {
@@ -101,7 +101,7 @@ open class SAPhotoLibrary: NSObject {
         
         // 查找
         caches.forEach {
-            guard let img = ($1.object as? SAPhotoProgressiveableImage)?.content else {
+            guard let img = $1.object as? SAPhotoProgressiveableImage else {
                 return
             }
             let os = image?.size ?? .zero
@@ -115,7 +115,7 @@ open class SAPhotoLibrary: NSObject {
                 return
             }
             
-            image = img
+            image = img.content as? UIImage
         }
         
         return image
@@ -206,7 +206,7 @@ open class SAPhotoLibrary: NSObject {
 extension SAPhotoLibrary: PHPhotoLibraryChangeObserver {
     // This callback is invoked on an arbitrary serial queue. If you need this to be handled on a specific queue, you should redispatch appropriately
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        SAPhotoAlbum.clearCaches()
+        // ??
     }
 }
 
@@ -221,10 +221,9 @@ private func _SAPhotoResouceSize(_ photo: SAPhoto, size: CGSize) -> CGSize {
     guard id != .max else {
         return SAPhotoMaximumSize
     }
-    let ratio = CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight)
-    let width = CGFloat(id + 1) * 16
-    let height = round(width / ratio)
-
+//    let ratio = CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight)
+//    let width = CGFloat(id + 1) * 16
+//    let height = round(width / ratio)
     return size
     //return CGSize(width: width, height: height)
 }

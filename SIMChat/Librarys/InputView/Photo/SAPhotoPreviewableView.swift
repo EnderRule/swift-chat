@@ -15,7 +15,7 @@ internal class SAPhotoPreviewableView: UIView {
         willSet {
             // 添加切换动画
             UIView.performWithoutAnimation {
-                presentationView.alpha = 1
+                presentationView.alpha = 0
                 presentationView.image = contentView.image
             }
             presentationView.alpha = 0
@@ -50,9 +50,6 @@ internal class SAPhotoPreviewableView: UIView {
             
             imageContentMode = newValue?.previewingContentMode ?? .scaleToFill
             imageSize = newValue?.previewingContentSize ?? .zero
-            
-            // 
-            logger.trace("\(presentationView.image) => \(contentView.image)")
         }
     }
     
@@ -138,6 +135,7 @@ internal class SAPhotoPreviewableView: UIView {
         presentationView.frame = contentView.bounds
         presentationView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
+        //contentView.backgroundColor = .random
         contentView.contentMode = .scaleAspectFill
         contentView.addSubview(presentationView)
         

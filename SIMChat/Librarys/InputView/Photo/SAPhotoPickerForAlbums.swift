@@ -21,41 +21,6 @@ internal class SAPhotoPickerForAlbums: UITableViewController {
     weak var picker: SAPhotoPickerForImp?
     weak var selection: SAPhotoSelectionable?
     
-    
-//    func makePhotoPreviewer(album: SAPhotoAlbum, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
-//        let vc = SAPhotoPickerForPreviewer(album: album, in: photo, reverse: reverse)
-////        vc.picker = picker
-////        vc.selection = selection
-////        vc.allowsMultipleSelection = allowsMultipleSelection
-//        
-//        _previewerViewController = vc
-//        
-//        return vc
-//    }
-//    func makePhotoPreviewer(photos: Array<SAPhoto>, in photo: SAPhoto?, reverse: Bool) -> SAPhotoPickerForPreviewer {
-//        let vc = SAPhotoPickerForPreviewer(photos: photos, in: photo, reverse: reverse)
-//        
-////        vc.picker = picker
-////        vc.selection = selection
-////        vc.allowsMultipleSelection = allowsMultipleSelection
-//        
-//        _previewerViewController = vc
-//        
-//        return vc
-//    }
-//    func makeAssetsPicker(with album: SAPhotoAlbum) -> SAPhotoPickerForAssets {
-//        let vc = SAPhotoPickerForAssets(album: album)
-//        
-////        vc.picker = picker
-////        vc.selection = picker
-////        vc.allowsMultipleSelection = allowsMultipleSelection
-////        vc.navigationItem.rightBarButtonItem = navigationItem.rightBarButtonItem
-//        
-//        _assetsViewController = vc
-//        
-//        return vc
-//    }
-    
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
         get {
@@ -145,7 +110,7 @@ internal class SAPhotoPickerForAlbums: UITableViewController {
             return true
         }
         for album in albums {
-            if !album.photos.isEmpty {
+            if album.count != 0 {
                 // 只要有一个不是空的就返回false
                 return false
             }

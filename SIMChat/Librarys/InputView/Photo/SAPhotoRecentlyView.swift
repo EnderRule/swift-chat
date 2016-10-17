@@ -9,8 +9,7 @@
 import UIKit
 import Photos
 
-@objc
-public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
+@objc public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int
@@ -30,39 +29,34 @@ public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
 }
 
-
-open class SAPhotoRecentlyView: UIView {
+///
+/// 图片选择器->最近添加
+///
+@objc public class SAPhotoRecentlyView: UIView {
     
-    open var allowsMultipleSelection: Bool = true {
+    
+    public weak var delegate: SAPhotoRecentlyViewDelegate?
+    
+    /// 是否允许多选, 如果为false, 隐藏选择视图, 默认值为true
+    public var allowsMultipleSelection: Bool = true {
         willSet {
             _contentView.visibleCells.forEach { 
-                ($0 as? SAPhotoRecentlyViewCell)?.allowsSelection = newValue
+                ($0 as? SAPhotoRecentlyViewCell)?.photoView.allowsSelection = newValue
             }
         }
     }
     
-    open weak var delegate: SAPhotoRecentlyViewDelegate?
-    
-    
     open override func didMoveToWindow() {
         super.didMoveToWindow()
-        if !_isInitPhoto {
-            _isInitPhoto = true
-            _loadPhotos()
+        
+        // 只有在将要显示的时候才去请示权限
+        if !_isRequestedAuthorization {
+            _isRequestedAuthorization = true
+            
+            SAPhotoLibrary.shared.requestAuthorization {
+                self._updatePhotosForAuthorization($0)
+            }
         }
-    }
-    
-    private func _cachePhotos(_ photos: [SAPhoto]) {
-        // 缓存加速
-//        let options = PHImageRequestOptions()
-//        let scale = UIScreen.main.scale
-//        let size = CGSize(width: 120 * scale, height: 120 * scale)
-//        
-//        options.deliveryMode = .fastFormat
-//        options.resizeMode = .fast
-//        
-//        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
-//        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
     }
     
     private func _updateStatus(_ newValue: SAPhotoStatus) {
@@ -112,14 +106,47 @@ open class SAPhotoRecentlyView: UIView {
             addSubview(_tipsLabel)
         }
     }
-    fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
+    
+    fileprivate func _updatePhotosForAuthorization(_ hasPermission: Bool) {
+        _logger.trace(hasPermission)
+        
+        // 检查访问权限
+        guard hasPermission else {
+            _updateStatus(.notPermission)
+            return
+        }
+        // 读取最近添中的图集
+        if let album = SAPhotoAlbum.recentlyAlbum, let newResult = album.fetchResult {
+            _album = album
+            _photos = album.photos(with: newResult).reversed()
+            _photosResult = newResult
+        }
+        // 检查相册中有没有图片
+        guard let photos = _photos, !photos.isEmpty else {
+            _contentView.reloadData()
+            _updateStatus(.notData)
+            return
+        }
+        // 更新UI
+        _cachePhotos(photos)
+        _contentView.reloadData()
+        
+        _updateStatus(.notError)
+    }
+    fileprivate func _updatePhotosForChange(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
         _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
         // 更新数据
         _photos = _album?.photos(with: newResult).reversed()
         _photosResult = newResult
         
-        // 更新视图
+        // 检查相册中有没有图片
+        guard let photos = _photos, !photos.isEmpty else {
+            _contentView.reloadData()
+            _updateStatus(.notData)
+            return
+        }
+        // 更新UI
         if !(inserts.isEmpty && changes.isEmpty && removes.isEmpty) {
             _contentView.performBatchUpdates({ [_contentView] in
                 
@@ -129,38 +156,22 @@ open class SAPhotoRecentlyView: UIView {
                 
             }, completion: nil)
         }
-        
-        guard let photos = _photos, !photos.isEmpty else {
-            _updateStatus(.notData)
-            return
-        }
 
         _cachePhotos(photos)
         _updateStatus(.notError)
     }
     
-    private func _reloadPhotos(_ hasPermission: Bool) {
-        guard hasPermission else {
-            _updateStatus(.notPermission)
-            return
-        }
-        _album = SAPhotoAlbum.recentlyAlbum
-        _photos = _album?.photos.reversed()
-        _photosResult = _album?.result
-        
-        guard let photos = _photos, !photos.isEmpty else {
-            _updateStatus(.notData)
-            return
-        }
-        _cachePhotos(photos)
-        _contentView.reloadData()
-        
-        _updateStatus(.notError)
-    }
-    private func _loadPhotos() {
-        SAPhotoLibrary.shared.requestAuthorization {
-            self._reloadPhotos($0)
-        }
+    fileprivate func _cachePhotos(_ photos: [SAPhoto]) {
+        // 缓存加速
+        //        let options = PHImageRequestOptions()
+        //        let scale = UIScreen.main.scale
+        //        let size = CGSize(width: 120 * scale, height: 120 * scale)
+        //        
+        //        options.deliveryMode = .fastFormat
+        //        options.resizeMode = .fast
+        //        
+        //        SAPhotoLibrary.shared.startCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
+        //        //SAPhotoLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
     }
     
     private func _init() {
@@ -199,7 +210,7 @@ open class SAPhotoRecentlyView: UIView {
     fileprivate var _photos: [SAPhoto]?
     fileprivate var _photosResult: PHFetchResult<PHAsset>?
     
-    fileprivate var _isInitPhoto: Bool = false
+    fileprivate var _isRequestedAuthorization: Bool = false
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
@@ -255,10 +266,10 @@ private extension SAPhotoRecentlyView {
         _logger.trace()
         _contentView.visibleCells.forEach {
             let cell = $0 as? SAPhotoRecentlyViewCell
-            guard cell?.photo == photo && !(cell?.photoIsSelected ?? false) else {
+            guard cell?.photoView.photo == photo && !(cell?.photoView.isSelected ?? false) else {
                 return
             }
-            cell?.updateSelection()
+            cell?.photoView.updateSelection()
         }
     }
     dynamic func didDeselectItem(_ sender: Notification) {
@@ -268,16 +279,16 @@ private extension SAPhotoRecentlyView {
         _logger.trace()
         _contentView.visibleCells.forEach {
             let cell = $0 as? SAPhotoRecentlyViewCell
-            guard cell?.photoIsSelected ?? false else {
+            guard cell?.photoView.isSelected ?? false else {
                 return
             }
-            cell?.updateSelection()
+            cell?.photoView.updateSelection()
         }
     }
     
     func updateEdgOfItems() {
         _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentlyViewCell)?.updateEdge()
+            ($0 as? SAPhotoRecentlyViewCell)?.photoView.updateEdge()
         }
     }
     func updateContentOffset(of photo: SAPhoto) {
@@ -312,14 +323,14 @@ extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDeleg
         }
         guard let photo = _photos?[indexPath.item] else {
             cell.isSelected = false
-            cell.delegate = nil
-            cell.photo = nil
+            cell.photoView.delegate = nil
+            cell.photoView.photo = nil
             return 
         }
-        cell.allowsSelection = allowsMultipleSelection
-        cell.delegate = self
-        cell.photo = photo
-        cell.updateEdge()
+        cell.photoView.allowsSelection = allowsMultipleSelection
+        cell.photoView.delegate = self
+        cell.photoView.photo = photo
+        cell.photoView.updateEdge()
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -372,9 +383,8 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
             return nil
         }
             
-        _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
-        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+        _updatePhotosForChange(change.fetchResultAfterChanges, inserts, changes, removes)
     }
     
     private func _updateSelectionForRemove(_ photo: SAPhoto) {

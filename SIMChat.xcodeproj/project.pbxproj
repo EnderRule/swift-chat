@@ -72,7 +72,7 @@
 		0C1654351D8B9C5000A92C86 /* SAToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1654211D8B9C5000A92C86 /* SAToolboxItemView.swift */; };
 		0C16A2431D9273B600E689F1 /* SAPhotoPickerForAlbums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16A2421D9273B600E689F1 /* SAPhotoPickerForAlbums.swift */; };
 		0C16A2451D92843E00E689F1 /* SAPhotoPickerForAlbumsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16A2441D92843E00E689F1 /* SAPhotoPickerForAlbumsCell.swift */; };
-		0C16A2471D928CD000E689F1 /* SAPhotoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */; };
+		0C16A2471D928CD000E689F1 /* SAPhotoAlbumStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16A2461D928CD000E689F1 /* SAPhotoAlbumStackView.swift */; };
 		0C16A2491D92999200E689F1 /* SAPhotoPickerForAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16A2481D92999200E689F1 /* SAPhotoPickerForAssets.swift */; };
 		0C16B9A91DACF50E00F8FE44 /* SAPhotoPickerForImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C16B9A81DACF50E00F8FE44 /* SAPhotoPickerForImp.swift */; };
 		0C175F571C99C4C700AFF210 /* SIMChatTimeLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */; };
@@ -236,7 +236,7 @@
 		0C1654211D8B9C5000A92C86 /* SAToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItemView.swift; sourceTree = "<group>"; };
 		0C16A2421D9273B600E689F1 /* SAPhotoPickerForAlbums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerForAlbums.swift; sourceTree = "<group>"; };
 		0C16A2441D92843E00E689F1 /* SAPhotoPickerForAlbumsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerForAlbumsCell.swift; sourceTree = "<group>"; };
-		0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoStackView.swift; sourceTree = "<group>"; };
+		0C16A2461D928CD000E689F1 /* SAPhotoAlbumStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoAlbumStackView.swift; sourceTree = "<group>"; };
 		0C16A2481D92999200E689F1 /* SAPhotoPickerForAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerForAssets.swift; sourceTree = "<group>"; };
 		0C16B9A81DACF50E00F8FE44 /* SAPhotoPickerForImp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoPickerForImp.swift; sourceTree = "<group>"; };
 		0C175F561C99C4C700AFF210 /* SIMChatTimeLineMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatTimeLineMessage.swift; sourceTree = "<group>"; };
@@ -579,15 +579,18 @@
 				0CD578151DAF88DC0093C923 /* SAPhotoProgressiveable.swift */,
 				0C7773231DB1DB5900B3ED8B /* SAPhotoProgressiveableImage.swift */,
 				0C228BA01D912734000F919D /* SAPhoto.swift */,
+				0C228BA41D912F67000F919D /* SAPhotoView.swift */,
 				0C228BA61D913532000F919D /* SAPhotoAlbum.swift */,
+				0C16A2461D928CD000E689F1 /* SAPhotoAlbumStackView.swift */,
+				0C779C151D91759E0044D7AF /* SAPhotoLibrary.swift */,
 				0C1C4E591D93CD5E0023211B /* SAPhotoBarItem.swift */,
 				0CBCE6031D92312B003EC410 /* SAPhotoBrowser.swift */,
 				0CD537C71D9CE9F30036590F /* SAPhotoBrowserView.swift */,
-				0C228BA41D912F67000F919D /* SAPhotoView.swift */,
 				0CBCE6091D9232D1003EC410 /* SAPhotoEditor.swift */,
 				0C539C5E1D9AD27600D91310 /* SAPhotoErrorView.swift */,
+				0C07A60F1D9E3AAA003A1F42 /* SAPhotoScrollView.swift */,
 				0C07A6111D9E3AB6003A1F42 /* SAPhotoImageView.swift */,
-				0C779C151D91759E0044D7AF /* SAPhotoLibrary.swift */,
+				0CAAE8251DA8A4BF0051BBEE /* SAPhotoToolbar.swift */,
 				0CD6A7EB1DA9E6A400A4F710 /* SAPhotoNavigationBar.swift */,
 				0CBCE6051D923141003EC410 /* SAPhotoPicker.swift */,
 				0C16A2421D9273B600E689F1 /* SAPhotoPickerForAlbums.swift */,
@@ -602,9 +605,6 @@
 				0CD61F8C1D92D986001EA1DC /* SAPhotoRecentlyView.swift */,
 				0C228BA21D912EA2000F919D /* SAPhotoRecentlyViewCell.swift */,
 				0CD61F8E1D92DAE2001EA1DC /* SAPhotoRecentlyViewLayout.swift */,
-				0C07A60F1D9E3AAA003A1F42 /* SAPhotoScrollView.swift */,
-				0C16A2461D928CD000E689F1 /* SAPhotoStackView.swift */,
-				0CAAE8251DA8A4BF0051BBEE /* SAPhotoToolbar.swift */,
 				0C16541C1D8B9C5000A92C86 /* SAPhotoInputView.swift */,
 			);
 			path = Photo;
@@ -832,7 +832,7 @@
 				0C1654321D8B9C5000A92C86 /* SAToolboxInputView.swift in Sources */,
 				0CD578161DAF88DC0093C923 /* SAPhotoProgressiveable.swift in Sources */,
 				0C1A177E1D7724880093EE12 /* SAInputItemView.swift in Sources */,
-				0C16A2471D928CD000E689F1 /* SAPhotoStackView.swift in Sources */,
+				0C16A2471D928CD000E689F1 /* SAPhotoAlbumStackView.swift in Sources */,
 				0CBCE60A1D9232D1003EC410 /* SAPhotoEditor.swift in Sources */,
 				0CBC0F431D8CF9BF00D05122 /* SIMChatMediaAudioRecorder.swift in Sources */,
 				0C0DD6421C60B4A900AEC8C4 /* SIMChatBaseMessageAudioContent.swift in Sources */,

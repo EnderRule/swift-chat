@@ -85,8 +85,6 @@ internal class SAPhotoPickerForImp: UINavigationController {
     deinit {
         logger.trace()
         
-        SAPhotoAlbum.clearCaches()
-        
         SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
@@ -304,25 +302,3 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     }
 }
 
-
-//@inline(__always)
-//internal func _SAPhotoAddMethod(_ cls: AnyClass?, _ sel1: String, _ sel2: String) {
-//    guard let cls = cls else {
-//        return
-//    }
-//    let method = class_getInstanceMethod(cls, Selector(sel2))
-//    let type = method_getTypeEncoding(method)
-//    let imp = method_getImplementation(method)
-//    
-//    class_replaceMethod(cls, Selector(sel1), imp, type)
-//}
-//
-//internal func _SAPhotoAddClassMethod(_ cls: AnyClass?, _ sel1: String, _ sel2: String) {
-//    guard let cls = cls, let mcls = objc_getMetaClass(NSStringFromClass(cls).cString(using: .utf8)) as? AnyClass else {
-//        return
-//    }
-//    let m1 = class_getClassMethod(cls, Selector(sel1))
-//    let m2 = class_getClassMethod(cls, Selector(sel2))
-//    
-//    class_replaceMethod(mcls, Selector(sel1), method_getImplementation(m2), method_getTypeEncoding(m1))
-//}

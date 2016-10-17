@@ -12,20 +12,22 @@ import UIKit
 /// 支持渐进式更新的图片
 ///
 public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
-   
+    
     /// 真正的内容
-    public var content: UIImage? {
+    public var content: Any? {
         set {
-            _content = newValue?.withOrientation(_orientation)
+            if let newValue = newValue as? UIImage {
+                _content = newValue.withOrientation(_orientation)
+            }
             _notify(_content)
         }
         get {
-            return _content 
+            return _content
         }
     }
     
     public override var size: CGSize {
-        return content?.size ?? .zero
+        return _content?.size ?? .zero
     }
     public override var imageOrientation: UIImageOrientation {
         return _orientation
@@ -61,11 +63,12 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
         
         return image
     }
+    
     private func _notify(_ image: UIImage?) {
         //_logger.trace()
         
         _observers.allObjects.forEach {
-            $0.progressiveable(self, didChangeImage: image)
+            $0.progressiveable(self, didChangeContent: image)
         }
         _replicaes.allObjects.forEach { 
             $0.content = image
@@ -73,8 +76,6 @@ public class SAPhotoProgressiveableImage: UIImage, SAPhotoProgressiveable {
     }
     
     deinit {
-        _logger.trace()
-        
         _parent = nil
     }
     
@@ -127,9 +128,12 @@ extension UIImage {
 /// 使UIImageView支持渐进式更新
 ///
 extension UIImageView: SAPhotoProgressiveableObserver {
-    
-    public func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeImage image: UIImage?) {
-        sa_setImage(image)
+ 
+    ///
+    /// 内容发生改变
+    ///
+    public func progressiveable(_ progressiveable: SAPhotoProgressiveable, didChangeContent content: Any?) {
+        sa_setImage(content as? UIImage)
     }
     
     private dynamic func sa_setImage(_ newValue: UIImage?) {
@@ -139,7 +143,7 @@ extension UIImageView: SAPhotoProgressiveableObserver {
             return
         }
         sa_progressiveImage = image
-        sa_setImage(image.content)
+        sa_setImage(image.content as? UIImage)
     }
     private dynamic func sa_image() -> UIImage? {
         guard let image = sa_progressiveImage else {

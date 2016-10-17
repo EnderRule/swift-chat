@@ -99,8 +99,8 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
             guard let cell = collectionView?.cellForItem(at: IndexPath(item: nidx, section: 0)) as? SAPhotoPickerForAssetsCell else {
                 return false
             }
-            _batchIsSelectOperator = !cell.photoIsSelected
-            return !cell.photoIsSelected
+            _batchIsSelectOperator = !cell.photoView.isSelected
+            return !cell.photoView.isSelected
         }()
         
         let sl = min(max(start, 0), count - 1)
@@ -234,7 +234,7 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         // step4: 如果是正在显示的, 更新UI
         let idx = IndexPath(item: index, section: 0)
         if let cell = collectionView?.cellForItem(at: idx) as? SAPhotoPickerForAssetsCell {
-            cell.photoIsSelected = newValue
+            cell.photoView.isSelected = newValue
         }
         // step5: 更新成功
         return true
@@ -270,8 +270,10 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     fileprivate func _reloadPhotos() {
         //_logger.trace()
         
-        _photos = _album?.photos ?? []
-        _photosResult = _album?.result
+        if let album = _album, let newResult = album.fetchResult {
+            _photos = album.photos(with: newResult)
+            _photosResult = newResult
+        }
         
         // 更新.
         collectionView?.reloadData()
@@ -358,10 +360,10 @@ extension SAPhotoPickerForAssets {
         logger.trace()
         collectionView?.visibleCells.forEach {
             let cell = $0 as? SAPhotoPickerForAssetsCell
-            guard cell?.photo == photo && !(cell?.photoIsSelected ?? false) else {
+            guard cell?.photoView.photo == photo && !(cell?.photoView.isSelected ?? false) else {
                 return
             }
-            cell?.updateSelection()
+            cell?.photoView.updateSelection()
         }
     }
     func didDeselectItem(_ sender: Notification) {
@@ -371,10 +373,10 @@ extension SAPhotoPickerForAssets {
         logger.trace()
         collectionView?.visibleCells.forEach {
             let cell = $0 as? SAPhotoPickerForAssetsCell
-            guard cell?.photoIsSelected ?? false else {
+            guard cell?.photoView.isSelected ?? false else {
                 return
             }
-            cell?.updateSelection()
+            cell?.photoView.updateSelection()
         }
     }
 }
@@ -395,10 +397,9 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
         guard let cell = cell as? SAPhotoPickerForAssetsCell else {
             return
         }
-        cell.delegate = self
-        cell.album = _album
-        cell.photo = _photos[indexPath.item]
-        cell.allowsSelection = allowsMultipleSelection
+        cell.photoView.delegate = self
+        cell.photoView.photo = _photos[indexPath.item]
+        cell.photoView.allowsSelection = allowsMultipleSelection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

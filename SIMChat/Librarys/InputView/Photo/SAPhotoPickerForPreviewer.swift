@@ -269,8 +269,13 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         logger.trace()
         
         _album = options.album
-        _photos = options.photos ?? options.album?.photos ?? []
-        _photosResult = options.album?.result
+        _photos = options.photos ?? {
+            if let album = options.album, let newResult = album.fetchResult {
+                return album.photos(with: newResult)
+            }
+            return []
+        }()
+        _photosResult = options.album?.fetchResult
         _ascending = options.ascending
         
         self.picker = picker

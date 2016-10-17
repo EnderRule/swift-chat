@@ -10,21 +10,59 @@ import UIKit
 import Photos
 
 
-open class SAPhotoAlbum: NSObject {
+public class SAPhotoAlbum: NSObject {
     
-    open func clearCache() {
-        _photos = nil
+    public let collection: PHAssetCollection
+    
+    public var title: String? {
+        return collection.localizedTitle
     }
-    open static func clearCaches() {
-        
-        _albums?.forEach {
-            $0.clearCache()
+    public var identifier: String {
+        return collection.localIdentifier
+    }
+    
+    public var type: PHAssetCollectionType {
+        return collection.assetCollectionType
+    }
+    public var subtype: PHAssetCollectionSubtype {
+        return collection.assetCollectionSubtype
+    }
+    
+    public override var hash: Int {
+        return identifier.hash
+    }
+    public override var hashValue: Int {
+        return identifier.hashValue
+    }
+    public override var description: String {
+        return collection.description
+    }
+    
+    public var count: Int {
+        return fetchResult?.count ?? 0
+    }
+    public var fetchResult: PHFetchResult<PHAsset>? {
+        if let result = _fetchResult {
+            return result
         }
-        _albums = nil
-        _recentlyAlbum = nil
+        let result = PHAsset.fetchAssets(in: collection, options: nil)
+        _fetchResult = result
+        return result
     }
     
-    open func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let collection = object as? SAPhotoAlbum else {
+            return false
+        }
+        return identifier == collection.identifier
+    }
+    
+    public func clearCache() {
+        //_logger.trace()
+        
+        _fetchResult = nil
+    }
+    public func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
         var photos: [SAPhoto] = []
         result.enumerateObjects({
             let photo = SAPhoto(asset: $0.0)
@@ -33,77 +71,41 @@ open class SAPhotoAlbum: NSObject {
         })
         return photos
     }
-    
-    open var title: String? {
-        return collection.localizedTitle
-    }
-    open var identifier: String {
-        return collection.localIdentifier
-    }
-    
-    open var type: PHAssetCollectionType {
-        return collection.assetCollectionType
-    }
-    open var subtype: PHAssetCollectionSubtype {
-        return collection.assetCollectionSubtype
-    }
-    
-    open override var hash: Int {
-        return identifier.hash
-    }
-    open override var hashValue: Int {
-        return identifier.hashValue
-    }
-    open override var description: String {
-        return collection.description
-    }
-    open override func isEqual(_ object: Any?) -> Bool {
-        guard let collection = object as? SAPhotoAlbum else {
-            return false
+    public func photos(with result: PHFetchResult<PHAsset>, in range: NSRange) -> [SAPhoto] {
+        guard let range = range.toRange() else {
+            return []
         }
-        return identifier == collection.identifier
-    }
-    
-    open var photos: [SAPhoto] {
-        if let photos = _photos {
-            return photos
-        }
-        let rs = PHAsset.fetchAssets(in: collection, options: nil)
-        let photos = self.photos(with: rs)
-        _photos = photos
-        self.result = rs
+        var photos: [SAPhoto] = []
+        
+        result.enumerateObjects(at: IndexSet(integersIn: range), options: .init(rawValue: 0), using: {
+            let photo = SAPhoto(asset: $0.0)
+            photo.album = self
+            photos.append(photo)
+        })
+        
         return photos
     }
     
-    open static var albums: [SAPhotoAlbum] {
-        if let albums = _albums {
-            return albums
-        }
-        let albums = _fetchAssetCollections()
-        _albums = albums
-        return albums
+    /// 获取所有相册
+    public static var albums: [SAPhotoAlbum] {
+        return _fetchAssetCollections()
     }
-    open static var recentlyAlbum: SAPhotoAlbum? {
-        if let album = _recentlyAlbum {
-            return album
-        }
-        let album = _fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumRecentlyAdded).first
-        _recentlyAlbum = album
-        return album
+    /// 获取moment相册
+    public static var momentAlbum: SAPhotoAlbum? {
+        return _fetchAssetCollections(with: .moment, subtype: .any).first
+    }
+    /// 获取历史相册
+    public static var recentlyAlbum: SAPhotoAlbum? {
+        return _fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumRecentlyAdded).first
     }
     
-    open var collection: PHAssetCollection
-    open var result: PHFetchResult<PHAsset>?
-    
-    fileprivate var _photos: [SAPhoto]?
-    
-    private static var _albums: [SAPhotoAlbum]?
-    private static var _recentlyAlbum: SAPhotoAlbum??
     
     public init(collection: PHAssetCollection) {
         self.collection = collection
         super.init()
     }
+    
+    private var _fetchResult: PHFetchResult<PHAsset>?
 }
 
 // MARK: - Fetch

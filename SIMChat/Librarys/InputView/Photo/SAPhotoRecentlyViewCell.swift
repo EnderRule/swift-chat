@@ -11,46 +11,22 @@ import UIKit
 
 internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
     
-    var photo: SAPhoto? {
-        set { return _photoView.photo = newValue }
-        get { return _photoView.photo }
-    }
-    var photoIsSelected: Bool {
-        return _photoView.isSelected
-    }
-    var allowsSelection: Bool {
-        set { return _photoView.allowsSelection = newValue }
-        get { return _photoView.allowsSelection }
-    }
-    
-    weak var delegate: SAPhotoSelectionable? {
-        set { return _photoView.delegate = newValue }
-        get { return _photoView.delegate }
-    }
-    
-    func updateEdge() {
-        _photoView.updateEdge()
-    }
-    func updateSelection() {
-        _photoView.updateSelection()
-    }
+    lazy var photoView: SAPhotoView = SAPhotoView()
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        updateEdge()
+        photoView.updateEdge()
     }
     
     private func _init() {
         
-        _photoView.frame = bounds
-        _photoView.allowsSelection = true
-        _photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        photoView.frame = bounds
+        photoView.allowsSelection = true
+        photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        addSubview(_photoView)
+        addSubview(photoView)
         backgroundColor = .white
     }
-    
-    private lazy var _photoView: SAPhotoView = SAPhotoView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
