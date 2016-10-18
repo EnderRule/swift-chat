@@ -66,6 +66,9 @@ internal class SAPhotoPickerForImp: UINavigationController {
         self.navigationItem.rightBarButtonItem = item
         
         SAPhotoLibrary.shared.register(self)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(willEditing(_:)), name: .SAPhotoSelectionableWillEditing, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEditing(_:)), name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     dynamic convenience init(pick album: SAPhotoAlbum) {
         self.init()
@@ -91,6 +94,8 @@ internal class SAPhotoPickerForImp: UINavigationController {
         
         SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
+        
+        NotificationCenter.default.removeObserver(self)
     }
     
     fileprivate var _canBack: Bool = true
@@ -133,6 +138,13 @@ private extension SAPhotoPickerForImp {
             _selectedPhotos.remove(at: index)
         }
         delegater?.picker?(picker, didDeselectItemFor: photo)
+    }
+
+    dynamic func willEditing(_ sender: AnyObject) {
+        _logger.trace()
+    }
+    dynamic func didEditing(_ sender: AnyObject) {
+        _logger.trace()
     }
 }
 

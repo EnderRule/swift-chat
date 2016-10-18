@@ -200,6 +200,8 @@ import Photos
         
         NotificationCenter.default.addObserver(self, selector: #selector(didSelectItem(_:)), name: .SAPhotoSelectionableDidSelectItem, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPhotoSelectionableDidDeselectItem, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEditing(_:)), name: .SAPhotoSelectionableWillEditing, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEditing(_:)), name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     
     private var _status: SAPhotoStatus = .notError
@@ -284,6 +286,13 @@ private extension SAPhotoRecentlyView {
             }
             cell?.photoView.updateSelection()
         }
+    }
+    
+    dynamic func willEditing(_ sender: AnyObject) {
+        _logger.trace()
+    }
+    dynamic func didEditing(_ sender: AnyObject) {
+        _logger.trace()
     }
     
     func updateEdgOfItems() {

@@ -126,6 +126,10 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
     
     @objc private func selectHandler(_ sender: Any) {
         let photo = _photos[_currentIndex]
+        
+        // begin edit
+        NotificationCenter.default.post(name: .SAPhotoSelectionableWillEditing, object: nil)
+        
         // 直接读取缓存
         if _selectedView.isSelected {
             guard selection?.selection(self, shouldDeselectItemFor: photo) ?? true else {
@@ -139,6 +143,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
             selection?.selection(self, didSelectItemFor: photo)
         }
         //_updateSelection(at: _currentIndex, animated: true)
+        
+        // end edit
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {

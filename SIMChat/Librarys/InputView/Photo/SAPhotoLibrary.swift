@@ -16,40 +16,23 @@ public enum SAPhotoStatus {
     case notError
 }
 
-internal struct SAPhotoWeakObject<T: AnyObject>: Equatable {
-    
-    /// Returns a Boolean value indicating whether two values are equal.
-    ///
-    /// Equality is the inverse of inequality. For any values `a` and `b`,
-    /// `a == b` implies that `a != b` is `false`.
-    ///
-    /// - Parameters:
-    ///   - lhs: A value to compare.
-    ///   - rhs: Another value to compare.
-    public static func ==(lhs: SAPhotoWeakObject<T>, rhs: SAPhotoWeakObject<T>) -> Bool {
-        return lhs.object === rhs.object
-    }
-
-    weak var object: T?
-}
-
-open class SAPhotoLibrary: NSObject {
+public class SAPhotoLibrary: NSObject {
    
     
-    open func isExists(of photo: SAPhoto) -> Bool {
+    public func isExists(of photo: SAPhoto) -> Bool {
         return PHAsset.fetchAssets(withLocalIdentifiers: [photo.identifier], options: nil).count != 0
     }
     
-    open func register(_ observer: PHPhotoLibraryChangeObserver) {
+    public func register(_ observer: PHPhotoLibraryChangeObserver) {
         let lib = PHPhotoLibrary.shared()
         lib.register(observer)
     }
-    open func unregisterChangeObserver(_ observer: PHPhotoLibraryChangeObserver) {
+    public func unregisterChangeObserver(_ observer: PHPhotoLibraryChangeObserver) {
         let lib = PHPhotoLibrary.shared()
         lib.unregisterChangeObserver(observer)
     }
     
-    open func image(with photo: SAPhoto, size: CGSize) -> UIImage? {
+    public func image(with photo: SAPhoto, size: CGSize) -> UIImage? {
         //_logger.trace()
         
         let name = "\(Int(size.width))x\(Int(size.height)).png"
@@ -91,7 +74,7 @@ open class SAPhotoLibrary: NSObject {
         
         return image
     }
-    open func imageForAlmost(with photo: SAPhoto, size: CGSize) -> UIImage? {
+    public func imageForAlmost(with photo: SAPhoto, size: CGSize) -> UIImage? {
         //_logger.trace()
         
         guard let caches = _allCaches[photo.identifier] else {
@@ -121,6 +104,10 @@ open class SAPhotoLibrary: NSObject {
         return image
     }
     
+    public func data(with photo: SAPhoto,  resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Void) {
+        SAPhotoLibrary.shared._requestImageData(photo, nil, resultHandler: resultHandler)
+    }
+    
     
     func clearInvaildCaches() {
         DispatchQueue.main.async {
@@ -148,45 +135,84 @@ open class SAPhotoLibrary: NSObject {
         }
     }
     
-    open func requestImage(for photo: SAPhoto, targetSize: CGSize, contentMode: PHImageContentMode = .default, options: PHImageRequestOptions? = nil, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
-        let im = PHCachingImageManager.default()
-        return im.requestImage(for: photo.asset, targetSize: targetSize, contentMode: contentMode, options: options, resultHandler: resultHandler)
-    }
-    open static func requestImageData(for photo: SAPhoto, options: PHImageRequestOptions? = nil, resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Swift.Void) {
-        let im = PHCachingImageManager.default()
-        im.requestImageData(for: photo.asset, options: options, resultHandler: resultHandler)
-    }
+//    public func requestImage(for photo: SAPhoto, targetSize: CGSize, contentMode: PHImageContentMode = .default, options: PHImageRequestOptions? = nil, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
+//        let im = PHCachingImageManager.default()
+//        return im.requestImage(for: photo.asset, targetSize: targetSize, contentMode: contentMode, options: options, resultHandler: resultHandler)
+//    }
+//    public static func requestImageData(for photo: SAPhoto, options: PHImageRequestOptions? = nil, resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Swift.Void) {
+//        let im = PHCachingImageManager.default()
+//        im.requestImageData(for: photo.asset, options: options, resultHandler: resultHandler)
+//    }
     
     private func _requestImage(_ photo: SAPhoto, _ size: CGSize, _ contentMode: PHImageContentMode, _ options: PHImageRequestOptions?, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
         let im = PHCachingImageManager.default()
         im.requestImage(for: photo.asset, targetSize: size, contentMode: contentMode, options: options, resultHandler: resultHandler)
     }
     
+    private func _requestImageData(_ photo: SAPhoto, _ options: PHImageRequestOptions?, resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Void) {
+        let im = PHCachingImageManager.default()
+        im.requestImageData(for: photo.asset, options: options, resultHandler: resultHandler)
+    }
+    
+//- (void)getPhotosBytesWithArray:(NSArray *)photos completion:(void (^)(NSString *photosBytes))completion
+//{
+//    __block NSInteger dataLength = 0;
+//    
+//    __block NSInteger count = photos.count;
+//    
+//    __weak typeof(self) weakSelf = self;
+//    for (int i = 0; i < photos.count; i++) {
+//        ZLSelectPhotoModel *model = photos[i];
+//        [[PHCachingImageManager defaultManager] requestImageDataForAsset:model.asset options:nil resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+//            __strong typeof(weakSelf) strongSelf = weakSelf;
+//            dataLength += imageData.length;
+//            count--;
+//            if (count <= 0) {
+//            if (completion) {
+//            completion([strongSelf transformDataLength:dataLength]);
+//            }
+//            }
+//            }];
+//    }
+//    }
+//    
+//    - (NSString *)transformDataLength:(NSInteger)dataLength {
+//        NSString *bytes = @"";
+//        if (dataLength >= 0.1 * (1024 * 1024)) {
+//            bytes = [NSString stringWithFormat:@"%.1fM",dataLength/1024/1024.0];
+//        } else if (dataLength >= 1024) {
+//            bytes = [NSString stringWithFormat:@"%.0fK",dataLength/1024.0];
+//        } else {
+//            bytes = [NSString stringWithFormat:@"%zdB",dataLength];
+//        }
+//        return bytes;
+//}
+    
 //        // Asynchronous image preheating (aka caching), note that only image sources are cached (no crop or exact resize is ever done on them at the time of caching, only at the time of delivery when applicable).
 //        // The options values shall exactly match the options values used in loading methods. If two or more caching requests are done on the same asset using different options or different targetSize the first
 //        // caching request will have precedence (until it is stopped)
-    open func startCachingImages(for assets: [SAPhoto], targetSize: CGSize, contentMode: PHImageContentMode, options: PHImageRequestOptions?) {
+    public func startCachingImages(for assets: [SAPhoto], targetSize: CGSize, contentMode: PHImageContentMode, options: PHImageRequestOptions?) {
         let im = PHCachingImageManager.default() as! PHCachingImageManager
         let ass = assets.map {
             return $0.asset
         }
         im.startCachingImages(for: ass, targetSize: targetSize, contentMode: contentMode, options: options)
     }
-    open func stopCachingImages(for assets: [SAPhoto], targetSize: CGSize, contentMode: PHImageContentMode, options: PHImageRequestOptions?) {
+    public func stopCachingImages(for assets: [SAPhoto], targetSize: CGSize, contentMode: PHImageContentMode, options: PHImageRequestOptions?) {
         let im = PHCachingImageManager.default() as! PHCachingImageManager
         let ass = assets.map {
             return $0.asset
         }
         im.stopCachingImages(for: ass, targetSize: targetSize, contentMode: contentMode, options: options)
     }
-    open func stopCachingImagesForAllAssets() {
+    public func stopCachingImagesForAllAssets() {
         let im = PHCachingImageManager.default() as! PHCachingImageManager
         im.stopCachingImagesForAllAssets()
     }
     
-    //open static func cancelImageRequest(_ requestID: PHImageRequestID) { }
+    //public static func cancelImageRequest(_ requestID: PHImageRequestID) { }
     
-    open func requestAuthorization(clouser: @escaping (Bool) -> Void) {
+    public func requestAuthorization(clouser: @escaping (Bool) -> Void) {
         PHPhotoLibrary.requestAuthorization { permission in
             DispatchQueue.main.async {
                 clouser(permission == .authorized)
@@ -194,7 +220,7 @@ open class SAPhotoLibrary: NSObject {
         }
     }
     
-    open static var shared: SAPhotoLibrary = {
+    public static var shared: SAPhotoLibrary = {
         let lib = SAPhotoLibrary()
         PHPhotoLibrary.shared().register(lib)
         return lib

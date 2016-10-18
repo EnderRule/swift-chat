@@ -112,6 +112,12 @@ open class SAPhotoInputView: UIView {
         }
         
         _originalBarItem.title = title
+        
+//        _selectedPhotos.forEach { photo in
+//            photo.data { count in
+//                print("\(photo.identifier) => \(count)")
+//            }
+//        }
     }
     
     fileprivate func _updatePhotoCount() {

@@ -139,6 +139,14 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         }
         // step4: 更新结束点
         _batchEndIndex = nel
+        
+        
+        // 如果结束了, 重置
+        guard sender.state == .cancelled || sender.state == .ended || sender.state == .failed else {
+            return
+        }
+        _batchIsSelectOperator = nil
+        _batchOperatorItems.removeAll()
     }
 
     
@@ -335,8 +343,22 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     
     private var _batchEndIndex: Int?
     private var _batchStartIndex: Int?
-    private var _batchIsSelectOperator: Bool? // true选中操作，false取消操作
     private var _batchOperatorItems: Set<Int> = []
+    private var _batchIsSelectOperator: Bool? { // true选中操作，false取消操作
+        willSet {
+            guard _batchIsSelectOperator != newValue else {
+                return
+            }
+            if _batchIsSelectOperator == nil {
+                // begin edit
+                NotificationCenter.default.post(name: .SAPhotoSelectionableWillEditing, object: nil)
+                
+            } else if newValue == nil {
+                // end edit
+                NotificationCenter.default.post(name: .SAPhotoSelectionableDidEditing, object: nil)
+            }
+        }
+    }
 
     private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPhotoErrorView?

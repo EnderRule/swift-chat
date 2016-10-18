@@ -121,6 +121,10 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
         guard let photo = photo else {
             return
         }
+        
+        // begin edit
+        NotificationCenter.default.post(name: .SAPhotoSelectionableWillEditing, object: nil)
+        
         if _isSelected {
             guard delegate?.selection(self, shouldDeselectItemFor: photo) ?? true else {
                 return
@@ -133,6 +137,9 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
             delegate?.selection(self, didSelectItemFor: photo)
         }
         setSelected(!_isSelected, animated: true)
+        
+        // end edit
+        NotificationCenter.default.post(name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     
     private func _updateSelection(with photo: SAPhoto?, animated: Bool) {
