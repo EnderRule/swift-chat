@@ -382,7 +382,8 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
             }
             return nil
         }
-            
+        
+        _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
         _updatePhotosForChange(change.fetchResultAfterChanges, inserts, changes, removes)
     }
