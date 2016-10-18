@@ -350,12 +350,9 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
                 return
             }
             if _batchIsSelectOperator == nil {
-                // begin edit
-                NotificationCenter.default.post(name: .SAPhotoSelectionableWillEditing, object: nil)
-                
+                _editingTask = UUID().uuidString
             } else if newValue == nil {
-                // end edit
-                NotificationCenter.default.post(name: .SAPhotoSelectionableDidEditing, object: nil)
+                _editingTask = nil
             }
         }
     }
@@ -365,6 +362,16 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     
     private var _toolbarItems: [UIBarButtonItem]??
     
+    fileprivate var _editingTask: Any? {
+        willSet {
+            if let newValue = newValue {
+                selection?.selection(self, willEditing: newValue)
+            }
+            if let oldValue = _editingTask {
+                selection?.selection(self, didEditing: oldValue)
+            }
+        }
+    }
     
     fileprivate var _album: SAPhotoAlbum?
     
@@ -564,6 +571,14 @@ extension SAPhotoPickerForAssets: SAPhotoSelectionable {
     }
     func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto) {
         self.selection?.selection(self, didDeselectItemFor: photo)
+    }
+    
+    // editing
+    func selection(_ selection: Any, willEditing sender: Any) {
+        self.selection?.selection(self, willEditing: sender)
+    }
+    func selection(_ selection: Any, didEditing sender: Any) {
+        self.selection?.selection(self, didEditing: sender)
     }
     
     // tap item

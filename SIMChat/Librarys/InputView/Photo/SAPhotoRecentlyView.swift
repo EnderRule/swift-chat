@@ -9,6 +9,9 @@
 import UIKit
 import Photos
 
+///
+/// 最近添加图片选择器代理
+///
 @objc public protocol SAPhotoRecentlyViewDelegate: NSObjectProtocol {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
@@ -24,21 +27,17 @@ import Photos
     
     // tap item
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any)
-    
-    
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
 }
 
 ///
-/// 图片选择器->最近添加
+/// 最近添加图片选择器
 ///
 @objc public class SAPhotoRecentlyView: UIView {
     
-    
-    public weak var delegate: SAPhotoRecentlyViewDelegate?
-    
-    /// 是否允许多选, 如果为false, 隐藏选择视图, 默认值为true
-    public var allowsMultipleSelection: Bool = true {
+    /// 是否允许编辑图片, 默认值为false
+    public dynamic var allowsEditing: Bool = false
+    /// 是否允许多选, 默认值为true
+    public dynamic var allowsMultipleSelection: Bool = true {
         willSet {
             _contentView.visibleCells.forEach { 
                 ($0 as? SAPhotoRecentlyViewCell)?.photoView.allowsSelection = newValue
@@ -46,7 +45,49 @@ import Photos
         }
     }
     
-    open override func didMoveToWindow() {
+    /// 是否使用原图, 默认值为false
+    public dynamic var alwaysUseOriginalImage: Bool = false {
+        didSet {
+            //originItem.isSelected = alwaysUseOriginalImage
+            //_updateSelectionBytes()
+        }
+    }
+    
+    /// 选中的图片
+    public dynamic var selectedPhotos: Array<SAPhoto> {
+        set {
+            _selectedPhotos = newValue
+            _selectedPhotoSets = Set(newValue)
+        }
+        get {
+            return _selectedPhotos
+        }
+    }
+    
+    ///
+    /// 代理
+    ///
+    public weak var delegate: SAPhotoRecentlyViewDelegate?
+    
+    
+    ///
+    /// 显示指定的图片(如果存在的话)
+    ///
+    /// - parameter photo:    指定的图片
+    /// - parameter animated: 是否需要动画
+    ///
+    public func scroll(to photo: SAPhoto, animated: Bool) {
+        guard let index = _photos?.index(of: photo) else {
+            return
+        }
+        _logger.trace(index)
+        
+        _contentView.scrollToItem(at: IndexPath(item: index, section: 0),
+                                  at: .centeredHorizontally,
+                                  animated: animated)
+    }
+    
+    public override func didMoveToWindow() {
         super.didMoveToWindow()
         
         // 只有在将要显示的时候才去请示权限
@@ -71,8 +112,6 @@ import Photos
             _contentView.isHidden = false
             
             _tipsLabel.removeFromSuperview()
-            
-            updateEdgOfItems()
             
         case .notData:
             _tipsLabel.isHidden = false
@@ -200,8 +239,6 @@ import Photos
         
         NotificationCenter.default.addObserver(self, selector: #selector(didSelectItem(_:)), name: .SAPhotoSelectionableDidSelectItem, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPhotoSelectionableDidDeselectItem, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(willEditing(_:)), name: .SAPhotoSelectionableWillEditing, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEditing(_:)), name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     
     private var _status: SAPhotoStatus = .notError
@@ -233,7 +270,6 @@ import Photos
     deinit {
         logger.trace()
         
-        SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
     }
 }
@@ -288,24 +324,31 @@ private extension SAPhotoRecentlyView {
         }
     }
     
-    dynamic func willEditing(_ sender: AnyObject) {
+    dynamic func willEditing(_ sender: Notification) {
         _logger.trace()
     }
-    dynamic func didEditing(_ sender: AnyObject) {
+    dynamic func didEditing(_ sender: Notification) {
         _logger.trace()
-    }
-    
-    func updateEdgOfItems() {
-        _contentView.visibleCells.forEach {
-            ($0 as? SAPhotoRecentlyViewCell)?.photoView.updateEdge()
+        
+        // 如果是选中了原图, 计算原图大小
+        
+        var results = Dictionary<String, Int>(minimumCapacity: _selectedPhotos.count)
+        let group = DispatchGroup()
+        
+        _selectedPhotos.forEach { photo in
+            
+            group.enter()
+            photo.data(with: { data in
+                group.leave()
+                results[photo.identifier] = data?.count ?? 0
+            })
         }
-    }
-    func updateContentOffset(of photo: SAPhoto) {
-        guard let index = _photos?.index(of: photo) else {
-            return
+        
+        group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .SAPhotoSelectionableDidChangeBytes,
+                                            object: sender.object,
+                                            userInfo: results)
         }
-        let indexPath = IndexPath(item: index, section: 0)
-        _contentView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 }
 
@@ -315,7 +358,10 @@ private extension SAPhotoRecentlyView {
 extension SAPhotoRecentlyView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateEdgOfItems()
+        
+        _contentView.visibleCells.forEach {
+            ($0 as? SAPhotoRecentlyViewCell)?.photoView.updateEdge()
+        }
     }
    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -427,8 +473,8 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     public func selection(_ selection: Any, didSelectItemFor photo: SAPhoto) {
         //_logger.trace()
         
+        scroll(to: photo, animated: true)
         selectItem(photo)
-        updateContentOffset(of: photo)
         
         // 通知UI更新
         NotificationCenter.default.post(name: .SAPhotoSelectionableDidSelectItem, object: photo)
@@ -446,15 +492,27 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
         NotificationCenter.default.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
     }
     
+    // editing
+    func selection(_ selection: Any, willEditing sender: Any) {
+        _logger.trace()
+    }
+    func selection(_ selection: Any, didEditing sender: Any) {
+        _logger.trace()
+    }
+    
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
         
-        if let album = photo.album, let window = UIApplication.shared.delegate?.window {
-            let options = SAPhotoPickerOptions(album: album, default: photo, ascending: false)
+        if let window = UIApplication.shared.delegate?.window {
+            let options = SAPhotoPickerOptions(album: photo.album, default: photo, ascending: false)
             let picker = SAPhotoPicker(preview: options)
             
             picker.delegate = self
+            picker.selectedPhotos = _selectedPhotos
+            picker.allowsEditing = allowsEditing
+            picker.allowsMultipleSelection = allowsMultipleSelection
+            picker.alwaysUseOriginalImage = alwaysUseOriginalImage
             
             window?.rootViewController?.present(picker, animated: true, completion: nil)
         }
@@ -467,18 +525,13 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
 
 extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
     
-    /// gets the index of the selected item, if item does not select to return NSNotFound
-    public func picker(_ picker: SAPhotoPicker, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
-        return selection(picker, indexOfSelectedItemsFor: photo)
-    }
-   
     // check whether item can select
     public func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
         return selection(picker, shouldSelectItemFor: photo)
     }
     public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
+        scroll(to: photo, animated: true)
         selectItem(photo)
-        updateContentOffset(of: photo) // 同步..
     }
     
     // check whether item can deselect
@@ -488,16 +541,4 @@ extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
     public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
         deselectItem(photo)
     }
-    
-    public func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return delegate?.recentlyView?(self, toolbarItemsFor: context)
-    }
-    
-    
-    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        _logger.trace()
-        
-        return nil
-    }
-    
 }

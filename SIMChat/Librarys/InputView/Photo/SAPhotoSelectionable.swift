@@ -22,16 +22,19 @@ internal protocol SAPhotoSelectionable: class {
     func selection(_ selection: Any, shouldDeselectItemFor photo: SAPhoto) -> Bool
     func selection(_ selection: Any, didDeselectItemFor photo: SAPhoto)
     
+    // editing
+    func selection(_ selection: Any, willEditing sender: Any)
+    func selection(_ selection: Any, didEditing sender: Any)
+    
     // tap item
     func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any)
 }
-
 
 public extension Notification.Name {
     
     public static let SAPhotoSelectionableDidSelectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidSelectItem")
     public static let SAPhotoSelectionableDidDeselectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidDeselectItem")
     
-    public static let SAPhotoSelectionableWillEditing = Notification.Name(rawValue: "SAPhotoSelectionableWillEditing")
-    public static let SAPhotoSelectionableDidEditing = Notification.Name(rawValue: "SAPhotoSelectionableDidEditing")
+    public static let SAPhotoSelectionableWillChangeBytes = Notification.Name(rawValue: "SAPhotoSelectionableWillChangeBytes")
+    public static let SAPhotoSelectionableDidChangeBytes = Notification.Name(rawValue: "SAPhotoSelectionableDidChangeBytes")
 }

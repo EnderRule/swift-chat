@@ -11,6 +11,7 @@ import Photos
 
 internal class SAPhotoPickerForAlbums: UITableViewController {
     
+    var allowsEditing: Bool = false
     var allowsMultipleDisplay: Bool = true
     var allowsMultipleSelection: Bool = true {
         didSet {

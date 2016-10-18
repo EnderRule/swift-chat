@@ -173,6 +173,7 @@ open class SAPhotoInputView: UIView {
         
         
         _updatePhotoCount()
+//        NotificationCenter.default.addObserver(self, selector: #selector(didChangeBytes(_:)), name: .SAPhotoSelectionableDidChangeBytes, object: nil)
     }
     
     fileprivate var _isOriginalImage: Bool = false
@@ -200,6 +201,9 @@ open class SAPhotoInputView: UIView {
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()
+    }
+    deinit {
+//        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -244,7 +248,8 @@ extension SAPhotoInputView {
         
         let picker = SAPhotoPicker()
         
-        picker.delegate = _contentView
+        //picker.delegate = _contentView
+        picker.selectedPhotos = _selectedPhotos
         picker.allowsMultipleSelection = true
         
         viewController.present(picker, animated: true, completion: nil)
@@ -254,7 +259,6 @@ extension SAPhotoInputView {
     func onPreviewer(_ sender: Any) {
         _logger.trace(sender)
         
-        _picker?.preview(with: SAPhotoPickerOptions(photos: _selectedPhotos))
     }
 }
 

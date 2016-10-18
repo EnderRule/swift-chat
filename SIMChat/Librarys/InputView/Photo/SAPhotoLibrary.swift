@@ -105,17 +105,27 @@ public class SAPhotoLibrary: NSObject {
     }
     
     public func data(with photo: SAPhoto,  resultHandler: @escaping (Data?, String?, UIImageOrientation, [AnyHashable : Any]?) -> Void) {
+        //_logger.trace(photo.identifier)
+        
         SAPhotoLibrary.shared._requestImageData(photo, nil, resultHandler: resultHandler)
     }
     
     
     func clearInvaildCaches() {
+        guard !_needsClearCaches else {
+            return
+        }
+        //_logger.trace()
+        
+        _needsClearCaches = true
+        
         DispatchQueue.main.async {
-            self._clearInvaildCachesOnMainThread()
+            self._needsClearCaches = false
+            self._clearCachesOnMainThread()
         }
     }
     
-    private func _clearInvaildCachesOnMainThread() {
+    private func _clearCachesOnMainThread() {
         //_logger.trace()
         
         _allCaches.keys.forEach { key in
@@ -226,6 +236,7 @@ public class SAPhotoLibrary: NSObject {
         return lib
     }()
     
+    private var _needsClearCaches: Bool = false
     private lazy var _allCaches: [String: [String: SAPhotoWeakObject<UIImage>]] = [:]
 }
 

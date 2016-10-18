@@ -11,28 +11,51 @@ import Photos
 
 internal class SAPhotoPickerForImp: UINavigationController {
     
-    dynamic var allowsMultipleSelection: Bool {
-        set { return (_rootViewController?.allowsMultipleSelection = newValue) ?? Void() }
-        get { return (_rootViewController?.allowsMultipleSelection) ?? false }
+    dynamic weak var picker: SAPhotoPicker!
+    dynamic weak var delegater: SAPhotoPickerDelegate?
+    
+    dynamic var allowsEditing: Bool {
+        set { return (_rootViewController?.allowsEditing = newValue) ?? Void() }
+        get { return (_rootViewController?.allowsEditing) ?? false }
     }
     dynamic var allowsMultipleDisplay: Bool {
         set { return (_rootViewController?.allowsMultipleDisplay = newValue) ?? Void() }
         get { return (_rootViewController?.allowsMultipleDisplay) ?? false }
     }
-    
-    dynamic weak var picker: SAPhotoPicker!
-    dynamic weak var delegater: SAPhotoPickerDelegate?
-    dynamic weak var defaultCenter: NotificationCenter? {
-        return NotificationCenter.default 
+    dynamic var allowsMultipleSelection: Bool {
+        set { return (_rootViewController?.allowsMultipleSelection = newValue) ?? Void() }
+        get { return (_rootViewController?.allowsMultipleSelection) ?? false }
     }
     
-    dynamic func pick(with album: SAPhotoAlbum) {
+    dynamic var alwaysUseOriginalImage: Bool = false {
+        didSet {
+            originItem.isSelected = alwaysUseOriginalImage
+            
+            _updateSelectionBytes()
+        }
+    }
+    
+    
+    dynamic var selectedPhotos: Array<SAPhoto> {
+        set {
+            _selectedPhotos = newValue
+            _selectedPhotoSets = Set(newValue)
+            _updateSelectionCount()
+        }
+        get {
+            return _selectedPhotos
+        }
+    }
+    
+    dynamic func pick(with album: SAPhotoAlbum, animated: Bool) {
         _logger.trace()
         
         let vc = makePickerForAssets(with: album)
-        pushViewController(vc, animated: true)
+        
+        // 显示
+        pushViewController(vc, animated: animated)
     }
-    dynamic func preview(with options: SAPhotoPickerOptions) {
+    dynamic func preview(with options: SAPhotoPickerOptions, animated: Bool) {
         _logger.trace()
         
         let vc = makePreviewer(options)
@@ -42,20 +65,22 @@ internal class SAPhotoPickerForImp: UINavigationController {
         // 然后在返回的时候清除delegate
         delegate = self
         
-        pushViewController(vc, animated: true)
+        // 显示
+        pushViewController(vc, animated: animated)
     }
     
     dynamic override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        
+        _updateSelectionCount()
     }
     
     dynamic init() {
         super.init(navigationBarClass: SAPhotoNavigationBar.self, toolbarClass: SAPhotoToolbar.self)
         logger.trace()
         
-        let item = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
         let viewController = makePickerForAlbums()
         
         _rootViewController = viewController
@@ -63,21 +88,20 @@ internal class SAPhotoPickerForImp: UINavigationController {
         self.title = "Photos"
         self.setValue(self, forKey: "picker") // 强制更新转换(因为as会失败)
         self.setViewControllers([viewController], animated: false)
-        self.navigationItem.rightBarButtonItem = item
+        
+        self.originItem.isSelected = self.alwaysUseOriginalImage
+        self.navigationItem.rightBarButtonItem = cancelItem
         
         SAPhotoLibrary.shared.register(self)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(willEditing(_:)), name: .SAPhotoSelectionableWillEditing, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEditing(_:)), name: .SAPhotoSelectionableDidEditing, object: nil)
     }
     dynamic convenience init(pick album: SAPhotoAlbum) {
         self.init()
-        self.pick(with: album)
+        self.pick(with: album, animated: true)
         self.allowsMultipleDisplay = false
     }
     dynamic convenience init(preview options: SAPhotoPickerOptions) {
         self.init()
-        self.preview(with: options)
+        self.preview(with: options, animated: true)
         self.allowsMultipleDisplay = false
         
         self.transitioningDelegate = self
@@ -92,18 +116,25 @@ internal class SAPhotoPickerForImp: UINavigationController {
     deinit {
         logger.trace()
         
-        SAPhotoLibrary.shared.clearInvaildCaches()
+        //SAPhotoLibrary.shared.clearInvaildCaches()
         SAPhotoLibrary.shared.unregisterChangeObserver(self)
-        
-        NotificationCenter.default.removeObserver(self)
     }
     
-    fileprivate var _canBack: Bool = true
+    lazy var spaceItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+    lazy var cancelItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelHandler(_:)))
+    
+    lazy var editItem: SAPhotoBarItem = SAPhotoBarItem(title: "编辑", type: .normal, target: self, action: #selector(editHandler(_:)))
+    lazy var previewItem: SAPhotoBarItem = SAPhotoBarItem(title: "预览", type: .normal, target: self, action: #selector(previewHandler(_:)))
+    lazy var originItem: SAPhotoBarItem = SAPhotoBarItem(title: "原图", type: .original, target: self, action: #selector(originHandler(_:)))
+    lazy var sendItem: SAPhotoBarItem = SAPhotoBarItem(title: "发送", type: .send, target: self, action: #selector(confirmHandler(_:)))
     
     fileprivate weak var _rootViewController: SAPhotoPickerForAlbums?
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
+    
+    
+    fileprivate var _refreshTask: Any?
 }
 
 // MARK: - Events
@@ -120,6 +151,25 @@ private extension SAPhotoPickerForImp {
         
         dismiss(animated: true, completion: nil)
     }
+    dynamic func confirmHandler(_ sender: Any) {
+        _logger.trace()
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    dynamic func previewHandler(_ sender: Any) {
+        //_logger.trace()
+        
+        preview(with: SAPhotoPickerOptions(photos: _selectedPhotos), animated: true)
+    }
+    dynamic func originHandler(_ sender: Any) {
+        _logger.trace()
+        
+        alwaysUseOriginalImage = !alwaysUseOriginalImage
+    }
+    dynamic func editHandler(_ sender: Any) {
+        _logger.trace()
+    }
     
     dynamic func selectItem(_ photo: SAPhoto) {
         _logger.trace()
@@ -127,7 +177,9 @@ private extension SAPhotoPickerForImp {
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
+            _updateSelectionCount()
         }
+        
         delegater?.picker?(picker, didSelectItemFor: photo)
     }
     dynamic func deselectItem(_ photo: SAPhoto) {
@@ -136,15 +188,63 @@ private extension SAPhotoPickerForImp {
         if let index = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: index)
+            _updateSelectionCount()
         }
         delegater?.picker?(picker, didDeselectItemFor: photo)
     }
+}
 
-    dynamic func willEditing(_ sender: AnyObject) {
+extension SAPhotoPickerForImp {
+    
+    fileprivate func _updateSelectionBytes() {
         _logger.trace()
+        
+        guard alwaysUseOriginalImage else {
+            return originItem.title = "原图"
+        }
+        
+        var count: Int = 0
+        let group: DispatchGroup = DispatchGroup()
+        
+        selectedPhotos.forEach { photo in
+            group.enter()
+            photo.data(with: { data in
+                count += data?.count ?? 0
+                group.leave()
+            })
+        }
+        
+        group.notify(queue: .main) {
+            guard count != 0 && self.alwaysUseOriginalImage else {
+                return self.originItem.title = "原图"
+            }
+            self.originItem.title = "原图(\(SAPhotoFormatBytesLenght(count)))"
+        }
     }
-    dynamic func didEditing(_ sender: AnyObject) {
+    
+    fileprivate func _updateSelectionCount() {
         _logger.trace()
+        
+        previewItem.isEnabled = !_selectedPhotos.isEmpty
+        originItem.isEnabled = !_selectedPhotos.isEmpty
+        sendItem.isEnabled = !_selectedPhotos.isEmpty
+        
+        if _selectedPhotos.isEmpty {
+            sendItem.title = "发送"
+        } else {
+            sendItem.title = "发送(\(_selectedPhotos.count))"
+        }
+    }
+    fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
+        // 检查这个图片有没有被删除
+        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
+            return
+        }
+        _logger.trace(photo.identifier)
+        // 需要强制删除?
+        if selection(self, shouldDeselectItemFor: photo) {
+            selection(self, didDeselectItemFor: photo)
+        }
     }
 }
 
@@ -154,7 +254,19 @@ private extension SAPhotoPickerForImp {
 extension SAPhotoPickerForImp {
     
     func makeToolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return delegater?.picker?(picker, toolbarItemsFor: context)
+        switch context {
+        case .list:
+            return [previewItem, originItem, spaceItem, sendItem]
+            
+        case .preview:
+            if allowsEditing {
+                return [editItem, originItem, spaceItem, sendItem]
+            } else {
+                return [originItem, spaceItem, sendItem]
+            }
+            
+        default: return nil
+        }
     }
     
     func makePickerForAlbums() -> SAPhotoPickerForAlbums {
@@ -195,18 +307,6 @@ extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
             self.viewControllers.forEach {
                 ($0 as? PHPhotoLibraryChangeObserver)?.photoLibraryDidChange(changeInstance)
             }
-        }
-    }
-    
-    private func _updateSelectionForRemove(_ photo: SAPhoto) {
-        // 检查这个图片有没有被删除
-        guard !SAPhotoLibrary.shared.isExists(of: photo) else {
-            return
-        }
-        _logger.trace(photo.identifier)
-        // 需要强制删除?
-        if selection(self, shouldDeselectItemFor: photo) {
-            selection(self, didDeselectItemFor: photo)
         }
     }
 }
@@ -289,7 +389,7 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     
     /// gets the index of the selected item, if item does not select to return NSNotFound
     func selection(_ selection: Any, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
-        return delegater?.picker?(picker, indexOfSelectedItemsFor: photo) ?? _selectedPhotos.index(of: photo) ?? NSNotFound
+        return _selectedPhotos.index(of: photo) ?? NSNotFound
     }
    
     // check whether item can select
@@ -316,15 +416,27 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
         NotificationCenter.default.post(name: .SAPhotoSelectionableDidDeselectItem, object: photo)
     }
     
+    // editing
+    func selection(_ selection: Any, willEditing sender: Any) {
+        _logger.trace()
+        
+        // 清除数量, 重新计算
+        originItem.title = "原图"
+    }
+    func selection(_ selection: Any, didEditing sender: Any) {
+        _logger.trace()
+        
+        // 开始重新计算
+        _updateSelectionBytes()
+    }
+    
     // tap item
     func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
         
-        if let album = photo.album  {
-            let options = SAPhotoPickerOptions(album: album, default: photo)
-            options.previewingDelegate = selection as? SAPhotoPreviewableDelegate
-            preview(with: options)
-        }
+        let options = SAPhotoPickerOptions(album: photo.album, default: photo)
+        options.previewingDelegate = selection as? SAPhotoPreviewableDelegate
+        preview(with: options, animated: true)
         
         delegater?.picker?(picker, tapItemFor: photo, with: selection)
     }

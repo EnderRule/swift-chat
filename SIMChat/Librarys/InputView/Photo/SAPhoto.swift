@@ -92,6 +92,19 @@ public class SAPhoto: NSObject {
         return SAPhotoLibrary.shared.image(with: self, size: size)
     }
     
+    public var data: Data?
+    
+    public func data(with handler: @escaping (Data?) -> Void)  {
+        if let data = data {
+            return handler(data)
+        }
+        return SAPhotoLibrary.shared.data(with: self) { [weak self](data, dataUTI, orientation, info) in
+            self?.data = data
+            handler(data)
+        }
+    }
+    
+    
     public override func isEqual(_ object: Any?) -> Bool {
         guard let photo = object as? SAPhoto else {
             return false
@@ -99,13 +112,24 @@ public class SAPhoto: NSObject {
         return identifier == photo.identifier
     }
     
-    public var asset: PHAsset
+    public let asset: PHAsset
+    public let album: SAPhotoAlbum
     
-    public weak var album: SAPhotoAlbum?
-    
-    public init(asset: PHAsset) {
+    public init(asset: PHAsset, album: SAPhotoAlbum) {
         self.asset = asset
+        self.album = album
         super.init()
     }
 }
 
+internal func SAPhotoFormatBytesLenght(_ len: Int) -> String {
+    if len <= 999 {
+        // 只显示1B-999B
+        return String(format: "%zdB", len)
+    }
+    if len <= 999 * 1024 {
+        // 只显示1k-999k
+        return String(format: "%zdK", len / 1024)
+    }
+    return String(format: "%.1lfM", Double(len) / 1024 / 1024)
+}

@@ -65,8 +65,7 @@ public class SAPhotoAlbum: NSObject {
     public func photos(with result: PHFetchResult<PHAsset>) -> [SAPhoto] {
         var photos: [SAPhoto] = []
         result.enumerateObjects({
-            let photo = SAPhoto(asset: $0.0)
-            photo.album = self
+            let photo = SAPhoto(asset: $0.0, album: self)
             photos.append(photo)
         })
         return photos
@@ -78,8 +77,7 @@ public class SAPhotoAlbum: NSObject {
         var photos: [SAPhoto] = []
         
         result.enumerateObjects(at: IndexSet(integersIn: range), options: .init(rawValue: 0), using: {
-            let photo = SAPhoto(asset: $0.0)
-            photo.album = self
+            let photo = SAPhoto(asset: $0.0, album: self)
             photos.append(photo)
         })
         
@@ -103,6 +101,10 @@ public class SAPhotoAlbum: NSObject {
     public init(collection: PHAssetCollection) {
         self.collection = collection
         super.init()
+    }
+    deinit {
+        // album销毁， 表明关联的photo己经被释放
+        SAPhotoLibrary.shared.clearInvaildCaches()
     }
     
     private var _fetchResult: PHFetchResult<PHAsset>?

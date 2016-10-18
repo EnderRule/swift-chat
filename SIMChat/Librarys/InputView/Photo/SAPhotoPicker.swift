@@ -9,7 +9,10 @@
 import UIKit
 import Photos
 
-public class SAPhotoPickerOptions: NSObject {
+///
+/// 图片选择器预览选项
+///
+@objc public class SAPhotoPickerOptions: NSObject {
     
     public init(album: SAPhotoAlbum, default: SAPhoto? = nil, ascending: Bool = true) {
         super.init()
@@ -33,16 +36,12 @@ public class SAPhotoPickerOptions: NSObject {
     public weak var previewingDelegate: SAPhotoPreviewableDelegate?
 }
 
-@objc
-public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
-    
-    @objc optional func picker(willDismiss picker: SAPhotoPicker)
-    @objc optional func picker(didDismiss picker: SAPhotoPicker)
+///
+/// 图片选择器代理
+///
+@objc public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     
     // MARK: Selection
-    
-    /// gets the index of the selected item, if item does not select to return NSNotFound
-    @objc optional func picker(_ picker: SAPhotoPicker, indexOfSelectedItemsFor photo: SAPhoto) -> Int
    
     // check whether item can select
     @objc optional func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool
@@ -52,36 +51,85 @@ public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     @objc optional func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool
     @objc optional func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto)
     
-    @objc optional func picker(_ picker: SAPhotoPicker, willDisplayItemOfPreview photo: SAPhoto) -> Bool
-    @objc optional func picker(_ picker: SAPhotoPicker, didDisplayItemOfPreview photo: SAPhoto)
+//    @objc optional func picker(_ picker: SAPhotoPicker, willEdit photo: SAPhoto)
+//    @objc optional func picker(_ picker: SAPhotoPicker, didEdit photo: SAPhoto)
     
     // tap item
     @objc optional func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any)
     
-    @objc optional func picker(_ picker: SAPhotoPicker, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]?
-    
-    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim sender: AnyObject)
-    @objc optional func picker(_ picker: SAPhotoPicker, didCancel sender: AnyObject)
+    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim photos: Array<SAPhoto>)
+    @objc optional func picker(_ picker: SAPhotoPicker, didCancel photos: Array<SAPhoto>)
 }
 
 
-public class SAPhotoPicker: UIViewController {
+///
+/// 图片选择器
+///
+@objc public class SAPhotoPicker: UIViewController {
     
-    public dynamic var allowsMultipleSelection: Bool = true
+    /// 是否允许编辑图片, 默认值为false
+    public dynamic var allowsEditing: Bool
+    /// 是否允许多选, 默认值为true
+    public dynamic var allowsMultipleSelection: Bool
     
-    @objc(delegater)
-    public dynamic weak var delegate: SAPhotoPickerDelegate? 
+    /// 选中的图片
+    public dynamic var selectedPhotos: Array<SAPhoto>
+    /// 是否使用原图, 默认值为false
+    public dynamic var alwaysUseOriginalImage: Bool
+    
+    /// 选择器的代理
+    public dynamic weak var delegate: SAPhotoPickerDelegate?  {
+        @objc(delegater) get { fatalError() }
+        @objc(setDelegater:) set { fatalError() }
+    }
     
     
-    public dynamic func pick(with album: SAPhotoAlbum) {
+    ///
+    /// 显示一个相册
+    ///
+    /// - parameter album: 相册
+    /// - parameter animated: 是否使用转场动画
+    ///
+    public dynamic func pick(with album: SAPhotoAlbum, animated: Bool) {
         fatalError()
     }
-    public dynamic func preview(with options: SAPhotoPickerOptions) {
+    ///
+    /// 显示预览
+    ///
+    /// - parameter options: 一些选项
+    /// - parameter animated: 是否使用转场动画
+    ///
+    public dynamic func preview(with options: SAPhotoPickerOptions, animated: Bool) {
         fatalError()
     }
     
+    ///
+    /// 创建一个图片选择器, 默认显示第一个相册
+    ///
+    public dynamic init() {
+        fatalError()
+    }
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError()
+    }
+    ///
+    /// 创建一个图片选择器, 并显示指定的相册
+    ///
+    /// NOTE: 和pick(with:)不同的时, 点击返回将dismiss
+    ///
+    public dynamic convenience init(pick album: SAPhotoAlbum) {
+        fatalError()
+    }
+    ///
+    /// 创建一个图片选择器(预览)
+    ///
+    /// NOTE: 和preview(with:)不同的时, 点击返回将dismiss
+    ///
+    public dynamic convenience init(preview options: SAPhotoPickerOptions) {
+        fatalError()
+    }
     
-    
+    /// 类初始化
     public override class func initialize() {
         // 替换类方法
         guard let metaClass = objc_getMetaClass(NSStringFromClass(self).cString(using: .utf8)) as? AnyClass else {
@@ -95,25 +143,12 @@ public class SAPhotoPicker: UIViewController {
         
         class_replaceMethod(metaClass, s1, method_getImplementation(m2), method_getTypeEncoding(m1))
     }
+    /// 创建方法
     private dynamic class func _alloc(zone: NSZone) -> AnyObject? {
+        // 使用的是类簇
         let s1 = Selector(String("allocWithZone:"))
         let ret = SAPhotoPickerForImp.perform(s1, with: zone)
         return ret?.takeRetainedValue()
-    }
-    
-    
-    
-    public dynamic init() {
-        fatalError()
-    }
-    public dynamic convenience init(pick album: SAPhotoAlbum) {
-        fatalError()
-    }
-    public dynamic init(preview options: SAPhotoPickerOptions) {
-        fatalError()
-    }
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError()
     }
 }
 
