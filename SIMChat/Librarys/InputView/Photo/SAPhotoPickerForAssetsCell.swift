@@ -21,7 +21,11 @@ internal class SAPhotoPickerForAssetsCell: UICollectionViewCell {
     
     private func _init() {
         
-        photoView.frame = bounds
+        backgroundColor = UIColor(white: 0, alpha: 0.1)
+        
+        let s = 1 / UIScreen.main.scale
+        
+        photoView.frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(s, s, s, s))
         photoView.allowsSelection = true
         photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         

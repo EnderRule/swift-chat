@@ -34,7 +34,4 @@ public extension Notification.Name {
     
     public static let SAPhotoSelectionableDidSelectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidSelectItem")
     public static let SAPhotoSelectionableDidDeselectItem = Notification.Name(rawValue: "SAPhotoSelectionableDidDeselectItem")
-    
-    public static let SAPhotoSelectionableWillChangeBytes = Notification.Name(rawValue: "SAPhotoSelectionableWillChangeBytes")
-    public static let SAPhotoSelectionableDidChangeBytes = Notification.Name(rawValue: "SAPhotoSelectionableDidChangeBytes")
 }

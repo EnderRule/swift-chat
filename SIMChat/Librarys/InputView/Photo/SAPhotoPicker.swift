@@ -41,8 +41,6 @@ import Photos
 ///
 @objc public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
     
-    // MARK: Selection
-   
     // check whether item can select
     @objc optional func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool
     @objc optional func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto)
@@ -51,14 +49,15 @@ import Photos
     @objc optional func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool
     @objc optional func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto)
     
-//    @objc optional func picker(_ picker: SAPhotoPicker, willEdit photo: SAPhoto)
-//    @objc optional func picker(_ picker: SAPhotoPicker, didEdit photo: SAPhoto)
+    // data bytes lenght change
+    @objc optional func picker(_ picker: SAPhotoPicker, didChangeBytes bytes: Int)
+    
+    // end
+    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim photos: Array<SAPhoto>)
+    @objc optional func picker(_ picker: SAPhotoPicker, didCancel photos: Array<SAPhoto>)
     
     // tap item
     @objc optional func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any)
-    
-    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim photos: Array<SAPhoto>)
-    @objc optional func picker(_ picker: SAPhotoPicker, didCancel photos: Array<SAPhoto>)
 }
 
 

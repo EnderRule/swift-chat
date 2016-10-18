@@ -33,7 +33,7 @@ internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell {
         contentView.clipsToBounds = true
     }
     
-    var photoView: SAPhotoBrowserView = SAPhotoBrowserView()
+    lazy var photoView: SAPhotoBrowserView = SAPhotoBrowserView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

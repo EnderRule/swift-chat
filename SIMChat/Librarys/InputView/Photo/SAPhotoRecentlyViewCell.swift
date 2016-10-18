@@ -11,27 +11,36 @@ import UIKit
 
 internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
     
-    lazy var photoView: SAPhotoView = SAPhotoView()
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         photoView.updateEdge()
     }
     
+    lazy var photoView: SAPhotoView = SAPhotoView()
+    
+    override var contentView: UIView {
+        return photoView
+    }
+    
     private func _init() {
         
-        photoView.frame = bounds
+        backgroundColor = UIColor(white: 0, alpha: 0.1)
+        
+        let s = 1 / UIScreen.main.scale
+        
+        photoView.frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(s, s, s, s))
         photoView.allowsSelection = true
         photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        addSubview(photoView)
-        backgroundColor = .white
+        super.contentView.removeFromSuperview()
+        addSubview(contentView)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         _init()
     }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _init()

@@ -10,7 +10,7 @@ import UIKit
 
 
 // # TODO
-// [ ] SAPhotoView - 异步加载
+// [x] SAPhotoView - 异步加载
 // [ ] SAPhotoView - 渐进式解码
 // [x] SAPhotoView - 选择顺序
 // [x] SAPhotoView - 选中支持
@@ -34,9 +34,9 @@ import UIKit
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
 // [x] SAPhotoPicker - 图片预览
-// [ ] SAPhotoPicker - 选择原图(文件大小)
+// [x] SAPhotoPicker - 选择原图(文件大小)
 // [x] SAPhotoPicker - 拦截返回事件
-// [ ] SAPhotoPicker - 默认barItem
+// [x] SAPhotoPicker - 默认barItem
 // [ ] SAPhotoPicker - 支持Moments模式
 // [x] SAPhotoPickerForAlbums - 图片变更通知处理
 // [x] SAPhotoPickerForAlbums - 空相册处理
@@ -79,27 +79,25 @@ public protocol SAPhotoInputViewDelegate: NSObjectProtocol {
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
 }
 
-open class SAPhotoInputView: UIView {
+public class SAPhotoInputView: UIView {
     
-    open var allowsMultipleSelection: Bool = true {
+    public var allowsMultipleSelection: Bool = true {
         didSet {
             //_picker?.allowsMultipleSelection = allowsMultipleSelection
             _contentView.allowsMultipleSelection = allowsMultipleSelection
         }
     }
     
-    open weak var delegate: SAPhotoInputViewDelegate?
+    public weak var delegate: SAPhotoInputViewDelegate?
         
         
-    open override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
     
     func toolbarItems(for context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
         switch context {
         case .panel:    return [_pickBarItem, _editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
-        case .list:     return [_previewBarItem, _editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
-        case .preview:  return [_editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
         default:        return nil
         }
     }
@@ -133,7 +131,6 @@ open class SAPhotoInputView: UIView {
         
         _sendBarItem.isEnabled = !_selectedPhotos.isEmpty
         _editBarItem.isEnabled = _selectedPhotos.count == 1
-        _previewBarItem.isEnabled = !_selectedPhotos.isEmpty
         _originalBarItem.isEnabled = !_selectedPhotos.isEmpty
     }
     
@@ -144,10 +141,9 @@ open class SAPhotoInputView: UIView {
 //        let color = UIColor(colorLiteralRed: 0x18 / 255.0, green: 0xb4 / 255.0, blue: 0xed / 255.0, alpha: 1)
 //        tintColor = color
         
-        _pickBarItem = SAPhotoBarItem(title: "相册", type: .normal, target: self, action: #selector(onPicker(_:)))
+        _pickBarItem = SAPhotoBarItem(title: "相册", type: .normal, target: self, action: #selector(pickerHandler(_:)))
         _editBarItem = SAPhotoBarItem(title: "编辑", type: .normal, target: self, action: #selector(onEditor(_:)))
         _sendBarItem = SAPhotoBarItem(title: "发送", type: .send, target: self, action: #selector(onSendForPicker(_:)))
-        _previewBarItem = SAPhotoBarItem(title: "预览", type: .normal, target: self, action: #selector(onPreviewer(_:)))
         _originalBarItem = SAPhotoBarItem(title: "原图", type: .original, target: self, action: #selector(onChangeOriginal(_:)))
         
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
@@ -172,7 +168,7 @@ open class SAPhotoInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 44))
         
         
-        _updatePhotoCount()
+//        _updatePhotoCount()
 //        NotificationCenter.default.addObserver(self, selector: #selector(didChangeBytes(_:)), name: .SAPhotoSelectionableDidChangeBytes, object: nil)
     }
     
@@ -182,14 +178,10 @@ open class SAPhotoInputView: UIView {
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
     
     fileprivate var _pickBarItem: SAPhotoBarItem!
-    fileprivate var _previewBarItem: SAPhotoBarItem!
     fileprivate var _editBarItem: SAPhotoBarItem!
     fileprivate var _originalBarItem: SAPhotoBarItem!
     fileprivate var _sendBarItem: SAPhotoBarItem!
     fileprivate var _spaceBarItem: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    
-    fileprivate weak var _picker: SAPhotoPicker?
-    fileprivate weak var _previewer: SAPhotoPickerForPreviewer?
     
     fileprivate lazy var _tabbar: SAPhotoToolbar = SAPhotoToolbar()
     fileprivate lazy var _contentView: SAPhotoRecentlyView = SAPhotoRecentlyView()
@@ -226,39 +218,44 @@ extension SAPhotoInputView {
 //        _contentView.updateSelectionOfItems()
     }
     func onChangeOriginal(_ sender: UIButton) {
-        _isOriginalImage = !_isOriginalImage
+        _logger.trace()
         
-        _originalBarItem.isSelected = _isOriginalImage
+        _contentView.alwaysUseOriginalImage = !_contentView.alwaysUseOriginalImage
+        _originalBarItem.isSelected = _contentView.alwaysUseOriginalImage
+        
+//        _originalBarItem.isSelected = _isOriginalImage
 //        _original1BarItem.button.setImage(s, for: .normal)
 //        _original1BarItem.button.setImage(n, for: .selected)
 //        _original2BarItem.button.setImage(s, for: .normal)
 //        _original2BarItem.button.setImage(n, for: .selected)
+//        
+//        // 更新文件大小
+//        _updateFileSize()
+    }
+    
+    func pickerHandler(_ sender: Any) {
+        _logger.trace()
         
-        // 更新文件大小
-        _updateFileSize()
+        _contentView.showPicker()
     }
     
     func onEditor(_ sender: Any) {
         _logger.trace(sender)
     }
-    func onPicker(_ sender: Any) {
-        guard let viewController = UIApplication.shared.delegate?.window??.rootViewController else {
-            return
-        }
+    
+    func confrim(photos: Array<SAPhoto>) {
+        _logger.trace()
         
-        let picker = SAPhotoPicker()
-        
-        //picker.delegate = _contentView
-        picker.selectedPhotos = _selectedPhotos
-        picker.allowsMultipleSelection = true
-        
-        viewController.present(picker, animated: true, completion: nil)
-        
-        _picker = picker
+//        // 清除所有选中
+//        _contentView.selectedPhotos = []
+//        _updatePhotoCount()
     }
-    func onPreviewer(_ sender: Any) {
-        _logger.trace(sender)
+    func cancel(photo: Array<SAPhoto>) {
+        _logger.trace()
         
+//        // 清除所有选中
+//        _contentView.selectedPhotos = []
+//        _updatePhotoCount()
     }
 }
 
@@ -266,13 +263,8 @@ extension SAPhotoInputView {
 
 extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     
-    /// gets the index of the selected item, if item does not select to return NSNotFound
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, indexOfSelectedItemsFor photo: SAPhoto) -> Int {
-        return _selectedPhotos.index(of: photo) ?? NSNotFound
-    }
-   
     // check whether item can select
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItemFor photo: SAPhoto) -> Bool {
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldSelectItemFor photo: SAPhoto) -> Bool {
         // 可以在这里进行数量限制/图片类型限制
         //
         // if _selectedPhotoSets.count >= 9 {
@@ -283,36 +275,31 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
         // }
         return true
     }
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {
         _logger.trace()
-        
-        if !_selectedPhotoSets.contains(photo) {
-            _selectedPhotoSets.insert(photo)
-            _selectedPhotos.append(photo)
-            _updatePhotoCount()
-            _updateFileSize()
-        }
     }
     
     // check whether item can deselect
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, shouldDeselectItemFor photo: SAPhoto) -> Bool {
         return true
     }
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
         _logger.trace()
-        
-        if let idx = _selectedPhotos.index(of: photo) {
-            _selectedPhotoSets.remove(photo)
-            _selectedPhotos.remove(at: idx)
-            _updatePhotoCount()
-            _updateFileSize()
-        }
     }
     
-    open func recentlyView(_ recentlyView: SAPhotoRecentlyView, toolbarItemsFor context: SAPhotoToolbarContext) -> [UIBarButtonItem]? {
-        return toolbarItems(for: context)
+    // data bytes lenght change
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didChangeBytes bytes: Int) {
+        _logger.trace()
+        
+        _originalBarItem.title = "原图" + (bytes == 0 ? "" : "(\(SAPhotoFormatBytesLenght(bytes)))")
+    }
+    
+    // end
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didConfrim photos: Array<SAPhoto>) {
+        confrim(photos: photos)
+    }
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didCancel photos: Array<SAPhoto>) {
+        cancel(photo: photos)
     }
 }
-
-
 

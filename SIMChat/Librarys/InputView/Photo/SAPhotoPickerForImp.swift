@@ -141,21 +141,25 @@ internal class SAPhotoPickerForImp: UINavigationController {
 
 private extension SAPhotoPickerForImp {
     
+    //
+   
     dynamic func backHandler(_ sender: Any) {
-        _logger.trace()
-        
+        // 后退
         dismiss(animated: true, completion: nil)
+//        delegater?.picker?(picker, didBack: selectedPhotos)
     }
     dynamic func cancelHandler(_ sender: Any) {
-        _logger.trace()
-        
+        // 取消
         dismiss(animated: true, completion: nil)
+        delegater?.picker?(picker, didCancel: selectedPhotos)
     }
     dynamic func confirmHandler(_ sender: Any) {
-        _logger.trace()
-        
+        // 确认
         dismiss(animated: true, completion: nil)
+        delegater?.picker?(picker, didConfrim: selectedPhotos)
     }
+    
+    //
     
     dynamic func previewHandler(_ sender: Any) {
         //_logger.trace()
@@ -170,6 +174,8 @@ private extension SAPhotoPickerForImp {
     dynamic func editHandler(_ sender: Any) {
         _logger.trace()
     }
+    
+    //
     
     dynamic func selectItem(_ photo: SAPhoto) {
         _logger.trace()
@@ -214,11 +220,15 @@ extension SAPhotoPickerForImp {
             })
         }
         
-        group.notify(queue: .main) {
-            guard count != 0 && self.alwaysUseOriginalImage else {
-                return self.originItem.title = "原图"
+        group.notify(queue: .main) { [weak self] in
+            guard let sself = self else {
+                return
             }
-            self.originItem.title = "原图(\(SAPhotoFormatBytesLenght(count)))"
+            guard sself.alwaysUseOriginalImage else {
+                return
+            }
+            sself.originItem.title = "原图" + (count == 0 ? "" : "(\(SAPhotoFormatBytesLenght(count)))")
+            sself.delegater?.picker?(sself.picker, didChangeBytes: count)
         }
     }
     
