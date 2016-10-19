@@ -157,7 +157,7 @@ open class SAPhotoBarItem: UIBarButtonItem {
         button.setBackgroundImage(UIImage(named: "photo_button_confirm_press"), for: .highlighted)
         button.setBackgroundImage(UIImage(named: "photo_button_confirm_disabled"), for: .disabled)
         button.sizeToFit()
-        button.frame = CGRect(x: 0, y: 0, width: 70, height: button.frame.height)
+        button.frame = CGRect(x: 0, y: 0, width: max(70, button.frame.width), height: button.frame.height)
         
         return button
     }

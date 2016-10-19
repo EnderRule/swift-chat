@@ -27,11 +27,11 @@ internal class SAPhotoPickerForImp: UINavigationController {
         get { return (_rootViewController?.allowsMultipleSelection) ?? false }
     }
     
-    dynamic var alwaysUseOriginalImage: Bool = false {
+    dynamic var alwaysSelectOriginal: Bool = false {
         didSet {
-            originItem.isSelected = alwaysUseOriginalImage
+            originItem.isSelected = alwaysSelectOriginal
             
-            _updateSelectionBytes()
+            _updateBytesLenght()
         }
     }
     
@@ -40,7 +40,7 @@ internal class SAPhotoPickerForImp: UINavigationController {
         set {
             _selectedPhotos = newValue
             _selectedPhotoSets = Set(newValue)
-            _updateSelectionCount()
+            _updateCount(newValue.count)
         }
         get {
             return _selectedPhotos
@@ -74,7 +74,31 @@ internal class SAPhotoPickerForImp: UINavigationController {
         
         view.backgroundColor = .white
         
-        _updateSelectionCount()
+        _updateCount(_selectedPhotos.count)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 通知用户将要显示
+        delegater?.picker?(picker, willShow: animated)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // 通知用户显示完成
+        self.delegater?.picker?(picker, didShow: animated)
+    }
+    
+    dynamic override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        
+        // 通知用户将要解散
+        delegater?.picker?(picker, willDismiss: flag)
+        
+        super.dismiss(animated: flag) { [delegater, picker] in
+            completion?()
+            // 通知用户己经解散
+            delegater?.picker?(picker!, didDismiss: flag)
+        }
     }
     
     dynamic init() {
@@ -89,7 +113,7 @@ internal class SAPhotoPickerForImp: UINavigationController {
         self.setValue(self, forKey: "picker") // 强制更新转换(因为as会失败)
         self.setViewControllers([viewController], animated: false)
         
-        self.originItem.isSelected = self.alwaysUseOriginalImage
+        self.originItem.isSelected = self.alwaysSelectOriginal
         self.navigationItem.rightBarButtonItem = cancelItem
         
         SAPhotoLibrary.shared.register(self)
@@ -132,50 +156,40 @@ internal class SAPhotoPickerForImp: UINavigationController {
     
     fileprivate lazy var _selectedPhotos: Array<SAPhoto> = []
     fileprivate lazy var _selectedPhotoSets: Set<SAPhoto> = []
-    
-    
-    fileprivate var _refreshTask: Any?
 }
 
 // MARK: - Events
 
-private extension SAPhotoPickerForImp {
+fileprivate extension SAPhotoPickerForImp {
     
-    //
-   
     dynamic func backHandler(_ sender: Any) {
         // 后退
         dismiss(animated: true, completion: nil)
-//        delegater?.picker?(picker, didBack: selectedPhotos)
     }
     dynamic func cancelHandler(_ sender: Any) {
         // 取消
         dismiss(animated: true, completion: nil)
-        delegater?.picker?(picker, didCancel: selectedPhotos)
+        delegater?.picker?(picker, cancel: _selectedPhotos)
     }
     dynamic func confirmHandler(_ sender: Any) {
         // 确认
         dismiss(animated: true, completion: nil)
-        delegater?.picker?(picker, didConfrim: selectedPhotos)
+        delegater?.picker?(picker, confrim: _selectedPhotos)
     }
     
-    //
     
     dynamic func previewHandler(_ sender: Any) {
-        //_logger.trace()
-        
+        // 显示预览
         preview(with: SAPhotoPickerOptions(photos: _selectedPhotos), animated: true)
     }
     dynamic func originHandler(_ sender: Any) {
-        _logger.trace()
-        
-        alwaysUseOriginalImage = !alwaysUseOriginalImage
+        // 切换选项
+        alwaysSelectOriginal = !alwaysSelectOriginal
     }
     dynamic func editHandler(_ sender: Any) {
         _logger.trace()
     }
     
-    //
     
     dynamic func selectItem(_ photo: SAPhoto) {
         _logger.trace()
@@ -183,7 +197,8 @@ private extension SAPhotoPickerForImp {
         if !_selectedPhotoSets.contains(photo) {
             _selectedPhotoSets.insert(photo)
             _selectedPhotos.append(photo)
-            _updateSelectionCount()
+            
+            _updateCountForPhoto(photo)
         }
         
         delegater?.picker?(picker, didSelectItemFor: photo)
@@ -194,7 +209,8 @@ private extension SAPhotoPickerForImp {
         if let index = _selectedPhotos.index(of: photo) {
             _selectedPhotoSets.remove(photo)
             _selectedPhotos.remove(at: index)
-            _updateSelectionCount()
+            
+            _updateCountForPhoto(photo)
         }
         delegater?.picker?(picker, didDeselectItemFor: photo)
     }
@@ -202,48 +218,69 @@ private extension SAPhotoPickerForImp {
 
 extension SAPhotoPickerForImp {
     
-    fileprivate func _updateSelectionBytes() {
-        _logger.trace()
+    fileprivate func _updateBytesLenght() {
+        //_logger.trace()
         
-        guard alwaysUseOriginalImage else {
-            return originItem.title = "原图"
+        guard alwaysSelectOriginal else {
+            _updateBytesLenght(with: 0)
+            return
         }
-        
         var count: Int = 0
         let group: DispatchGroup = DispatchGroup()
         
         selectedPhotos.forEach { photo in
             group.enter()
             photo.data(with: { data in
-                count += data?.count ?? 0
+                
+                if let data = data, count != -1 {
+                    count += data.count
+                } else {
+                    count = -1 // 存在-1表明有图片在iclund上面
+                }
                 group.leave()
             })
         }
         
         group.notify(queue: .main) { [weak self] in
-            guard let sself = self else {
-                return
-            }
-            guard sself.alwaysUseOriginalImage else {
-                return
-            }
-            sself.originItem.title = "原图" + (count == 0 ? "" : "(\(SAPhotoFormatBytesLenght(count)))")
-            sself.delegater?.picker?(sself.picker, didChangeBytes: count)
+            self?._updateBytesLenght(with: count)
         }
     }
+    fileprivate func _updateBytesLenght(with lenght: Int) {
+        _logger.trace(lenght)
+        
+        if !alwaysSelectOriginal || lenght <= 0 {
+            originItem.title = "原图"
+        } else {
+            originItem.title = "原图(\(SAPhotoFormatBytesLenght(lenght)))"
+        }
+        
+        delegater?.picker?(self.picker, didChangeBytes: lenght)
+    }
     
-    fileprivate func _updateSelectionCount() {
+    
+    fileprivate func _updateCount(_ count: Int) {
         _logger.trace()
         
-        previewItem.isEnabled = !_selectedPhotos.isEmpty
-        originItem.isEnabled = !_selectedPhotos.isEmpty
-        sendItem.isEnabled = !_selectedPhotos.isEmpty
+        let count = _selectedPhotos.count
         
-        if _selectedPhotos.isEmpty {
+        previewItem.isEnabled = count != 0
+        originItem.isEnabled = count != 0
+        sendItem.isEnabled = count != 0
+        
+        if count == 0 {
             sendItem.title = "发送"
         } else {
-            sendItem.title = "发送(\(_selectedPhotos.count))"
+            sendItem.title = "发送(\(count))"
         }
+    }
+    fileprivate func _updateCountForPhoto(_ photo: SAPhoto) {
+        _logger.trace()
+        
+        let count = _selectedPhotos.count
+        let enabled = delegater?.picker?(picker, canConfrim: _selectedPhotos) ?? (count != 0)
+        
+        _updateCount(count)
+        sendItem.isEnabled =  enabled
     }
     fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
         // 检查这个图片有没有被删除
@@ -313,6 +350,8 @@ extension SAPhotoPickerForImp: PHPhotoLibraryChangeObserver {
             self._selectedPhotos.forEach {
                 self._updateSelectionForRemove($0)
             }
+            // 全部更新, 防止有选中图片删除/更新
+            self._updateBytesLenght()
             // 通知子控制器
             self.viewControllers.forEach {
                 ($0 as? PHPhotoLibraryChangeObserver)?.photoLibraryDidChange(changeInstance)
@@ -430,14 +469,14 @@ extension SAPhotoPickerForImp: SAPhotoSelectionable {
     func selection(_ selection: Any, willEditing sender: Any) {
         _logger.trace()
         
-        // 清除数量, 重新计算
-        originItem.title = "原图"
+        // 清除0, 然后重新计算
+        _updateBytesLenght(with: 0)
     }
     func selection(_ selection: Any, didEditing sender: Any) {
         _logger.trace()
         
         // 开始重新计算
-        _updateSelectionBytes()
+        _updateBytesLenght()
     }
     
     // tap item

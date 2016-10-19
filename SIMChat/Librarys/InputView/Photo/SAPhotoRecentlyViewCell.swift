@@ -26,9 +26,10 @@ internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
         
         backgroundColor = UIColor(white: 0, alpha: 0.1)
         
-        let s = 1 / UIScreen.main.scale
+        //let s = 1 / UIScreen.main.scale
+        //photoView.frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(s, s, s, s))
         
-        photoView.frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(s, s, s, s))
+        photoView.frame = bounds
         photoView.allowsSelection = true
         photoView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         

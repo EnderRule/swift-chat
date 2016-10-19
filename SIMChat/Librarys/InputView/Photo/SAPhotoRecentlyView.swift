@@ -25,10 +25,6 @@ import Photos
     // data bytes lenght change
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didChangeBytes bytes: Int)
     
-    // end
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didConfrim photos: Array<SAPhoto>)
-    @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, didCancel photos: Array<SAPhoto>)
-    
     // tap item
     @objc optional func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any)
 }
@@ -43,16 +39,19 @@ import Photos
     /// 是否允许多选, 默认值为true
     public dynamic var allowsMultipleSelection: Bool = true {
         willSet {
-            _contentView.visibleCells.forEach { 
+            guard allowsMultipleSelection != newValue else {
+                return
+            }
+            _contentView.visibleCells.forEach {
                 ($0 as? SAPhotoRecentlyViewCell)?.photoView.allowsSelection = newValue
             }
         }
     }
     
     /// 是否使用原图, 默认值为false
-    public dynamic var alwaysUseOriginalImage: Bool = false {
+    public dynamic var alwaysSelectOriginal: Bool = false {
         didSet {
-            _updateSelectionBytes()
+            _updateBytesLenght()
         }
     }
     
@@ -93,40 +92,6 @@ import Photos
         _contentView.scrollToItem(at: IndexPath(item: index, section: 0),
                                   at: .centeredHorizontally,
                                   animated: animated)
-    }
-    
-    /// 显示图片选择器
-    public func showPicker() {
-        guard let window = UIApplication.shared.delegate?.window else {
-            return // no window, is unknow error
-        }
-        let picker = SAPhotoPicker()
-        
-        picker.delegate = self
-        picker.selectedPhotos = _selectedPhotos
-        
-        picker.allowsEditing = allowsEditing
-        picker.allowsMultipleSelection = allowsMultipleSelection
-        picker.alwaysUseOriginalImage = alwaysUseOriginalImage
-        
-        window?.rootViewController?.present(picker, animated: true, completion: nil)
-    }
-    /// 显示图片选择器(预览模式)
-    public func showPickerForPreview(_ photo: SAPhoto) {
-        guard let window = UIApplication.shared.delegate?.window else {
-            return // no window, is unknow error
-        }
-        let options = SAPhotoPickerOptions(album: photo.album, default: photo, ascending: false)
-        let picker = SAPhotoPicker(preview: options)
-            
-        picker.delegate = self
-        picker.selectedPhotos = _selectedPhotos
-        
-        picker.allowsEditing = allowsEditing
-        picker.allowsMultipleSelection = allowsMultipleSelection
-        picker.alwaysUseOriginalImage = alwaysUseOriginalImage
-            
-        window?.rootViewController?.present(picker, animated: true, completion: nil)
     }
     
     public override func didMoveToWindow() {
@@ -268,7 +233,7 @@ private extension SAPhotoRecentlyView {
 
 fileprivate extension SAPhotoRecentlyView {
     
-    fileprivate func _updateStatus(_ newValue: SAPhotoStatus) {
+    func _updateStatus(_ newValue: SAPhotoStatus) {
         //_logger.trace(newValue)
         
         _status = newValue
@@ -314,7 +279,7 @@ fileprivate extension SAPhotoRecentlyView {
         }
     }
     
-    fileprivate func _updatePhotosForAuthorization(_ hasPermission: Bool) {
+    func _updatePhotosForAuthorization(_ hasPermission: Bool) {
         _logger.trace(hasPermission)
         
         // 检查访问权限
@@ -340,7 +305,7 @@ fileprivate extension SAPhotoRecentlyView {
         
         _updateStatus(.notError)
     }
-    fileprivate func _updatePhotosForChange(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
+    func _updatePhotosForChange(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
         _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
         // 更新数据
@@ -368,11 +333,12 @@ fileprivate extension SAPhotoRecentlyView {
         _updateStatus(.notError)
     }
     
-    fileprivate func _updateSelectionBytes() {
+    func _updateBytesLenght() {
         _logger.trace()
         
-        guard alwaysUseOriginalImage else {
-            return 
+        guard alwaysSelectOriginal else {
+            _updateBytesLenght(with: 0)
+            return
         }
         
         var count: Int = 0
@@ -381,22 +347,26 @@ fileprivate extension SAPhotoRecentlyView {
         selectedPhotos.forEach { photo in
             group.enter()
             photo.data(with: { data in
-                count += data?.count ?? 0
+                if let data = data, count != -1 {
+                    count += data.count
+                } else {
+                    count = -1 // 存在-1表明有图片在iclund上面
+                }
                 group.leave()
             })
         }
         
         group.notify(queue: .main) { [weak self] in
-            guard let sself = self else {
-                return
-            }
-            guard sself.alwaysUseOriginalImage else {
-                return 
-            }
-            sself.delegate?.recentlyView?(sself, didChangeBytes: count)
+            self?._updateBytesLenght(with: count)
         }
     }
-    fileprivate func _updateSelectionForRemove(_ photo: SAPhoto) {
+    func _updateBytesLenght(with lenght: Int) {
+        _logger.trace(lenght)
+        
+        delegate?.recentlyView?(self, didChangeBytes: lenght)
+    }
+    
+    func _updateSelectionForRemove(_ photo: SAPhoto) {
         // 检查这个图片有没有被删除
         guard !SAPhotoLibrary.shared.isExists(of: photo) else {
             return
@@ -473,6 +443,8 @@ extension SAPhotoRecentlyView: PHPhotoLibraryChangeObserver {
         _selectedPhotos.forEach {
             _updateSelectionForRemove($0)
         }
+        // 全部更新, 防止有选中图片删除/更新
+        _updateBytesLenght()
         // 检查有没有发生改变
         guard let result = self._photosResult, let change = changeInstance.changeDetails(for: result), change.hasIncrementalChanges else {
             return
@@ -539,64 +511,20 @@ extension SAPhotoRecentlyView: SAPhotoSelectionable {
     // editing
     func selection(_ selection: Any, willEditing sender: Any) {
         _logger.trace()
+        
+        // 清除0, 然后重新计算
+        _updateBytesLenght(with: 0)
     }
     func selection(_ selection: Any, didEditing sender: Any) {
         _logger.trace()
-        _updateSelectionBytes()
+        
+        _updateBytesLenght()
     }
     
     // tap item
     public func selection(_ selection: Any, tapItemFor photo: SAPhoto, with sender: Any) {
         _logger.trace()
         
-        if let window = UIApplication.shared.delegate?.window {
-            let options = SAPhotoPickerOptions(album: photo.album, default: photo, ascending: false)
-            let picker = SAPhotoPicker(preview: options)
-            
-            picker.delegate = self
-            picker.selectedPhotos = _selectedPhotos
-            picker.allowsEditing = allowsEditing
-            picker.allowsMultipleSelection = allowsMultipleSelection
-            picker.alwaysUseOriginalImage = alwaysUseOriginalImage
-            
-            window?.rootViewController?.present(picker, animated: true, completion: nil)
-        }
-        
         delegate?.recentlyView?(self, tapItemFor: photo, with: selection)
-    }
-}
-
-// MARK: - SAPhotoPickerDelegate
-
-extension SAPhotoRecentlyView: SAPhotoPickerDelegate {
-    
-    // check whether item can select
-    public func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
-        return selection(picker, shouldSelectItemFor: photo)
-    }
-    public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
-        scroll(to: photo, animated: true)
-        selectItem(photo)
-    }
-    
-    // check whether item can deselect
-    public func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool {
-        return selection(picker, shouldDeselectItemFor: photo)
-    }
-    public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
-        deselectItem(photo)
-    }
-    
-    // data bytes lenght change
-    public func picker(_ picker: SAPhotoPicker, didChangeBytes bytes: Int) {
-        delegate?.recentlyView?(self, didChangeBytes: bytes)
-    }
-    
-    // end
-    public func picker(_ picker: SAPhotoPicker, didConfrim photos: Array<SAPhoto>) {
-        delegate?.recentlyView?(self, didConfrim: selectedPhotos)
-    }
-    public func picker(_ picker: SAPhotoPicker, didCancel photos: Array<SAPhoto>) {
-        delegate?.recentlyView?(self, didCancel: selectedPhotos)
     }
 }

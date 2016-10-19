@@ -39,7 +39,11 @@ import Photos
 ///
 /// 图片选择器代理
 ///
-@objc public protocol SAPhotoPickerDelegate: UINavigationControllerDelegate {
+@objc public protocol SAPhotoPickerDelegate: NSObjectProtocol {
+    
+    
+    // data bytes lenght change
+    @objc optional func picker(_ picker: SAPhotoPicker, didChangeBytes bytes: Int)
     
     // check whether item can select
     @objc optional func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool
@@ -49,15 +53,20 @@ import Photos
     @objc optional func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool
     @objc optional func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto)
     
-    // data bytes lenght change
-    @objc optional func picker(_ picker: SAPhotoPicker, didChangeBytes bytes: Int)
+    @objc optional func picker(_ picker: SAPhotoPicker, canConfrim photos: Array<SAPhoto>) -> Bool
     
-    // end
-    @objc optional func picker(_ picker: SAPhotoPicker, didConfrim photos: Array<SAPhoto>)
-    @objc optional func picker(_ picker: SAPhotoPicker, didCancel photos: Array<SAPhoto>)
+    @objc optional func picker(_ picker: SAPhotoPicker, confrim photos: Array<SAPhoto>)
+    @objc optional func picker(_ picker: SAPhotoPicker, cancel photos: Array<SAPhoto>)
     
     // tap item
     @objc optional func picker(_ picker: SAPhotoPicker, tapItemFor photo: SAPhoto, with sender: Any)
+    
+    // dispaly
+    @objc optional func picker(_ picker: SAPhotoPicker, willShow animated: Bool)
+    @objc optional func picker(_ picker: SAPhotoPicker, willDismiss animated: Bool)
+    @objc optional func picker(_ picker: SAPhotoPicker, didShow animated: Bool)
+    @objc optional func picker(_ picker: SAPhotoPicker, didDismiss animated: Bool)
+    
 }
 
 
@@ -74,7 +83,7 @@ import Photos
     /// 选中的图片
     public dynamic var selectedPhotos: Array<SAPhoto>
     /// 是否使用原图, 默认值为false
-    public dynamic var alwaysUseOriginalImage: Bool
+    public dynamic var alwaysSelectOriginal: Bool
     
     /// 选择器的代理
     public dynamic weak var delegate: SAPhotoPickerDelegate?  {

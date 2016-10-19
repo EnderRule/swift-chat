@@ -251,7 +251,7 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     }
     
     fileprivate func _updateContentView(_ newResult: PHFetchResult<PHAsset>, _ inserts: [IndexPath], _ changes: [IndexPath], _ removes: [IndexPath]) {
-        //_logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
+        _logger.trace("inserts: \(inserts), changes: \(changes), removes: \(removes)")
         
         // 更新数据
         _photos = _album?.photos(with: newResult) ?? []

@@ -118,23 +118,6 @@ public class SAPhotoInputView: UIView {
 //        }
     }
     
-    fileprivate func _updatePhotoCount() {
-        
-        if !_selectedPhotos.isEmpty {
-            _sendBarItem.title = "发送(\(_selectedPhotos.count))"
-        } else {
-            _sendBarItem.title = "发送"
-        }
-        if _isOriginalImage {
-            _updateFileSize()
-        }
-        
-        _sendBarItem.isEnabled = !_selectedPhotos.isEmpty
-        _editBarItem.isEnabled = _selectedPhotos.count == 1
-        _originalBarItem.isEnabled = !_selectedPhotos.isEmpty
-    }
-    
-    
     private func _init() {
         _logger.trace()
         
@@ -168,8 +151,7 @@ public class SAPhotoInputView: UIView {
         addConstraint(_SALayoutConstraintMake(_tabbar, .height, .equal, nil, .notAnAttribute, 44))
         
         
-//        _updatePhotoCount()
-//        NotificationCenter.default.addObserver(self, selector: #selector(didChangeBytes(_:)), name: .SAPhotoSelectionableDidChangeBytes, object: nil)
+        _updatePhotoCount(0)
     }
     
     fileprivate var _isOriginalImage: Bool = false
@@ -194,9 +176,6 @@ public class SAPhotoInputView: UIView {
         super.init(coder: aDecoder)
         _init()
     }
-    deinit {
-//        NotificationCenter.default.removeObserver(self)
-    }
 }
 
 // MARK: - Touch Events
@@ -220,8 +199,8 @@ extension SAPhotoInputView {
     func onChangeOriginal(_ sender: UIButton) {
         _logger.trace()
         
-        _contentView.alwaysUseOriginalImage = !_contentView.alwaysUseOriginalImage
-        _originalBarItem.isSelected = _contentView.alwaysUseOriginalImage
+        _contentView.alwaysSelectOriginal = !_contentView.alwaysSelectOriginal
+        _originalBarItem.isSelected = _contentView.alwaysSelectOriginal
         
 //        _originalBarItem.isSelected = _isOriginalImage
 //        _original1BarItem.button.setImage(s, for: .normal)
@@ -236,7 +215,7 @@ extension SAPhotoInputView {
     func pickerHandler(_ sender: Any) {
         _logger.trace()
         
-        _contentView.showPicker()
+        _showPicker()
     }
     
     func onEditor(_ sender: Any) {
@@ -256,6 +235,66 @@ extension SAPhotoInputView {
 //        // 清除所有选中
 //        _contentView.selectedPhotos = []
 //        _updatePhotoCount()
+    }
+    
+}
+
+fileprivate extension SAPhotoInputView {
+    
+    func _updatePhotoCount(_ count: Int) {
+        
+        if count != 0 {
+            _sendBarItem.title = "发送(\(count))"
+        } else {
+            _sendBarItem.title = "发送"
+        }
+        
+        _editBarItem.isEnabled = count == 1
+        _sendBarItem.isEnabled = count != 0
+        _originalBarItem.isEnabled = count != 0
+    }
+    func _updateBytesLenght(_ lenght: Int) {
+        _logger.trace(lenght)
+        
+        if !_contentView.alwaysSelectOriginal || lenght <= 0 {
+            _originalBarItem.title = "原图"
+        } else {
+            _originalBarItem.title = "原图(\(SAPhotoFormatBytesLenght(lenght)))"
+        }
+    }
+    
+    /// 显示图片选择器
+    func _showPicker() {
+        guard let window = UIApplication.shared.delegate?.window else {
+            return // no window, is unknow error
+        }
+        let picker = SAPhotoPicker()
+        
+        picker.delegate = self
+        picker.selectedPhotos = _contentView.selectedPhotos
+        
+        picker.allowsEditing = _contentView.allowsEditing
+        picker.allowsMultipleSelection = _contentView.allowsMultipleSelection
+        picker.alwaysSelectOriginal = _contentView.alwaysSelectOriginal
+        
+        window?.rootViewController?.present(picker, animated: true, completion: nil)
+    }
+    /// 显示图片选择器(预览模式)
+    func _showPickerForPreview(_ photo: SAPhoto) {
+        guard let window = UIApplication.shared.delegate?.window else {
+            return // no window, is unknow error
+        }
+        let options = SAPhotoPickerOptions(album: photo.album, default: photo, ascending: false)
+        let picker = SAPhotoPicker(preview: options)
+            
+        picker.delegate = self
+        picker.selectedPhotos = _contentView.selectedPhotos
+        
+        picker.allowsEditing = _contentView.allowsEditing
+        picker.allowsMultipleSelection = _contentView.allowsMultipleSelection
+        picker.alwaysSelectOriginal = _contentView.alwaysSelectOriginal
+        
+        window?.rootViewController?.present(picker, animated: true, completion: nil)
     }
 }
 
@@ -277,6 +316,8 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     }
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didSelectItemFor photo: SAPhoto) {
         _logger.trace()
+        
+        _updatePhotoCount(recentlyView.selectedPhotos.count)
     }
     
     // check whether item can deselect
@@ -285,21 +326,87 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     }
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didDeselectItemFor photo: SAPhoto) {
         _logger.trace()
+        
+        _updatePhotoCount(recentlyView.selectedPhotos.count)
     }
     
     // data bytes lenght change
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didChangeBytes bytes: Int) {
-        _logger.trace()
-        
-        _originalBarItem.title = "原图" + (bytes == 0 ? "" : "(\(SAPhotoFormatBytesLenght(bytes)))")
+        _updateBytesLenght(bytes)
     }
     
     // end
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didConfrim photos: Array<SAPhoto>) {
-        confrim(photos: photos)
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, canConfrim photos: Array<SAPhoto>) -> Bool {
+        return _sendBarItem.isEnabled
     }
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didCancel photos: Array<SAPhoto>) {
-        cancel(photo: photos)
+    
+    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any) {
+        _logger.trace()
+        
+        _showPickerForPreview(photo)
     }
 }
 
+
+
+// MARK: - SAPhotoPickerDelegate
+
+extension SAPhotoInputView: SAPhotoPickerDelegate {
+    
+    // check whether item can select
+    public func picker(_ picker: SAPhotoPicker, shouldSelectItemFor photo: SAPhoto) -> Bool {
+        // 可以在这里进行数量限制/图片类型限制
+        //
+        // if _selectedPhotoSets.count >= 9 {
+        //     return false // 只能选择9张图片
+        // }
+        // if photo.mediaType != .image {
+        //     return false // 只能选择图片
+        // }
+        return true
+    }
+    public func picker(_ picker: SAPhotoPicker, didSelectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
+        _contentView.scroll(to: photo, animated: true)
+    }
+    
+    // check whether item can deselect
+    public func picker(_ picker: SAPhotoPicker, shouldDeselectItemFor photo: SAPhoto) -> Bool {
+        return true
+    }
+    public func picker(_ picker: SAPhotoPicker, didDeselectItemFor photo: SAPhoto) {
+        _logger.trace()
+        
+    }
+    
+    // data bytes lenght change
+    public func picker(_ picker: SAPhotoPicker, didChangeBytes bytes: Int) {
+        _updateBytesLenght(bytes)
+    }
+    
+    public func picker(_ picker: SAPhotoPicker, canConfrim photos: Array<SAPhoto>) -> Bool {
+        _updatePhotoCount(photos.count)
+        return _sendBarItem.isEnabled
+    }
+    
+    public func picker(_ picker: SAPhotoPicker, willDismiss animated: Bool) {
+        _logger.trace()
+        
+        // 同步
+        _contentView.selectedPhotos = picker.selectedPhotos
+        _contentView.alwaysSelectOriginal = picker.alwaysSelectOriginal
+        
+        _originalBarItem.isSelected = picker.alwaysSelectOriginal
+    }
+    
+    // end
+    public func picker(_ picker: SAPhotoPicker, confrim photos: Array<SAPhoto>) {
+        _logger.trace()
+        
+    }
+    public func picker(_ picker: SAPhotoPicker, cancel photos: Array<SAPhoto>) {
+        _logger.trace()
+        
+    }
+}

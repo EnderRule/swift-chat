@@ -537,7 +537,6 @@ extension SAPhotoPickerForPreviewer: PHPhotoLibraryChangeObserver {
         }
         
         _photosResult = change.fetchResultAfterChanges
-        
         _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
     }
 }
