@@ -17,10 +17,13 @@ import UIKit
 // [x] SAPhotoView - 选中高亮支持
 // [x] SAPhotoView - SelectView悬停
 // [ ] SAPhotoView - iClound图片下载进度显示
+// [ ] SAPhotoView - iClound图标
+// [ ] SAPhotoView - 媒体类型图标
+// [ ] SAPhotoAlbumStackView - 空相册图标
+// [ ] SAPhotoAlbumStackView - 相册类型图标
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知
-// [ ] SAPhotoBrowser - 预加载(左右)
 // [ ] SAPhotoBrowser - 加载进度
 // [ ] SAPhotoBrowser - 视频
 // [ ] SAPhotoBrowser - 音频
@@ -31,6 +34,7 @@ import UIKit
 // [x] SAPhotoBrowserView - 图片旋转
 // [x] SAPhotoBrowserView - 双击放大
 // [x] SAPhotoBrowserView - 双击放大(双击的地方要居中)
+// [ ] SAPhotoBrowserView - iClound图片下载进度显示
 // [x] SAPhotoPicker - 相册列表
 // [x] SAPhotoPicker - 图片列表
 // [x] SAPhotoPicker - 图片预览
@@ -68,7 +72,7 @@ import UIKit
 // [x] SAPhotoRecentlyView - 图片变更时的选中问题(检查图片是否被删除, 如果被删除将取消选中)
 // [ ] SAPhotoRecentlyView - 大小变更处理(宽/高)
 // [x] SAPhotoToolbar - Item重用
-// [ ] SAPhotoPreviewableAnimator - 图片变更动画
+// [x] SAPhotoPreviewableAnimator - 图片变更动画(渐变)
 // [x] SAPhotoPreviewableAnimator - 图片旋转动画
 // [x] SAPhotoPreviewableAnimator - contentMode变更动画
 // [ ] SAPhotoPreviewableAnimator - 移动选择视图
