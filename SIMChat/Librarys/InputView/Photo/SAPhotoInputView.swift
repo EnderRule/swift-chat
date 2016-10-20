@@ -41,6 +41,7 @@ import UIKit
 // [x] SAPhotoPickerForAlbums - 图片变更通知处理
 // [x] SAPhotoPickerForAlbums - 空相册处理
 // [x] SAPhotoPickerForAlbums - 默认显示album
+// [ ] SAPhotoPickerForAssets - 快速滚动时有性能问题
 // [x] SAPhotoPickerForAssets - 数量
 // [x] SAPhotoPickerForAssets - 单选支持
 // [x] SAPhotoPickerForAssets - 选中
@@ -50,6 +51,8 @@ import UIKit
 // [x] SAPhotoPickerForAssets - UIToolbar支持
 // [x] SAPhotoPickerForAssets - 预览的item超出visableCells时的处理
 // [ ] SAPhotoPickerForAssets - 跨界面转屏崩溃
+// [x] SAPhotoPickerForAssets - 默认显示在底部
+// [ ] SAPhotoPickerForAssets - 底部显示图片数量
 // [x] SAPhotoPickerForPreviewer - 单选支持
 // [x] SAPhotoPickerForPreviewer - 转场动画(弹出)
 // [x] SAPhotoPickerForPreviewer - 横屏支持
@@ -100,22 +103,6 @@ public class SAPhotoInputView: UIView {
         case .panel:    return [_pickBarItem, _editBarItem, _originalBarItem, _spaceBarItem, _sendBarItem]
         default:        return nil
         }
-    }
-    
-    fileprivate func _updateFileSize() {
-        var title = "原图"
-        
-        if _isOriginalImage && !_selectedPhotos.isEmpty {
-            title += "(\(_selectedPhotos.count)M)"
-        }
-        
-        _originalBarItem.title = title
-        
-//        _selectedPhotos.forEach { photo in
-//            photo.data { count in
-//                print("\(photo.identifier) => \(count)")
-//            }
-//        }
     }
     
     private func _init() {
@@ -189,27 +176,11 @@ extension SAPhotoInputView {
         
         //_contentView.updateSelectionOfItems()
     }
-    func onSendForInputView(_ sender: Any) {
-        _logger.trace()
-        
-//        _selectedPhotos.removeAll()
-//        _selectedPhotoSets.removeAll()
-//        _contentView.updateSelectionOfItems()
-    }
     func onChangeOriginal(_ sender: UIButton) {
         _logger.trace()
         
         _contentView.alwaysSelectOriginal = !_contentView.alwaysSelectOriginal
         _originalBarItem.isSelected = _contentView.alwaysSelectOriginal
-        
-//        _originalBarItem.isSelected = _isOriginalImage
-//        _original1BarItem.button.setImage(s, for: .normal)
-//        _original1BarItem.button.setImage(n, for: .selected)
-//        _original2BarItem.button.setImage(s, for: .normal)
-//        _original2BarItem.button.setImage(n, for: .selected)
-//        
-//        // 更新文件大小
-//        _updateFileSize()
     }
     
     func pickerHandler(_ sender: Any) {
@@ -333,11 +304,6 @@ extension SAPhotoInputView: SAPhotoRecentlyViewDelegate {
     // data bytes lenght change
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, didChangeBytes bytes: Int) {
         _updateBytesLenght(bytes)
-    }
-    
-    // end
-    public func recentlyView(_ recentlyView: SAPhotoRecentlyView, canConfrim photos: Array<SAPhoto>) -> Bool {
-        return _sendBarItem.isEnabled
     }
     
     public func recentlyView(_ recentlyView: SAPhotoRecentlyView, tapItemFor photo: SAPhoto, with sender: Any) {

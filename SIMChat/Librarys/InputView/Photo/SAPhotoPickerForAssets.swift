@@ -52,6 +52,13 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         collectionView?.addGestureRecognizer(pan)
         
         _reloadPhotos()
+        
+        DispatchQueue.main.async {
+            guard !self._photos.isEmpty else {
+                return
+            }
+            self.collectionView?.scrollToItem(at: IndexPath(item: self._photos.count - 1, section: 0), at: .bottom, animated: false)
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
