@@ -115,15 +115,39 @@ public class SAPhotoAlbum: NSObject {
 extension SAPhotoAlbum {
     
     fileprivate static func _fetchAssetCollections() -> [SAPhotoAlbum] {
-        return [
-            (.smartAlbum, .smartAlbumUserLibrary),
-            (.album, .albumMyPhotoStream),
+        var types: [(PHAssetCollectionType, PHAssetCollectionSubtype)] = []
+        
+        // smart album -> user
+        types.append((.smartAlbum, .smartAlbumUserLibrary))
+        types.append((.smartAlbum, .smartAlbumFavorites))
+        types.append((.smartAlbum, .smartAlbumGeneric))
             
-            (.smartAlbum, .smartAlbumRecentlyAdded),
-            (.album, .albumSyncedAlbum),
+        // smart album -> recently
+        types.append((.smartAlbum, .smartAlbumRecentlyAdded))
             
-            (.album, .albumRegular),
-        ].reduce([]) {
+        // smart album -> video
+        types.append((.smartAlbum, .smartAlbumPanoramas))
+        types.append((.smartAlbum, .smartAlbumVideos))
+        types.append((.smartAlbum, .smartAlbumSlomoVideos))
+        types.append((.smartAlbum, .smartAlbumTimelapses))
+        
+        // smart album -> screenshots
+        if #available(iOS 9.0, *) { 
+            types.append((.smartAlbum, .smartAlbumScreenshots))
+            //types.append((.smartAlbum, .smartAlbumSelfPortraits))
+        }
+        
+        // album -> share
+        types.append((.album, .albumMyPhotoStream))
+        types.append((.album, .albumCloudShared))
+        
+        // album -> user
+        types.append((.album, .albumRegular))
+        types.append((.album, .albumSyncedAlbum))
+        types.append((.album, .albumImported))
+        types.append((.album, .albumSyncedFaces))
+        
+        return types.reduce([]) {
             $0 + _fetchAssetCollections(with: $1.0, subtype: $1.1)
         }
     }

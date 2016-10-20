@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "photo_icon_empty_album_shared.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "photo_error_empty.png",
+      "filename" : "photo_icon_empty_album_shared@2x.png",
       "scale" : "2x"
     },
     {

@@ -22,18 +22,7 @@ internal class SAPhotoPickerForAlbumsCell: UITableViewCell {
             _descriptionLabel.text = "\(count)"
             
             _stackView.layoutIfNeeded()
-            
-            
-            guard let newResult = newValue.fetchResult else {
-                // is empty
-                _stackView.photos = nil
-                return 
-            }
-            
-            let range = NSMakeRange(max(count - 3, 0), min(3, count))
-            let photos = newValue.photos(with: newResult, in: range)
-            // 更新UI
-            _stackView.photos = photos.reversed()
+            _stackView.album = newValue
         }
     }
     

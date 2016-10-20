@@ -7,13 +7,23 @@
 //
 
 import UIKit
+import Photos
 
 internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
     
-    /// 显示的图片
-    var photos: [SAPhoto]? {
-        willSet {
-            _updatePhotos(newValue ?? [])
+    var album: SAPhotoAlbum? {
+        didSet {
+            guard let newValue = album else {
+                return
+            }
+            _updateIcon(newValue.subtype)
+            guard let newResult = newValue.fetchResult else {
+                // is empty
+                _updatePhotos([])
+                return 
+            }
+            let range = NSMakeRange(max(newValue.count - 3, 0), min(3, newValue.count))
+            _updatePhotos(newValue.photos(with: newResult, in: range).reversed())
         }
     }
     
@@ -44,8 +54,37 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
         }
     }
     
+    private func _updateIcon(_ type: PHAssetCollectionSubtype) {
+        _logger.trace()
+        
+        
+//    // PHAssetCollectionTypeAlbum regular subtypes
+//    PHAssetCollectionSubtypeAlbumRegular         = 2,
+//    PHAssetCollectionSubtypeAlbumSyncedEvent     = 3,
+//    PHAssetCollectionSubtypeAlbumSyncedFaces     = 4,
+//    PHAssetCollectionSubtypeAlbumSyncedAlbum     = 5,
+//    PHAssetCollectionSubtypeAlbumImported        = 6,
+//    
+//    // PHAssetCollectionTypeAlbum shared subtypes
+//    PHAssetCollectionSubtypeAlbumMyPhotoStream   = 100,
+//    PHAssetCollectionSubtypeAlbumCloudShared     = 101,
+//    
+//    // PHAssetCollectionTypeSmartAlbum subtypes
+//    PHAssetCollectionSubtypeSmartAlbumGeneric    = 200,
+//    PHAssetCollectionSubtypeSmartAlbumPanoramas  = 201,
+//    PHAssetCollectionSubtypeSmartAlbumVideos     = 202,
+//    PHAssetCollectionSubtypeSmartAlbumFavorites  = 203,
+//    PHAssetCollectionSubtypeSmartAlbumTimelapses = 204,
+//    PHAssetCollectionSubtypeSmartAlbumAllHidden  = 205,
+//    PHAssetCollectionSubtypeSmartAlbumRecentlyAdded = 206,
+//    PHAssetCollectionSubtypeSmartAlbumBursts     = 207,
+//    PHAssetCollectionSubtypeSmartAlbumSlomoVideos = 208,
+//    PHAssetCollectionSubtypeSmartAlbumUserLibrary = 209,
+//    PHAssetCollectionSubtypeSmartAlbumSelfPortraits PHOTOS_AVAILABLE_IOS_TVOS(9_0, 10_0) = 210,
+//    PHAssetCollectionSubtypeSmartAlbumScreenshots PHOTOS_AVAILABLE_IOS_TVOS(9_0, 10_0) = 211,
+    }
     private func _updatePhotos(_ photos: [SAPhoto]) {
-        _logger.trace(photos.count)
+        //_logger.trace(photos.count)
         
         // 更新内容
         var size = bounds.size
