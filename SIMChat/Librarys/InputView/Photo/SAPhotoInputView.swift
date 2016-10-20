@@ -52,7 +52,8 @@ import UIKit
 // [x] SAPhotoPickerForAssets - 预览的item超出visableCells时的处理
 // [ ] SAPhotoPickerForAssets - 跨界面转屏崩溃
 // [x] SAPhotoPickerForAssets - 默认显示在底部
-// [ ] SAPhotoPickerForAssets - 底部显示图片数量
+// [x] SAPhotoPickerForAssets - 底部显示图片数量
+// [ ] SAPhotoPickerForAssets - 当有大量的图片变更时, 可能会导致应用卡死
 // [x] SAPhotoPickerForPreviewer - 单选支持
 // [x] SAPhotoPickerForPreviewer - 转场动画(弹出)
 // [x] SAPhotoPickerForPreviewer - 横屏支持

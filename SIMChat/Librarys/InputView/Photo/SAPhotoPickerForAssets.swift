@@ -18,7 +18,6 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     weak var picker: SAPhotoPickerForImp?
     weak var selection: SAPhotoSelectionable?
     
-    
     override var toolbarItems: [UIBarButtonItem]? {
         set { }
         get {
@@ -41,8 +40,8 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
         collectionView?.allowsMultipleSelection = false
         collectionView?.alwaysBounceVertical = true
         collectionView?.contentInset = UIEdgeInsetsMake(10, 0, 10, 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(10, 0, 10, 0)
         collectionView?.register(SAPhotoPickerForAssetsCell.self, forCellWithReuseIdentifier: "Item")
+        collectionView?.register(SAPhotoPickerForAssetsFooter.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "Footer")
         
         // 添加手势
         let pan = UIPanGestureRecognizer(target: self, action: #selector(panHandler(_:)))
@@ -223,10 +222,18 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
             collectionView?.isScrollEnabled = false
         }
         
+        _updateFooter()
+    }
+    fileprivate func _updateFooter() {
+        _logger.trace()
+        
+        _footer?.isHidden = _photos.isEmpty
+        _footer?.title = "共\(_photos.count)张照片"
+        
+        // toolbar
         let isHidden = _photos.isEmpty || toolbarItems?.isEmpty ?? true
         navigationController?.isToolbarHidden = isHidden
     }
-    
     fileprivate func _updateSelection(_ newValue: Bool, at index: Int) -> Bool {
         let photo = _photos[index]
         
@@ -369,6 +376,8 @@ internal class SAPhotoPickerForAssets: UICollectionViewController, UIGestureReco
     
     private var _toolbarItems: [UIBarButtonItem]??
     
+    fileprivate weak var _footer: SAPhotoPickerForAssetsFooter?
+    
     fileprivate var _editingTask: Any? {
         willSet {
             if let newValue = newValue {
@@ -430,6 +439,14 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
     }
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
+        if let footer = view as? SAPhotoPickerForAssetsFooter {
+            _footer = footer
+            _updateFooter()
+        }
+        return view
+    }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let cell = cell as? SAPhotoPickerForAssetsCell else {
@@ -462,6 +479,9 @@ extension SAPhotoPickerForAssets: UICollectionViewDelegateFlowLayout {
         _itemSize = CGSize(width: width, height: width)
         
         return _itemSize
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 48)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         
