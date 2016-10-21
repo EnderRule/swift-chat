@@ -16,13 +16,15 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             guard let newValue = album else {
                 return
             }
-            _updateIcon(newValue.subtype)
             guard let newResult = newValue.fetchResult else {
                 // is empty
+                _updateIcon(.any)
                 _updatePhotos([])
                 return 
             }
             let range = NSMakeRange(max(newValue.count - 3, 0), min(3, newValue.count))
+            
+            _updateIcon(newValue.subtype)
             _updatePhotos(newValue.photos(with: newResult, in: range).reversed())
         }
     }
@@ -56,6 +58,15 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
     
     private func _updateIcon(_ type: PHAssetCollectionSubtype) {
         _logger.trace()
+        
+        //type == .smartAlbumFavorites
+        
+        //type == .smartAlbumPanoramas
+        //type == .smartAlbumVideos
+        //type == .smartAlbumSlomoVideos
+        //type == .smartAlbumTimelapses
+        
+        //type == .smartAlbumScreenshots
         
         
 //    // PHAssetCollectionTypeAlbum regular subtypes
@@ -96,13 +107,16 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             guard !photos.isEmpty else {
                 // 这是一个空的相册
                 $0.element.isHidden = false
-                $0.element.backgroundColor = UIColor(white: 0.8, alpha: 1).cgColor
+                $0.element.backgroundColor = UIColor(white: 0.9, alpha: 1).cgColor
                 
-                return _setImage(nil, at: $0.offset)
+                _setImage(nil, at: $0.offset)
+                
+                return
             }
             guard $0.offset < photos.count else {
                 // 这个相册并没有3张图片
                 $0.element.isHidden = true
+                $0.element.contentsGravity = kCAGravityResizeAspectFill
                 
                 return _setImage(nil, at: $0.offset)
             }
@@ -112,6 +126,21 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             $0.element.backgroundColor = UIColor.white.cgColor
             
             _setImage(photo.image(with: size) as? SAPhotoProgressiveableImage, at: $0.offset)
+        }
+        
+        if photos.isEmpty {
+            
+            _iconImageView.frame = bounds
+            _iconImageView.image = UIImage(named: "photo_icon_empty_album")?.withRenderingMode(.alwaysTemplate)
+            _iconImageView.contentMode = .center
+            _iconImageView.tintColor = UIColor.gray
+            
+            addSubview(_iconImageView)
+            
+        } else if _iconImageView.superview != nil {
+            
+            _iconImageView.image = nil
+            _iconImageView.removeFromSuperview()
         }
     }
     
@@ -144,6 +173,9 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             
             return il
         }
+        
+        _iconImageView.frame = bounds
+        _iconImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     override init(frame: CGRect) {
@@ -157,4 +189,6 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
     
     private lazy var _images: [Int: SAPhotoProgressiveableImage?] = [:]
     private lazy var _imageLayers: [CALayer] = []
+    
+    private lazy var _iconImageView: UIImageView = UIImageView()
 }
