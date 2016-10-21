@@ -18,9 +18,9 @@ import UIKit
 // [x] SAPhotoView - SelectView悬停
 // [ ] SAPhotoView - iClound图片下载进度显示
 // [ ] SAPhotoView - iClound图标
-// [ ] SAPhotoView - 媒体类型图标
-// [ ] SAPhotoAlbumStackView - 空相册图标
-// [ ] SAPhotoAlbumStackView - 相册类型图标
+// [x] SAPhotoView - 媒体类型图标
+// [x] SAPhotoAlbumStackView - 空相册图标
+// [x] SAPhotoAlbumStackView - 相册类型图标
 // [ ] SAPhotoBrowser - 实现
 // [ ] SAPhotoBrowser - 错误显示(无权限显示)
 // [ ] SAPhotoBrowser - 图片更新通知

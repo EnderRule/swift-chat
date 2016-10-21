@@ -57,18 +57,22 @@ public class SAPhotoLibrary: NSObject {
         }
         
         _allCaches[photo.identifier]?[name] = SAPhotoWeakObject(object: image)
-        _requestImage(photo, size, .aspectFill, options) { (img, info) in
-            let os = image.size
-            let ns = img?.size ?? .zero
-            
-            if ns.width >= os.width && ns.height >= os.height {
-                image.content = img
+        _queue.async {
+            self._requestImage(photo, size, .aspectFill, options) { (img, info) in
+                let os = image.size
+                let ns = img?.size ?? .zero
                 
-                // // 检查是否己经完成了任务
-                // let isError = (info?[PHImageErrorKey] as? NSError) != nil
-                // let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
-                // let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
-                // let isLoaded = isError || isCancel || !isDegraded
+                DispatchQueue.main.async {
+                if ns.width >= os.width && ns.height >= os.height {
+                    image.content = img
+                    
+                    // // 检查是否己经完成了任务
+                    // let isError = (info?[PHImageErrorKey] as? NSError) != nil
+                    // let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
+                    // let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+                    // let isLoaded = isError || isCancel || !isDegraded
+                }
+                }
             }
         }
         
@@ -237,6 +241,8 @@ public class SAPhotoLibrary: NSObject {
     }()
     
     private var _needsClearCaches: Bool = false
+
+    private lazy var _queue: DispatchQueue = DispatchQueue(label: "SAPhotoImageLoadQueue")
     private lazy var _allCaches: [String: [String: SAPhotoWeakObject<UIImage>]] = [:]
 }
 
