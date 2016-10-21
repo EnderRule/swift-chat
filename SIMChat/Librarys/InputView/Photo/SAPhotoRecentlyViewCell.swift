@@ -11,6 +11,11 @@ import UIKit
 
 internal class SAPhotoRecentlyViewCell: UICollectionViewCell {
     
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        // 重新添加回屏幕的时候检查一下有没有超出边界
+        photoView.updateEdge()
+    }
     override func layoutSubviews() {
         super.layoutSubviews()
         photoView.updateEdge()

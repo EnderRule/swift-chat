@@ -13,7 +13,6 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
     
     var previewingFrame: CGRect {
         let rect = convert(bounds, to: window)
-        
         return rect
     }
     
@@ -107,12 +106,6 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
         super.layoutSubviews()
         _hightlightLayer.frame = bounds
     }
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        // 重新添加回屏幕的时候检查一下有没有超出边界
-        updateEdge() 
-    }
-    
     
     @objc private func tapHandler(_ sender: Any) {
         guard let photo = photo else {
