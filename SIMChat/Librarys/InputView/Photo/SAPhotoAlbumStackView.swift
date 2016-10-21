@@ -57,42 +57,35 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
     }
     
     private func _updateIcon(_ type: PHAssetCollectionSubtype) {
-        _logger.trace()
+        let badge = SAPhotoBadge(collectionSubtype: type)
+        guard badge != .normal else {
+            // removew
+            _badgeView?.badge = .normal
+            _badgeView?.removeFromSuperview()
+            _badgeView = nil
+            
+            return
+        }
+        guard _badgeView?.superview == nil else {
+            // is exists
+            _badgeView?.badge = badge
+            return
+        }
         
-        //type == .smartAlbumFavorites
-        
-        //type == .smartAlbumPanoramas
-        //type == .smartAlbumVideos
-        //type == .smartAlbumSlomoVideos
-        //type == .smartAlbumTimelapses
-        
-        //type == .smartAlbumScreenshots
+        let view = SAPhotoBadgeView()
+        _badgeView = view
         
         
-//    // PHAssetCollectionTypeAlbum regular subtypes
-//    PHAssetCollectionSubtypeAlbumRegular         = 2,
-//    PHAssetCollectionSubtypeAlbumSyncedEvent     = 3,
-//    PHAssetCollectionSubtypeAlbumSyncedFaces     = 4,
-//    PHAssetCollectionSubtypeAlbumSyncedAlbum     = 5,
-//    PHAssetCollectionSubtypeAlbumImported        = 6,
-//    
-//    // PHAssetCollectionTypeAlbum shared subtypes
-//    PHAssetCollectionSubtypeAlbumMyPhotoStream   = 100,
-//    PHAssetCollectionSubtypeAlbumCloudShared     = 101,
-//    
-//    // PHAssetCollectionTypeSmartAlbum subtypes
-//    PHAssetCollectionSubtypeSmartAlbumGeneric    = 200,
-//    PHAssetCollectionSubtypeSmartAlbumPanoramas  = 201,
-//    PHAssetCollectionSubtypeSmartAlbumVideos     = 202,
-//    PHAssetCollectionSubtypeSmartAlbumFavorites  = 203,
-//    PHAssetCollectionSubtypeSmartAlbumTimelapses = 204,
-//    PHAssetCollectionSubtypeSmartAlbumAllHidden  = 205,
-//    PHAssetCollectionSubtypeSmartAlbumRecentlyAdded = 206,
-//    PHAssetCollectionSubtypeSmartAlbumBursts     = 207,
-//    PHAssetCollectionSubtypeSmartAlbumSlomoVideos = 208,
-//    PHAssetCollectionSubtypeSmartAlbumUserLibrary = 209,
-//    PHAssetCollectionSubtypeSmartAlbumSelfPortraits PHOTOS_AVAILABLE_IOS_TVOS(9_0, 10_0) = 210,
-//    PHAssetCollectionSubtypeSmartAlbumScreenshots PHOTOS_AVAILABLE_IOS_TVOS(9_0, 10_0) = 211,
+        //photo_icon_thumbnail_loading
+        
+        let st: CGFloat = 0.5
+        
+        view.badge = badge
+        view.tintColor = .white
+        view.frame = CGRect(x: st, y: bounds.height - 24 - st, width: bounds.width - st * 2, height: 24)
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        addSubview(view)
     }
     private func _updatePhotos(_ photos: [SAPhoto]) {
         //_logger.trace(photos.count)
@@ -130,17 +123,26 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
         
         if photos.isEmpty {
             
-            _iconImageView.frame = bounds
-            _iconImageView.image = UIImage(named: "photo_icon_empty_album")?.withRenderingMode(.alwaysTemplate)
-            _iconImageView.contentMode = .center
-            _iconImageView.tintColor = UIColor.gray
+            guard _iconView == nil else {
+                return
+            }
             
-            addSubview(_iconImageView)
+            let view = UIImageView()
+            _iconView = view
             
-        } else if _iconImageView.superview != nil {
+            view.image = UIImage(named: "photo_icon_empty_album")?.withRenderingMode(.alwaysTemplate)
+            view.frame = bounds
+            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.contentMode = .center
+            view.tintColor = UIColor.gray
             
-            _iconImageView.image = nil
-            _iconImageView.removeFromSuperview()
+            addSubview(view)
+            
+        } else {
+            
+            _iconView?.image = nil
+            _iconView?.removeFromSuperview()
+            _iconView = nil
         }
     }
     
@@ -173,9 +175,6 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             
             return il
         }
-        
-        _iconImageView.frame = bounds
-        _iconImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     override init(frame: CGRect) {
@@ -187,8 +186,9 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
         _init()
     }
     
+    private var _iconView: UIImageView?
+    private var _badgeView: SAPhotoBadgeView?
+    
     private lazy var _images: [Int: SAPhotoProgressiveableImage?] = [:]
     private lazy var _imageLayers: [CALayer] = []
-    
-    private lazy var _iconImageView: UIImageView = UIImageView()
 }
