@@ -122,6 +122,12 @@ public class SAPhoto: NSObject {
     }
 }
 
+internal func SAPhotoFormatDuration(_ duration: TimeInterval) -> String {
+    let s = Int(duration) % 60
+    let m = Int(duration / 60)
+    return String(format: "%02zd:%02zd", m, s)
+}
+
 internal func SAPhotoFormatBytesLenght(_ len: Int) -> String {
     if len <= 999 {
         // 只显示1B-999B

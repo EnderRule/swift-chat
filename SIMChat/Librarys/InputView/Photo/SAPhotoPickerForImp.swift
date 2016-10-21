@@ -120,12 +120,12 @@ internal class SAPhotoPickerForImp: UINavigationController {
     }
     dynamic convenience init(pick album: SAPhotoAlbum) {
         self.init()
-        self.pick(with: album, animated: true)
+        self.pick(with: album, animated: false)
         self.allowsMultipleDisplay = false
     }
     dynamic convenience init(preview options: SAPhotoPickerOptions) {
         self.init()
-        self.preview(with: options, animated: true)
+        self.preview(with: options, animated: false)
         self.allowsMultipleDisplay = false
         
         self.transitioningDelegate = self

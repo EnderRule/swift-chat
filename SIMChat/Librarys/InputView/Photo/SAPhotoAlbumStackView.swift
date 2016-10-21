@@ -18,13 +18,13 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
             }
             guard let newResult = newValue.fetchResult else {
                 // is empty
-                _updateIcon(.any)
+                _updateIcon(.normal)
                 _updatePhotos([])
                 return 
             }
             let range = NSMakeRange(max(newValue.count - 3, 0), min(3, newValue.count))
             
-            _updateIcon(newValue.subtype)
+            _updateIcon(SAPhotoBadge(collectionSubtype: newValue.subtype))
             _updatePhotos(newValue.photos(with: newResult, in: range).reversed())
         }
     }
@@ -56,11 +56,9 @@ internal class SAPhotoAlbumStackView: UIView, SAPhotoProgressiveableObserver {
         }
     }
     
-    private func _updateIcon(_ type: PHAssetCollectionSubtype) {
-        let badge = SAPhotoBadge(collectionSubtype: type)
+    private func _updateIcon(_ badge: SAPhotoBadge) {
         guard badge != .normal else {
             // removew
-            _badgeView?.badge = .normal
             _badgeView?.removeFromSuperview()
             _badgeView = nil
             

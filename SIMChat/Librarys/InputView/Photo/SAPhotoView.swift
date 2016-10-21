@@ -32,15 +32,18 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
     }
     
     var photo: SAPhoto? {
-        willSet {
-            
+        didSet {
+            guard let newValue = photo else {
+                return
+            }
             var size = bounds.size
             
             size.width *= UIScreen.main.scale + 1
             size.height *= UIScreen.main.scale + 1
             
-            image = newValue?.image(with: size)
+            image = newValue.image(with: size)
             
+            _updateIcon(SAPhotoBadge(photo: newValue))
             _updateSelection(with: newValue, animated: false)
         }
     }
@@ -139,6 +142,37 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
         delegate?.selection(self, didEditing: sender)
     }
     
+    private func _updateIcon(_ badge: SAPhotoBadge) {
+        //_logger.trace()
+        
+        guard badge != .normal else {
+            // removew
+            _badgeView?.removeFromSuperview()
+            _badgeView = nil
+            
+            return
+        }
+        if _badgeView?.superview == nil {
+            let view = SAPhotoBadgeView(style: .small)
+            
+            view.tintColor = .white
+            view.frame = CGRect(x: 0, y: bounds.height - 20, width: bounds.width, height: 20)
+            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            insertSubview(view, belowSubview: _selectedView)
+            _badgeView = view
+        }
+        
+        if let photo = photo, photo.mediaType == .video {
+            _badgeView?.badge = badge
+            _badgeView?.duration = photo.duration
+        } else {
+            _badgeView?.badge = badge
+            _badgeView?.duration = nil
+        }
+        //photo_icon_thumbnail_loading
+    }
+    
     private func _updateSelection(with photo: SAPhoto?, animated: Bool) {
         guard let photo = photo, allowsSelection else {
             return
@@ -213,6 +247,8 @@ internal class SAPhotoView: UIImageView, SAPhotoPreviewable {
     }
     
     private var _isSelected: Bool = false
+    
+    private var _badgeView: SAPhotoBadgeView?
     
     private lazy var _selectedView: UIButton = UIButton()
     private lazy var _hightlightLayer: CALayer = CALayer()
