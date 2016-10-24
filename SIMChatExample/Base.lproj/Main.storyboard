@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Gpz-A1-7Uk">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11535.1" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Gpz-A1-7Uk">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11523"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -29,21 +33,21 @@
             <objects>
                 <tableViewController id="p2U-CA-r5F" customClass="ExConversationViewController" customModule="SIMChatExample" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="eTG-XH-kc4">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <sections>
                             <tableViewSection id="qva-2n-hoZ">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="A28-FA-Hi8" style="IBUITableViewCellStyleDefault" id="KGy-Cb-bgt">
-                                        <rect key="frame" x="0.0" y="64" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGy-Cb-bgt" id="zQ3-vL-xmY">
-                                            <frame key="frameInset" width="320" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="进入聊天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="A28-FA-Hi8">
-                                                    <frame key="frameInset" minX="15" width="290" height="43.5"/>
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -62,17 +66,54 @@
                     </tableView>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="dpS-QI-548">
-                        <barButtonItem key="rightBarButtonItem" title="H" id="a9K-Fh-uCw">
-                            <connections>
-                                <action selector="onPL:" destination="p2U-CA-r5F" id="hIr-Cm-BYK"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="M" id="aN8-6v-uYx">
+                                <connections>
+                                    <segue destination="AGo-CY-jIU" kind="show" id="g4A-QW-Mlb"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="H" id="a9K-Fh-uCw">
+                                <connections>
+                                    <action selector="onPL:" destination="p2U-CA-r5F" id="hIr-Cm-BYK"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NxL-j5-BHm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="947" y="-434"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="fkS-EF-Ce3">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="AGo-CY-jIU" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SER-WB-nxA"/>
+                        <viewControllerLayoutGuide type="bottom" id="Cny-cd-dZT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="VQe-oK-w5h">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAF-Pt-IxK" customClass="SAPhotoContainter" customModule="SIMChat">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="QAF-Pt-IxK" firstAttribute="top" secondItem="VQe-oK-w5h" secondAttribute="top" id="C0a-TU-lry"/>
+                            <constraint firstAttribute="trailing" secondItem="QAF-Pt-IxK" secondAttribute="trailing" id="boQ-hf-3JQ"/>
+                            <constraint firstItem="Cny-cd-dZT" firstAttribute="top" secondItem="QAF-Pt-IxK" secondAttribute="bottom" id="eXk-t8-geP"/>
+                            <constraint firstItem="QAF-Pt-IxK" firstAttribute="leading" secondItem="VQe-oK-w5h" secondAttribute="leading" id="hAl-GT-0g8"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KJR-ag-kgF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1593" y="-434"/>
         </scene>
     </scenes>
 </document>
