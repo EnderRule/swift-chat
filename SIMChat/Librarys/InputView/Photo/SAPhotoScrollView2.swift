@@ -25,35 +25,36 @@ public class SAPhotoContainter: UIView {
         
         if let view = viewForZooming(in: _scrollView) {
             // 计算宽高
-            let width = view.bounds.width * _scrollView.maximumZoomScale
-            let height = view.bounds.height * _scrollView.maximumZoomScale
+            let width = max(view.bounds.width * _scrollView.maximumZoomScale, 1)
+            let height = max(view.bounds.height * _scrollView.maximumZoomScale, 1)
             // 计算最小缩放比和最大缩放比
-            let nscale = min(min(bounds.width / max(width, 1), bounds.height / max(height, 1)), 1)
+            let nscale = min(min(bounds.width / width, bounds.height / height), 1)
             let nmscale = 1 / nscale
             // 计算当前的缩放比
-            var oscale = max(view.frame.width / max(width, 1), view.frame.height / max(height, 1)) * nmscale
-            if _scrollView.zoomScale == _scrollView.minimumZoomScale {
-                oscale = 1 // min
-            }
+            var oscale = max(view.frame.width / width, view.frame.height / height) * nmscale
+            // 边界检查
             if _scrollView.zoomScale == _scrollView.maximumZoomScale {
                 oscale = nmscale // max
+            }
+            if _scrollView.zoomScale == _scrollView.minimumZoomScale {
+                oscale = 1 // min
             }
             
             let nwidth = width * nscale
             let nheight = height * nscale
             
             view.bounds = CGRect(x: 0, y: 0, width: nwidth, height: nheight)
+            //view.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
             
             _scrollView.minimumZoomScale = 1
             _scrollView.maximumZoomScale = nmscale
             _scrollView.zoomScale = max(min(oscale, nmscale), 1)
             
+            //_logger.debug("(\(width), \(height)) => (\(nscale), \(nmscale), \(oscale))")
             
-            _logger.debug("(\(width), \(height)) => (\(nscale), \(nmscale), \(oscale))")
+            // 重置中心点
+            scrollViewDidZoom(_scrollView)
         }
-        
-        // 重置位置
-        scrollViewDidZoom(_scrollView)
     }
     
     private func _init() {
