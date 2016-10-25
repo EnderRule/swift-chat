@@ -394,6 +394,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print(dic.count)
         
+//        _imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 240)
+//        _imageView.image = UIImage(named: "t1_g.jpg")
+//        _imageView.backgroundColor = .random
+//        
+//        _scrollView.minimumZoomScale = 1
+//        _scrollView.maximumZoomScale = 1600 / 320.0
+//        _scrollView.zoomScale = 1
+//        
+//        _scrollView.addSubview(_imageView)
         
         
         //-(BOOL)_canOpenURL:(id)url publicURLsOnly:(BOOL)only;
