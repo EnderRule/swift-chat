@@ -21,9 +21,9 @@ public class SAPhotoContainter: UIView {
         guard _cacheBounds?.size != bounds.size else {
             return
         }
-        _cacheBounds = bounds
-        
         if let view = viewForZooming(in: _scrollView) {
+            // 获取当前位置
+            let offset = _scrollView.contentOffset
             // 计算宽高
             let width = max(view.bounds.width * _scrollView.maximumZoomScale, 1)
             let height = max(view.bounds.height * _scrollView.maximumZoomScale, 1)
@@ -45,17 +45,31 @@ public class SAPhotoContainter: UIView {
             _scrollView.minimumZoomScale = 1
             _scrollView.maximumZoomScale = nmscale
             _scrollView.zoomScale = max(min(oscale, nmscale), 1)
+            _scrollView.contentOffset = {
+                // 重置contentOffset
+                var x = max(offset.x + ((_cacheBounds?.width ?? 0) - bounds.width) / 2, 0)
+                var y = max(offset.y + ((_cacheBounds?.height ?? 0) - bounds.height) / 2, 0)
+                
+                if offset.x + bounds.width >= _scrollView.contentSize.width {
+                    x = offset.x
+                }
+                if offset.y + bounds.height >= _scrollView.contentSize.height {
+                    y = offset.y
+                }
+                
+                return CGPoint(x: x, y: y)
+            }()
             
             view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
-            
-            //_logger.debug("(\(width), \(height)) => (\(nscale), \(nmscale), \(oscale))")
-            
-            // 重置中心点
-            scrollViewDidZoom(_scrollView)
         }
+        
+        _cacheBounds = bounds
     }
     
     private func _init() {
+        
+        clipsToBounds = true
+        backgroundColor = .random
         
         _scrollView.frame = bounds
         _scrollView.delegate = self
@@ -74,7 +88,6 @@ public class SAPhotoContainter: UIView {
         super.addGestureRecognizer(_rotationGestureRecognizer)
         
         _scrollView.backgroundColor = .random
-        backgroundColor = .random
         
         _imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 240)
         _imageView.image = UIImage(named: "t1_g.jpg")
