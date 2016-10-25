@@ -286,7 +286,7 @@ fileprivate extension SAPhotoContainterView {
         super.addGestureRecognizer(_rotationGestureRecognizer)
     }
     
-    /// 把方向转成弧度
+    /// convert orientation to angle
     fileprivate func _angle(for orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
         case .up,
@@ -304,7 +304,7 @@ fileprivate extension SAPhotoContainterView {
         }
     }
     
-    /// 把弧度转成方向
+    /// convert angle to orientation
     fileprivate func _orientation(for angle: CGFloat) -> UIImageOrientation {
         switch Int(angle / CGFloat(M_PI_2)) % 4 {
         case 0:     return .up
@@ -323,22 +323,22 @@ fileprivate extension SAPhotoContainterView {
         }
     }
     
-    /// 用弧度更新方向
+    /// with angle update orientation
     fileprivate func _updateOrientation(with angle: CGFloat, animated: Bool, completion handler: ((Bool) -> Void)? = nil) {
         //_logger.trace(angle)
         
         let oldOrientation = _orientation
         let newOrientation = _orientation(for: _angle(for: _orientation) + angle)
         
-        // 获取宽高
+        // get contentView width and height
         let view = _contentView
         var width = max((view?.bounds.width ?? 0) * _scrollView.maximumZoomScale, 1)
         var height = max((view?.bounds.height ?? 0) * _scrollView.maximumZoomScale, 1)
-        // 如果方向不同, 反转
+        // if orientation is cahnge, revert width and height
         if _isLandscape(for: newOrientation) != _isLandscape(for: oldOrientation) {
             swap(&width, &height)
         }
-        // 计算最小缩放比
+        // calc minimum scale ratio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = 1 / nscale
         
@@ -346,7 +346,7 @@ fileprivate extension SAPhotoContainterView {
         let transform = CGAffineTransform(rotationAngle: angle)
         
         let animations: () -> Void = { [_scrollView] in
-            // 检查没有发生改变
+            // orientation is change?
             if oldOrientation != newOrientation {
                 // changed
                 _scrollView.transform = transform
@@ -379,10 +379,10 @@ fileprivate extension SAPhotoContainterView {
             view?.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
         }
         
-        // 更新
+        // update
         _orientation = newOrientation
         
-        // 检查有没有开启动画
+        // can use animation?
         if !animated {
             animations()
             completion(true)
@@ -392,21 +392,21 @@ fileprivate extension SAPhotoContainterView {
         UIView.animate(withDuration: 0.35, animations: animations, completion: completion)
     }
     
-    /// 旋转手势事件
+    /// rotation handler
     dynamic func rotationHandler(_ sender: UIRotationGestureRecognizer) {
-        // 检查是否开启了旋转
+        // is opened rotation?
         guard _isRotationing else {
             return 
         }
         _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
-        // 结束的时候保存当前旋转的角度
+        // state is end?
         guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
             return
         }
-        // 更新方向
+        // call update orientation
         _isRotationing = false
         _updateOrientation(with: round(sender.rotation / CGFloat(M_PI_2)) * CGFloat(M_PI_2), animated: true) { f in
-            // 回调的时候通知用户
+            // callback notifi user
             self.delegate?.containterViewDidEndRotationing?(self, with: self._contentView, atOrientation: self._orientation)
         }
     }
@@ -415,31 +415,31 @@ fileprivate extension SAPhotoContainterView {
 extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     
     public override func addSubview(_ view: UIView) {
-        // 不允许添加到self
+        // always allows add to self
         _scrollView.addSubview(view)
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        // 检查有没有改变大小
+        // size is change?
         guard _bounds?.size != bounds.size else {
             return
         }
         guard let view = _contentView else {
             return
         }
-        // 获取宽高
+        // get contentView widht and height
         let width = max(view.bounds.width * _scrollView.maximumZoomScale, 1)
         let height = max(view.bounds.height * _scrollView.maximumZoomScale, 1)
-        // 获取当前位置
+        // get current offset
         let offset = _scrollView.contentOffset
-        // 计算最小缩放比和最大缩放比
+        // calc minimum scale ratio & maximum scale roatio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = 1 / nscale
-        // 计算当前的缩放比
+        // calc current scale
         var oscale = max(view.frame.width / width, view.frame.height / height) * nmscale
-        // 边界检查
+        // check boundary
         if _scrollView.zoomScale == _scrollView.maximumZoomScale {
             oscale = nmscale // max
         }
@@ -447,10 +447,10 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
             oscale = 1 // min
         }
         
-        // 重置默认大小
+        // reset default size
         view.bounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
         
-        // 重置缩放和位置
+        // reset zoom position
         _scrollView.minimumZoomScale = 1
         _scrollView.maximumZoomScale = nmscale
         _scrollView.zoomScale = max(min(oscale, nmscale), 1)
@@ -468,10 +468,10 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
             return CGPoint(x: x, y: y)
         }()
         
-        // 重置中心点
+        // reset center
         view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
         
-        // 更新
+        // cache
         _bounds = bounds
     }
     
@@ -479,11 +479,11 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
     
     public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if _rotationGestureRecognizer === gestureRecognizer {
-            // 如果没有zoomingView那旋转没有意义
+            // if no found contentView, can't roation 
             guard let view = _contentView else {
                 return false
             }
-            // 询问用户
+            // can rotation?
             guard delegate?.containterViewShouldBeginRotationing?(self, with: view) ?? true else {
                 return false
             }
