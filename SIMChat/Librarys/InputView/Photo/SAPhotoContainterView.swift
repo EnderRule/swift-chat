@@ -377,10 +377,6 @@ fileprivate extension SAPhotoContainterView {
             
             view?.frame = nbounds
             view?.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
-            
-            if let imageView = view as? UIImageView {
-                imageView.image = imageView.image?.withOrientation(newOrientation)
-            }
         }
         
         // 更新

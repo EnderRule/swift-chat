@@ -36,6 +36,13 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
         return imageView
     }
     
+    func containterViewShouldBeginRotationing(_ containterView: SAPhotoContainterView, with view: UIView?) -> Bool {
+        return true
+    }
+    func containterViewDidEndRotationing(_ containterView: SAPhotoContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
+        imageView.image = imageView.image?.withOrientation(orientation)
+    }
+    
     lazy var imageView: UIImageView = UIImageView()
         
 
