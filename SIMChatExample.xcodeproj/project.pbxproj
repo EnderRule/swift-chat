@@ -31,6 +31,7 @@
 		0C6B41571C61D74A00085B66 /* ExConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6B41561C61D74A00085B66 /* ExConversation.swift */; };
 		0C6B41591C61DA7E00085B66 /* t1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C6B41581C61DA7E00085B66 /* t1.jpg */; };
 		0C6B415D1C61DC7500085B66 /* SIMChat.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C6B415C1C61DC7500085B66 /* SIMChat.xcassets */; };
+		0C748DC41DBF615A00B79640 /* ExContainterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C748DC31DBF615A00B79640 /* ExContainterViewController.swift */; };
 		0C7C938E1C76D2F700E7DC5C /* photo_picker_icon_phone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C93851C76D2F700E7DC5C /* photo_picker_icon_phone@2x.png */; };
 		0C7C938F1C76D2F700E7DC5C /* photo_picker_icon_video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C93861C76D2F700E7DC5C /* photo_picker_icon_video@2x.png */; };
 		0C7C93901C76D2F700E7DC5C /* photo_picker_mark_deselect@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C7C93871C76D2F700E7DC5C /* photo_picker_mark_deselect@2x.png */; };
@@ -117,6 +118,7 @@
 		0C6B41561C61D74A00085B66 /* ExConversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExConversation.swift; sourceTree = "<group>"; };
 		0C6B41581C61DA7E00085B66 /* t1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t1.jpg; sourceTree = "<group>"; };
 		0C6B415C1C61DC7500085B66 /* SIMChat.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SIMChat.xcassets; sourceTree = "<group>"; };
+		0C748DC31DBF615A00B79640 /* ExContainterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExContainterViewController.swift; sourceTree = "<group>"; };
 		0C7C93831C761AC100E7DC5C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		0C7C93851C76D2F700E7DC5C /* photo_picker_icon_phone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_picker_icon_phone@2x.png"; sourceTree = "<group>"; };
 		0C7C93861C76D2F700E7DC5C /* photo_picker_icon_video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_picker_icon_video@2x.png"; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 				0C6B41521C61D68100085B66 /* ExChatViewController.swift */,
 				0C0DD6A61C60B65D00AEC8C4 /* ExConversationViewController.swift */,
 				0CF5002B1CB3854F00CAA303 /* ExViewController.swift */,
+				0C748DC31DBF615A00B79640 /* ExContainterViewController.swift */,
 				0CF5002E1CB3866A00CAA303 /* SIMChatTextLabel.swift */,
 				0C0DD6A81C60B65D00AEC8C4 /* Main.storyboard */,
 				0C6B415C1C61DC7500085B66 /* SIMChat.xcassets */,
@@ -385,6 +388,7 @@
 				0C0DD6A51C60B65D00AEC8C4 /* AppDelegate.swift in Sources */,
 				0C4C0C9B1C89D0D900DC3D56 /* ExUser.swift in Sources */,
 				0C6B41551C61D6E300085B66 /* ExManager.swift in Sources */,
+				0C748DC41DBF615A00B79640 /* ExContainterViewController.swift in Sources */,
 				0CF5002C1CB3854F00CAA303 /* ExViewController.swift in Sources */,
 				0C6B41531C61D68100085B66 /* ExChatViewController.swift in Sources */,
 				0C6B41571C61D74A00085B66 /* ExConversation.swift in Sources */,

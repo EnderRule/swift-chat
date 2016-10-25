@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 @objc public protocol SAPhotoContainterViewDelegate {
     
     @objc optional func containterViewDidScroll(_ containterView: SAPhotoContainterView) // any offset changes
@@ -39,6 +40,7 @@ import UIKit
     @objc optional func containterViewShouldBeginRotationing(_ containterView: SAPhotoContainterView, with view: UIView?) -> Bool // called before the scroll view begins zooming its content
     @objc optional func containterViewDidEndRotationing(_ containterView: SAPhotoContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
 }
+
 
 @objc public class SAPhotoContainterView: UIView {
     
@@ -261,7 +263,7 @@ import UIKit
     }
 }
 
-extension SAPhotoContainterView {
+fileprivate extension SAPhotoContainterView {
     
     fileprivate func _init() {
         
@@ -323,7 +325,7 @@ extension SAPhotoContainterView {
     
     /// 用弧度更新方向
     fileprivate func _updateOrientation(with angle: CGFloat, animated: Bool, completion handler: ((Bool) -> Void)? = nil) {
-        _logger.trace(angle)
+        //_logger.trace(angle)
         
         let oldOrientation = _orientation
         let newOrientation = _orientation(for: _angle(for: _orientation) + angle)
@@ -428,10 +430,6 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         guard _bounds?.size != bounds.size else {
             return
         }
-        defer {
-            // 离开作用域时保存
-            _bounds = bounds
-        }
         guard let view = _contentView else {
             return
         }
@@ -476,6 +474,9 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         
         // 重置中心点
         view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
+        
+        // 更新
+        _bounds = bounds
     }
     
     // MARK: - UIGestureRecognizerDelegate

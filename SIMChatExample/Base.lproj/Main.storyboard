@@ -82,10 +82,10 @@
             </objects>
             <point key="canvasLocation" x="947" y="-434"/>
         </scene>
-        <!--View Controller-->
+        <!--Ex Containter View Controller-->
         <scene sceneID="fkS-EF-Ce3">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="AGo-CY-jIU" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="AGo-CY-jIU" customClass="ExContainterViewController" customModule="SIMChatExample" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="SER-WB-nxA"/>
                         <viewControllerLayoutGuide type="bottom" id="Cny-cd-dZT"/>
@@ -94,7 +94,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAF-Pt-IxK" customClass="SAPhotoContainter" customModule="SIMChat">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAF-Pt-IxK" customClass="SAPhotoContainterView" customModule="SIMChat">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1IB-JX-FMU">
@@ -124,6 +124,9 @@
                             <constraint firstItem="iWt-sl-V2m" firstAttribute="centerX" secondItem="VQe-oK-w5h" secondAttribute="centerX" id="ptg-Bf-rx1"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="containterView" destination="QAF-Pt-IxK" id="nY4-Zn-EuE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KJR-ag-kgF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
