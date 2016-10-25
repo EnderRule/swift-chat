@@ -40,15 +40,13 @@ public class SAPhotoContainter: UIView {
                 oscale = 1 // min
             }
             
-            let nwidth = width * nscale
-            let nheight = height * nscale
-            
-            view.bounds = CGRect(x: 0, y: 0, width: nwidth, height: nheight)
-            //view.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+            view.bounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
             
             _scrollView.minimumZoomScale = 1
             _scrollView.maximumZoomScale = nmscale
             _scrollView.zoomScale = max(min(oscale, nmscale), 1)
+            
+            view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
             
             //_logger.debug("(\(width), \(height)) => (\(nscale), \(nmscale), \(oscale))")
             
@@ -141,13 +139,6 @@ extension SAPhotoContainter: UIGestureRecognizerDelegate, UIScrollViewDelegate {
         guard let view = viewForZooming(in: scrollView) else {
             return
         }
-        // 重置大小
-        let size = view.sizeThatFits(bounds.size)
-        
-        // 重置中心点
-        let x = max((scrollView.bounds.width - scrollView.contentSize.width) / 2, 0)
-        let y = max((scrollView.bounds.height - scrollView.contentSize.height) / 2, 0)
-        
-        view.center = CGPoint(x: scrollView.contentSize.width / 2 + x, y: scrollView.contentSize.height / 2 + y)
+        view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
     }
 }
