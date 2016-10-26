@@ -180,6 +180,31 @@ import UIKit
     public func zoom(to rect: CGRect, animated: Bool) {
         _scrollView.zoom(to: rect, animated: animated)
     }
+    public func zoom(with scale: CGFloat, at point: CGPoint, animated: Bool) {
+        guard let view = _contentView else {
+            return setZoomScale(scale, animated: animated)
+        }
+        
+        let width = view.bounds.width * scale
+        let height = view.bounds.height * scale
+        
+        let ratioX = max(min(point.x, view.bounds.width), 0) / max(view.bounds.width, 1)
+        let ratioY = max(min(point.y, view.bounds.height), 0) / max(view.bounds.height, 1)
+        
+        let x = max(min(width * ratioX - _scrollView.frame.width / 2, width - _scrollView.frame.width), 0)
+        let y = max(min(height * ratioY - _scrollView.frame.height / 2, height - _scrollView.frame.height), 0)
+        
+        guard animated else {
+            _scrollView.zoomScale = scale
+            _scrollView.contentOffset = CGPoint(x: x, y: y)
+            return
+        }
+        
+        UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
+            _scrollView.zoomScale = scale
+            _scrollView.contentOffset = CGPoint(x: x, y: y)
+        })
+    }
     
     public func setOrientation(_ orientation: UIImageOrientation, animated: Bool) {
         _updateOrientation(with: _angle(for: orientation), animated: animated)

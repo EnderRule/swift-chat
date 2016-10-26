@@ -373,8 +373,8 @@ private extension SAPhotoBrowserView {
         } else {
             let scale = _scrollView.maximumZoomScale
             let size = CGSize(width: _imageView.bounds.width * scale, height: _imageView.bounds.height * scale)
-            let pt = sender.location(in: _imageView)
             
+            let pt = sender.location(in: _imageView)
             let ratioX = max(min(pt.x, _imageView.bounds.width), 0) / max(_imageView.bounds.width, 1)
             let ratioY = max(min(pt.y, _imageView.bounds.height), 0) / max(_imageView.bounds.height, 1)
             

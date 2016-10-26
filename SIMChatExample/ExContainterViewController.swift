@@ -25,6 +25,26 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
         containterView.zoomScale = 1
         
         containterView.addSubview(imageView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
+        
+        tap.numberOfTapsRequired = 2
+        
+        containterView.addGestureRecognizer(tap)
+    }
+    
+    func tapHandler(_ sender: UITapGestureRecognizer) {
+        
+        let pt = sender.location(in: imageView)
+        
+        if containterView.zoomScale != containterView.minimumZoomScale {
+            // min
+            containterView.zoom(with: containterView.minimumZoomScale, at: pt, animated: true)
+            
+        } else {
+            // max
+            containterView.zoom(with: containterView.maximumZoomScale, at: pt, animated: true)
+        }
     }
 
     override func didReceiveMemoryWarning() {
