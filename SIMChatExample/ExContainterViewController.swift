@@ -20,8 +20,8 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
         imageView.image = UIImage(named: "t1_g.jpg")
         
         containterView.delegate = self
-        containterView.contentSize = CGSize(width: 240, height: 180)
-        //containterView.contentSize = CGSize(width: 1600, height: 1200)
+        //containterView.contentSize = CGSize(width: 240, height: 180)
+        containterView.contentSize = CGSize(width: 1600, height: 1200)
         containterView.addSubview(imageView)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
