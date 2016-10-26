@@ -272,7 +272,6 @@ fileprivate extension SAPhotoContainterView {
         _scrollView.frame = bounds
         _scrollView.delegate = self
         _scrollView.clipsToBounds = false
-        _scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         _scrollView.delaysContentTouches = false
         _scrollView.canCancelContentTouches = false
         _scrollView.showsVerticalScrollIndicator = false
@@ -429,11 +428,13 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         guard let view = _contentView else {
             return
         }
+        // get current offset
+        let offset = _scrollView.contentOffset
+        // update frame(can't use autoresingmask, becase get current offset before change)
+        _scrollView.frame = bounds
         // get contentView widht and height
         let width = max(view.bounds.width * _scrollView.maximumZoomScale, 1)
         let height = max(view.bounds.height * _scrollView.maximumZoomScale, 1)
-        // get current offset
-        let offset = _scrollView.contentOffset
         // calc minimum scale ratio & maximum scale roatio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = 1 / nscale
@@ -455,15 +456,9 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         _scrollView.maximumZoomScale = nmscale
         _scrollView.zoomScale = max(min(oscale, nmscale), 1)
         _scrollView.contentOffset = {
-            var x = max(offset.x + ((_bounds?.width ?? 0) - bounds.width) / 2, 0)
-            var y = max(offset.y + ((_bounds?.height ?? 0) - bounds.height) / 2, 0)
             
-            if offset.x + bounds.width >= _scrollView.contentSize.width {
-                x = offset.x
-            }
-            if offset.y + bounds.height >= _scrollView.contentSize.height {
-                y = offset.y
-            }
+            let x = max(min(offset.x + ((_bounds?.width ?? 0) - bounds.width) / 2, _scrollView.contentSize.width - bounds.width), 0)
+            let y = max(min(offset.y + ((_bounds?.height ?? 0) - bounds.height) / 2, _scrollView.contentSize.height - bounds.height), 0)
             
             return CGPoint(x: x, y: y)
         }()
