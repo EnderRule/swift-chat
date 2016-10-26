@@ -187,13 +187,13 @@ import UIKit
             _scrollView.contentOffset = CGPoint(x: x, y: y)
         })
     }
-    public func zoom(to rect: CGRect, animated: Bool) {
+    public func zoom(to rect: CGRect, with orientation: UIImageOrientation, animated: Bool) {
         guard let view = _contentView else {
             return
         }
         // get contentView widht and height
-        let width = max(contentSize.width, 1)
-        let height = max(contentSize.height, 1)
+        let width = max(_contentSize(for: orientation).width, 1)
+        let height = max(_contentSize(for: orientation).height, 1)
         // calc minimum scale ratio & maximum scale roatio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = max(1 / nscale, 2)
@@ -321,6 +321,14 @@ fileprivate extension SAPhotoContainterView {
         super.addGestureRecognizer(_rotationGestureRecognizer)
     }
     
+    /// get content with orientation
+    fileprivate func _contentSize(for orientation: UIImageOrientation) -> CGSize {
+        if _isLandscape(for: orientation) {
+            return CGSize(width: contentSize.height, height: contentSize.width)
+        }
+        return contentSize
+    }
+    
     /// convert orientation to angle
     fileprivate func _angle(for orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
@@ -367,12 +375,8 @@ fileprivate extension SAPhotoContainterView {
         
         // get contentView width and height
         let view = _contentView
-        var width = max(contentSize.width, 1)
-        var height = max(contentSize.height, 1)
-        // if orientation is cahnge, revert width and height
-        if _isLandscape(for: newOrientation)/* != _isLandscape(for: oldOrientation)*/ {
-            swap(&width, &height)
-        }
+        let width = max(_contentSize(for: newOrientation).width, 1)
+        let height = max(_contentSize(for: newOrientation).height, 1)
         // calc minimum scale ratio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = max(1 / nscale, 2)
@@ -469,8 +473,8 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         // update frame(can't use autoresingmask, becase get current offset before change)
         _scrollView.frame = bounds
         // get contentView widht and height
-        let width = max(contentSize.width, 1)
-        let height = max(contentSize.height, 1)
+        let width = max(_contentSize(for: _orientation).width, 1)
+        let height = max(_contentSize(for: _orientation).height, 1)
         // calc minimum scale ratio & maximum scale roatio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = max(1 / nscale, 2)

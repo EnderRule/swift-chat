@@ -102,7 +102,7 @@ internal class SAPhotoBrowserView: UIView, SAPhotoPreviewable {
             
             _imageView.image = newValue?.image?.withOrientation(_orientation)
             _containterView.contentSize = newValue?.size ?? .zero
-            _containterView.zoom(to: _containterView.bounds, animated: false)
+            _containterView.zoom(to: _containterView.bounds, with: .up, animated: false)
         }
     }
     

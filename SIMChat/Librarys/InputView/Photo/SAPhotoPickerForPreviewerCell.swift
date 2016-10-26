@@ -32,7 +32,7 @@ internal class SAPhotoPickerForPreviewerCell: UICollectionViewCell, SAPhotoConta
     var photo: SAPhoto? {
         willSet {
             _containterView.contentSize = newValue?.size ?? .zero
-            _containterView.zoom(to: _containterView.bounds, animated: false)
+            _containterView.zoom(to: _containterView.bounds, with: _orientation, animated: false)
         }
     }
     
