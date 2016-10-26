@@ -88,7 +88,9 @@ internal class SAPhotoPickerForPreviewer: UIViewController {
         _contentView.allowsSelection = false
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
-        _contentView.register(SAPhotoPickerForPreviewerCell.self, forCellWithReuseIdentifier: "Item")
+        _contentView.register(SAPhotoPickerForPreviewerCell.self, forCellWithReuseIdentifier: "Unknow")
+        _contentView.register(SAPhotoPickerForPreviewerCellOfImage.self, forCellWithReuseIdentifier: "Image")
+        _contentView.register(SAPhotoPickerForPreviewerCellOfVideo.self, forCellWithReuseIdentifier: "Video")
         _contentView.dataSource = self
         _contentView.delegate = self
         //_contentView.isDirectionalLockEnabled = true
@@ -365,7 +367,7 @@ extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
         guard let cell = _contentView.cellForItem(at: IndexPath(item: index, section: 0)) else {
             return nil
         }
-        return (cell as? SAPhotoPickerForPreviewerCell)?.photoView
+        return cell as? SAPhotoPickerForPreviewerCell
     }
     
     func toPreviewable(with item: AnyObject) -> SAPhotoPreviewable? {
@@ -394,28 +396,28 @@ extension SAPhotoPickerForPreviewer: SAPhotoPreviewableDelegate {
 
 // MARK: - SAPhotoBrowserViewDelegate
 
-extension SAPhotoPickerForPreviewer: SAPhotoBrowserViewDelegate {
+extension SAPhotoPickerForPreviewer: SAPhotoPickerForPreviewerCellDelegate {
     
-    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didTapWith sender: AnyObject) {
+    func previewerCell(_ previewerCell: SAPhotoPickerForPreviewerCell, didTap photo: SAPhoto) {
         _logger.trace()
         
         _updateIsFullscreen(!_isFullscreen, animated: true)
     }
-    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didDoubleTapWith sender: AnyObject) {
+    func previewerCell(_ previewerCell: SAPhotoPickerForPreviewerCell, didDoubleTap photo: SAPhoto) {
         _logger.trace()
         
         // 双击的时候进入全屏
         _updateIsFullscreen(true, animated: true)
     }
     
-    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, shouldRotation orientation: UIImageOrientation) -> Bool {
+    func previewerCell(_ previewerCell: SAPhotoPickerForPreviewerCell, shouldRotation photo: SAPhoto) -> Bool {
         _logger.trace()
         
         _contentView.isScrollEnabled = false
         return true
     }
     
-    func browserView(_ browserView: SAPhotoBrowserView, photo: SAPhoto, didRotation orientation: UIImageOrientation) {
+    func previewerCell(_ previewerCell: SAPhotoPickerForPreviewerCell, didRotation photo: SAPhoto, orientation: UIImageOrientation) {
         _logger.trace()
         
         _contentView.isScrollEnabled = true
@@ -438,7 +440,16 @@ extension SAPhotoPickerForPreviewer: UICollectionViewDataSource, UICollectionVie
         return _photos.count
     }
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
+        switch _photos[indexPath.item].mediaType {
+        case .image:
+            return collectionView.dequeueReusableCell(withReuseIdentifier: "Image", for: indexPath)
+            
+        case .video:
+            return collectionView.dequeueReusableCell(withReuseIdentifier: "Video", for: indexPath)
+            
+        default:
+            return collectionView.dequeueReusableCell(withReuseIdentifier: "Unknow", for: indexPath)
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -448,7 +459,7 @@ extension SAPhotoPickerForPreviewer: UICollectionViewDataSource, UICollectionVie
         let photo = _photos[indexPath.item]
         
         cell.delegate = self
-        cell.photoContentOrientation = _allPhotoInfos[photo.hashValue] ?? .up
+        cell.orientation = _allPhotoInfos[photo.hashValue] ?? .up
         cell.photo = photo
     }
     

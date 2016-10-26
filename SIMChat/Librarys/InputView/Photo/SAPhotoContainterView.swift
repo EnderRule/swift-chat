@@ -15,6 +15,8 @@ import UIKit
     @objc optional func containterViewDidZoom(_ containterView: SAPhotoContainterView) // any zoom scale changes
     @objc optional func containterViewDidRotation(_ containterView: SAPhotoContainterView) // any rotation changes
     
+    @objc optional func viewForZooming(in containterView: SAPhotoContainterView) -> UIView? // return a view that will be scaled. if delegate returns nil, nothing happens
+    
     // called on start of dragging (may require some time and or distance to move)
     @objc optional func containterViewWillBeginDragging(_ containterView: SAPhotoContainterView)
 
@@ -31,8 +33,6 @@ import UIKit
 
     @objc optional func containterViewShouldScrollToTop(_ containterView: SAPhotoContainterView) -> Bool // return a yes if you want to scroll to the top. if not defined, assumes YES
     @objc optional func containterViewDidScrollToTop(_ containterView: SAPhotoContainterView) // called when scrolling animation finished. may be called immediately if already at top
-    
-    @objc optional func viewForZooming(in containterView: SAPhotoContainterView) -> UIView? // return a view that will be scaled. if delegate returns nil, nothing happens
     
     @objc optional func containterViewWillBeginZooming(_ containterView: SAPhotoContainterView, with view: UIView?) // called before the scroll view begins zooming its content
     @objc optional func containterViewDidEndZooming(_ containterView: SAPhotoContainterView, with view: UIView?, atScale scale: CGFloat) // scale between minimum and maximum. called after any 'bounce' animations
@@ -52,10 +52,7 @@ import UIKit
         get { return _scrollView.contentOffset }
     }
     // default CGSizeZero
-    public var contentSize: CGSize {
-        set { return _scrollView.contentSize = newValue }
-        get { return _scrollView.contentSize }
-    }
+    public var contentSize: CGSize = .zero
     // default UIEdgeInsetsZero. add additional scroll area around content
     public var contentInset: UIEdgeInsets {
         set { return _scrollView.contentInset = newValue }
@@ -78,21 +75,10 @@ import UIKit
         get { return _scrollView.alwaysBounceHorizontal }
     }
     
-    // default NO. if YES, stop on multiples of view bounds
-    public var isPagingEnabled: Bool {
-        set { return _scrollView.isPagingEnabled = newValue }
-        get { return _scrollView.isPagingEnabled }
-    }
     // default YES. turn off any dragging temporarily
     public var isScrollEnabled: Bool {
         set { return _scrollView.isScrollEnabled = newValue }
         get { return _scrollView.isScrollEnabled }
-    }
-    
-    // default NO. if YES, try to lock vertical or horizontal scrolling while dragging
-    public var isDirectionalLockEnabled: Bool {
-        set { return _scrollView.isDirectionalLockEnabled = newValue }
-        get { return _scrollView.isDirectionalLockEnabled }
     }
     
     // default YES. show indicator while we are tracking. fades out after tracking
@@ -134,13 +120,11 @@ import UIKit
     
     // default is 1.0
     public var minimumZoomScale: CGFloat {
-        set { return _scrollView.minimumZoomScale = newValue }
-        get { return _scrollView.minimumZoomScale }
+        return _scrollView.minimumZoomScale
     }
     // default is 1.0. must be > minimum zoom scale to enable zooming
     public var maximumZoomScale: CGFloat {
-        set { return _scrollView.maximumZoomScale = newValue }
-        get { return _scrollView.maximumZoomScale }
+        return _scrollView.maximumZoomScale
     }
     
     // default is 1.0
@@ -177,10 +161,7 @@ import UIKit
     public func setZoomScale(_ scale: CGFloat, animated: Bool) {
         _scrollView.setZoomScale(scale, animated: animated)
     }
-    public func zoom(to rect: CGRect, animated: Bool) {
-        _scrollView.zoom(to: rect, animated: animated)
-    }
-    public func zoom(with scale: CGFloat, at point: CGPoint, animated: Bool) {
+    public func setZoomScale(_ scale: CGFloat, at point: CGPoint, animated: Bool) {
         guard let view = _contentView else {
             return setZoomScale(scale, animated: animated)
         }
@@ -191,6 +172,7 @@ import UIKit
         let ratioX = max(min(point.x, view.bounds.width), 0) / max(view.bounds.width, 1)
         let ratioY = max(min(point.y, view.bounds.height), 0) / max(view.bounds.height, 1)
         
+        // calculate the location of this point in zoomed 
         let x = max(min(width * ratioX - _scrollView.frame.width / 2, width - _scrollView.frame.width), 0)
         let y = max(min(height * ratioY - _scrollView.frame.height / 2, height - _scrollView.frame.height), 0)
         
@@ -204,6 +186,35 @@ import UIKit
             _scrollView.zoomScale = scale
             _scrollView.contentOffset = CGPoint(x: x, y: y)
         })
+    }
+    public func zoom(to rect: CGRect, animated: Bool) {
+        guard let view = _contentView else {
+            return
+        }
+        // get contentView widht and height
+        let width = max(contentSize.width, 1)
+        let height = max(contentSize.height, 1)
+        // calc minimum scale ratio & maximum scale roatio
+        let nscale = min(min(bounds.width / width, bounds.height / height), 1)
+        let nmscale = max(1 / nscale, 2)
+        // calc current scale
+        let oscale = min(min(rect.width, width) / (width * nscale), min(rect.height, height) / (height * nscale))
+        
+        // reset default size
+        view.bounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
+        
+        // reset zoom position
+        _scrollView.minimumZoomScale = 1
+        _scrollView.maximumZoomScale = nmscale
+        _scrollView.zoomScale = max(min(oscale, _scrollView.maximumZoomScale), _scrollView.minimumZoomScale)
+        _scrollView.contentOffset = .zero
+        
+        // reset center
+        view.center = CGPoint(x: max(view.frame.width, bounds.width) / 2, y: max(view.frame.height, bounds.height) / 2)
+        
+        // cache
+        _bounds = bounds
+        _scrollView.frame = bounds
     }
     
     public func setOrientation(_ orientation: UIImageOrientation, animated: Bool) {
@@ -256,7 +267,7 @@ import UIKit
     // `pinchGestureRecognizer` will return nil when zooming is disabled.
     public var rotationGestureRecognizer: UIRotationGestureRecognizer? {
         // if there is no `zoomingView` there is no rotation gesture
-        guard let _ = viewForZooming(in: _scrollView) else {
+        guard let _ = _contentView else {
             return nil
         }
         return _rotationGestureRecognizer
@@ -356,15 +367,15 @@ fileprivate extension SAPhotoContainterView {
         
         // get contentView width and height
         let view = _contentView
-        var width = max((view?.bounds.width ?? 0) * _scrollView.maximumZoomScale, 1)
-        var height = max((view?.bounds.height ?? 0) * _scrollView.maximumZoomScale, 1)
+        var width = max(contentSize.width, 1)
+        var height = max(contentSize.height, 1)
         // if orientation is cahnge, revert width and height
-        if _isLandscape(for: newOrientation) != _isLandscape(for: oldOrientation) {
+        if _isLandscape(for: newOrientation)/* != _isLandscape(for: oldOrientation)*/ {
             swap(&width, &height)
         }
         // calc minimum scale ratio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
-        let nmscale = 1 / nscale
+        let nmscale = max(1 / nscale, 2)
         
         let nbounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
         let transform = CGAffineTransform(rotationAngle: angle)
@@ -458,18 +469,19 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         // update frame(can't use autoresingmask, becase get current offset before change)
         _scrollView.frame = bounds
         // get contentView widht and height
-        let width = max(view.bounds.width * _scrollView.maximumZoomScale, 1)
-        let height = max(view.bounds.height * _scrollView.maximumZoomScale, 1)
+        let width = max(contentSize.width, 1)
+        let height = max(contentSize.height, 1)
         // calc minimum scale ratio & maximum scale roatio
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
-        let nmscale = 1 / nscale
+        let nmscale = max(1 / nscale, 2)
         // calc current scale
-        var oscale = max(view.frame.width / width, view.frame.height / height) * nmscale
+        var oscale = max(view.frame.width / (width * nscale), view.frame.height / (height * nscale))
+        
         // check boundary
-        if _scrollView.zoomScale == _scrollView.maximumZoomScale {
+        if _scrollView.zoomScale >= _scrollView.maximumZoomScale {
             oscale = nmscale // max
         }
-        if _scrollView.zoomScale == _scrollView.minimumZoomScale {
+        if _scrollView.zoomScale <= _scrollView.minimumZoomScale {
             oscale = 1 // min
         }
         
@@ -479,7 +491,7 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         // reset zoom position
         _scrollView.minimumZoomScale = 1
         _scrollView.maximumZoomScale = nmscale
-        _scrollView.zoomScale = max(min(oscale, nmscale), 1)
+        _scrollView.zoomScale = max(min(oscale, _scrollView.maximumZoomScale), _scrollView.minimumZoomScale)
         _scrollView.contentOffset = {
             
             let x = max(min(offset.x + ((_bounds?.width ?? 0) - bounds.width) / 2, _scrollView.contentSize.width - bounds.width), 0)

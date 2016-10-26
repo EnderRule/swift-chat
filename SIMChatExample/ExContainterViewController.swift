@@ -16,14 +16,12 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
 
         // Do any additional setup after loading the view.
         
-        imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 240)
+        //imageView.frame = CGRect(x: 0, y: 0, width: 320, height: 240)
         imageView.image = UIImage(named: "t1_g.jpg")
         
         containterView.delegate = self
-        containterView.minimumZoomScale = 1
-        containterView.maximumZoomScale = 1600 / 320.0
-        containterView.zoomScale = 1
-        
+        containterView.contentSize = CGSize(width: 240, height: 180)
+        //containterView.contentSize = CGSize(width: 1600, height: 1200)
         containterView.addSubview(imageView)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
@@ -39,11 +37,11 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
         
         if containterView.zoomScale != containterView.minimumZoomScale {
             // min
-            containterView.zoom(with: containterView.minimumZoomScale, at: pt, animated: true)
+            containterView.setZoomScale(containterView.minimumZoomScale, at: pt, animated: true)
             
         } else {
             // max
-            containterView.zoom(with: containterView.maximumZoomScale, at: pt, animated: true)
+            containterView.setZoomScale(containterView.maximumZoomScale, at: pt, animated: true)
         }
     }
 
