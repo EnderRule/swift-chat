@@ -201,7 +201,7 @@ import UIKit
         let oscale = min(min(rect.width, width) / (width * nscale), min(rect.height, height) / (height * nscale))
         
         // reset default size
-        view.bounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
+        view.bounds = CGRect(x: 0, y: 0, width: _round(width * nscale), height: _round(height * nscale))
         
         // reset zoom position
         _scrollView.minimumZoomScale = 1
@@ -215,6 +215,7 @@ import UIKit
         // cache
         _bounds = bounds
         _scrollView.frame = bounds
+        _orientation = orientation
     }
     
     public func setOrientation(_ orientation: UIImageOrientation, animated: Bool) {
@@ -321,6 +322,10 @@ fileprivate extension SAPhotoContainterView {
         super.addGestureRecognizer(_rotationGestureRecognizer)
     }
     
+    fileprivate func _round(_ val: CGFloat) -> CGFloat {
+        return trunc(val * 2) / 2
+    }
+    
     /// get content with orientation
     fileprivate func _contentSize(for orientation: UIImageOrientation) -> CGSize {
         if _isLandscape(for: orientation) {
@@ -381,7 +386,7 @@ fileprivate extension SAPhotoContainterView {
         let nscale = min(min(bounds.width / width, bounds.height / height), 1)
         let nmscale = max(1 / nscale, 2)
         
-        let nbounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
+        let nbounds = CGRect(x: 0, y: 0, width: _round(width * nscale), height: _round(height * nscale))
         let transform = CGAffineTransform(rotationAngle: angle)
         
         let animations: () -> Void = { [_scrollView] in
@@ -490,7 +495,7 @@ extension SAPhotoContainterView: UIGestureRecognizerDelegate, UIScrollViewDelega
         }
         
         // reset default size
-        view.bounds = CGRect(x: 0, y: 0, width: width * nscale, height: height * nscale)
+        view.bounds = CGRect(x: 0, y: 0, width: _round(width * nscale), height: _round(height * nscale))
         
         // reset zoom position
         _scrollView.minimumZoomScale = 1

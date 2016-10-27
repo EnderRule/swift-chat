@@ -9,19 +9,4 @@
 import UIKit
 
 internal class SAPhotoImageView: UIImageView {
-
-    
-    override var transform: CGAffineTransform {
-        set {
-            guard !ignoreTransformChanges else {
-                return
-            }
-            return super.transform = newValue
-        }
-        get {
-            return super.transform
-        }
-    }
-    
-    var ignoreTransformChanges: Bool = false
 }

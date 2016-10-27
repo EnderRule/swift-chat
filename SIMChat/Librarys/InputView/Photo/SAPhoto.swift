@@ -93,7 +93,6 @@ public class SAPhoto: NSObject {
     }
     
     public var data: Data?
-    
     public func data(with handler: @escaping (Data?) -> Void)  {
         if let data = data {
             return handler(data)
@@ -104,6 +103,18 @@ public class SAPhoto: NSObject {
         }
     }
     
+    public weak var playerItem: AVPlayerItem?
+    public func playerItem(with handler: @escaping (AVPlayerItem?) -> Void) {
+        if let playerItem = playerItem {
+            return handler(playerItem)
+        }
+        SAPhotoLibrary.shared.playerItem(with: self) { [weak self](item, info) in
+            self?.playerItem = item
+            DispatchQueue.main.async {
+                handler(item)
+            }
+        }
+    }
     
     public override func isEqual(_ object: Any?) -> Bool {
         guard let photo = object as? SAPhoto else {
