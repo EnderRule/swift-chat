@@ -1,0 +1,13 @@
+//
+//  SAPhotoEditor.swift
+//  SIMChat
+//
+//  Created by sagesse on 9/21/16.
+//  Copyright © 2016 sagesse. All rights reserved.
+//
+
+import UIKit
+
+open class SAPhotoEditor: UIViewController {
+    
+}

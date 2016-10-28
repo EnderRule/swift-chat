@@ -1,5 +1,5 @@
 //
-//  SAMAudioRecorderViewController.swift
+//  AudioRecorderViewController.swift
 //  SAMedia
 //
 //  Created by sagesse on 27/10/2016.
@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import SIMChat
 
-class SAMAudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
+class AudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()

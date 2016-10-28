@@ -1,5 +1,5 @@
 //
-//  SAMVideoPlayerViewController.swift
+//  VideoPlayerViewController.swift
 //  SAMedia
 //
 //  Created by sagesse on 28/10/2016.
@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import SIMChat
 
-class SAMVideoPlayerViewController: UIViewController, SAMPlayerDelegate {
+class VideoPlayerViewController: UIViewController, SAMPlayerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()

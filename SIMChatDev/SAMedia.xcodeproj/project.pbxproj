@@ -12,6 +12,18 @@
 		0C6014981DC392AD00C785FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C6014961DC392AD00C785FD /* Main.storyboard */; };
 		0C60149A1DC392AD00C785FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C6014991DC392AD00C785FD /* Assets.xcassets */; };
 		0C60149D1DC392AD00C785FD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C60149B1DC392AD00C785FD /* LaunchScreen.storyboard */; };
+		0C6014DE1DC3948E00C785FD /* SAMAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */; };
+		0C6014DF1DC3948E00C785FD /* SAMAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */; };
+		0C6014E01DC3948E00C785FD /* SAMAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */; };
+		0C6014E11DC3948E00C785FD /* SAMPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D91DC3948E00C785FD /* SAMPlayer.swift */; };
+		0C6014E21DC3948E00C785FD /* SAMRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */; };
+		0C6014E31DC3948E00C785FD /* SAMVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */; };
+		0C6014E41DC3948E00C785FD /* SAMVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */; };
+		0C6014E51DC3948E00C785FD /* SAMVideoProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */; };
+		0C6015421DC394E100C785FD /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6015411DC394E100C785FD /* Logger.swift */; };
+		0CD6CBED1DC3967600FE6CE0 /* AudioPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD6CBE91DC3967600FE6CE0 /* AudioPlayerViewController.swift */; };
+		0CD6CBEE1DC3967600FE6CE0 /* AudioRecorderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD6CBEA1DC3967600FE6CE0 /* AudioRecorderViewController.swift */; };
+		0CD6CBEF1DC3967600FE6CE0 /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD6CBEB1DC3967600FE6CE0 /* VideoPlayerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +34,18 @@
 		0C6014991DC392AD00C785FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0C60149C1DC392AD00C785FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0C60149E1DC392AD00C785FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioPlayer.swift; sourceTree = "<group>"; };
+		0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioRecorder.swift; sourceTree = "<group>"; };
+		0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioSession.swift; sourceTree = "<group>"; };
+		0C6014D91DC3948E00C785FD /* SAMPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMPlayer.swift; sourceTree = "<group>"; };
+		0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMRecorder.swift; sourceTree = "<group>"; };
+		0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoPlayer.swift; sourceTree = "<group>"; };
+		0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoPlayerView.swift; sourceTree = "<group>"; };
+		0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoProgressView.swift; sourceTree = "<group>"; };
+		0C6015411DC394E100C785FD /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		0CD6CBE91DC3967600FE6CE0 /* AudioPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioPlayerViewController.swift; sourceTree = "<group>"; };
+		0CD6CBEA1DC3967600FE6CE0 /* AudioRecorderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioRecorderViewController.swift; sourceTree = "<group>"; };
+		0CD6CBEB1DC3967600FE6CE0 /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,7 +62,9 @@
 		0C6014861DC392AD00C785FD = {
 			isa = PBXGroup;
 			children = (
-				0C6014911DC392AD00C785FD /* SAMedia */,
+				0C6015401DC394E100C785FD /* Logger */,
+				0C6014D51DC3948E00C785FD /* Media */,
+				0C6014911DC392AD00C785FD /* Supporting Files */,
 				0C6014901DC392AD00C785FD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,9 +77,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0C6014911DC392AD00C785FD /* SAMedia */ = {
+		0C6014911DC392AD00C785FD /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0CD6CBE91DC3967600FE6CE0 /* AudioPlayerViewController.swift */,
+				0CD6CBEA1DC3967600FE6CE0 /* AudioRecorderViewController.swift */,
+				0CD6CBEB1DC3967600FE6CE0 /* VideoPlayerViewController.swift */,
 				0C6014921DC392AD00C785FD /* AppDelegate.swift */,
 				0C6014941DC392AD00C785FD /* ViewController.swift */,
 				0C6014961DC392AD00C785FD /* Main.storyboard */,
@@ -61,7 +90,33 @@
 				0C60149B1DC392AD00C785FD /* LaunchScreen.storyboard */,
 				0C60149E1DC392AD00C785FD /* Info.plist */,
 			);
+			name = "Supporting Files";
 			path = SAMedia;
+			sourceTree = "<group>";
+		};
+		0C6014D51DC3948E00C785FD /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */,
+				0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */,
+				0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */,
+				0C6014D91DC3948E00C785FD /* SAMPlayer.swift */,
+				0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */,
+				0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */,
+				0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */,
+				0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */,
+			);
+			name = Media;
+			path = ../SIMChat/Librarys/Media;
+			sourceTree = "<group>";
+		};
+		0C6015401DC394E100C785FD /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				0C6015411DC394E100C785FD /* Logger.swift */,
+			);
+			name = Logger;
+			path = ../SIMChat/Librarys/Logger;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,6 +145,7 @@
 		0C6014871DC392AD00C785FD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = SAM;
 				LastSwiftUpdateCheck = 0810;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = sagesse;
@@ -137,8 +193,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C6014DE1DC3948E00C785FD /* SAMAudioPlayer.swift in Sources */,
+				0C6015421DC394E100C785FD /* Logger.swift in Sources */,
+				0CD6CBED1DC3967600FE6CE0 /* AudioPlayerViewController.swift in Sources */,
+				0C6014E51DC3948E00C785FD /* SAMVideoProgressView.swift in Sources */,
+				0C6014E01DC3948E00C785FD /* SAMAudioSession.swift in Sources */,
 				0C6014951DC392AD00C785FD /* ViewController.swift in Sources */,
+				0C6014E21DC3948E00C785FD /* SAMRecorder.swift in Sources */,
+				0C6014E31DC3948E00C785FD /* SAMVideoPlayer.swift in Sources */,
+				0C6014DF1DC3948E00C785FD /* SAMAudioRecorder.swift in Sources */,
+				0CD6CBEF1DC3967600FE6CE0 /* VideoPlayerViewController.swift in Sources */,
+				0C6014E41DC3948E00C785FD /* SAMVideoPlayerView.swift in Sources */,
+				0C6014E11DC3948E00C785FD /* SAMPlayer.swift in Sources */,
 				0C6014931DC392AD00C785FD /* AppDelegate.swift in Sources */,
+				0CD6CBEE1DC3967600FE6CE0 /* AudioRecorderViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,7 +272,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -247,7 +315,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

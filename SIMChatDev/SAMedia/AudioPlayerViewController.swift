@@ -1,5 +1,5 @@
 //
-//  SAMAudioPlayerViewController.swift
+//  AudioPlayerViewController.swift
 //  SAMedia
 //
 //  Created by sagesse on 27/10/2016.
@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import SIMChat
 
-class SAMAudioPlayerViewController: UIViewController, SAMAudioPlayerDelegate {
+class AudioPlayerViewController: UIViewController, SAMAudioPlayerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
