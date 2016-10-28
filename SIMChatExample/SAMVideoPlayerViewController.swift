@@ -16,12 +16,12 @@ class SAMVideoPlayerViewController: UIViewController, SAMPlayerDelegate {
 
         // Do any additional setup after loading the view.
         
-//        guard let url = URL(string: "http://sagesse.me:1080/a.mp4") else {
-//            return
-//        }
-        guard let url = URL(string: "http://192.168.90.254/a.mp4") else {
+        guard let url = URL(string: "http://sagesse.me:1080/a.mp4") else {
             return
         }
+//        guard let url = URL(string: "http://192.168.90.254/a.mp4") else {
+//            return
+//        }
         
         player = SAMVideoPlayer(contentsOf: url)
         player?.delegate = self

@@ -12,29 +12,62 @@ internal class SAPhotoPickerForPreviewerCellOfVideo: SAPhotoPickerForPreviewerCe
     
     override var photo: SAPhoto? {
         willSet {
-            _videoView.thumbnailImage = newValue?.image?.withOrientation(orientation)
-            _videoView.stop()
+            //_videoView.thumbnailImage = newValue?.image?.withOrientation(orientation)
+            //_videoView.stop()
             
-            newValue?.playerItem { [weak _videoView] item in
+            _player.stop()
+            
+            newValue?.playerItem { [weak self] item in
                 guard let item = item else {
                     return
                 }
-                // TODO: 还要检查photo有没有发生改变
-                _videoView?.load(item)
+                self?._player.item = item
             }
         }
     }
     
     override var contentView: UIView {
-        return _videoView
+        return _playerView
     }
     
     override func containterViewDidEndRotationing(_ containterView: SAPhotoContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         super.containterViewDidEndRotationing(containterView, with: view, atOrientation: orientation)
         /// 更新图片
-        _videoView.thumbnailImage = _videoView.thumbnailImage?.withOrientation(orientation)
+        //_videoView.thumbnailImage = _videoView.thumbnailImage?.withOrientation(orientation)
     }
     
+    func playAndStop(_ sender: UIButton) {
+        
+        if _player.status.isPlayed {
+            _player.stop()
+        } else {
+            _player.play()
+        }
+    }
     
-    private lazy var _videoView: SAPhotoVideoView = SAPhotoVideoView()
+    private func _init() {
+        
+        let button = UIButton()
+        
+        button.setTitle("Play & Stop", for: .normal)
+        button.addTarget(self, action: #selector(playAndStop(_:)), for: .touchUpInside)
+        button.sizeToFit()
+        
+        button.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        button.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
+        
+        addSubview(button)
+    }
+    
+    private lazy var _player: SAMVideoPlayer = SAMVideoPlayer()
+    private lazy var _playerView: SAMVideoPlayerView = SAMVideoPlayerView(player: self._player)
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _init()
+    }
 }
