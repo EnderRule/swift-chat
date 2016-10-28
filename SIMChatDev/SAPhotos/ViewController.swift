@@ -1,8 +1,8 @@
 //
 //  ViewController.swift
-//  SIMChatDev
+//  SAPhotos
 //
-//  Created by sagesse on 9/15/16.
+//  Created by sagesse on 10/28/16.
 //  Copyright © 2016 sagesse. All rights reserved.
 //
 

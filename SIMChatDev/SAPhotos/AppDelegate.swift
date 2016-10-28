@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  SIMChatDev
+//  SAPhotos
 //
-//  Created by sagesse on 9/15/16.
+//  Created by sagesse on 10/28/16.
 //  Copyright © 2016 sagesse. All rights reserved.
 //
 
@@ -15,15 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        
-        DispatchQueue.main.async {
-            if let window = self.window {
-                let label = SIMChatFPSLabel(frame: CGRect(x: window.bounds.width - 55 - 8, y: 20, width: 55, height: 20))
-                label.autoresizingMask = [.flexibleLeftMargin, .flexibleBottomMargin]
-                window.addSubview(label)
-            }
-        }
-        
+        // Override point for customization after application launch.
         return true
     }
 
