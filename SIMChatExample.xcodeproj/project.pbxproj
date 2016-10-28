@@ -15,6 +15,10 @@
 		0C1F09F71DBE5FE500DD6E3E /* t1_g.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C1F09F61DBE5FE500DD6E3E /* t1_g.jpg */; };
 		0C2475761C87E073003077B2 /* t2_t.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C2475741C87E073003077B2 /* t2_t.jpg */; };
 		0C2475771C87E073003077B2 /* t2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C2475751C87E073003077B2 /* t2.jpg */; };
+		0C2955771DC360DE0075D5DE /* SAMAudioPlayer2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2955731DC360DE0075D5DE /* SAMAudioPlayer2ViewController.swift */; };
+		0C2955781DC360DE0075D5DE /* SAMAudioPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2955741DC360DE0075D5DE /* SAMAudioPlayerViewController.swift */; };
+		0C2955791DC360DE0075D5DE /* SAMAudioRecorderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2955751DC360DE0075D5DE /* SAMAudioRecorderViewController.swift */; };
+		0C29557A1DC360DE0075D5DE /* SAMVideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2955761DC360DE0075D5DE /* SAMVideoPlayerViewController.swift */; };
 		0C4070F71C7B605900AEECB7 /* m1.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 0C4070F61C7B605900AEECB7 /* m1.m4a */; };
 		0C4C0C911C89CA3A00DC3D56 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C901C89CA3A00DC3D56 /* libstdc++.tbd */; };
 		0C4C0C931C89CA5400DC3D56 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4C0C921C89CA5400DC3D56 /* libsqlite3.tbd */; };
@@ -102,6 +106,10 @@
 		0C1F09F61DBE5FE500DD6E3E /* t1_g.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t1_g.jpg; sourceTree = "<group>"; };
 		0C2475741C87E073003077B2 /* t2_t.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t2_t.jpg; sourceTree = "<group>"; };
 		0C2475751C87E073003077B2 /* t2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t2.jpg; sourceTree = "<group>"; };
+		0C2955731DC360DE0075D5DE /* SAMAudioPlayer2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioPlayer2ViewController.swift; sourceTree = "<group>"; };
+		0C2955741DC360DE0075D5DE /* SAMAudioPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioPlayerViewController.swift; sourceTree = "<group>"; };
+		0C2955751DC360DE0075D5DE /* SAMAudioRecorderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioRecorderViewController.swift; sourceTree = "<group>"; };
+		0C2955761DC360DE0075D5DE /* SAMVideoPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoPlayerViewController.swift; sourceTree = "<group>"; };
 		0C4070F61C7B605900AEECB7 /* m1.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = m1.m4a; sourceTree = "<group>"; };
 		0C48A89E1C79566B00571BF5 /* SIMChatExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SIMChatExampleTests.swift; sourceTree = "<group>"; };
 		0C48A8A01C79566B00571BF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -176,6 +184,10 @@
 		0C0DD6A31C60B65D00AEC8C4 /* SIMChatExample */ = {
 			isa = PBXGroup;
 			children = (
+				0C2955731DC360DE0075D5DE /* SAMAudioPlayer2ViewController.swift */,
+				0C2955741DC360DE0075D5DE /* SAMAudioPlayerViewController.swift */,
+				0C2955751DC360DE0075D5DE /* SAMAudioRecorderViewController.swift */,
+				0C2955761DC360DE0075D5DE /* SAMVideoPlayerViewController.swift */,
 				0C4C0C881C89C5DA00DC3D56 /* Frameworks */,
 				0C2475741C87E073003077B2 /* t2_t.jpg */,
 				0C2475751C87E073003077B2 /* t2.jpg */,
@@ -383,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C2955781DC360DE0075D5DE /* SAMAudioPlayerViewController.swift in Sources */,
 				0C6755131C89E62700435FFB /* ExMessage.swift in Sources */,
 				0C0DD6A71C60B65D00AEC8C4 /* ExConversationViewController.swift in Sources */,
 				0C0DD6A51C60B65D00AEC8C4 /* AppDelegate.swift in Sources */,
@@ -390,8 +403,11 @@
 				0C6B41551C61D6E300085B66 /* ExManager.swift in Sources */,
 				0C748DC41DBF615A00B79640 /* ExContainterViewController.swift in Sources */,
 				0CF5002C1CB3854F00CAA303 /* ExViewController.swift in Sources */,
+				0C2955771DC360DE0075D5DE /* SAMAudioPlayer2ViewController.swift in Sources */,
+				0C29557A1DC360DE0075D5DE /* SAMVideoPlayerViewController.swift in Sources */,
 				0C6B41531C61D68100085B66 /* ExChatViewController.swift in Sources */,
 				0C6B41571C61D74A00085B66 /* ExConversation.swift in Sources */,
+				0C2955791DC360DE0075D5DE /* SAMAudioRecorderViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
