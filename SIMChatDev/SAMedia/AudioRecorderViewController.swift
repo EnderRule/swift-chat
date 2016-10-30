@@ -77,7 +77,7 @@ class AudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
     }
     
     func audioRecorder(didOccur audioRecorder: SAMAudioRecorder, error: Error?) {
-        print(#function, error)
+        print(#function, error as Any)
     }
 
     var recorder: SAMAudioRecorder?

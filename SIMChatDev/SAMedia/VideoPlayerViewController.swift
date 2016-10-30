@@ -8,7 +8,7 @@
 
 import UIKit
 
-class VideoPlayerViewController: UIViewController, SAMPlayerDelegate {
+class VideoPlayerViewController: UIViewController, SAMVideoPlayerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,11 +57,11 @@ class VideoPlayerViewController: UIViewController, SAMPlayerDelegate {
 //        }
     }
     
-    func player(shouldPreparing player: SAMPlayerProtocol) -> Bool {
+    func player(shouldPreparing player: SAMVideoPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didPreparing player: SAMPlayerProtocol) {
+    func player(didPreparing player: SAMVideoPlayerProtocol) {
         print(#function)
         
         playProgressView.maximumValue = Float(player.duration)
@@ -70,51 +70,51 @@ class VideoPlayerViewController: UIViewController, SAMPlayerDelegate {
         loadProgressView.progress = Float(player.loadedTime) / max(playProgressView.maximumValue, 0)
     }
     
-    func player(shouldPlaying player: SAMPlayerProtocol) -> Bool {
+    func player(shouldPlaying player: SAMVideoPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didPlaying player: SAMPlayerProtocol) {
+    func player(didPlaying player: SAMVideoPlayerProtocol) {
         print(#function)
     }
     
-    func player(didPause player: SAMPlayerProtocol) {
+    func player(didPause player: SAMVideoPlayerProtocol) {
         print(#function)
     }
     
-    func player(didStop player: SAMPlayerProtocol) {
+    func player(didStop player: SAMVideoPlayerProtocol) {
         print(#function)
     }
-    func player(didInterruption player: SAMPlayerProtocol) {
+    func player(didInterruption player: SAMVideoPlayerProtocol) {
         print(#function)
     }
-    func player(didStalled player: SAMPlayerProtocol) {
+    func player(didStalled player: SAMVideoPlayerProtocol) {
         print(#function)
     }
     
-    func player(shouldRestorePlaying player: SAMPlayerProtocol) -> Bool {
+    func player(shouldRestorePlaying player: SAMVideoPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didRestorePlaying player: SAMPlayerProtocol) {
+    func player(didRestorePlaying player: SAMVideoPlayerProtocol) {
         print(#function)
     }
     
-    func player(didChange player: SAMPlayerProtocol, currentTime time: TimeInterval) {
+    func player(didChange player: SAMVideoPlayerProtocol, currentTime time: TimeInterval) {
         playProgressView.setValue(Float(time), animated: true)
     }
     
-    func player(didChange player: SAMPlayerProtocol, loadedTime time: TimeInterval) {
+    func player(didChange player: SAMVideoPlayerProtocol, loadedTime time: TimeInterval) {
         let progress = Float(time) / max(playProgressView.maximumValue, 0)
         
         loadProgressView.setProgress(progress, animated: true)
     }
     
-    func player(didFinishPlaying player: SAMPlayerProtocol, successfully flag: Bool) {
+    func player(didFinishPlaying player: SAMVideoPlayerProtocol, successfully flag: Bool) {
         print(#function)
     }
     
-    func player(didOccur player: SAMPlayerProtocol, error: Error?) {
+    func player(didOccur player: SAMVideoPlayerProtocol, error: Error?) {
         print(#function)
     }
     

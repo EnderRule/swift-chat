@@ -15,8 +15,8 @@
 		0C6014DE1DC3948E00C785FD /* SAMAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */; };
 		0C6014DF1DC3948E00C785FD /* SAMAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */; };
 		0C6014E01DC3948E00C785FD /* SAMAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */; };
-		0C6014E11DC3948E00C785FD /* SAMPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D91DC3948E00C785FD /* SAMPlayer.swift */; };
-		0C6014E21DC3948E00C785FD /* SAMRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */; };
+		0C6014E11DC3948E00C785FD /* SAMPlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014D91DC3948E00C785FD /* SAMPlayerProtocol.swift */; };
+		0C6014E21DC3948E00C785FD /* SAMRecorderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DA1DC3948E00C785FD /* SAMRecorderProtocol.swift */; };
 		0C6014E31DC3948E00C785FD /* SAMVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */; };
 		0C6014E41DC3948E00C785FD /* SAMVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */; };
 		0C6014E51DC3948E00C785FD /* SAMVideoProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */; };
@@ -37,8 +37,8 @@
 		0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioPlayer.swift; sourceTree = "<group>"; };
 		0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioRecorder.swift; sourceTree = "<group>"; };
 		0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMAudioSession.swift; sourceTree = "<group>"; };
-		0C6014D91DC3948E00C785FD /* SAMPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMPlayer.swift; sourceTree = "<group>"; };
-		0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMRecorder.swift; sourceTree = "<group>"; };
+		0C6014D91DC3948E00C785FD /* SAMPlayerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMPlayerProtocol.swift; sourceTree = "<group>"; };
+		0C6014DA1DC3948E00C785FD /* SAMRecorderProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMRecorderProtocol.swift; sourceTree = "<group>"; };
 		0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoPlayer.swift; sourceTree = "<group>"; };
 		0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoPlayerView.swift; sourceTree = "<group>"; };
 		0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMVideoProgressView.swift; sourceTree = "<group>"; };
@@ -97,14 +97,14 @@
 		0C6014D51DC3948E00C785FD /* Media */ = {
 			isa = PBXGroup;
 			children = (
+				0C6014D91DC3948E00C785FD /* SAMPlayerProtocol.swift */,
+				0C6014DA1DC3948E00C785FD /* SAMRecorderProtocol.swift */,
 				0C6014D61DC3948E00C785FD /* SAMAudioPlayer.swift */,
 				0C6014D71DC3948E00C785FD /* SAMAudioRecorder.swift */,
-				0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */,
-				0C6014D91DC3948E00C785FD /* SAMPlayer.swift */,
-				0C6014DA1DC3948E00C785FD /* SAMRecorder.swift */,
 				0C6014DB1DC3948E00C785FD /* SAMVideoPlayer.swift */,
 				0C6014DC1DC3948E00C785FD /* SAMVideoPlayerView.swift */,
 				0C6014DD1DC3948E00C785FD /* SAMVideoProgressView.swift */,
+				0C6014D81DC3948E00C785FD /* SAMAudioSession.swift */,
 			);
 			name = Media;
 			path = ../SIMChat/Librarys/Media;
@@ -199,12 +199,12 @@
 				0C6014E51DC3948E00C785FD /* SAMVideoProgressView.swift in Sources */,
 				0C6014E01DC3948E00C785FD /* SAMAudioSession.swift in Sources */,
 				0C6014951DC392AD00C785FD /* ViewController.swift in Sources */,
-				0C6014E21DC3948E00C785FD /* SAMRecorder.swift in Sources */,
+				0C6014E21DC3948E00C785FD /* SAMRecorderProtocol.swift in Sources */,
 				0C6014E31DC3948E00C785FD /* SAMVideoPlayer.swift in Sources */,
 				0C6014DF1DC3948E00C785FD /* SAMAudioRecorder.swift in Sources */,
 				0CD6CBEF1DC3967600FE6CE0 /* VideoPlayerViewController.swift in Sources */,
 				0C6014E41DC3948E00C785FD /* SAMVideoPlayerView.swift in Sources */,
-				0C6014E11DC3948E00C785FD /* SAMPlayer.swift in Sources */,
+				0C6014E11DC3948E00C785FD /* SAMPlayerProtocol.swift in Sources */,
 				0C6014931DC392AD00C785FD /* AppDelegate.swift in Sources */,
 				0CD6CBEE1DC3967600FE6CE0 /* AudioRecorderViewController.swift in Sources */,
 			);

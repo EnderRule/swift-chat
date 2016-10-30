@@ -1,5 +1,5 @@
 //
-//  SAMPlayerProtocol.swift
+//  SAMVideoPlayerProtocol.swift
 //  SAMedia
 //
 //  Created by sagesse on 28/10/2016.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc public enum SAMPlayerStatus: Int {
+@objc public enum SAMVideoPlayerStatus: Int {
     
     // 准备状态
     case preparing
@@ -67,10 +67,10 @@ import UIKit
 }
 
 
-@objc public protocol SAMPlayerProtocol: NSObjectProtocol {
+@objc public protocol SAMVideoPlayerProtocol: NSObjectProtocol {
     
     // the player status
-    var status: SAMPlayerStatus { get }
+    var status: SAMVideoPlayerStatus { get }
     
     // the duration of the media.
     var duration: TimeInterval { get }
@@ -87,7 +87,7 @@ import UIKit
     var loadedTimeRanges: Array<NSValue>? { get }
     
     // an delegate
-    weak var delegate: SAMPlayerDelegate? { set get }
+    weak var delegate: SAMVideoPlayerDelegate? { set get }
     
     
     // MARK: - Transport Control
@@ -110,33 +110,33 @@ import UIKit
 }
 
 
-@objc public protocol SAMPlayerDelegate {
+@objc public protocol SAMVideoPlayerDelegate {
 
     
-    @objc optional func player(shouldPreparing player: SAMPlayerProtocol) -> Bool
-    @objc optional func player(didPreparing player: SAMPlayerProtocol)
+    @objc optional func player(shouldPreparing player: SAMVideoPlayerProtocol) -> Bool
+    @objc optional func player(didPreparing player: SAMVideoPlayerProtocol)
     
-    @objc optional func player(shouldPlaying player: SAMPlayerProtocol) -> Bool
-    @objc optional func player(didPlaying player: SAMPlayerProtocol)
+    @objc optional func player(shouldPlaying player: SAMVideoPlayerProtocol) -> Bool
+    @objc optional func player(didPlaying player: SAMVideoPlayerProtocol)
     
-    @objc optional func player(didPause player: SAMPlayerProtocol)
-    @objc optional func player(didStalled player: SAMPlayerProtocol )
-    @objc optional func player(didInterruption player: SAMPlayerProtocol)
+    @objc optional func player(didPause player: SAMVideoPlayerProtocol)
+    @objc optional func player(didStalled player: SAMVideoPlayerProtocol )
+    @objc optional func player(didInterruption player: SAMVideoPlayerProtocol)
     
-    @objc optional func player(shouldRestorePlaying player: SAMPlayerProtocol) -> Bool
-    @objc optional func player(didRestorePlaying player: SAMPlayerProtocol)
+    @objc optional func player(shouldRestorePlaying player: SAMVideoPlayerProtocol) -> Bool
+    @objc optional func player(didRestorePlaying player: SAMVideoPlayerProtocol)
     
-    @objc optional func player(didStop player: SAMPlayerProtocol)
+    @objc optional func player(didStop player: SAMVideoPlayerProtocol)
     
     // playerDidFinishPlaying:successfully: is called when a video has finished playing. This method is NOT called if the player is stopped due to an interruption.
-    @objc optional func player(didFinishPlaying player: SAMPlayerProtocol, successfully flag: Bool)
+    @objc optional func player(didFinishPlaying player: SAMVideoPlayerProtocol, successfully flag: Bool)
     
     // if an error occurs will be reported to the delegate.
-    @objc optional func player(didOccur player: SAMPlayerProtocol, error: Error?)
+    @objc optional func player(didOccur player: SAMVideoPlayerProtocol, error: Error?)
     
     
-    @objc optional func player(didChange player: SAMPlayerProtocol, currentTime time: TimeInterval)
+    @objc optional func player(didChange player: SAMVideoPlayerProtocol, currentTime time: TimeInterval)
     
-    @objc optional func player(didChange player: SAMPlayerProtocol, loadedTime time: TimeInterval)
-    @objc optional func player(didChange player: SAMPlayerProtocol, loadedTimeRanges ranges: Array<NSValue>)
+    @objc optional func player(didChange player: SAMVideoPlayerProtocol, loadedTime time: TimeInterval)
+    @objc optional func player(didChange player: SAMVideoPlayerProtocol, loadedTimeRanges ranges: Array<NSValue>)
 }

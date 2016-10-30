@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-open class SAMVideoPlayer: NSObject, SAMPlayerProtocol {
+open class SAMVideoPlayer: NSObject, SAMVideoPlayerProtocol {
     
     public override init() {
         super.init()
@@ -54,7 +54,7 @@ open class SAMVideoPlayer: NSObject, SAMPlayerProtocol {
     }
     
     // the player status
-    open var status: SAMPlayerStatus {
+    open var status: SAMVideoPlayerStatus {
         return _status
     }
     
@@ -90,7 +90,7 @@ open class SAMVideoPlayer: NSObject, SAMPlayerProtocol {
     }
     
     // an delegate
-    open weak var delegate: SAMPlayerDelegate? {
+    open weak var delegate: SAMVideoPlayerDelegate? {
         set { return _delegate = newValue}
         get { return _delegate }
     }
@@ -287,11 +287,11 @@ open class SAMVideoPlayer: NSObject, SAMPlayerProtocol {
     // MARK: - ivar
     
     fileprivate var _item: AVPlayerItem?
-    fileprivate var _status: SAMPlayerStatus = .stop
+    fileprivate var _status: SAMVideoPlayerStatus = .stop
     
     fileprivate var _isActived: Bool = false
     
-    fileprivate weak var _delegate: SAMPlayerDelegate?
+    fileprivate weak var _delegate: SAMVideoPlayerDelegate?
     
     fileprivate var _changeTask: Any?
     fileprivate var _prepareTask: (() -> Bool)?

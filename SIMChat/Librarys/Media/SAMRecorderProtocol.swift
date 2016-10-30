@@ -18,6 +18,6 @@ public enum SAMRecorderStatus: Int {
     case progressed
 }
 
-public protocol SAMRecorder: NSObjectProtocol {
+public protocol SAMRecorderProtocol: NSObjectProtocol {
 
 }

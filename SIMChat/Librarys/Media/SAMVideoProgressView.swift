@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MediaPlayer
+import AVFoundation
 
 ///
 /// 视频播放进度视图
