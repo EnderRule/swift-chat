@@ -30,7 +30,7 @@ internal class SPPreviewerLayout: UICollectionViewFlowLayout {
         }
         return super.initialLayoutAttributesForAppearingItem(at: itemIndexPath)
     }
-    override func finalLayoutAttributesForDiSPpearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+    override func finalLayoutAttributesForDisappearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         if _removeIndexPath == itemIndexPath {
             _removeIndexPath = nil
             return layoutAttributesForItem(at: itemIndexPath)

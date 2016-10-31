@@ -366,14 +366,14 @@ extension SPPickerInternal: UINavigationControllerDelegate, UIViewControllerTran
     
     // SPNavigationBarDelegate
     
-    func sa_navigationBar(_ navigationBar: SPNavigationBar, shouldPop item: UINavigationItem) -> Bool {
+    func sm_navigationBar(_ navigationBar: SPNavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard !allowsMultipleDisplay else {
             return true
         }
         backHandler(self)
         return false
     }
-    func sa_navigationBar(_ navigationBar: SPNavigationBar, didPop item: UINavigationItem) {
+    func sm_navigationBar(_ navigationBar: SPNavigationBar, didPop item: UINavigationItem) {
         // is empty
     }
     

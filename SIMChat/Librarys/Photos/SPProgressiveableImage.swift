@@ -92,8 +92,15 @@ public class SPProgressiveableImage: UIImage, SPProgressiveable {
     }
     
     public override class func initialize() {
-        _SAInputExchangeSelector(UIImageView.self, "image", "sa_image")
-        _SAInputExchangeSelector(UIImageView.self, "setImage:", "sa_setImage:")
+        
+        let m1 = class_getInstanceMethod(UIImageView.self, #selector(getter: UIImageView.image))
+        let m2 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sm_image))
+        
+        let m3 = class_getInstanceMethod(UIImageView.self, #selector(setter: UIImageView.image))
+        let m4 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sm_setImage(_:)))
+        
+        method_exchangeImplementations(m1, m2)
+        method_exchangeImplementations(m3, m4)
     }
     
     private var _parent: SPProgressiveableImage?  // 如果不强引用, 当parent释放后就获取不到通知了
@@ -133,28 +140,28 @@ extension UIImageView: SPProgressiveableObserver {
     /// 内容发生改变
     ///
     public func progressiveable(_ progressiveable: SPProgressiveable, didChangeContent content: Any?) {
-        sa_setImage(content as? UIImage)
+        sm_setImage(content as? UIImage)
     }
     
-    private dynamic func sa_setImage(_ newValue: UIImage?) {
+    internal dynamic func sm_setImage(_ newValue: UIImage?) {
         guard let image = newValue as? SPProgressiveableImage else {
-            sa_progressiveImage = nil
-            sa_setImage(newValue)
+            sm_progressiveImage = nil
+            sm_setImage(newValue)
             return
         }
-        sa_progressiveImage = image
-        sa_setImage(image.content as? UIImage)
+        sm_progressiveImage = image
+        sm_setImage(image.content as? UIImage)
     }
-    private dynamic func sa_image() -> UIImage? {
-        guard let image = sa_progressiveImage else {
-            return sa_image()
+    internal dynamic func sm_image() -> UIImage? {
+        guard let image = sm_progressiveImage else {
+            return sm_image()
         }
         return image
     }
     
-    private dynamic var sa_progressiveImage: SPProgressiveableImage? {
+    internal dynamic var sm_progressiveImage: SPProgressiveableImage? {
         set {
-            let oldValue = sa_progressiveImage
+            let oldValue = sm_progressiveImage
             guard oldValue !== newValue else {
                 return // no change
             }

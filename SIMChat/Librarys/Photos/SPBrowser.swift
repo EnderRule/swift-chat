@@ -56,8 +56,8 @@ open class SPBrowser: UIViewController {
 //        navigationController?.isToolbarHidden = false
 //        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 //    }
-//    open override func viewWillDiSPpear(_ animated: Bool) {
-//        super.viewWillDiSPpear(animated)
+//    open override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
 //        
 //        _logger.trace()
 //        

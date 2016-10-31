@@ -155,8 +155,8 @@ internal class SPPreviewer: UIViewController {
         
         _updateToolbar(false, animated: false)
     }
-    override func viewWillDiSPpear(_ animated: Bool) {
-        super.viewWillDiSPpear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
     }
     override var prefersStatusBarHidden: Bool {
         if _isFullscreen {

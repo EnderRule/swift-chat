@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SAMedia
 
 internal class SPPreviewerVideoCell: SPPreviewerCell {
     
@@ -59,8 +60,8 @@ internal class SPPreviewerVideoCell: SPPreviewerCell {
         addSubview(button)
     }
     
-    private lazy var _player: SMVideoPlayer = SMVideoPlayer()
-    private lazy var _playerView: SMVideoPlayerView = SMVideoPlayerView(player: self._player)
+    private lazy var _player: SAMedia.SMVideoPlayer = SAMedia.SMVideoPlayer()
+    private lazy var _playerView: SAMedia.SMVideoPlayerView = SAMedia.SMVideoPlayerView(player: self._player)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

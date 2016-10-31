@@ -87,8 +87,6 @@ internal class SPPreviewerCell: UICollectionViewCell, SPContainterViewDelegate {
         _tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
-        _contentView.backgroundColor = .random
-        
         _containterView.frame = bounds
         _containterView.delegate = self
         _containterView.autoresizingMask = [.flexibleWidth, .flexibleHeight]

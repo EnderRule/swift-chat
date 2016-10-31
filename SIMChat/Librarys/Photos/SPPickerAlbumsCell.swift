@@ -42,19 +42,19 @@ internal class SPPickerAlbumsCell: UITableViewCell {
         contentView.addSubview(_titleLabel)
         contentView.addSubview(_descriptionLabel)
         
-        addConstraint(_SALayoutConstraintMake(_stackView, .left, .equal, contentView, .left, 8))
-        addConstraint(_SALayoutConstraintMake(_stackView, .centerY, .equal, contentView, .centerY))
+        addConstraint(_SPLayoutConstraintMake(_stackView, .left, .equal, contentView, .left, 8))
+        addConstraint(_SPLayoutConstraintMake(_stackView, .centerY, .equal, contentView, .centerY))
         
-        addConstraint(_SALayoutConstraintMake(_stackView, .width, .equal, _stackView, .height))
-        addConstraint(_SALayoutConstraintMake(_stackView, .height, .equal, nil, .notAnAttribute, 70))
+        addConstraint(_SPLayoutConstraintMake(_stackView, .width, .equal, _stackView, .height))
+        addConstraint(_SPLayoutConstraintMake(_stackView, .height, .equal, nil, .notAnAttribute, 70))
         
-        addConstraint(_SALayoutConstraintMake(_titleLabel, .left, .equal, _stackView, .right, 8))
-        addConstraint(_SALayoutConstraintMake(_titleLabel, .right, .equal, contentView, .right))
-        addConstraint(_SALayoutConstraintMake(_titleLabel, .bottom, .equal, contentView, .centerY))
+        addConstraint(_SPLayoutConstraintMake(_titleLabel, .left, .equal, _stackView, .right, 8))
+        addConstraint(_SPLayoutConstraintMake(_titleLabel, .right, .equal, contentView, .right))
+        addConstraint(_SPLayoutConstraintMake(_titleLabel, .bottom, .equal, contentView, .centerY))
         
-        addConstraint(_SALayoutConstraintMake(_descriptionLabel, .top, .equal, contentView, .centerY))
-        addConstraint(_SALayoutConstraintMake(_descriptionLabel, .left, .equal, _stackView, .right, 8))
-        addConstraint(_SALayoutConstraintMake(_descriptionLabel, .right, .equal, contentView, .right))
+        addConstraint(_SPLayoutConstraintMake(_descriptionLabel, .top, .equal, contentView, .centerY))
+        addConstraint(_SPLayoutConstraintMake(_descriptionLabel, .left, .equal, _stackView, .right, 8))
+        addConstraint(_SPLayoutConstraintMake(_descriptionLabel, .right, .equal, contentView, .right))
     }
     
     private lazy var _stackView: SPPickerAlbumsStackView = SPPickerAlbumsStackView()

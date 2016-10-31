@@ -27,7 +27,7 @@ import UIKit
     case interruptioning
     
     
-    var isPrepared: Bool {
+    public var isPrepared: Bool {
         switch self {
         case .preparing, .prepared,
              .pauseing, .loading, .interruptioning:
@@ -37,7 +37,7 @@ import UIKit
             return false
         }
     }
-    var isInterruptioned: Bool {
+    public var isInterruptioned: Bool {
         switch self {
         case .loading, .pauseing, .interruptioning:
             return true
@@ -46,7 +46,7 @@ import UIKit
             return false
         }
     }
-    var isPlayed: Bool {
+    public var isPlayed: Bool {
         switch self {
         case .playing:
             return true
@@ -55,7 +55,7 @@ import UIKit
             return false
         }
     }
-    var isStoped: Bool {
+    public var isStoped: Bool {
         switch self {
         case .stop, .error:
             return true

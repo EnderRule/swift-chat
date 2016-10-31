@@ -43,22 +43,22 @@ internal class SPErrorView: UIView {
         view.addSubview(_subtitleLabel)
         
         view.addConstraints([
-            _SALayoutConstraintMake(_titleLabel, .top, .equal, view, .top),
-            _SALayoutConstraintMake(_titleLabel, .left, .equal, view, .left),
-            _SALayoutConstraintMake(_titleLabel, .right, .equal, view, .right),
+            _SPLayoutConstraintMake(_titleLabel, .top, .equal, view, .top),
+            _SPLayoutConstraintMake(_titleLabel, .left, .equal, view, .left),
+            _SPLayoutConstraintMake(_titleLabel, .right, .equal, view, .right),
             
-            _SALayoutConstraintMake(_subtitleLabel, .top, .equal, _titleLabel, .bottom, 16),
+            _SPLayoutConstraintMake(_subtitleLabel, .top, .equal, _titleLabel, .bottom, 16),
             
-            _SALayoutConstraintMake(_subtitleLabel, .left, .equal, view, .left),
-            _SALayoutConstraintMake(_subtitleLabel, .right, .equal, view, .right),
-            _SALayoutConstraintMake(_subtitleLabel, .bottom, .equal, view, .bottom),
+            _SPLayoutConstraintMake(_subtitleLabel, .left, .equal, view, .left),
+            _SPLayoutConstraintMake(_subtitleLabel, .right, .equal, view, .right),
+            _SPLayoutConstraintMake(_subtitleLabel, .bottom, .equal, view, .bottom),
         ])
         
         addSubview(view)
         addConstraints([
-            _SALayoutConstraintMake(view, .left, .equal, self, .left, 20),
-            _SALayoutConstraintMake(view, .right, .equal, self, .right, -20),
-            _SALayoutConstraintMake(view, .centerY, .equal, self, .centerY),
+            _SPLayoutConstraintMake(view, .left, .equal, self, .left, 20),
+            _SPLayoutConstraintMake(view, .right, .equal, self, .right, -20),
+            _SPLayoutConstraintMake(view, .centerY, .equal, self, .centerY),
         ])
     }
     
