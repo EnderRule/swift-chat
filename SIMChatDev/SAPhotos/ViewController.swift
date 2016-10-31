@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  SAPhotos
+//  SPhotos
 //
 //  Created by sagesse on 10/28/16.
 //  Copyright © 2016 sagesse. All rights reserved.

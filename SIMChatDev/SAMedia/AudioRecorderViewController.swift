@@ -1,6 +1,6 @@
 //
 //  AudioRecorderViewController.swift
-//  SAMedia
+//  SMedia
 //
 //  Created by sagesse on 27/10/2016.
 //  Copyright © 2016 SAGESSE. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
+class AudioRecorderViewController: UIViewController, SMAudioRecorderDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,10 +16,10 @@ class AudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
         
         let url = URL(fileURLWithPath: NSTemporaryDirectory() + "a.m3a")
         
-        recorder = try? SAMAudioRecorder(contentsOf: url)
+        recorder = try? SMAudioRecorder(contentsOf: url)
         recorder?.delegate = self
         
-        player = try? SAMAudioPlayer(contentsOf: url)
+        player = try? SMAudioPlayer(contentsOf: url)
     }
 
     override func didReceiveMemoryWarning() {
@@ -45,41 +45,41 @@ class AudioRecorderViewController: UIViewController, SAMAudioRecorderDelegate {
         player?.stop()
     }
     
-    func audioRecorder(shouldPreparing audioRecorder: SAMAudioRecorder) -> Bool {
+    func audioRecorder(shouldPreparing audioRecorder: SMAudioRecorder) -> Bool {
         print(#function)
         return true
     }
-    func audioRecorder(didPreparing audioRecorder: SAMAudioRecorder) {
+    func audioRecorder(didPreparing audioRecorder: SMAudioRecorder) {
         print(#function)
     }
     
-    func audioRecorder(shouldRecording audioRecorder: SAMAudioRecorder) -> Bool {
+    func audioRecorder(shouldRecording audioRecorder: SMAudioRecorder) -> Bool {
         print(#function)
         return true
     }
-    func audioRecorder(didRecording audioRecorder: SAMAudioRecorder) {
+    func audioRecorder(didRecording audioRecorder: SMAudioRecorder) {
         print(#function)
     }
     
-    func audioRecorder(didPause audioRecorder: SAMAudioRecorder) {
+    func audioRecorder(didPause audioRecorder: SMAudioRecorder) {
         print(#function)
     }
     
-    func audioRecorder(didStop audioRecorder: SAMAudioRecorder) {
+    func audioRecorder(didStop audioRecorder: SMAudioRecorder) {
         print(#function)
     }
-    func audioRecorder(didInterruption audioRecorder: SAMAudioRecorder) {
+    func audioRecorder(didInterruption audioRecorder: SMAudioRecorder) {
         print(#function)
     }
     
-    func audioRecorder(didFinishRecording audioRecorder: SAMAudioRecorder, successfully flag: Bool) {
+    func audioRecorder(didFinishRecording audioRecorder: SMAudioRecorder, successfully flag: Bool) {
         print(#function, flag)
     }
     
-    func audioRecorder(didOccur audioRecorder: SAMAudioRecorder, error: Error?) {
+    func audioRecorder(didOccur audioRecorder: SMAudioRecorder, error: Error?) {
         print(#function, error as Any)
     }
 
-    var recorder: SAMAudioRecorder?
-    var player: SAMAudioPlayer?
+    var recorder: SMAudioRecorder?
+    var player: SMAudioPlayer?
 }

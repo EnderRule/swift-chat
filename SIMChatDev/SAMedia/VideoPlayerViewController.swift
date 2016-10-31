@@ -1,6 +1,6 @@
 //
 //  VideoPlayerViewController.swift
-//  SAMedia
+//  SMedia
 //
 //  Created by sagesse on 28/10/2016.
 //  Copyright © 2016 SAGESSE. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class VideoPlayerViewController: UIViewController, SAMVideoPlayerDelegate {
+class VideoPlayerViewController: UIViewController, SMVideoPlayerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,7 @@ class VideoPlayerViewController: UIViewController, SAMVideoPlayerDelegate {
 //            return
 //        }
         
-        player = SAMVideoPlayer(contentsOf: url)
+        player = SMVideoPlayer(contentsOf: url)
         player?.delegate = self
         
         playView.player = player
@@ -57,11 +57,11 @@ class VideoPlayerViewController: UIViewController, SAMVideoPlayerDelegate {
 //        }
     }
     
-    func player(shouldPreparing player: SAMVideoPlayerProtocol) -> Bool {
+    func player(shouldPreparing player: SMPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didPreparing player: SAMVideoPlayerProtocol) {
+    func player(didPreparing player: SMPlayerProtocol) {
         print(#function)
         
         playProgressView.maximumValue = Float(player.duration)
@@ -70,58 +70,58 @@ class VideoPlayerViewController: UIViewController, SAMVideoPlayerDelegate {
         loadProgressView.progress = Float(player.loadedTime) / max(playProgressView.maximumValue, 0)
     }
     
-    func player(shouldPlaying player: SAMVideoPlayerProtocol) -> Bool {
+    func player(shouldPlaying player: SMPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didPlaying player: SAMVideoPlayerProtocol) {
+    func player(didPlaying player: SMPlayerProtocol) {
         print(#function)
     }
     
-    func player(didPause player: SAMVideoPlayerProtocol) {
+    func player(didPause player: SMPlayerProtocol) {
         print(#function)
     }
     
-    func player(didStop player: SAMVideoPlayerProtocol) {
+    func player(didStop player: SMPlayerProtocol) {
         print(#function)
     }
-    func player(didInterruption player: SAMVideoPlayerProtocol) {
+    func player(didInterruption player: SMPlayerProtocol) {
         print(#function)
     }
-    func player(didStalled player: SAMVideoPlayerProtocol) {
+    func player(didStalled player: SMPlayerProtocol) {
         print(#function)
     }
     
-    func player(shouldRestorePlaying player: SAMVideoPlayerProtocol) -> Bool {
+    func player(shouldRestorePlaying player: SMPlayerProtocol) -> Bool {
         print(#function)
         return true
     }
-    func player(didRestorePlaying player: SAMVideoPlayerProtocol) {
+    func player(didRestorePlaying player: SMPlayerProtocol) {
         print(#function)
     }
     
-    func player(didChange player: SAMVideoPlayerProtocol, currentTime time: TimeInterval) {
+    func player(didChange player: SMPlayerProtocol, currentTime time: TimeInterval) {
         playProgressView.setValue(Float(time), animated: true)
     }
     
-    func player(didChange player: SAMVideoPlayerProtocol, loadedTime time: TimeInterval) {
+    func player(didChange player: SMPlayerProtocol, loadedTime time: TimeInterval) {
         let progress = Float(time) / max(playProgressView.maximumValue, 0)
         
         loadProgressView.setProgress(progress, animated: true)
     }
     
-    func player(didFinishPlaying player: SAMVideoPlayerProtocol, successfully flag: Bool) {
+    func player(didFinishPlaying player: SMPlayerProtocol, successfully flag: Bool) {
         print(#function)
     }
     
-    func player(didOccur player: SAMVideoPlayerProtocol, error: Error?) {
+    func player(didOccur player: SMPlayerProtocol, error: Error?) {
         print(#function)
     }
     
 
-    var player: SAMVideoPlayer?
+    var player: SMVideoPlayer?
     
-    @IBOutlet weak var playView: SAMVideoPlayerView!
+    @IBOutlet weak var playView: SMVideoPlayerView!
 
     @IBOutlet weak var playProgressView: UISlider!
     @IBOutlet weak var loadProgressView: UIProgressView!

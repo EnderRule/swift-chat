@@ -1,6 +1,6 @@
 //
 //  AudioPlayerViewController.swift
-//  SAMedia
+//  SMedia
 //
 //  Created by sagesse on 27/10/2016.
 //  Copyright © 2016 SAGESSE. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AudioPlayerViewController: UIViewController, SAMAudioPlayerDelegate {
+class AudioPlayerViewController: UIViewController, SMAudioPlayerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,7 @@ class AudioPlayerViewController: UIViewController, SAMAudioPlayerDelegate {
         pauseItem = UIBarButtonItem(barButtonSystemItem: .pause, target: self, action: #selector(pause(_:)))
         stopItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(stop(_:)))
         
-        player = try? SAMAudioPlayer(contentsOf: mp3)
+        player = try? SMAudioPlayer(contentsOf: mp3)
         player?.delegate = self
         //player?.prepareToPlay()
         
@@ -47,52 +47,52 @@ class AudioPlayerViewController: UIViewController, SAMAudioPlayerDelegate {
     }
     
 
-    func audioPlayer(shouldPreparing audioPlayer: SAMAudioPlayer) -> Bool {
+    func audioPlayer(shouldPreparing audioPlayer: SMAudioPlayer) -> Bool {
         print(#function)
         return true
     }
-    func audioPlayer(didPreparing audioPlayer: SAMAudioPlayer) {
+    func audioPlayer(didPreparing audioPlayer: SMAudioPlayer) {
         print(#function)
     }
     
-    func audioPlayer(shouldPlaying audioPlayer: SAMAudioPlayer) -> Bool {
+    func audioPlayer(shouldPlaying audioPlayer: SMAudioPlayer) -> Bool {
         print(#function)
         return true
     }
-    func audioPlayer(didPlaying audioPlayer: SAMAudioPlayer) {
+    func audioPlayer(didPlaying audioPlayer: SMAudioPlayer) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [pauseItem, stopItem]
     }
     
-    func audioPlayer(didPause audioPlayer: SAMAudioPlayer) {
+    func audioPlayer(didPause audioPlayer: SMAudioPlayer) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [playItem, stopItem]
     }
     
-    func audioPlayer(didStop audioPlayer: SAMAudioPlayer) {
+    func audioPlayer(didStop audioPlayer: SMAudioPlayer) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [playItem]
     }
-    func audioPlayer(didInterruption audioPlayer: SAMAudioPlayer) {
+    func audioPlayer(didInterruption audioPlayer: SMAudioPlayer) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [playItem, stopItem]
     }
     
-    func audioPlayer(didFinishPlaying audioPlayer: SAMAudioPlayer, successfully flag: Bool) {
+    func audioPlayer(didFinishPlaying audioPlayer: SMAudioPlayer, successfully flag: Bool) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [playItem]
     }
     
-    func audioPlayer(didOccur audioPlayer: SAMAudioPlayer, error: Error?) {
+    func audioPlayer(didOccur audioPlayer: SMAudioPlayer, error: Error?) {
         print(#function)
         
         navigationItem.rightBarButtonItems = [playItem]
     }
     
-    var player: SAMAudioPlayer?
+    var player: SMAudioPlayer?
 }
