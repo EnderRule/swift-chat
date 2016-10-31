@@ -158,5 +158,13 @@ import Photos
         let ret = SPPickerInternal.perform(s1, with: zone)
         return ret?.takeRetainedValue()
     }
+    
+    public static var bundle: Bundle? {
+        let bundle = _bundle ?? Bundle(identifier: "SA.SAPhotos")
+        _bundle = bundle
+        return bundle
+    }
+    
+    private static weak var _bundle: Bundle?
 }
 

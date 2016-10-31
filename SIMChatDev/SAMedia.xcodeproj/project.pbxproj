@@ -421,7 +421,7 @@
 				DEVELOPMENT_TEAM = FN2B5W3WWQ;
 				INFOPLIST_FILE = "$(SRCROOT)/SAMedia/Info-Dev.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = SA.SAMedia;
+				PRODUCT_BUNDLE_IDENTIFIER = SA.SAMedia.Dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -436,7 +436,7 @@
 				DEVELOPMENT_TEAM = FN2B5W3WWQ;
 				INFOPLIST_FILE = "$(SRCROOT)/SAMedia/Info-Dev.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = SA.SAMedia;
+				PRODUCT_BUNDLE_IDENTIFIER = SA.SAMedia.Dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

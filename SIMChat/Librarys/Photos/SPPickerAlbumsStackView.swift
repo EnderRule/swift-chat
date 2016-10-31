@@ -128,7 +128,7 @@ internal class SPPickerAlbumsStackView: UIView, SPProgressiveableObserver {
             let view = UIImageView()
             _iconView = view
             
-            view.image = UIImage(named: "photo_icon_empty_album")?.withRenderingMode(.alwaysTemplate)
+            view.image = UIImage.sm_init(named: "photo_icon_empty_album")?.withRenderingMode(.alwaysTemplate)
             view.frame = bounds
             view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             view.contentMode = .center

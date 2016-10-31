@@ -112,31 +112,32 @@ internal class SPBadgeView: UIView {
         
         switch badge {
         case .favorites:
-            return UIImage(named: "photo_badge_favorites")
+            
+            return UIImage.sm_init(named: "photo_badge_favorites")
             
         case .panoramas:
-            return UIImage(named: "photo_badge_panorama")
+            return UIImage.sm_init(named: "photo_badge_panorama")
             
         case .videos:
             if style == .small {
-                return UIImage(named: "photo_badge_video_small")
+                return UIImage.sm_init(named: "photo_badge_video_small")
             }
-            return UIImage(named: "photo_badge_video")
+            return UIImage.sm_init(named: "photo_badge_video")
             
         case .slomo:
             if style == .small {
-                return UIImage(named: "photo_badge_slomo_small")
+                return UIImage.sm_init(named: "photo_badge_slomo_small")
             }
-            return UIImage(named: "photo_badge_slomo")
+            return UIImage.sm_init(named: "photo_badge_slomo")
             
         case .timelapses:
             if style == .small {
-                return UIImage(named: "photo_badge_timelapse_small")
+                return UIImage.sm_init(named: "photo_badge_timelapse_small")
             }
-            return UIImage(named: "photo_badge_timelapse")
+            return UIImage.sm_init(named: "photo_badge_timelapse")
             
         case .screenshots:
-            return UIImage(named: "photo_badge_screenshots")
+            return UIImage.sm_init(named: "photo_badge_screenshots")
             
         case .normal:
             return nil

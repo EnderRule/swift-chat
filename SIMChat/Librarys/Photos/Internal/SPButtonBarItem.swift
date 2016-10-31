@@ -108,11 +108,12 @@ open class SPButtonBarItem: UIBarButtonItem {
                 let view = _makeNormalButton(title)
                 view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
                 if !isSelected {
-                    view.setImage(UIImage(named: "photo_small_checkbox_normal"), for: .normal)
-                    view.setImage(UIImage(named: "photo_small_checkbox_selected"), for: .selected)
+                    
+                    view.setImage(UIImage.sm_init(named: "photo_small_checkbox_normal"), for: .normal)
+                    view.setImage(UIImage.sm_init(named: "photo_small_checkbox_selected"), for: .selected)
                 } else {
-                    view.setImage(UIImage(named: "photo_small_checkbox_normal"), for: .selected)
-                    view.setImage(UIImage(named: "photo_small_checkbox_selected"), for: .normal)
+                    view.setImage(UIImage.sm_init(named: "photo_small_checkbox_normal"), for: .selected)
+                    view.setImage(UIImage.sm_init(named: "photo_small_checkbox_selected"), for: .normal)
                 }
                 view.sizeToFit()
                 return UIBarButtonItem(customView: view)
@@ -153,9 +154,9 @@ open class SPButtonBarItem: UIBarButtonItem {
         button.setTitleColor(.white, for: .normal)
         button.setTitleColor(.lightGray, for: .disabled)
         button.contentEdgeInsets = UIEdgeInsetsMake(4, 8, 4, 8)
-        button.setBackgroundImage(UIImage(named: "photo_button_confirm_nor"), for: .normal)
-        button.setBackgroundImage(UIImage(named: "photo_button_confirm_press"), for: .highlighted)
-        button.setBackgroundImage(UIImage(named: "photo_button_confirm_disabled"), for: .disabled)
+        button.setBackgroundImage(UIImage.sm_init(named: "photo_button_confirm_nor"), for: .normal)
+        button.setBackgroundImage(UIImage.sm_init(named: "photo_button_confirm_press"), for: .highlighted)
+        button.setBackgroundImage(UIImage.sm_init(named: "photo_button_confirm_disabled"), for: .disabled)
         button.sizeToFit()
         button.frame = CGRect(x: 0, y: 0, width: max(70, button.frame.width), height: button.frame.height)
         

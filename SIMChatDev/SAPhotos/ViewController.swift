@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SAPhotos
 
 class ViewController: UIViewController {
 
@@ -19,7 +20,12 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    @IBAction func picker(_ sender: AnyObject) {
+        
+        let picker = SPPicker()
+        
+        present(picker, animated: true, completion: nil)
+    }
 }
 
