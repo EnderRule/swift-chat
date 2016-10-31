@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		0C0697231D8F762600547588 /* SAAudioStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0697221D8F762600547588 /* SAAudioStatus.swift */; };
 		0C0697251D8F7A3800547588 /* SAAudioTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0697241D8F7A3800547588 /* SAAudioTabbar.swift */; };
-		0C0BAFDC1DC728D500B5CF4F /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C0BAFD91DC728C700B5CF4F /* SAPhotos.framework */; };
-		0C0BAFDD1DC728D900B5CF4F /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C0BAFD31DC728C700B5CF4F /* SAMedia.framework */; };
 		0C0DD6371C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C31C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift */; };
 		0C0DD6381C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C41C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift */; };
 		0C0DD6391C60B4A900AEC8C4 /* SIMChatViewController+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0DD5C51C60B4A900AEC8C4 /* SIMChatViewController+Message.swift */; };
@@ -128,34 +126,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0C0BAFD21DC728C700B5CF4F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0C0BAFCA1DC728C700B5CF4F /* SAMedia.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0CCA29691DC6F49900DEA1F6;
-			remoteInfo = SAMedia;
-		};
-		0C0BAFD41DC728C700B5CF4F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0C0BAFCA1DC728C700B5CF4F /* SAMedia.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0C60148F1DC392AD00C785FD;
-			remoteInfo = "SAMedia-Dev";
-		};
-		0C0BAFD81DC728C700B5CF4F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0C0BAFCD1DC728C700B5CF4F /* SAPhotos.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0CCA29811DC6F84D00DEA1F6;
-			remoteInfo = SAPhotos;
-		};
-		0C0BAFDA1DC728C700B5CF4F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0C0BAFCD1DC728C700B5CF4F /* SAPhotos.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0C6014B91DC3934E00C785FD;
-			remoteInfo = "SAPhotos-Dev";
-		};
 		0C48A8B21C795C7B00571BF5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0C0DD59B1C60B28E00AEC8C4 /* Project object */;
@@ -168,8 +138,6 @@
 /* Begin PBXFileReference section */
 		0C0697221D8F762600547588 /* SAAudioStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioStatus.swift; sourceTree = "<group>"; };
 		0C0697241D8F7A3800547588 /* SAAudioTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTabbar.swift; sourceTree = "<group>"; };
-		0C0BAFCA1DC728C700B5CF4F /* SAMedia.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SAMedia.xcodeproj; path = SIMChatDev/SAMedia.xcodeproj; sourceTree = "<group>"; };
-		0C0BAFCD1DC728C700B5CF4F /* SAPhotos.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SAPhotos.xcodeproj; path = SIMChatDev/SAPhotos.xcodeproj; sourceTree = "<group>"; };
 		0C0DD5A41C60B28E00AEC8C4 /* SIMChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SIMChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0DD5C31C60B4A900AEC8C4 /* SIMChatPhotoBrowserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatPhotoBrowserController.swift; sourceTree = "<group>"; };
 		0C0DD5C41C60B4A900AEC8C4 /* SIMChatViewController+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SIMChatViewController+Keyboard.swift"; sourceTree = "<group>"; };
@@ -302,8 +270,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C0BAFDD1DC728D900B5CF4F /* SAMedia.framework in Frameworks */,
-				0C0BAFDC1DC728D500B5CF4F /* SAPhotos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,29 +284,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0C0BAFCB1DC728C700B5CF4F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0C0BAFD31DC728C700B5CF4F /* SAMedia.framework */,
-				0C0BAFD51DC728C700B5CF4F /* SAMedia-Dev.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		0C0BAFCE1DC728C700B5CF4F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0C0BAFD91DC728C700B5CF4F /* SAPhotos.framework */,
-				0C0BAFDB1DC728C700B5CF4F /* SAPhotos-Dev.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		0C0DD59A1C60B28E00AEC8C4 = {
 			isa = PBXGroup;
 			children = (
-				0C0BAFCA1DC728C700B5CF4F /* SAMedia.xcodeproj */,
-				0C0BAFCD1DC728C700B5CF4F /* SAPhotos.xcodeproj */,
 				0C0DD5A61C60B28E00AEC8C4 /* SIMChat */,
 				0C48A8AD1C795C7B00571BF5 /* SIMChatTests */,
 				0C0DD5A51C60B28E00AEC8C4 /* Products */,
@@ -776,16 +722,6 @@
 			mainGroup = 0C0DD59A1C60B28E00AEC8C4;
 			productRefGroup = 0C0DD5A51C60B28E00AEC8C4 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 0C0BAFCB1DC728C700B5CF4F /* Products */;
-					ProjectRef = 0C0BAFCA1DC728C700B5CF4F /* SAMedia.xcodeproj */;
-				},
-				{
-					ProductGroup = 0C0BAFCE1DC728C700B5CF4F /* Products */;
-					ProjectRef = 0C0BAFCD1DC728C700B5CF4F /* SAPhotos.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				0C0DD5A31C60B28E00AEC8C4 /* SIMChat */,
@@ -793,37 +729,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		0C0BAFD31DC728C700B5CF4F /* SAMedia.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SAMedia.framework;
-			remoteRef = 0C0BAFD21DC728C700B5CF4F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0C0BAFD51DC728C700B5CF4F /* SAMedia-Dev.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "SAMedia-Dev.app";
-			remoteRef = 0C0BAFD41DC728C700B5CF4F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0C0BAFD91DC728C700B5CF4F /* SAPhotos.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SAPhotos.framework;
-			remoteRef = 0C0BAFD81DC728C700B5CF4F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0C0BAFDB1DC728C700B5CF4F /* SAPhotos-Dev.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "SAPhotos-Dev.app";
-			remoteRef = 0C0BAFDA1DC728C700B5CF4F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0C0DD5A21C60B28E00AEC8C4 /* Resources */ = {

@@ -14,6 +14,13 @@
 		0C001ABB1DC742C3004A5F08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C001AB91DC742C3004A5F08 /* LaunchScreen.storyboard */; };
 		0C001CD81DC74598004A5F08 /* SAChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CD71DC74598004A5F08 /* SAChat.framework */; };
 		0C001CD91DC74598004A5F08 /* SAChat.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CD71DC74598004A5F08 /* SAChat.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0C001CE51DC7476A004A5F08 /* SAInput.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CE41DC7476A004A5F08 /* SAInput.framework */; };
+		0C001CE61DC7476A004A5F08 /* SAInput.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CE41DC7476A004A5F08 /* SAInput.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0C001CE81DC7476E004A5F08 /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CE71DC7476E004A5F08 /* SAMedia.framework */; };
+		0C001CE91DC7476E004A5F08 /* SAMedia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CE71DC7476E004A5F08 /* SAMedia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0C001CEB1DC74774004A5F08 /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CEA1DC74774004A5F08 /* SAPhotos.framework */; };
+		0C001CEC1DC74774004A5F08 /* SAPhotos.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CEA1DC74774004A5F08 /* SAPhotos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0C001CF11DC74957004A5F08 /* FPSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C001CF01DC74957004A5F08 /* FPSLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,6 +31,9 @@
 			dstSubfolderSpec = 10;
 			files = (
 				0C001CD91DC74598004A5F08 /* SAChat.framework in Embed Frameworks */,
+				0C001CE61DC7476A004A5F08 /* SAInput.framework in Embed Frameworks */,
+				0C001CE91DC7476E004A5F08 /* SAMedia.framework in Embed Frameworks */,
+				0C001CEC1DC74774004A5F08 /* SAPhotos.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -39,6 +49,10 @@
 		0C001ABA1DC742C3004A5F08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0C001ABC1DC742C3004A5F08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C001CD71DC74598004A5F08 /* SAChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SAChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C001CE41DC7476A004A5F08 /* SAInput.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SAInput.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C001CE71DC7476E004A5F08 /* SAMedia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SAMedia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C001CEA1DC74774004A5F08 /* SAPhotos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SAPhotos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C001CF01DC74957004A5F08 /* FPSLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FPSLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +61,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C001CD81DC74598004A5F08 /* SAChat.framework in Frameworks */,
+				0C001CE51DC7476A004A5F08 /* SAInput.framework in Frameworks */,
+				0C001CE81DC7476E004A5F08 /* SAMedia.framework in Frameworks */,
+				0C001CEB1DC74774004A5F08 /* SAPhotos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +90,7 @@
 		0C001AAF1DC742C3004A5F08 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				0C001CF01DC74957004A5F08 /* FPSLabel.swift */,
 				0C001AB01DC742C3004A5F08 /* AppDelegate.swift */,
 				0C001AB21DC742C3004A5F08 /* ViewController.swift */,
 				0C001AB41DC742C3004A5F08 /* Main.storyboard */,
@@ -86,6 +104,9 @@
 		0C001CDA1DC7459C004A5F08 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0C001CEA1DC74774004A5F08 /* SAPhotos.framework */,
+				0C001CE71DC7476E004A5F08 /* SAMedia.framework */,
+				0C001CE41DC7476A004A5F08 /* SAInput.framework */,
 				0C001CD71DC74598004A5F08 /* SAChat.framework */,
 			);
 			name = Frameworks;
@@ -168,6 +189,7 @@
 			files = (
 				0C001AB31DC742C3004A5F08 /* ViewController.swift in Sources */,
 				0C001AB11DC742C3004A5F08 /* AppDelegate.swift in Sources */,
+				0C001CF11DC74957004A5F08 /* FPSLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +320,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SA.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -313,6 +336,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SA.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
