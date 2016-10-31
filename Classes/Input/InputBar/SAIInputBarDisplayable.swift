@@ -1,6 +1,6 @@
 //
-//  SAIBarDisplayable.swift
-//  SAIBar
+//  SAIInputBarDisplayable.swift
+//  SAIInputBar
 //
 //  Created by sagesse on 8/26/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -14,15 +14,15 @@ import UIKit
 ///
 /// NOTE: 目前不支持`UICollectionViewController`和`UITableViewController`
 ///
-public protocol SAIBarDisplayable: NSObjectProtocol  {
+public protocol SAIInputBarDisplayable: NSObjectProtocol  {
     var scrollView: UIScrollView { get }
 }
 
 // MARK: 
 
-internal extension SAIBarDisplayable {
+internal extension SAIInputBarDisplayable {
     
-    func ib_inputBar(_ inputBar: SAIBar, initWithFrame frame: CGRect) {
+    func ib_inputBar(_ inputBar: SAIInputBar, initWithFrame frame: CGRect) {
         _logger.trace(frame)
         
         UIView.performWithoutAnimation { 
@@ -31,7 +31,7 @@ internal extension SAIBarDisplayable {
         }
     }
     
-    func ib_inputBar(_ inputBar: SAIBar, showWithFrame frame: CGRect) {
+    func ib_inputBar(_ inputBar: SAIInputBar, showWithFrame frame: CGRect) {
         guard let window = inputBar.window else {
             return
         }
@@ -45,7 +45,7 @@ internal extension SAIBarDisplayable {
             ib_inputBar(inputBar, didChangeFrame: frame)
         }
     }
-    func ib_inputBar(_ inputBar: SAIBar, hideWithFrame frame: CGRect) {
+    func ib_inputBar(_ inputBar: SAIInputBar, hideWithFrame frame: CGRect) {
         guard let window = inputBar.window else {
             return
         }
@@ -57,7 +57,7 @@ internal extension SAIBarDisplayable {
         ib_inputBar(inputBar, didChangeFrame: frame)
     }
     
-    func ib_inputBar(_ inputBar: SAIBar, didChangeOffset offset: CGPoint) {
+    func ib_inputBar(_ inputBar: SAIInputBar, didChangeOffset offset: CGPoint) {
         _logger.trace(offset)
        
         guard scrollView.contentOffset.y >= -scrollView.contentInset.top else {
@@ -66,7 +66,7 @@ internal extension SAIBarDisplayable {
             
         ib_extContentOffset = CGPoint(x: -offset.x, y: -offset.y)
     }
-    func ib_inputBar(_ inputBar: SAIBar, didChangeFrame frame: CGRect) {
+    func ib_inputBar(_ inputBar: SAIInputBar, didChangeFrame frame: CGRect) {
         _logger.trace(frame)
         
         let ty = (frame.height - self.ib_extContentSize.height) + (0 - self.ib_extContentOffset.y)
@@ -162,7 +162,7 @@ private extension UIViewController {
 
 // MARK: method swizzling
 
-internal func SAIBarDisplayableLoad() {
+internal func SAIInputBarDisplayableLoad() {
     _SAInputExchangeSelector(NSClassFromString("UIInputWindowController"), "setInputViewSet:", "ib_inputWindowController_setInputViewSet:")
 }
 

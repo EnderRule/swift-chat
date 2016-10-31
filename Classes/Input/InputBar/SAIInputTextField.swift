@@ -1,6 +1,6 @@
 //
-//  SAITextField.swift
-//  SAIBar
+//  SAIInputTextField.swift
+//  SAIInputBar
 //
 //  Created by sagesse on 7/23/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAITextField: UITextView {
+internal class SAIInputTextField: UITextView {
     
     override var contentSize: CGSize {
         didSet {
@@ -56,7 +56,7 @@ internal class SAITextField: UITextView {
     }
     
     
-    lazy var item: SAITextFieldItem = SAITextFieldItem(textView: self, backgroundView: self.backgroundView)
+    lazy var item: SAIInputTextFieldItem = SAIInputTextFieldItem(textView: self, backgroundView: self.backgroundView)
     lazy var backgroundView: UIImageView = UIImageView()
 }
 

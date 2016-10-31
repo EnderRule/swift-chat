@@ -19,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C001A951DC7398A004A5F08 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0C0BB0521DC72D6600B5CF4F /* SAMedia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAMedia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB0551DC72D6600B5CF4F /* SAMedia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAMedia.h; sourceTree = "<group>"; };
 		0C0BB0561DC72D6600B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,6 +65,7 @@
 		0C0BB0541DC72D6600B5CF4F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0C001A951DC7398A004A5F08 /* README.md */,
 				0C0BB0551DC72D6600B5CF4F /* SAMedia.h */,
 				0C0BB0561DC72D6600B5CF4F /* Info.plist */,
 			);

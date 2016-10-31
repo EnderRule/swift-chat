@@ -1,6 +1,6 @@
 //
-//  SAIAccessoryViewLayout.swift
-//  SAIBar
+//  SAIInputAccessoryViewLayout.swift
+//  SAIInputBar
 //
 //  Created by sagesse on 8/3/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAIAccessoryViewLayout: UICollectionViewLayout {
+internal class SAIInputAccessoryViewLayout: UICollectionViewLayout {
     class Line {
         var frame: CGRect
         var inset: UIEdgeInsets
@@ -171,7 +171,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         static var HResize = Alignment(rawValue: 0x0008)
     }
     class Attributes: UICollectionViewLayoutAttributes {
-        var item: SAIItem?
+        var item: SAIInputItem?
         var alignemt: Alignment = .None
         
         var cacheSize: CGSize?
@@ -277,7 +277,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         return attr
     }
     
-    func sizeThatFits(_ maxSize: CGSize, atPosition position: SAIItemPosition) -> CGSize {
+    func sizeThatFits(_ maxSize: CGSize, atPosition position: SAIInputItemPosition) -> CGSize {
         if let size = _cacheLayoutSizes[position] {
             return size
         }
@@ -292,10 +292,10 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         return size
     }
     
-    func invalidateLayout(atPosition position: SAIItemPosition) {
+    func invalidateLayout(atPosition position: SAIInputItemPosition) {
         _invalidateLayoutAllCache(atPosition: position)
     }
-    func invalidateLayoutIfNeeded(atPosition position: SAIItemPosition) {
+    func invalidateLayoutIfNeeded(atPosition position: SAIInputItemPosition) {
         //_logger.trace(position)
         guard let attributes = _cacheLayoutAllAttributes[position] else {
             return
@@ -377,7 +377,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
     }
     
     private func _layoutAttributesForItemAtIndexPath(_ indexPath: IndexPath) -> Attributes? {
-        if let position = SAIItemPosition(rawValue: (indexPath as NSIndexPath).section) {
+        if let position = SAIInputItemPosition(rawValue: (indexPath as NSIndexPath).section) {
             if let attributes = _cacheLayoutAllAttributesOfCurrent[position], (indexPath as NSIndexPath).item < attributes.count {
                 return attributes[(indexPath as NSIndexPath).item]
             }
@@ -386,7 +386,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         return nil
     }
     private func _layoutAttributesForItemAtOldIndexPath(_ indexPath: IndexPath) -> Attributes? {
-        if let position = SAIItemPosition(rawValue: (indexPath as NSIndexPath).section) {
+        if let position = SAIInputItemPosition(rawValue: (indexPath as NSIndexPath).section) {
             if let attributes = _cacheLayoutAllAttributesOfPrevious[position], (indexPath as NSIndexPath).item < attributes.count {
                 return attributes[(indexPath as NSIndexPath).item]
             }
@@ -413,7 +413,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
             return $0
         }
     }
-    private func _attributesWithBarItems(_ barItems: [SAIItem], atPosition position: SAIItemPosition) -> [Attributes] {
+    private func _attributesWithBarItems(_ barItems: [SAIInputItem], atPosition position: SAIInputItemPosition) -> [Attributes] {
         //_logger.trace(position)
         // 查找左对齐和右对齐的item
         let ax = barItems.enumerated().reduce((-1, barItems.count)) {
@@ -462,7 +462,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
             return attr
         }
     }
-    private func _lines(atPosition position: SAIItemPosition, inRect rect: CGRect) -> [Line] {
+    private func _lines(atPosition position: SAIInputItemPosition, inRect rect: CGRect) -> [Line] {
         if let lines = _cacheLayoutAllLines[position] {
             return lines
         }
@@ -479,7 +479,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         _cacheLayoutAllLines[position] = lines
         return lines
     }
-    private func _attributes(atPosition position: SAIItemPosition) -> [Attributes] {
+    private func _attributes(atPosition position: SAIInputItemPosition) -> [Attributes] {
         if let attributes = _cacheLayoutAllAttributes[position] {
             return attributes
         }
@@ -488,9 +488,9 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         _cacheLayoutAllAttributes[position] = attributes
         return attributes
     }
-    private func _barItems(atPosition position: SAIItemPosition) -> [SAIItem] {
+    private func _barItems(atPosition position: SAIInputItemPosition) -> [SAIInputItem] {
         // 如果不是这样的话... 直接报错(高耦合, 反正不重用)
-        let ds = collectionView?.dataSource as! SAIAccessoryView
+        let ds = collectionView?.dataSource as! SAIInputAccessoryView
         return ds.barItems(atPosition: position)
     }
     
@@ -515,7 +515,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         _cacheLayoutAllAttributes.removeAll(keepingCapacity: true)
         _cacheLayoutedAttributes = nil
     }
-    private func _invalidateLayoutAllCache(atPosition position: SAIItemPosition) {
+    private func _invalidateLayoutAllCache(atPosition position: SAIInputItemPosition) {
         _logger.trace(position)
         
         _cacheLayoutSizes.removeValue(forKey: position)
@@ -531,7 +531,7 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
         
         _cacheLayoutedAttributes = nil
     }
-    private func _invalidateLayoutLineCache(atPosition position: SAIItemPosition) {
+    private func _invalidateLayoutLineCache(atPosition position: SAIInputItemPosition) {
         //_logger.trace(position)
         
         _cacheLayoutSizes.removeValue(forKey: position)
@@ -555,12 +555,12 @@ internal class SAIAccessoryViewLayout: UICollectionViewLayout {
     var add: Set<IndexPath> = []
     var reload: Set<IndexPath> = []
     
-    var _cacheLayoutAllAttributesOfCurrent: [SAIItemPosition: [Attributes]] = [:]
-    var _cacheLayoutAllAttributesOfPrevious: [SAIItemPosition: [Attributes]] = [:]
+    var _cacheLayoutAllAttributesOfCurrent: [SAIInputItemPosition: [Attributes]] = [:]
+    var _cacheLayoutAllAttributesOfPrevious: [SAIInputItemPosition: [Attributes]] = [:]
     
-    var _cacheLayoutSizes: [SAIItemPosition: CGSize] = [:]
-    var _cacheLayoutAllLines: [SAIItemPosition: [Line]] = [:]
-    var _cacheLayoutAllAttributes: [SAIItemPosition: [Attributes]] = [:]
+    var _cacheLayoutSizes: [SAIInputItemPosition: CGSize] = [:]
+    var _cacheLayoutAllLines: [SAIInputItemPosition: [Line]] = [:]
+    var _cacheLayoutAllAttributes: [SAIInputItemPosition: [Attributes]] = [:]
     
     var _cacheLayoutedAttributes: [Attributes]?
     

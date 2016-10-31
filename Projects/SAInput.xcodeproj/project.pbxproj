@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C001AA21DC741FA004A5F08 /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001AA01DC741FA004A5F08 /* SAMedia.framework */; };
+		0C001AA31DC741FA004A5F08 /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001AA11DC741FA004A5F08 /* SAPhotos.framework */; };
 		0C0BB02D1DC72CFB00B5CF4F /* SAInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C0BB2391DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2371DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift */; };
 		0C0BB23A1DC732DB00B5CF4F /* UIImage+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2381DC732DB00B5CF4F /* UIImage+Input.swift */; };
@@ -15,10 +17,8 @@
 		0C0BB27A1DC734B000B5CF4F /* SAIAudioInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */; };
 		0C0BB27B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */; };
 		0C0BB27C1DC734B000B5CF4F /* SAIAudioPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */; };
-		0C0BB27D1DC734B000B5CF4F /* SAIAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */; };
 		0C0BB27E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */; };
 		0C0BB27F1DC734B000B5CF4F /* SAIAudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */; };
-		0C0BB2801DC734B000B5CF4F /* SAIAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */; };
 		0C0BB2811DC734B000B5CF4F /* SAIAudioRecordToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */; };
 		0C0BB2821DC734B000B5CF4F /* SAIAudioRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */; };
 		0C0BB2831DC734B000B5CF4F /* SAIAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */; };
@@ -45,20 +45,25 @@
 		0C0BB2981DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26B1DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift */; };
 		0C0BB2991DC734B000B5CF4F /* SAIToolboxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26C1DC734B000B5CF4F /* SAIToolboxItem.swift */; };
 		0C0BB29A1DC734B000B5CF4F /* SAIToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26D1DC734B000B5CF4F /* SAIToolboxItemView.swift */; };
-		0C0BB2A61DC7351300B5CF4F /* SAIAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */; };
-		0C0BB2A71DC7351300B5CF4F /* SAIAccessoryViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */; };
-		0C0BB2A81DC7351300B5CF4F /* SAIBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */; };
-		0C0BB2A91DC7351300B5CF4F /* SAIBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */; };
-		0C0BB2AA1DC7351300B5CF4F /* SAIBarDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */; };
-		0C0BB2AB1DC7351300B5CF4F /* SAIItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */; };
-		0C0BB2AC1DC7351300B5CF4F /* SAIItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */; };
-		0C0BB2AD1DC7351300B5CF4F /* SAITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */; };
-		0C0BB2AE1DC7351300B5CF4F /* SAITextFieldItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */; };
-		0C0BB2AF1DC7351300B5CF4F /* SAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A51DC7351300B5CF4F /* SAIView.swift */; };
+		0C0BB2A61DC7351300B5CF4F /* SAIInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29C1DC7351300B5CF4F /* SAIInputAccessoryView.swift */; };
+		0C0BB2A71DC7351300B5CF4F /* SAIInputAccessoryViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29D1DC7351300B5CF4F /* SAIInputAccessoryViewLayout.swift */; };
+		0C0BB2A81DC7351300B5CF4F /* SAIInputBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29E1DC7351300B5CF4F /* SAIInputBackgroundView.swift */; };
+		0C0BB2A91DC7351300B5CF4F /* SAIInputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29F1DC7351300B5CF4F /* SAIInputBar.swift */; };
+		0C0BB2AA1DC7351300B5CF4F /* SAIInputBarDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A01DC7351300B5CF4F /* SAIInputBarDisplayable.swift */; };
+		0C0BB2AB1DC7351300B5CF4F /* SAIInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A11DC7351300B5CF4F /* SAIInputItem.swift */; };
+		0C0BB2AC1DC7351300B5CF4F /* SAIInputItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A21DC7351300B5CF4F /* SAIInputItemView.swift */; };
+		0C0BB2AD1DC7351300B5CF4F /* SAIInputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A31DC7351300B5CF4F /* SAIInputTextField.swift */; };
+		0C0BB2AE1DC7351300B5CF4F /* SAIInputTextFieldItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A41DC7351300B5CF4F /* SAIInputTextFieldItem.swift */; };
+		0C0BB2AF1DC7351300B5CF4F /* SAIInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A51DC7351300B5CF4F /* SAIInputView.swift */; };
 		0C0BB2B11DC7364400B5CF4F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2B01DC7364400B5CF4F /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C001A991DC739AD004A5F08 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0C001A9C1DC73C25004A5F08 /* SAMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAMedia.framework; path = "build/Debug-iphoneos/SAMedia.framework"; sourceTree = "<group>"; };
+		0C001A9D1DC73C25004A5F08 /* SAPhotos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAPhotos.framework; path = "build/Debug-iphoneos/SAPhotos.framework"; sourceTree = "<group>"; };
+		0C001AA01DC741FA004A5F08 /* SAMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAMedia.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAMedia.framework"; sourceTree = "<group>"; };
+		0C001AA11DC741FA004A5F08 /* SAPhotos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAPhotos.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAPhotos.framework"; sourceTree = "<group>"; };
 		0C0BB0281DC72CFB00B5CF4F /* SAInput.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAInput.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAInput.h; sourceTree = "<group>"; };
 		0C0BB02C1DC72CFB00B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -69,10 +74,8 @@
 		0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioInputView.swift; sourceTree = "<group>"; };
 		0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioInputViewLayout.swift; sourceTree = "<group>"; };
 		0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayButton.swift; sourceTree = "<group>"; };
-		0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayer.swift; sourceTree = "<group>"; };
 		0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayToolbar.swift; sourceTree = "<group>"; };
 		0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordButton.swift; sourceTree = "<group>"; };
-		0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecorder.swift; sourceTree = "<group>"; };
 		0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordToolbar.swift; sourceTree = "<group>"; };
 		0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordView.swift; sourceTree = "<group>"; };
 		0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioSession.swift; sourceTree = "<group>"; };
@@ -99,16 +102,16 @@
 		0C0BB26B1DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxInputViewLayout.swift; sourceTree = "<group>"; };
 		0C0BB26C1DC734B000B5CF4F /* SAIToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxItem.swift; sourceTree = "<group>"; };
 		0C0BB26D1DC734B000B5CF4F /* SAIToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxItemView.swift; sourceTree = "<group>"; };
-		0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAccessoryView.swift; sourceTree = "<group>"; };
-		0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAccessoryViewLayout.swift; sourceTree = "<group>"; };
-		0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBackgroundView.swift; sourceTree = "<group>"; };
-		0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBar.swift; sourceTree = "<group>"; };
-		0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBarDisplayable.swift; sourceTree = "<group>"; };
-		0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIItem.swift; sourceTree = "<group>"; };
-		0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIItemView.swift; sourceTree = "<group>"; };
-		0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAITextField.swift; sourceTree = "<group>"; };
-		0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAITextFieldItem.swift; sourceTree = "<group>"; };
-		0C0BB2A51DC7351300B5CF4F /* SAIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIView.swift; sourceTree = "<group>"; };
+		0C0BB29C1DC7351300B5CF4F /* SAIInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputAccessoryView.swift; sourceTree = "<group>"; };
+		0C0BB29D1DC7351300B5CF4F /* SAIInputAccessoryViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputAccessoryViewLayout.swift; sourceTree = "<group>"; };
+		0C0BB29E1DC7351300B5CF4F /* SAIInputBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputBackgroundView.swift; sourceTree = "<group>"; };
+		0C0BB29F1DC7351300B5CF4F /* SAIInputBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputBar.swift; sourceTree = "<group>"; };
+		0C0BB2A01DC7351300B5CF4F /* SAIInputBarDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputBarDisplayable.swift; sourceTree = "<group>"; };
+		0C0BB2A11DC7351300B5CF4F /* SAIInputItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputItem.swift; sourceTree = "<group>"; };
+		0C0BB2A21DC7351300B5CF4F /* SAIInputItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputItemView.swift; sourceTree = "<group>"; };
+		0C0BB2A31DC7351300B5CF4F /* SAIInputTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputTextField.swift; sourceTree = "<group>"; };
+		0C0BB2A41DC7351300B5CF4F /* SAIInputTextFieldItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputTextFieldItem.swift; sourceTree = "<group>"; };
+		0C0BB2A51DC7351300B5CF4F /* SAIInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIInputView.swift; sourceTree = "<group>"; };
 		0C0BB2B01DC7364400B5CF4F /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,12 +120,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C001AA21DC741FA004A5F08 /* SAMedia.framework in Frameworks */,
+				0C001AA31DC741FA004A5F08 /* SAPhotos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C001A9B1DC73C25004A5F08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0C001AA01DC741FA004A5F08 /* SAMedia.framework */,
+				0C001AA11DC741FA004A5F08 /* SAPhotos.framework */,
+				0C001A9C1DC73C25004A5F08 /* SAMedia.framework */,
+				0C001A9D1DC73C25004A5F08 /* SAPhotos.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		0C0BB01E1DC72CFB00B5CF4F = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +147,7 @@
 				0C0BB2361DC732DB00B5CF4F /* UIKit+Photos */,
 				0C0BB02A1DC72CFB00B5CF4F /* Supporting Files */,
 				0C0BB0291DC72CFB00B5CF4F /* Products */,
+				0C001A9B1DC73C25004A5F08 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				0C0BB2B01DC7364400B5CF4F /* Logger.swift */,
+				0C001A991DC739AD004A5F08 /* README.md */,
 				0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */,
 				0C0BB02C1DC72CFB00B5CF4F /* Info.plist */,
 			);
@@ -183,10 +201,8 @@
 				0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */,
 				0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */,
 				0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */,
-				0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */,
 				0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */,
 				0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */,
-				0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */,
 				0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */,
 				0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */,
 				0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */,
@@ -241,16 +257,16 @@
 		0C0BB29B1DC7351300B5CF4F /* InputBar */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */,
-				0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */,
-				0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */,
-				0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */,
-				0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */,
-				0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */,
-				0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */,
-				0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */,
-				0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */,
-				0C0BB2A51DC7351300B5CF4F /* SAIView.swift */,
+				0C0BB29F1DC7351300B5CF4F /* SAIInputBar.swift */,
+				0C0BB2A01DC7351300B5CF4F /* SAIInputBarDisplayable.swift */,
+				0C0BB2A11DC7351300B5CF4F /* SAIInputItem.swift */,
+				0C0BB2A21DC7351300B5CF4F /* SAIInputItemView.swift */,
+				0C0BB2A51DC7351300B5CF4F /* SAIInputView.swift */,
+				0C0BB29C1DC7351300B5CF4F /* SAIInputAccessoryView.swift */,
+				0C0BB29D1DC7351300B5CF4F /* SAIInputAccessoryViewLayout.swift */,
+				0C0BB2A31DC7351300B5CF4F /* SAIInputTextField.swift */,
+				0C0BB2A41DC7351300B5CF4F /* SAIInputTextFieldItem.swift */,
+				0C0BB29E1DC7351300B5CF4F /* SAIInputBackgroundView.swift */,
 			);
 			name = InputBar;
 			path = ../Classes/Input/InputBar;
@@ -343,16 +359,16 @@
 				0C0BB2941DC734B000B5CF4F /* SAIEmoticonPreviewer.swift in Sources */,
 				0C0BB27A1DC734B000B5CF4F /* SAIAudioInputView.swift in Sources */,
 				0C0BB27C1DC734B000B5CF4F /* SAIAudioPlayButton.swift in Sources */,
-				0C0BB2AE1DC7351300B5CF4F /* SAITextFieldItem.swift in Sources */,
+				0C0BB2AE1DC7351300B5CF4F /* SAIInputTextFieldItem.swift in Sources */,
 				0C0BB2B11DC7364400B5CF4F /* Logger.swift in Sources */,
 				0C0BB2831DC734B000B5CF4F /* SAIAudioSession.swift in Sources */,
 				0C0BB2951DC734B000B5CF4F /* SAIEmoticonTabItemView.swift in Sources */,
 				0C0BB2841DC734B000B5CF4F /* SAIAudioSimulateView.swift in Sources */,
-				0C0BB2A61DC7351300B5CF4F /* SAIAccessoryView.swift in Sources */,
+				0C0BB2A61DC7351300B5CF4F /* SAIInputAccessoryView.swift in Sources */,
 				0C0BB28F1DC734B000B5CF4F /* SAIEmoticonInputView.swift in Sources */,
 				0C0BB2911DC734B000B5CF4F /* SAIEmoticonLine.swift in Sources */,
 				0C0BB2781DC734B000B5CF4F /* SAIAudioEffect.swift in Sources */,
-				0C0BB2A71DC7351300B5CF4F /* SAIAccessoryViewLayout.swift in Sources */,
+				0C0BB2A71DC7351300B5CF4F /* SAIInputAccessoryViewLayout.swift in Sources */,
 				0C0BB2791DC734B000B5CF4F /* SAIAudioEffectView.swift in Sources */,
 				0C0BB2811DC734B000B5CF4F /* SAIAudioRecordToolbar.swift in Sources */,
 				0C0BB2991DC734B000B5CF4F /* SAIToolboxItem.swift in Sources */,
@@ -365,26 +381,24 @@
 				0C0BB2931DC734B000B5CF4F /* SAIEmoticonPageView.swift in Sources */,
 				0C0BB27E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift in Sources */,
 				0C0BB23A1DC732DB00B5CF4F /* UIImage+Input.swift in Sources */,
-				0C0BB27D1DC734B000B5CF4F /* SAIAudioPlayer.swift in Sources */,
-				0C0BB2A91DC7351300B5CF4F /* SAIBar.swift in Sources */,
+				0C0BB2A91DC7351300B5CF4F /* SAIInputBar.swift in Sources */,
 				0C0BB2981DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift in Sources */,
 				0C0BB2871DC734B000B5CF4F /* SAIAudioStatus.swift in Sources */,
 				0C0BB28C1DC734B000B5CF4F /* SAIEmoticon.swift in Sources */,
 				0C0BB28B1DC734B000B5CF4F /* SAIAudioView.swift in Sources */,
 				0C0BB28A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift in Sources */,
 				0C0BB2861DC734B000B5CF4F /* SAIAudioSpectrumView.swift in Sources */,
-				0C0BB2AA1DC7351300B5CF4F /* SAIBarDisplayable.swift in Sources */,
+				0C0BB2AA1DC7351300B5CF4F /* SAIInputBarDisplayable.swift in Sources */,
 				0C0BB2891DC734B000B5CF4F /* SAIAudioTabbar.swift in Sources */,
-				0C0BB2A81DC7351300B5CF4F /* SAIBackgroundView.swift in Sources */,
+				0C0BB2A81DC7351300B5CF4F /* SAIInputBackgroundView.swift in Sources */,
 				0C0BB2391DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift in Sources */,
 				0C0BB2881DC734B000B5CF4F /* SAIAudioStatusView.swift in Sources */,
-				0C0BB2AB1DC7351300B5CF4F /* SAIItem.swift in Sources */,
-				0C0BB2801DC734B000B5CF4F /* SAIAudioRecorder.swift in Sources */,
+				0C0BB2AB1DC7351300B5CF4F /* SAIInputItem.swift in Sources */,
 				0C0BB2961DC734B000B5CF4F /* SAIPhotoInputView.swift in Sources */,
 				0C0BB29A1DC734B000B5CF4F /* SAIToolboxItemView.swift in Sources */,
-				0C0BB2AC1DC7351300B5CF4F /* SAIItemView.swift in Sources */,
-				0C0BB2AF1DC7351300B5CF4F /* SAIView.swift in Sources */,
-				0C0BB2AD1DC7351300B5CF4F /* SAITextField.swift in Sources */,
+				0C0BB2AC1DC7351300B5CF4F /* SAIInputItemView.swift in Sources */,
+				0C0BB2AF1DC7351300B5CF4F /* SAIInputView.swift in Sources */,
+				0C0BB2AD1DC7351300B5CF4F /* SAIInputTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,6 +513,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SAInput/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -519,6 +534,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SAInput/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

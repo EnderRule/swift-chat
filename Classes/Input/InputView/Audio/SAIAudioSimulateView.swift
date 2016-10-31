@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SAMedia
 
 internal class SAAudioSimulateView: SAAudioView {
     
@@ -125,14 +126,14 @@ internal class SAAudioSimulateView: SAAudioView {
     }
     
     
-    fileprivate func _makePlayer(_ url: URL) -> SAAudioPlayer {
-        let player = SAAudioPlayer(url: url)
+    fileprivate func _makePlayer(_ url: URL) -> SAMAudioPlayer {
+        let player = try! SAMAudioPlayer(contentsOf: url)
         player.delegate = self
         player.isMeteringEnabled = true
         return player
     }
-    fileprivate func _makeRecorder(_ url: URL) -> SAAudioRecorder {
-        let recorder = SAAudioRecorder(url: url)
+    fileprivate func _makeRecorder(_ url: URL) -> SAMAudioRecorder {
+        let recorder = try! SAMAudioRecorder(contentsOf: url)
         recorder.delegate = self
         recorder.isMeteringEnabled = true
         return recorder
@@ -228,8 +229,8 @@ internal class SAAudioSimulateView: SAAudioView {
     fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
     fileprivate var _processedFileAtURL: URL?
     
-    fileprivate var _recorder: SAAudioRecorder?
-    fileprivate var _player: SAAudioPlayer?
+    fileprivate var _recorder: SAMAudioRecorder?
+    fileprivate var _player: SAMAudioPlayer?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -417,67 +418,70 @@ extension SAAudioSimulateView: SAAudioEffectDelegate {
     }
 }
 
+
 // MARK: - SAAudioPlayerDelegate
 
-extension SAAudioSimulateView: SAAudioPlayerDelegate {
-    
-    public func player(shouldPrepareToPlay player: SAAudioPlayer) -> Bool {
+extension SAAudioSimulateView: SAMAudioPlayerDelegate {
+   
+    public func audioPlayer(shouldPreparing audioPlayer: SAMedia.SAMAudioPlayer) -> Bool {
         _logger.trace()
         _activatedEffectView?.status = .waiting
         return true
     }
-    public func player(didPrepareToPlay player: SAAudioPlayer){ 
+    public func audioPlayer(didPreparing audioPlayer: SAMedia.SAMAudioPlayer) {
         _logger.trace()
     }
-    
-    public func player(shouldStartPlay player: SAAudioPlayer) -> Bool {
+
+    public func audioPlayer(shouldPlaying audioPlayer: SAMedia.SAMAudioPlayer) -> Bool {
         _logger.trace()
         return true
     }
-    public func player(didStartPlay player: SAAudioPlayer) {
+    public func audioPlayer(didPlaying audioPlayer: SAMedia.SAMAudioPlayer) {
         _logger.trace()
         
         _activatedEffectView?.status = .playing
     }
-    
-    public func player(didStopPlay player: SAAudioPlayer) {
+
+    public func audioPlayer(didStop audioPlayer: SAMedia.SAMAudioPlayer) {
         _logger.trace()
         
         _activatedEffectView?.status = .none
     }
-    
-    public func player(didFinishPlay player: SAAudioPlayer) {
+
+    public func audioPlayer(didInterruption audioPlayer: SAMedia.SAMAudioPlayer) {
         _logger.trace()
         
         _activatedEffectView?.status = .none
     }
-    public func player(didInterruptionPlay player: SAAudioPlayer) {
+
+    public func audioPlayer(didFinishPlaying audioPlayer: SAMedia.SAMAudioPlayer, successfully flag: Bool) {
         _logger.trace()
         
         _activatedEffectView?.status = .none
     }
-    public func player(didErrorOccur player: SAAudioPlayer, error: NSError){
+
+    public func audioPlayer(didOccur audioPlayer: SAMedia.SAMAudioPlayer, error: Error?) {
         _logger.trace(error)
         
-        _activatedEffectView?.status = .none
+        updateStatus(.error(error?.localizedDescription ?? "Unknow error"))
         // TODO: 弹出提示窗
     }
 }
 
 // MARK: - SAAudioRecorderDelegate
 
-extension SAAudioSimulateView: SAAudioRecorderDelegate {
+extension SAAudioSimulateView: SAMAudioRecorderDelegate {
     
-    public func recorder(shouldPrepareToRecord recorder: SAAudioRecorder) -> Bool {
+    public func audioRecorder(shouldPreparing audioRecorder: SAMedia.SAMAudioRecorder) -> Bool {
         _logger.trace()
         
-        guard delegate?.audioView(self, shouldStartRecord: recorder.url) ?? true else {
+        guard delegate?.audioView(self, shouldStartRecord: _recordFileAtURL) ?? true else {
             return false
         }
         updateStatus(.waiting)
         return true
     }
-    public func recorder(didPrepareToRecord recorder: SAAudioRecorder) {
+    public func audioRecorder(didPreparing audioRecorder: SAMedia.SAMAudioRecorder) {
         _logger.trace()
         // 异步一下让系统消息有机会处理
         DispatchQueue.main.async {
@@ -488,35 +492,39 @@ extension SAAudioSimulateView: SAAudioRecorderDelegate {
             self._recorder?.record()
         }
     }
-    
-    public func recorder(shouldStartRecord recorder: SAAudioRecorder) -> Bool {
+
+    public func audioRecorder(shouldRecording audioRecorder: SAMedia.SAMAudioRecorder) -> Bool {
         _logger.trace()
         return true
     }
-    public func recorder(didStartRecord recorder: SAAudioRecorder) {
+    public func audioRecorder(didRecording audioRecorder: SAMedia.SAMAudioRecorder) {
         _logger.trace()
         
-        delegate?.audioView(self, didStartRecord: recorder.url)
+        delegate?.audioView(self, didStartRecord: _recordFileAtURL)
         updateStatus(.recording)
     }
-    
-    public func recorder(didStopRecord recorder: SAAudioRecorder) {
+
+    public func audioRecorder(didStop audioRecorder: SAMedia.SAMAudioRecorder) {
         _logger.trace()
         updateStatus(.processing)
     }
-    public func recorder(didInterruptionRecord recorder: SAAudioRecorder) {
+    public func audioRecorder(didInterruption audioRecorder: SAMedia.SAMAudioRecorder) {
         _logger.trace()
         updateStatus(.processed)
     }
-    public func recorder(didFinishRecord recorder: SAAudioRecorder) {
+
+    public func audioRecorder(didFinishRecording audioRecorder: SAMedia.SAMAudioRecorder, successfully flag: Bool) {
         _logger.trace()
         updateStatus(.processed)
     }
-    public func recorder(didErrorOccur recorder: SAAudioRecorder, error: NSError) {
+
+    public func audioRecorder(didOccur audioRecorder: SAMedia.SAMAudioRecorder, error: Error?) {
         _logger.trace(error)
-        updateStatus(.error(error.localizedFailureReason ?? "Unknow error"))
+        updateStatus(.error(error?.localizedDescription ?? "Unknow error"))
     }
 }
+
+
 
 // MARK: - SAAudioStatusViewDelegate
 

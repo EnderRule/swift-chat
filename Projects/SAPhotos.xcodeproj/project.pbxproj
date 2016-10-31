@@ -95,6 +95,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C001A971DC73995004A5F08 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0C0BB03D1DC72D5C00B5CF4F /* SAPhotos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAPhotos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB0401DC72D5C00B5CF4F /* SAPhotos.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAPhotos.h; sourceTree = "<group>"; };
 		0C0BB0411DC72D5C00B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -201,10 +202,10 @@
 			children = (
 				0C0BB18F1DC731B400B5CF4F /* Photos */,
 				0C0BB1901DC731B400B5CF4F /* Resources */,
-				0C0BB05D1DC72E3000B5CF4F /* Frameworks */,
-				0C0BB03E1DC72D5C00B5CF4F /* Products */,
 				0C0BB1DB1DC731B400B5CF4F /* UIKit+Photos */,
 				0C0BB03F1DC72D5C00B5CF4F /* Supporting Files */,
+				0C0BB03E1DC72D5C00B5CF4F /* Products */,
+				0C0BB05D1DC72E3000B5CF4F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -220,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				0C0BB17B1DC72F2D00B5CF4F /* Logger.swift */,
+				0C001A971DC73995004A5F08 /* README.md */,
 				0C0BB0401DC72D5C00B5CF4F /* SAPhotos.h */,
 				0C0BB0411DC72D5C00B5CF4F /* Info.plist */,
 			);
