@@ -1,5 +1,5 @@
 //
-//  SIMChatFPSLabel.swift
+//  FPSLabel.swift
 //  SIMChat
 //
 //  Created by sagesse on 2/1/16.
@@ -17,7 +17,7 @@ import UIKit
 /// The maximum fps on iPhone is 59.97.
 /// The maxmium fps on iPad is 60.0.
 ///
-public class SIMChatFPSLabel: UILabel {
+public class FPSLabel: UILabel {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
