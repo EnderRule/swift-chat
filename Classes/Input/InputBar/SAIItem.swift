@@ -1,6 +1,6 @@
 //
-//  SAInputItem.swift
-//  SAInputBar
+//  SAIItem.swift
+//  SAIBar
 //
 //  Created by sagesse on 8/3/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-public enum SAInputItemPosition: Int {
+public enum SAIItemPosition: Int {
     case top        = 0
     case left       = 1
     case right      = 3
     case bottom     = 4
     case center     = 2
 }
-public enum SAInputItemAlignment: Int {
+public enum SAIItemAlignment: Int {
     //0xvvhh
     case top            = 0x0104 // Top + Center(H)
     case bottom         = 0x0204 // Bottom + Center(H)
@@ -30,7 +30,7 @@ public enum SAInputItemAlignment: Int {
     case automatic      = 0x0000
 }
 
-open class SAInputItem: NSObject {
+open class SAIItem: NSObject {
     
     // MARK: property
     
@@ -47,10 +47,10 @@ open class SAInputItem: NSObject {
     open var font: UIFont? // default is nil
     open var backgroundColor: UIColor? // default is nil
     
-    open var handler: ((SAInputItem) -> Void)? // default is nil
+    open var handler: ((SAIItem) -> Void)? // default is nil
     
     open var tintColor: UIColor?
-    open var alignment: SAInputItemAlignment = .automatic
+    open var alignment: SAIItemAlignment = .automatic
     open var imageInsets: UIEdgeInsets = .zero // default is UIEdgeInsetsZero
     
     // MARK: setter
@@ -118,12 +118,12 @@ open class SAInputItem: NSObject {
     public override init() {
         super.init()
     }
-    public convenience init(image: UIImage?, handler: ((SAInputItem) -> Void)? = nil) {
+    public convenience init(image: UIImage?, handler: ((SAIItem) -> Void)? = nil) {
         self.init()
         self.image = image
         self.handler = handler
     }
-    public convenience init(title: String?, handler: ((SAInputItem) -> Void)? = nil) {
+    public convenience init(title: String?, handler: ((SAIItem) -> Void)? = nil) {
         self.init()
         self.title = title
         self.handler = handler
@@ -136,7 +136,7 @@ open class SAInputItem: NSObject {
 }
 
 
-extension SAInputItemPosition: CustomStringConvertible {
+extension SAIItemPosition: CustomStringConvertible {
     public var description: String {
         switch self {
         case .top: return "Top(\(rawValue))"

@@ -64,17 +64,17 @@ internal class SAAudioEffect: NSObject {
     }
     
     func process(from srcURL: URL, to destURL: URL, clouser: @escaping (URL, NSError?) -> Void) {
-        dispatch_after_at_now(1, .global()) {
-            let fm = FileManager.default
-            
-            // TODO: 音频变声处理
-            _ = try? fm.removeItem(at: destURL)
-            _ = try? fm.copyItem(at: srcURL, to: destURL)
-            
-            DispatchQueue.main.async {
-                clouser(destURL, nil)
-            }
-        }
+//        dispatch_after_at_now(1, .global()) {
+//            let fm = FileManager.default
+//            
+//            // TODO: 音频变声处理
+//            _ = try? fm.removeItem(at: destURL)
+//            _ = try? fm.copyItem(at: srcURL, to: destURL)
+//            
+//            DispatchQueue.main.async {
+//                clouser(destURL, nil)
+//            }
+//        }
     }
     
     func clearCache() {

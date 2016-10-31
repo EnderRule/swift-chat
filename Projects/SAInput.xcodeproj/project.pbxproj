@@ -8,102 +8,108 @@
 
 /* Begin PBXBuildFile section */
 		0C0BB02D1DC72CFB00B5CF4F /* SAInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0C0BB14C1DC72E9B00B5CF4F /* SAInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11A1DC72E9B00B5CF4F /* SAInputAccessoryView.swift */; };
-		0C0BB14D1DC72E9B00B5CF4F /* SAInputAccessoryViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11B1DC72E9B00B5CF4F /* SAInputAccessoryViewLayout.swift */; };
-		0C0BB14E1DC72E9B00B5CF4F /* SAInputBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11C1DC72E9B00B5CF4F /* SAInputBackgroundView.swift */; };
-		0C0BB14F1DC72E9B00B5CF4F /* SAInputBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11D1DC72E9B00B5CF4F /* SAInputBar.swift */; };
-		0C0BB1501DC72E9B00B5CF4F /* SAInputBarDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11E1DC72E9B00B5CF4F /* SAInputBarDisplayable.swift */; };
-		0C0BB1511DC72E9B00B5CF4F /* SAInputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB11F1DC72E9B00B5CF4F /* SAInputItem.swift */; };
-		0C0BB1521DC72E9B00B5CF4F /* SAInputItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1201DC72E9B00B5CF4F /* SAInputItemView.swift */; };
-		0C0BB1531DC72E9B00B5CF4F /* SAInputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1211DC72E9B00B5CF4F /* SAInputTextField.swift */; };
-		0C0BB1541DC72E9B00B5CF4F /* SAInputTextFieldItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1221DC72E9B00B5CF4F /* SAInputTextFieldItem.swift */; };
-		0C0BB1551DC72E9B00B5CF4F /* SAInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1231DC72E9B00B5CF4F /* SAInputView.swift */; };
-		0C0BB1561DC72E9B00B5CF4F /* SAAudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1261DC72E9B00B5CF4F /* SAAudioEffect.swift */; };
-		0C0BB1571DC72E9B00B5CF4F /* SAAudioEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1271DC72E9B00B5CF4F /* SAAudioEffectView.swift */; };
-		0C0BB1581DC72E9B00B5CF4F /* SAAudioInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1281DC72E9B00B5CF4F /* SAAudioInputView.swift */; };
-		0C0BB1591DC72E9B00B5CF4F /* SAAudioInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1291DC72E9B00B5CF4F /* SAAudioInputViewLayout.swift */; };
-		0C0BB15A1DC72E9B00B5CF4F /* SAAudioPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12A1DC72E9B00B5CF4F /* SAAudioPlayButton.swift */; };
-		0C0BB15B1DC72E9B00B5CF4F /* SAAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12B1DC72E9B00B5CF4F /* SAAudioPlayer.swift */; };
-		0C0BB15C1DC72E9B00B5CF4F /* SAAudioPlayToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12C1DC72E9B00B5CF4F /* SAAudioPlayToolbar.swift */; };
-		0C0BB15D1DC72E9B00B5CF4F /* SAAudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12D1DC72E9B00B5CF4F /* SAAudioRecordButton.swift */; };
-		0C0BB15E1DC72E9B00B5CF4F /* SAAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12E1DC72E9B00B5CF4F /* SAAudioRecorder.swift */; };
-		0C0BB15F1DC72E9B00B5CF4F /* SAAudioRecordToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB12F1DC72E9B00B5CF4F /* SAAudioRecordToolbar.swift */; };
-		0C0BB1601DC72E9B00B5CF4F /* SAAudioRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1301DC72E9B00B5CF4F /* SAAudioRecordView.swift */; };
-		0C0BB1611DC72E9B00B5CF4F /* SAAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1311DC72E9B00B5CF4F /* SAAudioSession.swift */; };
-		0C0BB1621DC72E9B00B5CF4F /* SAAudioSimulateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1321DC72E9B00B5CF4F /* SAAudioSimulateView.swift */; };
-		0C0BB1631DC72E9B00B5CF4F /* SAAudioSpectrumMiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1331DC72E9B00B5CF4F /* SAAudioSpectrumMiniView.swift */; };
-		0C0BB1641DC72E9B00B5CF4F /* SAAudioSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1341DC72E9B00B5CF4F /* SAAudioSpectrumView.swift */; };
-		0C0BB1651DC72E9B00B5CF4F /* SAAudioStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1351DC72E9B00B5CF4F /* SAAudioStatus.swift */; };
-		0C0BB1661DC72E9B00B5CF4F /* SAAudioStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1361DC72E9B00B5CF4F /* SAAudioStatusView.swift */; };
-		0C0BB1671DC72E9B00B5CF4F /* SAAudioTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1371DC72E9B00B5CF4F /* SAAudioTabbar.swift */; };
-		0C0BB1681DC72E9B00B5CF4F /* SAAudioTalkbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1381DC72E9B00B5CF4F /* SAAudioTalkbackView.swift */; };
-		0C0BB1691DC72E9B00B5CF4F /* SAAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1391DC72E9B00B5CF4F /* SAAudioView.swift */; };
-		0C0BB16A1DC72E9B00B5CF4F /* SAEmoticon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB13B1DC72E9B00B5CF4F /* SAEmoticon.swift */; };
-		0C0BB16B1DC72E9B00B5CF4F /* SAEmoticonBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB13C1DC72E9B00B5CF4F /* SAEmoticonBackgroundView.swift */; };
-		0C0BB16C1DC72E9B00B5CF4F /* SAEmoticonGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB13D1DC72E9B00B5CF4F /* SAEmoticonGroup.swift */; };
-		0C0BB16D1DC72E9B00B5CF4F /* SAEmoticonInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB13E1DC72E9B00B5CF4F /* SAEmoticonInputView.swift */; };
-		0C0BB16E1DC72E9B00B5CF4F /* SAEmoticonInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB13F1DC72E9B00B5CF4F /* SAEmoticonInputViewLayout.swift */; };
-		0C0BB16F1DC72E9B00B5CF4F /* SAEmoticonLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1401DC72E9B00B5CF4F /* SAEmoticonLine.swift */; };
-		0C0BB1701DC72E9B00B5CF4F /* SAEmoticonPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1411DC72E9B00B5CF4F /* SAEmoticonPage.swift */; };
-		0C0BB1711DC72E9B00B5CF4F /* SAEmoticonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1421DC72E9B00B5CF4F /* SAEmoticonPageView.swift */; };
-		0C0BB1721DC72E9B00B5CF4F /* SAEmoticonPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1431DC72E9B00B5CF4F /* SAEmoticonPreviewer.swift */; };
-		0C0BB1731DC72E9B00B5CF4F /* SAEmoticonTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1441DC72E9B00B5CF4F /* SAEmoticonTabItemView.swift */; };
-		0C0BB1741DC72E9B00B5CF4F /* SAPhotoInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1461DC72E9B00B5CF4F /* SAPhotoInputView.swift */; };
-		0C0BB1751DC72E9B00B5CF4F /* SAToolboxInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1481DC72E9B00B5CF4F /* SAToolboxInputView.swift */; };
-		0C0BB1761DC72E9B00B5CF4F /* SAToolboxInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1491DC72E9B00B5CF4F /* SAToolboxInputViewLayout.swift */; };
-		0C0BB1771DC72E9B00B5CF4F /* SAToolboxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB14A1DC72E9B00B5CF4F /* SAToolboxItem.swift */; };
-		0C0BB1781DC72E9B00B5CF4F /* SAToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB14B1DC72E9B00B5CF4F /* SAToolboxItemView.swift */; };
+		0C0BB2391DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2371DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift */; };
+		0C0BB23A1DC732DB00B5CF4F /* UIImage+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2381DC732DB00B5CF4F /* UIImage+Input.swift */; };
+		0C0BB2781DC734B000B5CF4F /* SAIAudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2481DC734B000B5CF4F /* SAIAudioEffect.swift */; };
+		0C0BB2791DC734B000B5CF4F /* SAIAudioEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2491DC734B000B5CF4F /* SAIAudioEffectView.swift */; };
+		0C0BB27A1DC734B000B5CF4F /* SAIAudioInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */; };
+		0C0BB27B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */; };
+		0C0BB27C1DC734B000B5CF4F /* SAIAudioPlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */; };
+		0C0BB27D1DC734B000B5CF4F /* SAIAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */; };
+		0C0BB27E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */; };
+		0C0BB27F1DC734B000B5CF4F /* SAIAudioRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */; };
+		0C0BB2801DC734B000B5CF4F /* SAIAudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */; };
+		0C0BB2811DC734B000B5CF4F /* SAIAudioRecordToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */; };
+		0C0BB2821DC734B000B5CF4F /* SAIAudioRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */; };
+		0C0BB2831DC734B000B5CF4F /* SAIAudioSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */; };
+		0C0BB2841DC734B000B5CF4F /* SAIAudioSimulateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2541DC734B000B5CF4F /* SAIAudioSimulateView.swift */; };
+		0C0BB2851DC734B000B5CF4F /* SAIAudioSpectrumMiniView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2551DC734B000B5CF4F /* SAIAudioSpectrumMiniView.swift */; };
+		0C0BB2861DC734B000B5CF4F /* SAIAudioSpectrumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2561DC734B000B5CF4F /* SAIAudioSpectrumView.swift */; };
+		0C0BB2871DC734B000B5CF4F /* SAIAudioStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2571DC734B000B5CF4F /* SAIAudioStatus.swift */; };
+		0C0BB2881DC734B000B5CF4F /* SAIAudioStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2581DC734B000B5CF4F /* SAIAudioStatusView.swift */; };
+		0C0BB2891DC734B000B5CF4F /* SAIAudioTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2591DC734B000B5CF4F /* SAIAudioTabbar.swift */; };
+		0C0BB28A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB25A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift */; };
+		0C0BB28B1DC734B000B5CF4F /* SAIAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB25B1DC734B000B5CF4F /* SAIAudioView.swift */; };
+		0C0BB28C1DC734B000B5CF4F /* SAIEmoticon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB25D1DC734B000B5CF4F /* SAIEmoticon.swift */; };
+		0C0BB28D1DC734B000B5CF4F /* SAIEmoticonBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB25E1DC734B000B5CF4F /* SAIEmoticonBackgroundView.swift */; };
+		0C0BB28E1DC734B000B5CF4F /* SAIEmoticonGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB25F1DC734B000B5CF4F /* SAIEmoticonGroup.swift */; };
+		0C0BB28F1DC734B000B5CF4F /* SAIEmoticonInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2601DC734B000B5CF4F /* SAIEmoticonInputView.swift */; };
+		0C0BB2901DC734B000B5CF4F /* SAIEmoticonInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2611DC734B000B5CF4F /* SAIEmoticonInputViewLayout.swift */; };
+		0C0BB2911DC734B000B5CF4F /* SAIEmoticonLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2621DC734B000B5CF4F /* SAIEmoticonLine.swift */; };
+		0C0BB2921DC734B000B5CF4F /* SAIEmoticonPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2631DC734B000B5CF4F /* SAIEmoticonPage.swift */; };
+		0C0BB2931DC734B000B5CF4F /* SAIEmoticonPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2641DC734B000B5CF4F /* SAIEmoticonPageView.swift */; };
+		0C0BB2941DC734B000B5CF4F /* SAIEmoticonPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2651DC734B000B5CF4F /* SAIEmoticonPreviewer.swift */; };
+		0C0BB2951DC734B000B5CF4F /* SAIEmoticonTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2661DC734B000B5CF4F /* SAIEmoticonTabItemView.swift */; };
+		0C0BB2961DC734B000B5CF4F /* SAIPhotoInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2681DC734B000B5CF4F /* SAIPhotoInputView.swift */; };
+		0C0BB2971DC734B000B5CF4F /* SAIToolboxInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26A1DC734B000B5CF4F /* SAIToolboxInputView.swift */; };
+		0C0BB2981DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26B1DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift */; };
+		0C0BB2991DC734B000B5CF4F /* SAIToolboxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26C1DC734B000B5CF4F /* SAIToolboxItem.swift */; };
+		0C0BB29A1DC734B000B5CF4F /* SAIToolboxItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB26D1DC734B000B5CF4F /* SAIToolboxItemView.swift */; };
+		0C0BB2A61DC7351300B5CF4F /* SAIAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */; };
+		0C0BB2A71DC7351300B5CF4F /* SAIAccessoryViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */; };
+		0C0BB2A81DC7351300B5CF4F /* SAIBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */; };
+		0C0BB2A91DC7351300B5CF4F /* SAIBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */; };
+		0C0BB2AA1DC7351300B5CF4F /* SAIBarDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */; };
+		0C0BB2AB1DC7351300B5CF4F /* SAIItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */; };
+		0C0BB2AC1DC7351300B5CF4F /* SAIItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */; };
+		0C0BB2AD1DC7351300B5CF4F /* SAITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */; };
+		0C0BB2AE1DC7351300B5CF4F /* SAITextFieldItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */; };
+		0C0BB2AF1DC7351300B5CF4F /* SAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2A51DC7351300B5CF4F /* SAIView.swift */; };
+		0C0BB2B11DC7364400B5CF4F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2B01DC7364400B5CF4F /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0C0BB0281DC72CFB00B5CF4F /* SAInput.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAInput.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAInput.h; sourceTree = "<group>"; };
 		0C0BB02C1DC72CFB00B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0C0BB11A1DC72E9B00B5CF4F /* SAInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryView.swift; sourceTree = "<group>"; };
-		0C0BB11B1DC72E9B00B5CF4F /* SAInputAccessoryViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputAccessoryViewLayout.swift; sourceTree = "<group>"; };
-		0C0BB11C1DC72E9B00B5CF4F /* SAInputBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputBackgroundView.swift; sourceTree = "<group>"; };
-		0C0BB11D1DC72E9B00B5CF4F /* SAInputBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputBar.swift; sourceTree = "<group>"; };
-		0C0BB11E1DC72E9B00B5CF4F /* SAInputBarDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputBarDisplayable.swift; sourceTree = "<group>"; };
-		0C0BB11F1DC72E9B00B5CF4F /* SAInputItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputItem.swift; sourceTree = "<group>"; };
-		0C0BB1201DC72E9B00B5CF4F /* SAInputItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputItemView.swift; sourceTree = "<group>"; };
-		0C0BB1211DC72E9B00B5CF4F /* SAInputTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputTextField.swift; sourceTree = "<group>"; };
-		0C0BB1221DC72E9B00B5CF4F /* SAInputTextFieldItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputTextFieldItem.swift; sourceTree = "<group>"; };
-		0C0BB1231DC72E9B00B5CF4F /* SAInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAInputView.swift; sourceTree = "<group>"; };
-		0C0BB1261DC72E9B00B5CF4F /* SAAudioEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioEffect.swift; sourceTree = "<group>"; };
-		0C0BB1271DC72E9B00B5CF4F /* SAAudioEffectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioEffectView.swift; sourceTree = "<group>"; };
-		0C0BB1281DC72E9B00B5CF4F /* SAAudioInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioInputView.swift; sourceTree = "<group>"; };
-		0C0BB1291DC72E9B00B5CF4F /* SAAudioInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioInputViewLayout.swift; sourceTree = "<group>"; };
-		0C0BB12A1DC72E9B00B5CF4F /* SAAudioPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPlayButton.swift; sourceTree = "<group>"; };
-		0C0BB12B1DC72E9B00B5CF4F /* SAAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPlayer.swift; sourceTree = "<group>"; };
-		0C0BB12C1DC72E9B00B5CF4F /* SAAudioPlayToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioPlayToolbar.swift; sourceTree = "<group>"; };
-		0C0BB12D1DC72E9B00B5CF4F /* SAAudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordButton.swift; sourceTree = "<group>"; };
-		0C0BB12E1DC72E9B00B5CF4F /* SAAudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecorder.swift; sourceTree = "<group>"; };
-		0C0BB12F1DC72E9B00B5CF4F /* SAAudioRecordToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordToolbar.swift; sourceTree = "<group>"; };
-		0C0BB1301DC72E9B00B5CF4F /* SAAudioRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioRecordView.swift; sourceTree = "<group>"; };
-		0C0BB1311DC72E9B00B5CF4F /* SAAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSession.swift; sourceTree = "<group>"; };
-		0C0BB1321DC72E9B00B5CF4F /* SAAudioSimulateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSimulateView.swift; sourceTree = "<group>"; };
-		0C0BB1331DC72E9B00B5CF4F /* SAAudioSpectrumMiniView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSpectrumMiniView.swift; sourceTree = "<group>"; };
-		0C0BB1341DC72E9B00B5CF4F /* SAAudioSpectrumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioSpectrumView.swift; sourceTree = "<group>"; };
-		0C0BB1351DC72E9B00B5CF4F /* SAAudioStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioStatus.swift; sourceTree = "<group>"; };
-		0C0BB1361DC72E9B00B5CF4F /* SAAudioStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioStatusView.swift; sourceTree = "<group>"; };
-		0C0BB1371DC72E9B00B5CF4F /* SAAudioTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTabbar.swift; sourceTree = "<group>"; };
-		0C0BB1381DC72E9B00B5CF4F /* SAAudioTalkbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioTalkbackView.swift; sourceTree = "<group>"; };
-		0C0BB1391DC72E9B00B5CF4F /* SAAudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAAudioView.swift; sourceTree = "<group>"; };
-		0C0BB13B1DC72E9B00B5CF4F /* SAEmoticon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticon.swift; sourceTree = "<group>"; };
-		0C0BB13C1DC72E9B00B5CF4F /* SAEmoticonBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonBackgroundView.swift; sourceTree = "<group>"; };
-		0C0BB13D1DC72E9B00B5CF4F /* SAEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonGroup.swift; sourceTree = "<group>"; };
-		0C0BB13E1DC72E9B00B5CF4F /* SAEmoticonInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonInputView.swift; sourceTree = "<group>"; };
-		0C0BB13F1DC72E9B00B5CF4F /* SAEmoticonInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonInputViewLayout.swift; sourceTree = "<group>"; };
-		0C0BB1401DC72E9B00B5CF4F /* SAEmoticonLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonLine.swift; sourceTree = "<group>"; };
-		0C0BB1411DC72E9B00B5CF4F /* SAEmoticonPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPage.swift; sourceTree = "<group>"; };
-		0C0BB1421DC72E9B00B5CF4F /* SAEmoticonPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPageView.swift; sourceTree = "<group>"; };
-		0C0BB1431DC72E9B00B5CF4F /* SAEmoticonPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonPreviewer.swift; sourceTree = "<group>"; };
-		0C0BB1441DC72E9B00B5CF4F /* SAEmoticonTabItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAEmoticonTabItemView.swift; sourceTree = "<group>"; };
-		0C0BB1461DC72E9B00B5CF4F /* SAPhotoInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPhotoInputView.swift; sourceTree = "<group>"; };
-		0C0BB1481DC72E9B00B5CF4F /* SAToolboxInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputView.swift; sourceTree = "<group>"; };
-		0C0BB1491DC72E9B00B5CF4F /* SAToolboxInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxInputViewLayout.swift; sourceTree = "<group>"; };
-		0C0BB14A1DC72E9B00B5CF4F /* SAToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItem.swift; sourceTree = "<group>"; };
-		0C0BB14B1DC72E9B00B5CF4F /* SAToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAToolboxItemView.swift; sourceTree = "<group>"; };
+		0C0BB2371DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Input.swift"; sourceTree = "<group>"; };
+		0C0BB2381DC732DB00B5CF4F /* UIImage+Input.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Input.swift"; sourceTree = "<group>"; };
+		0C0BB2481DC734B000B5CF4F /* SAIAudioEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioEffect.swift; sourceTree = "<group>"; };
+		0C0BB2491DC734B000B5CF4F /* SAIAudioEffectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioEffectView.swift; sourceTree = "<group>"; };
+		0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioInputView.swift; sourceTree = "<group>"; };
+		0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioInputViewLayout.swift; sourceTree = "<group>"; };
+		0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayButton.swift; sourceTree = "<group>"; };
+		0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayer.swift; sourceTree = "<group>"; };
+		0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioPlayToolbar.swift; sourceTree = "<group>"; };
+		0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordButton.swift; sourceTree = "<group>"; };
+		0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecorder.swift; sourceTree = "<group>"; };
+		0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordToolbar.swift; sourceTree = "<group>"; };
+		0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioRecordView.swift; sourceTree = "<group>"; };
+		0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioSession.swift; sourceTree = "<group>"; };
+		0C0BB2541DC734B000B5CF4F /* SAIAudioSimulateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioSimulateView.swift; sourceTree = "<group>"; };
+		0C0BB2551DC734B000B5CF4F /* SAIAudioSpectrumMiniView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioSpectrumMiniView.swift; sourceTree = "<group>"; };
+		0C0BB2561DC734B000B5CF4F /* SAIAudioSpectrumView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioSpectrumView.swift; sourceTree = "<group>"; };
+		0C0BB2571DC734B000B5CF4F /* SAIAudioStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioStatus.swift; sourceTree = "<group>"; };
+		0C0BB2581DC734B000B5CF4F /* SAIAudioStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioStatusView.swift; sourceTree = "<group>"; };
+		0C0BB2591DC734B000B5CF4F /* SAIAudioTabbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioTabbar.swift; sourceTree = "<group>"; };
+		0C0BB25A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioTalkbackView.swift; sourceTree = "<group>"; };
+		0C0BB25B1DC734B000B5CF4F /* SAIAudioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAudioView.swift; sourceTree = "<group>"; };
+		0C0BB25D1DC734B000B5CF4F /* SAIEmoticon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticon.swift; sourceTree = "<group>"; };
+		0C0BB25E1DC734B000B5CF4F /* SAIEmoticonBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonBackgroundView.swift; sourceTree = "<group>"; };
+		0C0BB25F1DC734B000B5CF4F /* SAIEmoticonGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonGroup.swift; sourceTree = "<group>"; };
+		0C0BB2601DC734B000B5CF4F /* SAIEmoticonInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonInputView.swift; sourceTree = "<group>"; };
+		0C0BB2611DC734B000B5CF4F /* SAIEmoticonInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonInputViewLayout.swift; sourceTree = "<group>"; };
+		0C0BB2621DC734B000B5CF4F /* SAIEmoticonLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonLine.swift; sourceTree = "<group>"; };
+		0C0BB2631DC734B000B5CF4F /* SAIEmoticonPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonPage.swift; sourceTree = "<group>"; };
+		0C0BB2641DC734B000B5CF4F /* SAIEmoticonPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonPageView.swift; sourceTree = "<group>"; };
+		0C0BB2651DC734B000B5CF4F /* SAIEmoticonPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonPreviewer.swift; sourceTree = "<group>"; };
+		0C0BB2661DC734B000B5CF4F /* SAIEmoticonTabItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIEmoticonTabItemView.swift; sourceTree = "<group>"; };
+		0C0BB2681DC734B000B5CF4F /* SAIPhotoInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIPhotoInputView.swift; sourceTree = "<group>"; };
+		0C0BB26A1DC734B000B5CF4F /* SAIToolboxInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxInputView.swift; sourceTree = "<group>"; };
+		0C0BB26B1DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxInputViewLayout.swift; sourceTree = "<group>"; };
+		0C0BB26C1DC734B000B5CF4F /* SAIToolboxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxItem.swift; sourceTree = "<group>"; };
+		0C0BB26D1DC734B000B5CF4F /* SAIToolboxItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIToolboxItemView.swift; sourceTree = "<group>"; };
+		0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAccessoryView.swift; sourceTree = "<group>"; };
+		0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIAccessoryViewLayout.swift; sourceTree = "<group>"; };
+		0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBackgroundView.swift; sourceTree = "<group>"; };
+		0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBar.swift; sourceTree = "<group>"; };
+		0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIBarDisplayable.swift; sourceTree = "<group>"; };
+		0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIItem.swift; sourceTree = "<group>"; };
+		0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIItemView.swift; sourceTree = "<group>"; };
+		0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAITextField.swift; sourceTree = "<group>"; };
+		0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAITextFieldItem.swift; sourceTree = "<group>"; };
+		0C0BB2A51DC7351300B5CF4F /* SAIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAIView.swift; sourceTree = "<group>"; };
+		0C0BB2B01DC7364400B5CF4F /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +126,9 @@
 		0C0BB01E1DC72CFB00B5CF4F = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1191DC72E9B00B5CF4F /* InputBar */,
-				0C0BB1241DC72E9B00B5CF4F /* InputView */,
+				0C0BB29B1DC7351300B5CF4F /* InputBar */,
+				0C0BB2461DC734B000B5CF4F /* InputView */,
+				0C0BB2361DC732DB00B5CF4F /* UIKit+Photos */,
 				0C0BB02A1DC72CFB00B5CF4F /* Supporting Files */,
 				0C0BB0291DC72CFB00B5CF4F /* Products */,
 			);
@@ -138,6 +145,7 @@
 		0C0BB02A1DC72CFB00B5CF4F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0C0BB2B01DC7364400B5CF4F /* Logger.swift */,
 				0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */,
 				0C0BB02C1DC72CFB00B5CF4F /* Info.plist */,
 			);
@@ -145,97 +153,107 @@
 			path = SAInput;
 			sourceTree = "<group>";
 		};
-		0C0BB1191DC72E9B00B5CF4F /* InputBar */ = {
+		0C0BB2361DC732DB00B5CF4F /* UIKit+Photos */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB11A1DC72E9B00B5CF4F /* SAInputAccessoryView.swift */,
-				0C0BB11B1DC72E9B00B5CF4F /* SAInputAccessoryViewLayout.swift */,
-				0C0BB11C1DC72E9B00B5CF4F /* SAInputBackgroundView.swift */,
-				0C0BB11D1DC72E9B00B5CF4F /* SAInputBar.swift */,
-				0C0BB11E1DC72E9B00B5CF4F /* SAInputBarDisplayable.swift */,
-				0C0BB11F1DC72E9B00B5CF4F /* SAInputItem.swift */,
-				0C0BB1201DC72E9B00B5CF4F /* SAInputItemView.swift */,
-				0C0BB1211DC72E9B00B5CF4F /* SAInputTextField.swift */,
-				0C0BB1221DC72E9B00B5CF4F /* SAInputTextFieldItem.swift */,
-				0C0BB1231DC72E9B00B5CF4F /* SAInputView.swift */,
+				0C0BB2371DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift */,
+				0C0BB2381DC732DB00B5CF4F /* UIImage+Input.swift */,
 			);
-			name = InputBar;
-			path = ../Classes/Input/InputBar;
+			name = "UIKit+Photos";
+			path = "../Classes/Input/UIKit+Photos";
 			sourceTree = "<group>";
 		};
-		0C0BB1241DC72E9B00B5CF4F /* InputView */ = {
+		0C0BB2461DC734B000B5CF4F /* InputView */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1251DC72E9B00B5CF4F /* Audio */,
-				0C0BB13A1DC72E9B00B5CF4F /* Emoticon */,
-				0C0BB1451DC72E9B00B5CF4F /* Photo */,
-				0C0BB1471DC72E9B00B5CF4F /* Toolbox */,
+				0C0BB2471DC734B000B5CF4F /* Audio */,
+				0C0BB25C1DC734B000B5CF4F /* Emoticon */,
+				0C0BB2671DC734B000B5CF4F /* Photo */,
+				0C0BB2691DC734B000B5CF4F /* Toolbox */,
 			);
 			name = InputView;
 			path = ../Classes/Input/InputView;
 			sourceTree = "<group>";
 		};
-		0C0BB1251DC72E9B00B5CF4F /* Audio */ = {
+		0C0BB2471DC734B000B5CF4F /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1261DC72E9B00B5CF4F /* SAAudioEffect.swift */,
-				0C0BB1271DC72E9B00B5CF4F /* SAAudioEffectView.swift */,
-				0C0BB1281DC72E9B00B5CF4F /* SAAudioInputView.swift */,
-				0C0BB1291DC72E9B00B5CF4F /* SAAudioInputViewLayout.swift */,
-				0C0BB12A1DC72E9B00B5CF4F /* SAAudioPlayButton.swift */,
-				0C0BB12B1DC72E9B00B5CF4F /* SAAudioPlayer.swift */,
-				0C0BB12C1DC72E9B00B5CF4F /* SAAudioPlayToolbar.swift */,
-				0C0BB12D1DC72E9B00B5CF4F /* SAAudioRecordButton.swift */,
-				0C0BB12E1DC72E9B00B5CF4F /* SAAudioRecorder.swift */,
-				0C0BB12F1DC72E9B00B5CF4F /* SAAudioRecordToolbar.swift */,
-				0C0BB1301DC72E9B00B5CF4F /* SAAudioRecordView.swift */,
-				0C0BB1311DC72E9B00B5CF4F /* SAAudioSession.swift */,
-				0C0BB1321DC72E9B00B5CF4F /* SAAudioSimulateView.swift */,
-				0C0BB1331DC72E9B00B5CF4F /* SAAudioSpectrumMiniView.swift */,
-				0C0BB1341DC72E9B00B5CF4F /* SAAudioSpectrumView.swift */,
-				0C0BB1351DC72E9B00B5CF4F /* SAAudioStatus.swift */,
-				0C0BB1361DC72E9B00B5CF4F /* SAAudioStatusView.swift */,
-				0C0BB1371DC72E9B00B5CF4F /* SAAudioTabbar.swift */,
-				0C0BB1381DC72E9B00B5CF4F /* SAAudioTalkbackView.swift */,
-				0C0BB1391DC72E9B00B5CF4F /* SAAudioView.swift */,
+				0C0BB2481DC734B000B5CF4F /* SAIAudioEffect.swift */,
+				0C0BB2491DC734B000B5CF4F /* SAIAudioEffectView.swift */,
+				0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */,
+				0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */,
+				0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */,
+				0C0BB24D1DC734B000B5CF4F /* SAIAudioPlayer.swift */,
+				0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */,
+				0C0BB24F1DC734B000B5CF4F /* SAIAudioRecordButton.swift */,
+				0C0BB2501DC734B000B5CF4F /* SAIAudioRecorder.swift */,
+				0C0BB2511DC734B000B5CF4F /* SAIAudioRecordToolbar.swift */,
+				0C0BB2521DC734B000B5CF4F /* SAIAudioRecordView.swift */,
+				0C0BB2531DC734B000B5CF4F /* SAIAudioSession.swift */,
+				0C0BB2541DC734B000B5CF4F /* SAIAudioSimulateView.swift */,
+				0C0BB2551DC734B000B5CF4F /* SAIAudioSpectrumMiniView.swift */,
+				0C0BB2561DC734B000B5CF4F /* SAIAudioSpectrumView.swift */,
+				0C0BB2571DC734B000B5CF4F /* SAIAudioStatus.swift */,
+				0C0BB2581DC734B000B5CF4F /* SAIAudioStatusView.swift */,
+				0C0BB2591DC734B000B5CF4F /* SAIAudioTabbar.swift */,
+				0C0BB25A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift */,
+				0C0BB25B1DC734B000B5CF4F /* SAIAudioView.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
 		};
-		0C0BB13A1DC72E9B00B5CF4F /* Emoticon */ = {
+		0C0BB25C1DC734B000B5CF4F /* Emoticon */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB13B1DC72E9B00B5CF4F /* SAEmoticon.swift */,
-				0C0BB13C1DC72E9B00B5CF4F /* SAEmoticonBackgroundView.swift */,
-				0C0BB13D1DC72E9B00B5CF4F /* SAEmoticonGroup.swift */,
-				0C0BB13E1DC72E9B00B5CF4F /* SAEmoticonInputView.swift */,
-				0C0BB13F1DC72E9B00B5CF4F /* SAEmoticonInputViewLayout.swift */,
-				0C0BB1401DC72E9B00B5CF4F /* SAEmoticonLine.swift */,
-				0C0BB1411DC72E9B00B5CF4F /* SAEmoticonPage.swift */,
-				0C0BB1421DC72E9B00B5CF4F /* SAEmoticonPageView.swift */,
-				0C0BB1431DC72E9B00B5CF4F /* SAEmoticonPreviewer.swift */,
-				0C0BB1441DC72E9B00B5CF4F /* SAEmoticonTabItemView.swift */,
+				0C0BB25D1DC734B000B5CF4F /* SAIEmoticon.swift */,
+				0C0BB25E1DC734B000B5CF4F /* SAIEmoticonBackgroundView.swift */,
+				0C0BB25F1DC734B000B5CF4F /* SAIEmoticonGroup.swift */,
+				0C0BB2601DC734B000B5CF4F /* SAIEmoticonInputView.swift */,
+				0C0BB2611DC734B000B5CF4F /* SAIEmoticonInputViewLayout.swift */,
+				0C0BB2621DC734B000B5CF4F /* SAIEmoticonLine.swift */,
+				0C0BB2631DC734B000B5CF4F /* SAIEmoticonPage.swift */,
+				0C0BB2641DC734B000B5CF4F /* SAIEmoticonPageView.swift */,
+				0C0BB2651DC734B000B5CF4F /* SAIEmoticonPreviewer.swift */,
+				0C0BB2661DC734B000B5CF4F /* SAIEmoticonTabItemView.swift */,
 			);
 			path = Emoticon;
 			sourceTree = "<group>";
 		};
-		0C0BB1451DC72E9B00B5CF4F /* Photo */ = {
+		0C0BB2671DC734B000B5CF4F /* Photo */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1461DC72E9B00B5CF4F /* SAPhotoInputView.swift */,
+				0C0BB2681DC734B000B5CF4F /* SAIPhotoInputView.swift */,
 			);
 			path = Photo;
 			sourceTree = "<group>";
 		};
-		0C0BB1471DC72E9B00B5CF4F /* Toolbox */ = {
+		0C0BB2691DC734B000B5CF4F /* Toolbox */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1481DC72E9B00B5CF4F /* SAToolboxInputView.swift */,
-				0C0BB1491DC72E9B00B5CF4F /* SAToolboxInputViewLayout.swift */,
-				0C0BB14A1DC72E9B00B5CF4F /* SAToolboxItem.swift */,
-				0C0BB14B1DC72E9B00B5CF4F /* SAToolboxItemView.swift */,
+				0C0BB26A1DC734B000B5CF4F /* SAIToolboxInputView.swift */,
+				0C0BB26B1DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift */,
+				0C0BB26C1DC734B000B5CF4F /* SAIToolboxItem.swift */,
+				0C0BB26D1DC734B000B5CF4F /* SAIToolboxItemView.swift */,
 			);
 			path = Toolbox;
+			sourceTree = "<group>";
+		};
+		0C0BB29B1DC7351300B5CF4F /* InputBar */ = {
+			isa = PBXGroup;
+			children = (
+				0C0BB29C1DC7351300B5CF4F /* SAIAccessoryView.swift */,
+				0C0BB29D1DC7351300B5CF4F /* SAIAccessoryViewLayout.swift */,
+				0C0BB29E1DC7351300B5CF4F /* SAIBackgroundView.swift */,
+				0C0BB29F1DC7351300B5CF4F /* SAIBar.swift */,
+				0C0BB2A01DC7351300B5CF4F /* SAIBarDisplayable.swift */,
+				0C0BB2A11DC7351300B5CF4F /* SAIItem.swift */,
+				0C0BB2A21DC7351300B5CF4F /* SAIItemView.swift */,
+				0C0BB2A31DC7351300B5CF4F /* SAITextField.swift */,
+				0C0BB2A41DC7351300B5CF4F /* SAITextFieldItem.swift */,
+				0C0BB2A51DC7351300B5CF4F /* SAIView.swift */,
+			);
+			name = InputBar;
+			path = ../Classes/Input/InputBar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -319,51 +337,54 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C0BB1581DC72E9B00B5CF4F /* SAAudioInputView.swift in Sources */,
-				0C0BB1751DC72E9B00B5CF4F /* SAToolboxInputView.swift in Sources */,
-				0C0BB1631DC72E9B00B5CF4F /* SAAudioSpectrumMiniView.swift in Sources */,
-				0C0BB16E1DC72E9B00B5CF4F /* SAEmoticonInputViewLayout.swift in Sources */,
-				0C0BB15B1DC72E9B00B5CF4F /* SAAudioPlayer.swift in Sources */,
-				0C0BB1701DC72E9B00B5CF4F /* SAEmoticonPage.swift in Sources */,
-				0C0BB15C1DC72E9B00B5CF4F /* SAAudioPlayToolbar.swift in Sources */,
-				0C0BB1571DC72E9B00B5CF4F /* SAAudioEffectView.swift in Sources */,
-				0C0BB16C1DC72E9B00B5CF4F /* SAEmoticonGroup.swift in Sources */,
-				0C0BB1691DC72E9B00B5CF4F /* SAAudioView.swift in Sources */,
-				0C0BB1731DC72E9B00B5CF4F /* SAEmoticonTabItemView.swift in Sources */,
-				0C0BB16B1DC72E9B00B5CF4F /* SAEmoticonBackgroundView.swift in Sources */,
-				0C0BB16A1DC72E9B00B5CF4F /* SAEmoticon.swift in Sources */,
-				0C0BB14F1DC72E9B00B5CF4F /* SAInputBar.swift in Sources */,
-				0C0BB14E1DC72E9B00B5CF4F /* SAInputBackgroundView.swift in Sources */,
-				0C0BB16D1DC72E9B00B5CF4F /* SAEmoticonInputView.swift in Sources */,
-				0C0BB1601DC72E9B00B5CF4F /* SAAudioRecordView.swift in Sources */,
-				0C0BB1741DC72E9B00B5CF4F /* SAPhotoInputView.swift in Sources */,
-				0C0BB14D1DC72E9B00B5CF4F /* SAInputAccessoryViewLayout.swift in Sources */,
-				0C0BB14C1DC72E9B00B5CF4F /* SAInputAccessoryView.swift in Sources */,
-				0C0BB1621DC72E9B00B5CF4F /* SAAudioSimulateView.swift in Sources */,
-				0C0BB16F1DC72E9B00B5CF4F /* SAEmoticonLine.swift in Sources */,
-				0C0BB1611DC72E9B00B5CF4F /* SAAudioSession.swift in Sources */,
-				0C0BB1671DC72E9B00B5CF4F /* SAAudioTabbar.swift in Sources */,
-				0C0BB1501DC72E9B00B5CF4F /* SAInputBarDisplayable.swift in Sources */,
-				0C0BB15F1DC72E9B00B5CF4F /* SAAudioRecordToolbar.swift in Sources */,
-				0C0BB1561DC72E9B00B5CF4F /* SAAudioEffect.swift in Sources */,
-				0C0BB1721DC72E9B00B5CF4F /* SAEmoticonPreviewer.swift in Sources */,
-				0C0BB1521DC72E9B00B5CF4F /* SAInputItemView.swift in Sources */,
-				0C0BB1641DC72E9B00B5CF4F /* SAAudioSpectrumView.swift in Sources */,
-				0C0BB15A1DC72E9B00B5CF4F /* SAAudioPlayButton.swift in Sources */,
-				0C0BB1531DC72E9B00B5CF4F /* SAInputTextField.swift in Sources */,
-				0C0BB1551DC72E9B00B5CF4F /* SAInputView.swift in Sources */,
-				0C0BB1511DC72E9B00B5CF4F /* SAInputItem.swift in Sources */,
-				0C0BB1681DC72E9B00B5CF4F /* SAAudioTalkbackView.swift in Sources */,
-				0C0BB1761DC72E9B00B5CF4F /* SAToolboxInputViewLayout.swift in Sources */,
-				0C0BB1771DC72E9B00B5CF4F /* SAToolboxItem.swift in Sources */,
-				0C0BB1661DC72E9B00B5CF4F /* SAAudioStatusView.swift in Sources */,
-				0C0BB15D1DC72E9B00B5CF4F /* SAAudioRecordButton.swift in Sources */,
-				0C0BB1781DC72E9B00B5CF4F /* SAToolboxItemView.swift in Sources */,
-				0C0BB1591DC72E9B00B5CF4F /* SAAudioInputViewLayout.swift in Sources */,
-				0C0BB1541DC72E9B00B5CF4F /* SAInputTextFieldItem.swift in Sources */,
-				0C0BB1651DC72E9B00B5CF4F /* SAAudioStatus.swift in Sources */,
-				0C0BB15E1DC72E9B00B5CF4F /* SAAudioRecorder.swift in Sources */,
-				0C0BB1711DC72E9B00B5CF4F /* SAEmoticonPageView.swift in Sources */,
+				0C0BB28D1DC734B000B5CF4F /* SAIEmoticonBackgroundView.swift in Sources */,
+				0C0BB27B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift in Sources */,
+				0C0BB28E1DC734B000B5CF4F /* SAIEmoticonGroup.swift in Sources */,
+				0C0BB2941DC734B000B5CF4F /* SAIEmoticonPreviewer.swift in Sources */,
+				0C0BB27A1DC734B000B5CF4F /* SAIAudioInputView.swift in Sources */,
+				0C0BB27C1DC734B000B5CF4F /* SAIAudioPlayButton.swift in Sources */,
+				0C0BB2AE1DC7351300B5CF4F /* SAITextFieldItem.swift in Sources */,
+				0C0BB2B11DC7364400B5CF4F /* Logger.swift in Sources */,
+				0C0BB2831DC734B000B5CF4F /* SAIAudioSession.swift in Sources */,
+				0C0BB2951DC734B000B5CF4F /* SAIEmoticonTabItemView.swift in Sources */,
+				0C0BB2841DC734B000B5CF4F /* SAIAudioSimulateView.swift in Sources */,
+				0C0BB2A61DC7351300B5CF4F /* SAIAccessoryView.swift in Sources */,
+				0C0BB28F1DC734B000B5CF4F /* SAIEmoticonInputView.swift in Sources */,
+				0C0BB2911DC734B000B5CF4F /* SAIEmoticonLine.swift in Sources */,
+				0C0BB2781DC734B000B5CF4F /* SAIAudioEffect.swift in Sources */,
+				0C0BB2A71DC7351300B5CF4F /* SAIAccessoryViewLayout.swift in Sources */,
+				0C0BB2791DC734B000B5CF4F /* SAIAudioEffectView.swift in Sources */,
+				0C0BB2811DC734B000B5CF4F /* SAIAudioRecordToolbar.swift in Sources */,
+				0C0BB2991DC734B000B5CF4F /* SAIToolboxItem.swift in Sources */,
+				0C0BB2901DC734B000B5CF4F /* SAIEmoticonInputViewLayout.swift in Sources */,
+				0C0BB2921DC734B000B5CF4F /* SAIEmoticonPage.swift in Sources */,
+				0C0BB2821DC734B000B5CF4F /* SAIAudioRecordView.swift in Sources */,
+				0C0BB2851DC734B000B5CF4F /* SAIAudioSpectrumMiniView.swift in Sources */,
+				0C0BB2971DC734B000B5CF4F /* SAIToolboxInputView.swift in Sources */,
+				0C0BB27F1DC734B000B5CF4F /* SAIAudioRecordButton.swift in Sources */,
+				0C0BB2931DC734B000B5CF4F /* SAIEmoticonPageView.swift in Sources */,
+				0C0BB27E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift in Sources */,
+				0C0BB23A1DC732DB00B5CF4F /* UIImage+Input.swift in Sources */,
+				0C0BB27D1DC734B000B5CF4F /* SAIAudioPlayer.swift in Sources */,
+				0C0BB2A91DC7351300B5CF4F /* SAIBar.swift in Sources */,
+				0C0BB2981DC734B000B5CF4F /* SAIToolboxInputViewLayout.swift in Sources */,
+				0C0BB2871DC734B000B5CF4F /* SAIAudioStatus.swift in Sources */,
+				0C0BB28C1DC734B000B5CF4F /* SAIEmoticon.swift in Sources */,
+				0C0BB28B1DC734B000B5CF4F /* SAIAudioView.swift in Sources */,
+				0C0BB28A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift in Sources */,
+				0C0BB2861DC734B000B5CF4F /* SAIAudioSpectrumView.swift in Sources */,
+				0C0BB2AA1DC7351300B5CF4F /* SAIBarDisplayable.swift in Sources */,
+				0C0BB2891DC734B000B5CF4F /* SAIAudioTabbar.swift in Sources */,
+				0C0BB2A81DC7351300B5CF4F /* SAIBackgroundView.swift in Sources */,
+				0C0BB2391DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift in Sources */,
+				0C0BB2881DC734B000B5CF4F /* SAIAudioStatusView.swift in Sources */,
+				0C0BB2AB1DC7351300B5CF4F /* SAIItem.swift in Sources */,
+				0C0BB2801DC734B000B5CF4F /* SAIAudioRecorder.swift in Sources */,
+				0C0BB2961DC734B000B5CF4F /* SAIPhotoInputView.swift in Sources */,
+				0C0BB29A1DC734B000B5CF4F /* SAIToolboxItemView.swift in Sources */,
+				0C0BB2AC1DC7351300B5CF4F /* SAIItemView.swift in Sources */,
+				0C0BB2AF1DC7351300B5CF4F /* SAIView.swift in Sources */,
+				0C0BB2AD1DC7351300B5CF4F /* SAITextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

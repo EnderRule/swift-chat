@@ -1,6 +1,6 @@
 //
-//  SAInputTextFieldItem.swift
-//  SAInputBar
+//  SAITextFieldItem.swift
+//  SAIBar
 //
 //  Created by sagesse on 8/3/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAInputTextFieldItem: SAInputItem {
+internal class SAITextFieldItem: SAIItem {
     
     init(textView: UITextView, backgroundView: UIImageView) {
         super.init()

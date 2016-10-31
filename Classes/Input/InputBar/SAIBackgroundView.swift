@@ -1,6 +1,6 @@
 //
-//  SAInputBackgroundView.swift
-//  SAInputBar
+//  SAIBackgroundView.swift
+//  SAIBar
 //
 //  Created by sagesse on 8/31/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAInputBackgroundView: UIToolbar {
+internal class SAIBackgroundView: UIToolbar {
 //    override init(frame: CGRect) {
 //        super.init(frame: frame)
 //        _init()
@@ -23,8 +23,8 @@ internal class SAInputBackgroundView: UIToolbar {
 //    
 //    private func _init() {
 //        let center = NSNotificationCenter.defaultCenter()
-//        center.addObserver(self, selector: #selector(willSnapshot(_:)), name: SAInputBarWillSnapshot, object: nil)
-//        center.addObserver(self, selector: #selector(didSnapshot(_:)), name: SAInputBarDidSnapshot, object: nil)
+//        center.addObserver(self, selector: #selector(willSnapshot(_:)), name: SAIBarWillSnapshot, object: nil)
+//        center.addObserver(self, selector: #selector(didSnapshot(_:)), name: SAIBarDidSnapshot, object: nil)
 //    }
 //    private func _deinit() {
 //        let center = NSNotificationCenter.defaultCenter()
@@ -51,8 +51,8 @@ internal class SAInputBackgroundView: UIToolbar {
 
 //private extension UIView {
 //    
-//    func ib_findInputBar() -> SAInputBar? {
-//        if let ib = self as?  SAInputBar {
+//    func ib_findInputBar() -> SAIBar? {
+//        if let ib = self as?  SAIBar {
 //            return ib
 //        }
 //        for view in subviews {
@@ -70,7 +70,7 @@ internal class SAInputBackgroundView: UIToolbar {
 //        inputBar._backgroundView?.hidden = true
 //        let view = ib_snapshotViewAfterScreenUpdates(afterUpdates)
 //        if let view = view {
-//            let v = SAInputBackgroundView()
+//            let v = SAIBackgroundView()
 //            
 //            //v.frame = UIEdgeInsetsInsetRect(view.bounds, UIEdgeInsetsMake(0, 0, inputBar.frame.height, 0))
 //            v.frame = inputBar.convertRect(inputBar.bounds, toView: self)

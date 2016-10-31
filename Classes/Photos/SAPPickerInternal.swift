@@ -366,14 +366,14 @@ extension SAPPickerInternal: UINavigationControllerDelegate, UIViewControllerTra
     
     // SAPNavigationBarDelegate
     
-    func sm_navigationBar(_ navigationBar: SAPNavigationBar, shouldPop item: UINavigationItem) -> Bool {
+    func sap_navigationBar(_ navigationBar: SAPNavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard !allowsMultipleDisplay else {
             return true
         }
         backHandler(self)
         return false
     }
-    func sm_navigationBar(_ navigationBar: SAPNavigationBar, didPop item: UINavigationItem) {
+    func sap_navigationBar(_ navigationBar: SAPNavigationBar, didPop item: UINavigationItem) {
         // is empty
     }
     

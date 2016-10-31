@@ -1,6 +1,6 @@
 //
-//  SAInputbar.swift
-//  SAInputBar
+//  SAIbar.swift
+//  SAIBar
 //
 //  Created by sagesse on 7/23/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -36,48 +36,48 @@ import UIKit
 // [ ] * - iOS10背景不同步
 // [ ] * - 转屏时强制动画
 // [ ] * - 系统的上拉出控制中心时事件响应顺序错误(系统问题)
-// [ ] SAInputView - iOS8键盘重叠
-// [ ] SAInputBarDisplayable - 兼容UICollectionViewController/UITableViewController - 中止(系统行为太多)
-// [ ] SAInputBackgroundViwe - 透明背景显示异常
-// [ ] SAInputBar - 切换自定键盘和第三方输入法时的键盘抖动问题 - 还是有问题, 背景导致的(暂时禁用动画)
-// [x] SAInputTextField - 动态高度支持
-// [x] SAInputAccessoryView - barItem支持, 更随意的组合, 上下左右+中心
-// [x] SAInputAccessoryView - barItem对齐支持
-// [x] SAInputAccessoryView - barItem自定义支持
-// [x] SAInputAccessoryView - barItem选中支持
-// [x] SAInputBar - dismmsMode支持
-// [x] SAInputTextField - 输入框自定表情支持(TextKit)
-// [x] SAInputTextField - 输入框高度限制
-// [ ] SAInputTextField - 输入光标
-// [x] SAInputTextField - 添加Text和删除Text没有响应事件
-// [x] SAInputAccessoryView - 更新barItem - 自动计算
-// [x] SAInputAccessoryView - 更新barItem - 动画(包含: 插入, 删除, 更新)
-// [x] SAInputView - 自定义键盘的切换动画
-// [x] SAInputView - 高度显示错误
-// [x] SAInputView - AutoLayout支持
-// [x] SAInputView - 多次切换后键盘消失
-// [ ] SAInputView - 下拉时隐藏键盘
-// [x] SAInputView - 横屏支持
-// [x] SAInputAccessoryView - iOS8的图片拉伸问题 
-// [x] SAInputAccessoryView - iOS8自定义键盘切换至系统键盘(物理键盘输入)位置异常
+// [ ] SAIView - iOS8键盘重叠
+// [ ] SAIBarDisplayable - 兼容UICollectionViewController/UITableViewController - 中止(系统行为太多)
+// [ ] SAIBackgroundViwe - 透明背景显示异常
+// [ ] SAIBar - 切换自定键盘和第三方输入法时的键盘抖动问题 - 还是有问题, 背景导致的(暂时禁用动画)
+// [x] SAITextField - 动态高度支持
+// [x] SAIAccessoryView - barItem支持, 更随意的组合, 上下左右+中心
+// [x] SAIAccessoryView - barItem对齐支持
+// [x] SAIAccessoryView - barItem自定义支持
+// [x] SAIAccessoryView - barItem选中支持
+// [x] SAIBar - dismmsMode支持
+// [x] SAITextField - 输入框自定表情支持(TextKit)
+// [x] SAITextField - 输入框高度限制
+// [ ] SAITextField - 输入光标
+// [x] SAITextField - 添加Text和删除Text没有响应事件
+// [x] SAIAccessoryView - 更新barItem - 自动计算
+// [x] SAIAccessoryView - 更新barItem - 动画(包含: 插入, 删除, 更新)
+// [x] SAIView - 自定义键盘的切换动画
+// [x] SAIView - 高度显示错误
+// [x] SAIView - AutoLayout支持
+// [x] SAIView - 多次切换后键盘消失
+// [ ] SAIView - 下拉时隐藏键盘
+// [x] SAIView - 横屏支持
+// [x] SAIAccessoryView - iOS8的图片拉伸问题 
+// [x] SAIAccessoryView - iOS8自定义键盘切换至系统键盘(物理键盘输入)位置异常
 // [x] * - 分离源文件
 // [ ] * - code review - p2
 // [x] * - 内嵌资源(矢量图)
 // [ ] * - 移除跟踪日志 - p0
-// [ ] SAInputAccessoryView - barItem重用支持(现是不允许存在两个相同的barItem)
-// [ ] SAInputBar - 横/竖屏双布局(InputAccessView和InputView)
-// [x] SAInputAccessoryView - 多次转屏后barItem会报错
-// [ ] SAInputAccessoryView - 批量更新barItem(多组更新)
-// [x] SAInputBarDisplayable - 弹出事件(两个模式: 跟随模式)
-// [x] SAInputBarDisplayable - 大小改变事件, 跟随模式
-// [ ] SAInputBarDisplayable - 转屏后contentOffset可能超出contentSize
-// [x] SAInputBarDisplayable - dismmsMode支持, scrollIndicatorInsets跟随
-// [x] SAInputBarDisplayable - 切换页面时显示异常
-// [x] SAInputBarDisplayable - 初始化动画异常
-// [x] SAInputBackgroundViwe - 自定义背景
+// [ ] SAIAccessoryView - barItem重用支持(现是不允许存在两个相同的barItem)
+// [ ] SAIBar - 横/竖屏双布局(InputAccessView和InputView)
+// [x] SAIAccessoryView - 多次转屏后barItem会报错
+// [ ] SAIAccessoryView - 批量更新barItem(多组更新)
+// [x] SAIBarDisplayable - 弹出事件(两个模式: 跟随模式)
+// [x] SAIBarDisplayable - 大小改变事件, 跟随模式
+// [ ] SAIBarDisplayable - 转屏后contentOffset可能超出contentSize
+// [x] SAIBarDisplayable - dismmsMode支持, scrollIndicatorInsets跟随
+// [x] SAIBarDisplayable - 切换页面时显示异常
+// [x] SAIBarDisplayable - 初始化动画异常
+// [x] SAIBackgroundViwe - 自定义背景
 
 
-public enum SAInputMode: CustomStringConvertible {
+public enum SAIMode: CustomStringConvertible {
     case none
     case editing
     case selecting(UIView)
@@ -112,40 +112,40 @@ public enum SAInputMode: CustomStringConvertible {
 
 
 @objc 
-public protocol SAInputBarDelegate: NSObjectProtocol {
+public protocol SAIBarDelegate: NSObjectProtocol {
     
     // MARK: Text Edit
     
-    @objc optional func inputBar(shouldBeginEditing inputBar: SAInputBar) -> Bool
-    @objc optional func inputBar(shouldEndEditing inputBar: SAInputBar) -> Bool
+    @objc optional func inputBar(shouldBeginEditing inputBar: SAIBar) -> Bool
+    @objc optional func inputBar(shouldEndEditing inputBar: SAIBar) -> Bool
     
-    @objc optional func inputBar(didBeginEditing inputBar: SAInputBar)
-    @objc optional func inputBar(didEndEditing inputBar: SAInputBar)
+    @objc optional func inputBar(didBeginEditing inputBar: SAIBar)
+    @objc optional func inputBar(didEndEditing inputBar: SAIBar)
     
-    @objc optional func inputBar(shouldReturn inputBar: SAInputBar) -> Bool
-    @objc optional func inputBar(shouldClear inputBar: SAInputBar) -> Bool
+    @objc optional func inputBar(shouldReturn inputBar: SAIBar) -> Bool
+    @objc optional func inputBar(shouldClear inputBar: SAIBar) -> Bool
     
-    @objc optional func inputBar(didChangeSelection inputBar: SAInputBar)
-    @objc optional func inputBar(didChangeText inputBar: SAInputBar)
+    @objc optional func inputBar(didChangeSelection inputBar: SAIBar)
+    @objc optional func inputBar(didChangeText inputBar: SAIBar)
     
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldInteractWithTextAttachment textAttachment: NSTextAttachment, inRange characterRange: NSRange) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldInteractWithURL URL: URL, inRange characterRange: NSRange) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldInteractWithTextAttachment textAttachment: NSTextAttachment, inRange characterRange: NSRange) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldInteractWithURL URL: URL, inRange characterRange: NSRange) -> Bool
     
     // MARK: Accessory Item Selection
     
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldHighlightFor item: SAInputItem) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldDeselectFor item: SAInputItem) -> Bool
-    @objc optional func inputBar(_ inputBar: SAInputBar, shouldSelectFor item: SAInputItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldHighlightFor item: SAIItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldDeselectFor item: SAIItem) -> Bool
+    @objc optional func inputBar(_ inputBar: SAIBar, shouldSelectFor item: SAIItem) -> Bool
     
-    @objc optional func inputBar(_ inputBar: SAInputBar, didHighlightFor item: SAInputItem)
-    @objc optional func inputBar(_ inputBar: SAInputBar, didDeselectFor item: SAInputItem)
-    @objc optional func inputBar(_ inputBar: SAInputBar, didSelectFor item: SAInputItem)
+    @objc optional func inputBar(_ inputBar: SAIBar, didHighlightFor item: SAIItem)
+    @objc optional func inputBar(_ inputBar: SAIBar, didDeselectFor item: SAIItem)
+    @objc optional func inputBar(_ inputBar: SAIBar, didSelectFor item: SAIItem)
     
     // MARK: Input Mode
     
-    @objc optional func inputBar(willChangeMode inputBar: SAInputBar)
-    @objc optional func inputBar(didChangeMode inputBar: SAInputBar)
+    @objc optional func inputBar(willChangeMode inputBar: SAIBar)
+    @objc optional func inputBar(didChangeMode inputBar: SAIBar)
 }
 
 // MARK: -
@@ -153,12 +153,12 @@ public protocol SAInputBarDelegate: NSObjectProtocol {
 ///
 /// multifunction input bar
 ///
-/// If the delegate follow SAInputDisplayable agreement, 
+/// If the delegate follow SAIDisplayable agreement, 
 //  will automatically pop-up keyboard events management
 ///
 /// Sample:
 ///    ```swift
-///    lazy var toolbar: SAInputBar = SAInputBar()
+///    lazy var toolbar: SAIBar = SAIBar()
 /// 
 ///    override var inputAccessoryView: UIView? {
 ///        return toolbar
@@ -182,7 +182,7 @@ public protocol SAInputBarDelegate: NSObjectProtocol {
 ///    inputBar.setInputMode(.None, animated: true)
 ///    ```
 ///
-open class SAInputBar: UIView {
+open class SAIBar: UIView {
     
     open override func invalidateIntrinsicContentSize() {
         super.invalidateIntrinsicContentSize()
@@ -207,15 +207,15 @@ open class SAInputBar: UIView {
         return ib_nextResponderOverride ?? super.next
     }
     
-    open var textItem: SAInputItem { 
+    open var textItem: SAIItem { 
         return _inputAccessoryView.textField.item 
     }
     
-    open var inputMode: SAInputMode {
+    open var inputMode: SAIMode {
         set { return _updateInputMode(newValue, animated: true) }
         get { return _inputMode }
     }
-    open func setInputMode(_ mode: SAInputMode, animated: Bool) {
+    open func setInputMode(_ mode: SAIMode, animated: Bool) {
         _updateInputMode(mode, animated: animated)
     }
     
@@ -229,15 +229,15 @@ open class SAInputBar: UIView {
     open var allowsSelection: Bool = true // default is YES
     open var allowsMultipleSelection: Bool = false // default is NO
     
-    open weak var delegate: SAInputBarDelegate? {
+    open weak var delegate: SAIBarDelegate? {
         didSet {
-            _displayable = delegate as? SAInputBarDisplayable
+            _displayable = delegate as? SAIBarDisplayable
         }
     }
     
     // MARK: - Private Method
     
-    fileprivate func _updateInputMode(_ newMode: SAInputMode, animated: Bool) {
+    fileprivate func _updateInputMode(_ newMode: SAIMode, animated: Bool) {
         let oldMode = _inputMode
         _logger.trace("\(_inputMode) => \(newMode)")
         
@@ -251,7 +251,7 @@ open class SAInputBar: UIView {
         
         delegate?.inputBar?(didChangeMode: self)
     }
-    fileprivate func _updateInputModeForResponder(_ newMode: SAInputMode,  animated: Bool) {
+    fileprivate func _updateInputModeForResponder(_ newMode: SAIMode,  animated: Bool) {
         let oldMode = _inputMode
         if newMode.isNone {
             if !oldMode.isEditing {
@@ -388,7 +388,7 @@ open class SAInputBar: UIView {
         _cacheSystemKeyboardSize = newSize
         _updateKeyboardSizeIfNeeded(animated)
     }
-    fileprivate func _updateKeyboardKeyboardWithInputMode(_ mode: SAInputMode, animated: Bool) {
+    fileprivate func _updateKeyboardKeyboardWithInputMode(_ mode: SAIMode, animated: Bool) {
         _logger.trace()
         
         _updateCustomKeyboard(_inputView.intrinsicContentSize, animated: animated)
@@ -404,7 +404,7 @@ open class SAInputBar: UIView {
         center.addObserver(self, selector:#selector(ntf_keyboard(willHide:)), name:NSNotification.Name.UIKeyboardWillHide, object:nil)
         
         // accessory
-        center.addObserver(self, selector: #selector(ntf_accessory(didChangeFrame:)), name: NSNotification.Name(rawValue: SAInputAccessoryDidChangeFrameNotification), object: nil)
+        center.addObserver(self, selector: #selector(ntf_accessory(didChangeFrame:)), name: NSNotification.Name(rawValue: SAIAccessoryDidChangeFrameNotification), object: nil)
     }
     private func _removeNotifications() {
         _logger.trace()
@@ -524,20 +524,20 @@ open class SAInputBar: UIView {
     
     // MARK: - 
     
-    fileprivate var _inputMode: SAInputMode = .none
+    fileprivate var _inputMode: SAIMode = .none
     
     fileprivate var _inputViewBottom: NSLayoutConstraint?
     fileprivate var _inputAccessoryViewBottom: NSLayoutConstraint?
     
-    fileprivate lazy var _inputView: SAInputView = SAInputView()
-    fileprivate lazy var _inputAccessoryView: SAInputAccessoryView = SAInputAccessoryView()
-    fileprivate lazy var _backgroundView: SAInputBackgroundView = SAInputBackgroundView()
+    fileprivate lazy var _inputView: SAIView = SAIView()
+    fileprivate lazy var _inputAccessoryView: SAIAccessoryView = SAIAccessoryView()
+    fileprivate lazy var _backgroundView: SAIBackgroundView = SAIBackgroundView()
     
     fileprivate lazy var _constraints: [NSLayoutConstraint] = []
-    fileprivate lazy var _selectedItems: Set<SAInputItem> = []
+    fileprivate lazy var _selectedItems: Set<SAIItem> = []
     
     fileprivate weak var _containerView: UIView?
-    fileprivate weak var _displayable: SAInputBarDisplayable?
+    fileprivate weak var _displayable: SAIBarDisplayable?
     
     fileprivate var _cacheBounds: CGRect?
     fileprivate var _cacheContentSize: CGSize?
@@ -571,7 +571,7 @@ open class SAInputBar: UIView {
 
 // MARK: - System Keyboard Event
 
-extension SAInputBar {
+extension SAIBar {
     
     @objc func ntf_keyboard(willShow sender: Notification) {
         //_logger.debug(sender)
@@ -700,7 +700,7 @@ extension SAInputBar {
 
 // MARK: - UITextView(Forwarding)
 
-extension SAInputBar: UIKeyInput {
+extension SAIBar: UIKeyInput {
     
     // UITextView
     
@@ -797,7 +797,7 @@ extension SAInputBar: UIKeyInput {
 
 // MARK: - UITextViewDelegate(Forwarding)
 
-extension SAInputBar: UITextViewDelegate {
+extension SAIBar: UITextViewDelegate {
     
     open func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if let r = delegate?.inputBar?(shouldBeginEditing: self), !r {
@@ -856,51 +856,51 @@ extension SAInputBar: UITextViewDelegate {
     }
 }
 
-// MARK: - SAInputAccessoryView(Forwarding)
+// MARK: - SAIAccessoryView(Forwarding)
 
-extension SAInputBar {
+extension SAIBar {
     
-    open func barItems(atPosition position: SAInputItemPosition) -> [SAInputItem] {
+    open func barItems(atPosition position: SAIItemPosition) -> [SAIItem] {
         return _inputAccessoryView.barItems(atPosition: position)
     }
-    open func setBarItem(_ barItem: SAInputItem, atPosition position: SAInputItemPosition, animated: Bool = true) {
+    open func setBarItem(_ barItem: SAIItem, atPosition position: SAIItemPosition, animated: Bool = true) {
         return _inputAccessoryView.setBarItems([barItem], atPosition: position, animated: animated)
     }
-    open func setBarItems(_ barItems: [SAInputItem], atPosition position: SAInputItemPosition, animated: Bool = true) {
+    open func setBarItems(_ barItems: [SAIItem], atPosition position: SAIItemPosition, animated: Bool = true) {
         return _inputAccessoryView.setBarItems(barItems, atPosition: position, animated: animated)
     }
     
-    open func canSelectBarItem(_ barItem: SAInputItem) -> Bool {
+    open func canSelectBarItem(_ barItem: SAIItem) -> Bool {
         return _inputAccessoryView.canSelectBarItem(barItem)
     }
-    open func canDeselectBarItem(_ barItem: SAInputItem) -> Bool {
+    open func canDeselectBarItem(_ barItem: SAIItem) -> Bool {
         return _inputAccessoryView.canDeselectBarItem(barItem)
     }
     
-    open func selectBarItem(_ barItem: SAInputItem, animated: Bool) {
+    open func selectBarItem(_ barItem: SAIItem, animated: Bool) {
         _selectedItems.insert(barItem)
         return _inputAccessoryView.selectBarItem(barItem, animated: animated)
     }
-    open func deselectBarItem(_ barItem: SAInputItem, animated: Bool) {
+    open func deselectBarItem(_ barItem: SAIItem, animated: Bool) {
         _selectedItems.remove(barItem)
         return _inputAccessoryView.deselectBarItem(barItem, animated: animated)
     }
 }
     
-// MARK: - SAInputItemViewDelegate(Forwarding)
+// MARK: - SAIItemViewDelegate(Forwarding)
 
-extension SAInputBar: SAInputItemViewDelegate {
+extension SAIBar: SAIItemViewDelegate {
     
-    open func barItem(shouldHighlightFor barItem: SAInputItem) -> Bool {
+    open func barItem(shouldHighlightFor barItem: SAIItem) -> Bool {
         return delegate?.inputBar?(self, shouldHighlightFor: barItem) ?? true
     }
-    open func barItem(shouldDeselectFor barItem: SAInputItem) -> Bool {
+    open func barItem(shouldDeselectFor barItem: SAIItem) -> Bool {
         if !allowsMultipleSelection {
             return false // not allowed to cancel
         }
         return delegate?.inputBar?(self, shouldDeselectFor: barItem) ?? true 
     }
-    open func barItem(shouldSelectFor barItem: SAInputItem) -> Bool {
+    open func barItem(shouldSelectFor barItem: SAIItem) -> Bool {
         guard allowsSelection else {
             // do not allow the selected
             return false
@@ -931,15 +931,15 @@ extension SAInputBar: SAInputItemViewDelegate {
         return true
     }
     
-    open func barItem(didHighlightFor barItem: SAInputItem) {
+    open func barItem(didHighlightFor barItem: SAIItem) {
         delegate?.inputBar?(self, didHighlightFor: barItem)
     }
-    open func barItem(didDeselectFor barItem: SAInputItem) {
+    open func barItem(didDeselectFor barItem: SAIItem) {
         delegate?.inputBar?(self, didDeselectFor: barItem)
         // Remove from the selected list
         _selectedItems.remove(barItem)
     }
-    open func barItem(didSelectFor barItem: SAInputItem) {
+    open func barItem(didSelectFor barItem: SAIItem) {
         delegate?.inputBar?(self, didSelectFor: barItem)
         // Added to the selected list
         _selectedItems.insert(barItem)
@@ -969,7 +969,7 @@ private extension UIScrollView {
     // gesture recognizer handler
     @objc private func ib_handlePan(_ sender: UIPanGestureRecognizer) {
         ib_handlePan(sender)
-        guard let inputBar = inputAccessoryView as? SAInputBar else {
+        guard let inputBar = inputAccessoryView as? SAIBar else {
             return
         }
         if keyboardDismissMode == .onDrag {
@@ -999,7 +999,7 @@ private extension UIPresentationController {
 
 // MARK: -
 
-internal func SAInputBarLoad() {
+internal func SAIBarLoad() {
     
     // 解释一下为什么采用这个方法, 因为swift没有不能重写load方法, 
     // 如果写在initialize可能会被其他库覆盖掉
@@ -1038,15 +1038,15 @@ internal func _SAInputExchangeSelector(_ cls: AnyClass?, _ sel1: Selector, _ sel
 
 private var _ib_inputBar_once: Bool = {
     
-    SAInputBarLoad()
-    SAInputBarDisplayableLoad()
+    SAIBarLoad()
+    SAIBarDisplayableLoad()
     return true
     
 }()
 
 
-private var SAInputBarWillSnapshot = "SAInputBarWillSnapshot"
-private var SAInputBarDidSnapshot = "SAInputBarDidSnapshot"
+private var SAIBarWillSnapshot = "SAIBarWillSnapshot"
+private var SAIBarDidSnapshot = "SAIBarDidSnapshot"
 
 private var _SAInputUIResponderNextResponderOverride = "_SAInputUIResponderNextResponderOverride"
 

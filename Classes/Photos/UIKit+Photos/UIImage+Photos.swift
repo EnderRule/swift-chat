@@ -10,7 +10,7 @@ import UIKit
 
 
 internal extension UIImage {
-    static func sm_init(named: String) -> UIImage? {
+    static func sap_init(named: String) -> UIImage? {
         return UIImage(named: named, in: SAPPicker.bundle, compatibleWith: nil)
     }
 }

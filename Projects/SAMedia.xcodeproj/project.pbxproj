@@ -47,6 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				0C0BB17D1DC7316600B5CF4F /* Media */,
+				0C0BB1851DC7316600B5CF4F /* UIKit+Media */,
 				0C0BB0541DC72D6600B5CF4F /* Supporting Files */,
 				0C0BB0531DC72D6600B5CF4F /* Products */,
 			);
@@ -73,7 +74,6 @@
 		0C0BB17D1DC7316600B5CF4F /* Media */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1851DC7316600B5CF4F /* UIKit+Media */,
 				0C0BB17E1DC7316600B5CF4F /* SAMAudioPlayer.swift */,
 				0C0BB17F1DC7316600B5CF4F /* SAMAudioRecorder.swift */,
 				0C0BB1801DC7316600B5CF4F /* SAMPlayerProtocol.swift */,
@@ -91,7 +91,8 @@
 			children = (
 				0C0BB1861DC7316600B5CF4F /* AVAudioSession+Active.swift */,
 			);
-			path = "UIKit+Media";
+			name = "UIKit+Media";
+			path = "../Classes/Media/UIKit+Media";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

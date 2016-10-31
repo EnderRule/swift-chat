@@ -1,6 +1,6 @@
 //
-//  SAInputItemView.swift
-//  SAInputBar
+//  SAIItemView.swift
+//  SAIBar
 //
 //  Created by sagesse on 8/3/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAInputItemView: UICollectionViewCell {
+internal class SAIItemView: UICollectionViewCell {
     
-    var item: SAInputItem? {
+    var item: SAIItem? {
         willSet {
             UIView.performWithoutAnimation {
                 self._updateItem(newValue)
@@ -18,7 +18,7 @@ internal class SAInputItemView: UICollectionViewCell {
         }
     }
     
-    weak var delegate: SAInputItemViewDelegate? {
+    weak var delegate: SAIItemViewDelegate? {
         set { return _button.delegate = newValue }
         get { return _button.delegate }
     }
@@ -34,7 +34,7 @@ internal class SAInputItemView: UICollectionViewCell {
         backgroundColor = .clear
         //backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
     }
-    func _updateItem(_ newValue: SAInputItem?) {
+    func _updateItem(_ newValue: SAIItem?) {
         //_logger.trace(newValue)
         
         guard let newValue = newValue else {
@@ -66,9 +66,9 @@ internal class SAInputItemView: UICollectionViewCell {
     }
     
     private var _contentView: UIView?
-    private lazy var _button: SAInputItemButton = {
-        let view = SAInputItemButton(type: .custom)
-        //let view = SAInputItemButton(type: .System)
+    private lazy var _button: SAIItemButton = {
+        let view = SAIItemButton(type: .custom)
+        //let view = SAIItemButton(type: .System)
         view.isMultipleTouchEnabled = false
         view.isExclusiveTouch = true
         return view
@@ -84,7 +84,7 @@ internal class SAInputItemView: UICollectionViewCell {
     }
 }
 
-internal class SAInputItemButton: UIButton {
+internal class SAIItemButton: UIButton {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         guard let barItem = self.barItem else {
@@ -99,7 +99,7 @@ internal class SAInputItemButton: UIButton {
         return super.beginTracking(touch, with: event)
     }
     
-    var barItem: SAInputItem? {
+    var barItem: SAIItem? {
         willSet {
             guard barItem !== newValue else {
                 return
@@ -112,7 +112,7 @@ internal class SAInputItemButton: UIButton {
             }
         }
     }
-    weak var delegate: SAInputItemViewDelegate?
+    weak var delegate: SAIItemViewDelegate?
     
     var allowsHighlight = true
     var _selected: Bool = false
@@ -177,7 +177,7 @@ internal class SAInputItemButton: UIButton {
         }
     }
     
-    func _updateBarItem(_ item: SAInputItem) {
+    func _updateBarItem(_ item: SAIItem) {
         
         let states: [UIControlState] = [
             [.normal],
@@ -248,14 +248,14 @@ internal class SAInputItemButton: UIButton {
 }
 
 
-internal protocol SAInputItemViewDelegate: class {
+internal protocol SAIItemViewDelegate: class {
     
-    func barItem(shouldHighlightFor barItem: SAInputItem) -> Bool
-    func barItem(shouldDeselectFor barItem: SAInputItem) -> Bool
-    func barItem(shouldSelectFor barItem: SAInputItem) -> Bool
+    func barItem(shouldHighlightFor barItem: SAIItem) -> Bool
+    func barItem(shouldDeselectFor barItem: SAIItem) -> Bool
+    func barItem(shouldSelectFor barItem: SAIItem) -> Bool
     
-    func barItem(didHighlightFor barItem: SAInputItem)
-    func barItem(didDeselectFor barItem: SAInputItem)
-    func barItem(didSelectFor barItem: SAInputItem)
+    func barItem(didHighlightFor barItem: SAIItem)
+    func barItem(didDeselectFor barItem: SAIItem)
+    func barItem(didSelectFor barItem: SAIItem)
     
 }

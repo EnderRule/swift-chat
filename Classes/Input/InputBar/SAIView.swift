@@ -1,6 +1,6 @@
 //
-//  SAInputView.swift
-//  SAInputBar
+//  SAIView.swift
+//  SAIBar
 //
 //  Created by sagesse on 7/23/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 
 
-internal class SAInputView: UIView {
+internal class SAIView: UIView {
     
     override var intrinsicContentSize: CGSize {
         if let size = _cacheContentSize {
@@ -32,7 +32,7 @@ internal class SAInputView: UIView {
         super.layoutSubviews()
     }
     
-    func updateInputMode(_ newMode: SAInputMode, oldMode: SAInputMode, animated: Bool) {
+    func updateInputMode(_ newMode: SAIMode, oldMode: SAIMode, animated: Bool) {
         _logger.trace()
         
         _inputMode = newMode
@@ -109,7 +109,7 @@ internal class SAInputView: UIView {
     private var _cacheBounds: CGRect?
     private var _cacheContentSize: CGSize?
     
-    private var _inputMode: SAInputMode = .none
+    private var _inputMode: SAIMode = .none
     private var _inputView: UIView?
     private var _inputViewConstraints: [NSLayoutConstraint]?
 }

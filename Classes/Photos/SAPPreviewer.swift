@@ -67,10 +67,10 @@ internal class SAPPreviewer: UIViewController {
         _selectedView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         _selectedView.setTitleColor(.white, for: .normal)
         _selectedView.isHidden = !allowsMultipleSelection
-        _selectedView.setBackgroundImage(UIImage.sm_init(named: "photo_checkbox_normal"), for: .normal)
-        _selectedView.setBackgroundImage(UIImage.sm_init(named: "photo_checkbox_normal"), for: .highlighted)
-        _selectedView.setBackgroundImage(UIImage.sm_init(named: "photo_checkbox_selected"), for: [.selected, .normal])
-        _selectedView.setBackgroundImage(UIImage.sm_init(named: "photo_checkbox_selected"), for: [.selected, .highlighted])
+        _selectedView.setBackgroundImage(UIImage.sap_init(named: "photo_checkbox_normal"), for: .normal)
+        _selectedView.setBackgroundImage(UIImage.sap_init(named: "photo_checkbox_normal"), for: .highlighted)
+        _selectedView.setBackgroundImage(UIImage.sap_init(named: "photo_checkbox_selected"), for: [.selected, .normal])
+        _selectedView.setBackgroundImage(UIImage.sap_init(named: "photo_checkbox_selected"), for: [.selected, .highlighted])
         _selectedView.addTarget(self, action: #selector(selectHandler(_:)), for: .touchUpInside)
         
         _contentViewLayout.scrollDirection = .horizontal

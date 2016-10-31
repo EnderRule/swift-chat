@@ -94,10 +94,10 @@ public class SAPProgressiveableImage: UIImage, SAPProgressiveable {
     public override class func initialize() {
         
         let m1 = class_getInstanceMethod(UIImageView.self, #selector(getter: UIImageView.image))
-        let m2 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sm_image))
+        let m2 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sap_image))
         
         let m3 = class_getInstanceMethod(UIImageView.self, #selector(setter: UIImageView.image))
-        let m4 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sm_setImage(_:)))
+        let m4 = class_getInstanceMethod(UIImageView.self, #selector(UIImageView.sap_setImage(_:)))
         
         method_exchangeImplementations(m1, m2)
         method_exchangeImplementations(m3, m4)
@@ -140,28 +140,28 @@ extension UIImageView: SAPProgressiveableObserver {
     /// 内容发生改变
     ///
     public func progressiveable(_ progressiveable: SAPProgressiveable, didChangeContent content: Any?) {
-        sm_setImage(content as? UIImage)
+        sap_setImage(content as? UIImage)
     }
     
-    internal dynamic func sm_setImage(_ newValue: UIImage?) {
+    internal dynamic func sap_setImage(_ newValue: UIImage?) {
         guard let image = newValue as? SAPProgressiveableImage else {
-            sm_progressiveImage = nil
-            sm_setImage(newValue)
+            sap_progressiveImage = nil
+            sap_setImage(newValue)
             return
         }
-        sm_progressiveImage = image
-        sm_setImage(image.content as? UIImage)
+        sap_progressiveImage = image
+        sap_setImage(image.content as? UIImage)
     }
-    internal dynamic func sm_image() -> UIImage? {
-        guard let image = sm_progressiveImage else {
-            return sm_image()
+    internal dynamic func sap_image() -> UIImage? {
+        guard let image = sap_progressiveImage else {
+            return sap_image()
         }
         return image
     }
     
-    internal dynamic var sm_progressiveImage: SAPProgressiveableImage? {
+    internal dynamic var sap_progressiveImage: SAPProgressiveableImage? {
         set {
-            let oldValue = sm_progressiveImage
+            let oldValue = sap_progressiveImage
             guard oldValue !== newValue else {
                 return // no change
             }

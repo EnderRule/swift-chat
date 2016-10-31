@@ -203,6 +203,7 @@
 				0C0BB1901DC731B400B5CF4F /* Resources */,
 				0C0BB05D1DC72E3000B5CF4F /* Frameworks */,
 				0C0BB03E1DC72D5C00B5CF4F /* Products */,
+				0C0BB1DB1DC731B400B5CF4F /* UIKit+Photos */,
 				0C0BB03F1DC72D5C00B5CF4F /* Supporting Files */,
 			);
 			sourceTree = "<group>";
@@ -237,7 +238,6 @@
 		0C0BB18F1DC731B400B5CF4F /* Photos */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1DB1DC731B400B5CF4F /* UIKit+Photos */,
 				0C0BB1B71DC731B400B5CF4F /* SAPAlbum.swift */,
 				0C0BB1B81DC731B400B5CF4F /* SAPAsset.swift */,
 				0C0BB1B91DC731B400B5CF4F /* SAPAssetView.swift */,
@@ -328,7 +328,6 @@
 		0C0BB1DB1DC731B400B5CF4F /* UIKit+Photos */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BB1DC1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift */,
 				0C0BB1DD1DC731B400B5CF4F /* SAPButtonBarItem.swift */,
 				0C0BB1DE1DC731B400B5CF4F /* SAPContainterView.swift */,
 				0C0BB1DF1DC731B400B5CF4F /* SAPImageView.swift */,
@@ -336,8 +335,10 @@
 				0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */,
 				0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */,
 				0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */,
+				0C0BB1DC1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift */,
 			);
-			path = "UIKit+Photos";
+			name = "UIKit+Photos";
+			path = "../Classes/Photos/UIKit+Photos";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
