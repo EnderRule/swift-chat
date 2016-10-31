@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>SAInput.xcscheme</key>
+		<key>Example.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>4</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0C0BB0271DC72CFB00B5CF4F</key>
+		<key>0C001AAC1DC742C3004A5F08</key>
 		<dict>
 			<key>primary</key>
 			<true/>

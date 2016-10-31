@@ -13,4 +13,7 @@
    <FileRef
       location = "group:Projects/SAPhotos.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Projects/Example.xcodeproj">
+   </FileRef>
 </Workspace>

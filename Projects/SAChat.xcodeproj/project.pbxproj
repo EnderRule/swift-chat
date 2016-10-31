@@ -7,10 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C001CDF1DC745B8004A5F08 /* SAInput.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDC1DC745B8004A5F08 /* SAInput.framework */; };
+		0C001CE01DC745B8004A5F08 /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDD1DC745B8004A5F08 /* SAMedia.framework */; };
+		0C001CE11DC745B8004A5F08 /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */; };
 		0C0BB0181DC72C3400B5CF4F /* SAChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0BB0161DC72C3400B5CF4F /* SAChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C001CDC1DC745B8004A5F08 /* SAInput.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAInput.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAInput.framework"; sourceTree = "<group>"; };
+		0C001CDD1DC745B8004A5F08 /* SAMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAMedia.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAMedia.framework"; sourceTree = "<group>"; };
+		0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAPhotos.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAPhotos.framework"; sourceTree = "<group>"; };
 		0C0BB0131DC72C3400B5CF4F /* SAChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB0161DC72C3400B5CF4F /* SAChat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAChat.h; sourceTree = "<group>"; };
 		0C0BB0171DC72C3400B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -21,17 +27,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C001CDF1DC745B8004A5F08 /* SAInput.framework in Frameworks */,
+				0C001CE01DC745B8004A5F08 /* SAMedia.framework in Frameworks */,
+				0C001CE11DC745B8004A5F08 /* SAPhotos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C001CDB1DC745B8004A5F08 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0C001CDC1DC745B8004A5F08 /* SAInput.framework */,
+				0C001CDD1DC745B8004A5F08 /* SAMedia.framework */,
+				0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		0C0BB0091DC72C3400B5CF4F = {
 			isa = PBXGroup;
 			children = (
 				0C0BB0151DC72C3400B5CF4F /* Supporting Files */,
 				0C0BB0141DC72C3400B5CF4F /* Products */,
+				0C001CDB1DC745B8004A5F08 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
