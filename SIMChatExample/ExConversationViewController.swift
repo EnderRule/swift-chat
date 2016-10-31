@@ -47,9 +47,9 @@ class ExConversationViewController: UITableViewController {
     
     @IBAction func onPL(_ sender: AnyObject) {
         
-        let picker = SAPhotoPicker()
-        self.present(picker, animated: true) {
-        }
+//        let picker = SAPhotoPicker()
+//        self.present(picker, animated: true) {
+//        }
     }
 
     override func viewDidLoad() {

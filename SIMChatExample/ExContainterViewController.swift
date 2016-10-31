@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import SIMChat
+import SAPhotos
 
-class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegate {
+class ExContainterViewController: UIViewController, SPContainterViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,19 +50,19 @@ class ExContainterViewController: UIViewController, SAPhotoContainterViewDelegat
         // Dispose of any resources that can be recreated.
     }
     
-    func viewForZooming(in containterView: SAPhotoContainterView) -> UIView? {
+    func viewForZooming(in containterView: SPContainterView) -> UIView? {
         return imageView
     }
     
-    func containterViewShouldBeginRotationing(_ containterView: SAPhotoContainterView, with view: UIView?) -> Bool {
+    func containterViewShouldBeginRotationing(_ containterView: SPContainterView, with view: UIView?) -> Bool {
         return true
     }
-    func containterViewDidEndRotationing(_ containterView: SAPhotoContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
+    func containterViewDidEndRotationing(_ containterView: SPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         imageView.image = imageView.image?.withOrientation(orientation)
     }
     
     lazy var imageView: UIImageView = UIImageView()
         
 
-    @IBOutlet weak var containterView: SAPhotoContainterView!
+    @IBOutlet weak var containterView: SPContainterView!
 }
