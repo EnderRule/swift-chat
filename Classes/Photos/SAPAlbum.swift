@@ -115,46 +115,50 @@ public class SAPAlbum: NSObject {
 extension SAPAlbum {
     
     fileprivate static func _fetchAssetCollections() -> [SAPAlbum] {
-        var types: [(PHAssetCollectionType, PHAssetCollectionSubtype)] = []
+        var types: [(PHAssetCollectionType, PHAssetCollectionSubtype, Bool)] = []
         
         // smart album -> user
-        types.append((.smartAlbum, .smartAlbumUserLibrary))
-        types.append((.smartAlbum, .smartAlbumFavorites))
-        types.append((.smartAlbum, .smartAlbumGeneric))
+        types.append((.smartAlbum, .smartAlbumUserLibrary, true))
+        types.append((.smartAlbum, .smartAlbumFavorites, false))
+        types.append((.smartAlbum, .smartAlbumGeneric, false))
             
         // smart album -> recently
-        types.append((.smartAlbum, .smartAlbumRecentlyAdded))
+        types.append((.smartAlbum, .smartAlbumRecentlyAdded, false))
             
         // smart album -> video
-        types.append((.smartAlbum, .smartAlbumPanoramas))
-        types.append((.smartAlbum, .smartAlbumVideos))
-        types.append((.smartAlbum, .smartAlbumSlomoVideos))
-        types.append((.smartAlbum, .smartAlbumTimelapses))
+        types.append((.smartAlbum, .smartAlbumPanoramas, false))
+        types.append((.smartAlbum, .smartAlbumVideos, false))
+        types.append((.smartAlbum, .smartAlbumSlomoVideos, false))
+        types.append((.smartAlbum, .smartAlbumTimelapses, false))
         
         // smart album -> screenshots
         if #available(iOS 9.0, *) { 
-            types.append((.smartAlbum, .smartAlbumScreenshots))
+            types.append((.smartAlbum, .smartAlbumScreenshots, false))
             //types.append((.smartAlbum, .smartAlbumSelfPortraits))
         }
         
         // album -> share
-        types.append((.album, .albumMyPhotoStream))
-        types.append((.album, .albumCloudShared))
+        types.append((.album, .albumMyPhotoStream, false))
+        types.append((.album, .albumCloudShared, false))
         
         // album -> user
-        types.append((.album, .albumRegular))
-        types.append((.album, .albumSyncedAlbum))
-        types.append((.album, .albumImported))
-        types.append((.album, .albumSyncedFaces))
+        types.append((.album, .albumRegular, true))
+        types.append((.album, .albumSyncedAlbum, false))
+        types.append((.album, .albumImported, false))
+        types.append((.album, .albumSyncedFaces, false))
         
         return types.reduce([]) {
-            $0 + _fetchAssetCollections(with: $1.0, subtype: $1.1)
+            $0 + _fetchAssetCollections(with: $1.0, subtype: $1.1, canEmpty: $1.2)
         }
     }
-    fileprivate static func _fetchAssetCollections(with type: PHAssetCollectionType, subtype: PHAssetCollectionSubtype, options: PHFetchOptions? = nil) -> [SAPAlbum] {
+    fileprivate static func _fetchAssetCollections(with type: PHAssetCollectionType, subtype: PHAssetCollectionSubtype, options: PHFetchOptions? = nil, canEmpty: Bool = true) -> [SAPAlbum] {
         var albums: [SAPAlbum] = []
-        PHAssetCollection.fetchAssetCollections(with: type, subtype: subtype, options: nil).enumerateObjects({ 
-            albums.append(SAPAlbum(collection: $0.0))
+        PHAssetCollection.fetchAssetCollections(with: type, subtype: subtype, options: nil).enumerateObjects({
+            let album = SAPAlbum(collection: $0.0)
+            guard canEmpty || album.count != 0 else {
+                return
+            }
+            albums.append(album)
         })
         return albums
     }
