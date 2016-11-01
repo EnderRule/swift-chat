@@ -155,8 +155,8 @@ internal class SAIAudioRecordView: SAIAudioView {
         _statusView.delegate = self
         _statusView.translatesAutoresizingMaskIntoConstraints = false
         
-        let playbg = UIImage(named: "aio_play_background")
-        let recordbg = UIImage(named: "aio_record_background")
+        let playbg = UIImage.sai_init(named: "keyboard_audio_play_background")
+        let recordbg = UIImage.sai_init(named: "keyboard_audio_record_background")
         
         _playButton.isHidden = true
         _playButton.progressColor = hcolor
@@ -166,10 +166,10 @@ internal class SAIAudioRecordView: SAIAudioView {
         _playButton.setBackgroundImage(playbg, for: .highlighted)
         _playButton.setBackgroundImage(playbg, for: [.selected, .normal])
         _playButton.setBackgroundImage(playbg, for: [.selected, .highlighted])
-        _playButton.setImage(UIImage(named: "aio_play_start_nor"), for: .normal)
-        _playButton.setImage(UIImage(named: "aio_play_start_press"), for: .highlighted)
-        _playButton.setImage(UIImage(named: "aio_play_stop_nor"), for: [.selected, .normal])
-        _playButton.setImage(UIImage(named: "aio_play_stop_press"), for: [.selected, .highlighted])
+        _playButton.setImage(UIImage.sai_init(named: "keyboard_audio_play_start_nor"), for: .normal)
+        _playButton.setImage(UIImage.sai_init(named: "keyboard_audio_play_start_press"), for: .highlighted)
+        _playButton.setImage(UIImage.sai_init(named: "keyboard_audio_play_stop_nor"), for: [.selected, .normal])
+        _playButton.setImage(UIImage.sai_init(named: "keyboard_audio_play_stop_press"), for: [.selected, .highlighted])
         _playButton.addTarget(self, action: #selector(onPlayAndStop(_:)), for: .touchUpInside)
         
         _playToolbar.isHidden = true
@@ -180,10 +180,10 @@ internal class SAIAudioRecordView: SAIAudioView {
         _playToolbar.confirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         
         _recordButton.translatesAutoresizingMaskIntoConstraints = false
-        _recordButton.setImage(UIImage(named: "aio_record_start_nor"), for: .normal)
-        _recordButton.setImage(UIImage(named: "aio_record_start_press"), for: .highlighted)
-        _recordButton.setImage(UIImage(named: "aio_record_stop_nor"), for: [.selected, .normal])
-        _recordButton.setImage(UIImage(named: "aio_record_stop_press"), for: [.selected, .highlighted])
+        _recordButton.setImage(UIImage.sai_init(named: "keyboard_audio_record_start_nor"), for: .normal)
+        _recordButton.setImage(UIImage.sai_init(named: "keyboard_audio_record_start_press"), for: .highlighted)
+        _recordButton.setImage(UIImage.sai_init(named: "keyboard_audio_record_stop_nor"), for: [.selected, .normal])
+        _recordButton.setImage(UIImage.sai_init(named: "keyboard_audio_record_stop_press"), for: [.selected, .highlighted])
         _recordButton.setBackgroundImage(recordbg, for: .normal)
         _recordButton.setBackgroundImage(recordbg, for: .highlighted)
         _recordButton.setBackgroundImage(recordbg, for: [.selected, .normal])

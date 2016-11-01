@@ -46,12 +46,15 @@ class ContactsViewController: UITableViewController {
     }
     */
     
+    var manager: SACManager = SACManager(user: SACUser(name: "Support"))
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let vc = UIViewController()//SACChatViewController(conversation: )
+        let conversation = manager.conversation(with: SACUser(name: "Editing"))
+        let vc = SACChatViewController(conversation: conversation)
+        
         navigationController?.pushViewController(vc, animated: true)
-        //navigationController.push
     }
 
     /*

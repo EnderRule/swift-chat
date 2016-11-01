@@ -138,18 +138,18 @@ internal class SAIAudioEffectView: UICollectionViewCell {
         
         _foregroundView.isHidden = true
         _foregroundView.translatesAutoresizingMaskIntoConstraints = false
-        _foregroundView.image = UIImage(named: "aio_simulate_effect_select")
+        _foregroundView.image = UIImage.sai_init(named: "keyboard_audio_simulate_effect_select")
         
         _playButton.translatesAutoresizingMaskIntoConstraints = false
         _playButton.progress = 0
         _playButton.progressColor = hcolor
         _playButton.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
-        _playButton.setBackgroundImage(UIImage(named: "aio_simulate_effect_press"), for: .highlighted)
+        _playButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_simulate_effect_press"), for: .highlighted)
         
         _titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         _titleButton.setTitleColor(.black, for: .normal)
         _titleButton.setTitleColor(.white, for: .selected)
-        _titleButton.setBackgroundImage(UIImage(named: "aio_simulate_text_select"), for: .selected)
+        _titleButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_simulate_text_select"), for: .selected)
         _titleButton.isUserInteractionEnabled = false
         _titleButton.translatesAutoresizingMaskIntoConstraints = false
         _titleButton.contentEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 8)

@@ -67,3 +67,4 @@ accessoryview + subview + superview.superview.bottom 失败(动画并没有任�
 [x] SAIInputBarDisplayable - 切换页面时显示异常
 [x] SAIInputBarDisplayable - 初始化动画异常
 [x] SAIBackgroundViwe - 自定义背景
+[ ] SAIInputBar - 添加sizeForKeyboard

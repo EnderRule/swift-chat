@@ -95,7 +95,7 @@ internal class SAIAudioEffect: NSObject {
         if let image = _image {
             return image
         }
-        let image = UIImage(named: "aio_simulate_effect_\(type.rawValue)")
+        let image = UIImage.sai_init(named: "keyboard_audio_simulate_effect_\(type.rawValue)")
         _image = image
         return image
     }

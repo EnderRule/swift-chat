@@ -45,8 +45,7 @@ public enum SAIInputMode: CustomStringConvertible {
 }
 
 
-@objc 
-public protocol SAIInputBarDelegate: NSObjectProtocol {
+@objc public protocol SAIInputBarDelegate: NSObjectProtocol {
     
     // MARK: Text Edit
     
@@ -80,6 +79,17 @@ public protocol SAIInputBarDelegate: NSObjectProtocol {
     
     @objc optional func inputBar(willChangeMode inputBar: SAIInputBar)
     @objc optional func inputBar(didChangeMode inputBar: SAIInputBar)
+    
+    
+    // MARK: Keyboard
+    
+    @objc optional func inputBar(_ inputBar: SAIInputBar, willShowKeyboard keyboard: UIView)
+    @objc optional func inputBar(_ inputBar: SAIInputBar, didShowKeyboard keyboard: UIView)
+    
+    @objc optional func inputBar(_ inputBar: SAIInputBar, willHideKeyboard keyboard: UIView)
+    @objc optional func inputBar(_ inputBar: SAIInputBar, didHideKeyboard keyboard: UIView)
+    
+    @objc optional func inputBar(_ inputBar: SAIInputBar, sizeForKeyboard keyboard: UIView) -> CGSize
 }
 
 // MARK: -

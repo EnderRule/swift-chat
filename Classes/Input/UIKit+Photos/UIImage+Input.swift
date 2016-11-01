@@ -9,8 +9,10 @@
 import UIKit
 
 
-//internal extension UIImage {
-//    static func sm_init(named: String) -> UIImage? {
-//        return UIImage(named: named, in: SAPPicker.bundle, compatibleWith: nil)
-//    }
-//}
+internal extension UIImage {
+    static func sai_init(named: String) -> UIImage? {
+        return UIImage(named: named, in: _frameworkMainBundle, compatibleWith: nil)
+    }
+}
+
+private weak var _frameworkMainBundle: Bundle? = Bundle(identifier: "SA.SAInput")

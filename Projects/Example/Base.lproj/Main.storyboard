@@ -45,7 +45,7 @@
             </objects>
             <point key="canvasLocation" x="2020" y="736.28185907046486"/>
         </scene>
-        <!--Contacts-->
+        <!--Chat-->
         <scene sceneID="6Ss-KN-vVU">
             <objects>
                 <tableViewController id="LLu-ie-ASu" customClass="ContactsViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -58,7 +58,7 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="64"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gK5-H1-rd5" id="nN2-CD-ldT">
-                                    <frame key="frameInset" width="375" height="63"/>
+                                    <frame key="frameInset" width="375" height="63.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="head" translatesAutoresizingMaskIntoConstraints="NO" id="3Xn-gg-UA5">
@@ -101,7 +101,7 @@
                             <outlet property="delegate" destination="LLu-ie-ASu" id="YlY-ks-TZ4"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Contacts" id="4OA-YD-IEr"/>
+                    <navigationItem key="navigationItem" title="Chat" id="4OA-YD-IEr"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tqh-ZL-x7r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

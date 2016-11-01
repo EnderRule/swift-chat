@@ -132,10 +132,7 @@ open class SAMAudioRecorder: NSObject, AVAudioRecorderDelegate {
                 self.performForError(-1, "Not permission")
                 return false
             }
-            guard self.avrecorder.deleteRecording() else {
-                self.performForError(-2, "Can't delete recording")
-                return false
-            }
+            _ = self.avrecorder.deleteRecording()
             // check can active session?
             guard self.active() else {
                 self.performForError(-3, "Can't active session")

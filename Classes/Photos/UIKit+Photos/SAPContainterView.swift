@@ -1,5 +1,5 @@
 //
-//  SAIPhotoScrollView2.swift
+//  SAPhotoScrollView2.swift
 //  SAC
 //
 //  Created by sagesse on 10/24/16.

@@ -27,15 +27,15 @@ internal class SAIAudioPlayToolbar: UIView {
         _confirmButton.setTitle("发送", for: UIControlState())
         _confirmButton.setTitleColor(.gray, for: .normal)
         _confirmButton.setTitleColor(.gray, for: .disabled)
-        _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_nor"), for: .normal)
-        _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_nor"), for: .disabled)
-        _confirmButton.setBackgroundImage(UIImage(named: "aio_toolbar_send_press"), for: .highlighted)
+        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_nor"), for: .normal)
+        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_nor"), for: .disabled)
+        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_press"), for: .highlighted)
         _confirmButton.translatesAutoresizingMaskIntoConstraints = false
         
         _cancelButton.setTitle("取消", for: UIControlState())
         _cancelButton.setTitleColor(.gray, for: UIControlState())
-        _cancelButton.setBackgroundImage(UIImage(named: "aio_toolbar_cancel_nor"), for: .normal)
-        _cancelButton.setBackgroundImage(UIImage(named: "aio_toolbar_cancel_oress"), for: .highlighted)
+        _cancelButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_cancel_nor"), for: .normal)
+        _cancelButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_cancel_oress"), for: .highlighted)
         _cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(_cancelButton)

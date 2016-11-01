@@ -159,13 +159,5 @@ import Photos
         let ret = SAPPickerInternal.perform(s1, with: zone)
         return ret?.takeRetainedValue()
     }
-    
-    internal static var bundle: Bundle? {
-        let bundle = _bundle ?? Bundle(identifier: "SA.SAIPhotos")
-        _bundle = bundle
-        return bundle
-    }
-    
-    private static weak var _bundle: Bundle?
 }
 

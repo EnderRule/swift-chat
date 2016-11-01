@@ -19,23 +19,23 @@ internal class SAIAudioRecordToolbar: UIView {
     private func _init() {
         _logger.trace()
         
-        _line.image = UIImage(named: "aio_toolbar_op_line")
+        _line.image = UIImage.sai_init(named: "keyboard_audio_toolbar_op_line")
         _line.translatesAutoresizingMaskIntoConstraints = false
         
-        _leftView.image = UIImage(named: "aio_toolbar_op_listen_nor")
-        _leftView.highlightedImage = UIImage(named: "aio_toolbar_op_listen_press")
+        _leftView.image = UIImage.sai_init(named: "keyboard_audio_toolbar_op_listen_nor")
+        _leftView.highlightedImage = UIImage.sai_init(named: "keyboard_audio_toolbar_op_listen_press")
         _leftView.translatesAutoresizingMaskIntoConstraints = false
         
-        _rightView.image = UIImage(named: "aio_toolbar_op_delete_nor")
-        _rightView.highlightedImage = UIImage(named: "aio_toolbar_op_delete_press")
+        _rightView.image = UIImage.sai_init(named: "keyboard_audio_toolbar_op_delete_nor")
+        _rightView.highlightedImage = UIImage.sai_init(named: "keyboard_audio_toolbar_op_delete_press")
         _rightView.translatesAutoresizingMaskIntoConstraints = false
         
-        _leftBackgroundView.image = UIImage(named: "aio_toolbar_op_nor")
-        _leftBackgroundView.highlightedImage = UIImage(named: "aio_toolbar_op_press")
+        _leftBackgroundView.image = UIImage.sai_init(named: "keyboard_audio_toolbar_op_nor")
+        _leftBackgroundView.highlightedImage = UIImage.sai_init(named: "keyboard_audio_toolbar_op_press")
         _leftBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         
-        _rightBackgroundView.image = UIImage(named: "aio_toolbar_op_nor")
-        _rightBackgroundView.highlightedImage = UIImage(named: "aio_toolbar_op_press")
+        _rightBackgroundView.image = UIImage.sai_init(named: "keyboard_audio_toolbar_op_nor")
+        _rightBackgroundView.highlightedImage = UIImage.sai_init(named: "keyboard_audio_toolbar_op_press")
         _rightBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         // add subview

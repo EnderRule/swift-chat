@@ -128,7 +128,7 @@ extension SAPPreviewerCell: SAPPreviewable {
         return photo?.size ?? .zero
     }
     var previewingContentVisableSize: CGSize {
-        return SAIPhotoMaximumSize
+        return SAPhotoMaximumSize
     }
     
     var previewingContentMode: UIViewContentMode {
@@ -256,7 +256,7 @@ extension SAPPreviewerCell: SAPPreviewable {
 ////        _scrollView.setContentOffset(npt, animated: animated)
 ////    }
 ////    
-//////    fileprivate func _updateContent(for loader: SAIPhotoLoaderType, animated: Bool) {
+//////    fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
 //////        //_logger.trace()
 //////        
 //////        _imageView.image = loader.image

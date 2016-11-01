@@ -172,7 +172,7 @@ internal class SAIAudioSimulateView: SAIAudioView {
         _playToolbar.confirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         
         _recordButton.translatesAutoresizingMaskIntoConstraints = false
-        _recordButton.setBackgroundImage(UIImage(named: "aio_simulate_icon"), for: .normal)
+        _recordButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_simulate_icon"), for: .normal)
         _recordButton.addTarget(self, action: #selector(onTouchStart(_:)), for: .touchDown)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragInside)
         _recordButton.addTarget(self, action: #selector(onTouchDrag(_:withEvent:)), for: .touchDragOutside)

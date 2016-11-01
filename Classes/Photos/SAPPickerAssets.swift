@@ -184,7 +184,7 @@ internal class SAPPickerAssets: UICollectionViewController, UIGestureRecognizerD
         //SAPLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
     }
     
-    fileprivate func _updateStatus(_ newValue: SAIPhotoStatus) {
+    fileprivate func _updateStatus(_ newValue: SAPhotoStatus) {
         //_logger.trace(newValue)
         
         _status = newValue
@@ -369,7 +369,7 @@ internal class SAPPickerAssets: UICollectionViewController, UIGestureRecognizerD
         }
     }
 
-    private var _status: SAIPhotoStatus = .notError
+    private var _status: SAPhotoStatus = .notError
     private var _statusView: SAPErrorView?
     
     private var _toolbarItems: [UIBarButtonItem]??

@@ -78,6 +78,10 @@ internal class SAIAudioTabbar: UIView {
         }
         
         let idx = min(max(Int(newValue), 0), _itemViews.count)
+        
+        guard idx < _itemViews.count else {
+            return
+        }
         if _activatedItemView !== _itemViews[idx] {
             _activatedItemView?.textColor = textColor
             _activatedItemView = _itemViews[idx]
