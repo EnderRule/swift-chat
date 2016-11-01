@@ -92,6 +92,10 @@
 		0C0BB2331DC731B400B5CF4F /* SAPToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */; };
 		0C0BB2341DC731B400B5CF4F /* SAPWKObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */; };
 		0C0BB2351DC731B400B5CF4F /* UIImage+Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */; };
+		0C7DC8011DC8E1FC0040F58F /* SAPDisplayableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8001DC8E1FC0040F58F /* SAPDisplayableView.swift */; };
+		0C7DC8031DC8E20B0040F58F /* SAPDisplayableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8021DC8E20B0040F58F /* SAPDisplayableDetailView.swift */; };
+		0C7DC8051DC8E3910040F58F /* SAPDisplayableProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */; };
+		0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -183,6 +187,10 @@
 		0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPToolbar.swift; sourceTree = "<group>"; };
 		0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPWKObject.swift; sourceTree = "<group>"; };
 		0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Photos.swift"; sourceTree = "<group>"; };
+		0C7DC8001DC8E1FC0040F58F /* SAPDisplayableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableView.swift; sourceTree = "<group>"; };
+		0C7DC8021DC8E20B0040F58F /* SAPDisplayableDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableDetailView.swift; sourceTree = "<group>"; };
+		0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableProgressView.swift; sourceTree = "<group>"; };
+		0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../../Projects/Example/UIColor+Random.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -276,6 +284,9 @@
 				0C0BB1D81DC731B400B5CF4F /* SAPProgressiveable.swift */,
 				0C0BB1D91DC731B400B5CF4F /* SAPProgressiveableImage.swift */,
 				0C0BB1DA1DC731B400B5CF4F /* SAPSelectionable.swift */,
+				0C7DC8001DC8E1FC0040F58F /* SAPDisplayableView.swift */,
+				0C7DC8021DC8E20B0040F58F /* SAPDisplayableDetailView.swift */,
+				0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */,
 			);
 			name = Photos;
 			path = ../Classes/Photos;
@@ -337,6 +348,7 @@
 				0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */,
 				0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */,
 				0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */,
+				0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */,
 				0C0BB1DC1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift */,
 			);
 			name = "UIKit+Photos";
@@ -493,18 +505,22 @@
 				0C0BB22A1DC731B400B5CF4F /* SAPPreviewerVideoCell.swift in Sources */,
 				0C0BB2281DC731B400B5CF4F /* SAPPreviewerImageCell.swift in Sources */,
 				0C0BB20A1DC731B400B5CF4F /* SAPAlbum.swift in Sources */,
+				0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */,
 				0C0BB22F1DC731B400B5CF4F /* SAPButtonBarItem.swift in Sources */,
 				0C0BB2321DC731B400B5CF4F /* SAPNavigationBar.swift in Sources */,
 				0C0BB2291DC731B400B5CF4F /* SAPPreviewerLayout.swift in Sources */,
+				0C7DC8051DC8E3910040F58F /* SAPDisplayableProgressView.swift in Sources */,
 				0C0BB2131DC731B400B5CF4F /* SAPBrowserView.swift in Sources */,
 				0C0BB17C1DC72F2D00B5CF4F /* Logger.swift in Sources */,
 				0C0BB2301DC731B400B5CF4F /* SAPContainterView.swift in Sources */,
 				0C0BB2141DC731B400B5CF4F /* SAPEditor.swift in Sources */,
+				0C7DC8011DC8E1FC0040F58F /* SAPDisplayableView.swift in Sources */,
 				0C0BB2341DC731B400B5CF4F /* SAPWKObject.swift in Sources */,
 				0C0BB2231DC731B400B5CF4F /* SAPPreviewable.swift in Sources */,
 				0C0BB2261DC731B400B5CF4F /* SAPPreviewer.swift in Sources */,
 				0C0BB22C1DC731B400B5CF4F /* SAPProgressiveableImage.swift in Sources */,
 				0C0BB2151DC731B400B5CF4F /* SAPErrorView.swift in Sources */,
+				0C7DC8031DC8E20B0040F58F /* SAPDisplayableDetailView.swift in Sources */,
 				0C0BB2121DC731B400B5CF4F /* SAPBrowserVideoView.swift in Sources */,
 				0C0BB2111DC731B400B5CF4F /* SAPBrowserImageView.swift in Sources */,
 			);
