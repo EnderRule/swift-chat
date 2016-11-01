@@ -133,13 +133,13 @@ public class SAPAsset: NSObject {
     }
 }
 
-internal func SAPStringForDuration(_ duration: TimeInterval) -> String {
+public func SAPStringForDuration(_ duration: TimeInterval) -> String {
     let s = Int(duration) % 60
     let m = Int(duration / 60)
     return String(format: "%02zd:%02zd", m, s)
 }
 
-internal func SAPStringForBytesLenght(_ len: Int) -> String {
+public func SAPStringForBytesLenght(_ len: Int) -> String {
     if len <= 999 {
         // 只显示1B-999B
         return String(format: "%zdB", len)

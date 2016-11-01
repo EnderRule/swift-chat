@@ -35,6 +35,7 @@ import UIKit
 // [x] SAIAudioTabbar - Index设置
 // [x] SAIAudioTabbar - 点击事件
 // [x] SAIAudioTabbar - 颜色
+// [ ] 处理中的时候的停止
 
 @objc
 public enum SAIAudioType: Int, CustomStringConvertible {
