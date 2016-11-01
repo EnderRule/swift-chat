@@ -32,7 +32,7 @@ private func _AVAudioSessionPerformTask(_ newValue: Bool, context: AnyObject?, t
     objc_sync_enter(AVAudioSession.self)
     
     _AVAudioSessionTaskId = newTaskId
-    _AVAudioSessionTaskContext = context
+    //_AVAudioSessionTaskContext = newContext//context
     _AVAudioSessionTaskContextHash = newContextHash
     
     objc_sync_exit(AVAudioSession.self)
@@ -50,7 +50,7 @@ private func _AVAudioSessionPerformTask(_ newValue: Bool, context: AnyObject?, t
         objc_sync_enter(AVAudioSession.self)
         
         let taskId = _AVAudioSessionTaskId
-        let context = _AVAudioSessionTaskContext
+        //let context = _AVAudioSessionTaskContext
         let contextHash = _AVAudioSessionTaskContextHash
         
         objc_sync_exit(AVAudioSession.self)
@@ -60,7 +60,7 @@ private func _AVAudioSessionPerformTask(_ newValue: Bool, context: AnyObject?, t
             return
         }
         // 检查当前激活的context是否匹配
-        guard context == nil || contextHash == newContextHash else {
+        guard contextHash == newContextHash else {
             return
         }
         
