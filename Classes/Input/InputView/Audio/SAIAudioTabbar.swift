@@ -157,10 +157,10 @@ internal class SAIAudioTabbar: UIView {
         addSubview(_indicatorView)
         addSubview(_contentView)
         addConstraints([
-            _SAAudioLayoutConstraintMake(_indicatorView, .top, .equal, self, .top),
-            _SAAudioLayoutConstraintMake(_indicatorView, .width, .equal, nil, .width, 5),
-            _SAAudioLayoutConstraintMake(_indicatorView, .height, .equal, nil, .width, 5),
-            _SAAudioLayoutConstraintMake(_indicatorView, .centerX, .equal, self, .centerX),
+            _SAILayoutConstraintMake(_indicatorView, .top, .equal, self, .top),
+            _SAILayoutConstraintMake(_indicatorView, .width, .equal, nil, .width, 5),
+            _SAILayoutConstraintMake(_indicatorView, .height, .equal, nil, .width, 5),
+            _SAILayoutConstraintMake(_indicatorView, .centerX, .equal, self, .centerX),
         ])
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))

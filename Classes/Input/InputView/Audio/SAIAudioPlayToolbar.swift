@@ -24,33 +24,36 @@ internal class SAIAudioPlayToolbar: UIView {
     private func _init() {
         _logger.trace()
         
+        let nImage = UIImage.sai_init(named: "keyboard_audio_toolbar_btn_nor")
+        let hImage = UIImage.sai_init(named: "keyboard_audio_toolbar_btn_press")
+        
         _confirmButton.setTitle("发送", for: UIControlState())
         _confirmButton.setTitleColor(.gray, for: .normal)
         _confirmButton.setTitleColor(.gray, for: .disabled)
-        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_nor"), for: .normal)
-        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_nor"), for: .disabled)
-        _confirmButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_send_press"), for: .highlighted)
+        _confirmButton.setBackgroundImage(nImage, for: .normal)
+        _confirmButton.setBackgroundImage(nImage, for: .disabled)
+        _confirmButton.setBackgroundImage(hImage, for: .highlighted)
         _confirmButton.translatesAutoresizingMaskIntoConstraints = false
         
         _cancelButton.setTitle("取消", for: UIControlState())
         _cancelButton.setTitleColor(.gray, for: UIControlState())
-        _cancelButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_cancel_nor"), for: .normal)
-        _cancelButton.setBackgroundImage(UIImage.sai_init(named: "keyboard_audio_toolbar_cancel_oress"), for: .highlighted)
+        _cancelButton.setBackgroundImage(nImage, for: .normal)
+        _cancelButton.setBackgroundImage(hImage, for: .highlighted)
         _cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(_cancelButton)
         addSubview(_confirmButton)
         
-        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .left, .equal, self, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_cancelButton, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_cancelButton, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_cancelButton, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .right, .equal, _confirmButton, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_cancelButton, .width, .equal, _confirmButton, .width))
+        addConstraint(_SAILayoutConstraintMake(_cancelButton, .right, .equal, _confirmButton, .left))
+        addConstraint(_SAILayoutConstraintMake(_cancelButton, .width, .equal, _confirmButton, .width))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .right, .equal, self, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_confirmButton, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_confirmButton, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_confirmButton, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_confirmButton, .bottom, .equal, self, .bottom))
     }
     
     private lazy var _cancelButton: UIButton = UIButton()

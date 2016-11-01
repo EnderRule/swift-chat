@@ -177,32 +177,32 @@ internal class SAIAudioEffectView: UICollectionViewCell {
         addSubview(_activityIndicatorView)
         addSubview(_tipsLabel)
         
-        addConstraint(_SAAudioLayoutConstraintMake(_backgroundView, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_backgroundView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_backgroundView, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_backgroundView, .centerX, .equal, self, .centerX))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_foregroundView, .top, .equal, _backgroundView, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_foregroundView, .left, .equal, _backgroundView, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_foregroundView, .right, .equal, _backgroundView, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_foregroundView, .bottom, .equal, _backgroundView, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_foregroundView, .top, .equal, _backgroundView, .top))
+        addConstraint(_SAILayoutConstraintMake(_foregroundView, .left, .equal, _backgroundView, .left))
+        addConstraint(_SAILayoutConstraintMake(_foregroundView, .right, .equal, _backgroundView, .right))
+        addConstraint(_SAILayoutConstraintMake(_foregroundView, .bottom, .equal, _backgroundView, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .top, .equal, _backgroundView, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .left, .equal, _backgroundView, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .right, .equal, _backgroundView, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .bottom, .equal, _backgroundView, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .top, .equal, _backgroundView, .top))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .left, .equal, _backgroundView, .left))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .right, .equal, _backgroundView, .right))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .bottom, .equal, _backgroundView, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_titleButton, .top, .equal, _backgroundView, .bottom, 4))
-        addConstraint(_SAAudioLayoutConstraintMake(_titleButton, .centerX, .equal, _backgroundView, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_titleButton, .top, .equal, _backgroundView, .bottom, 4))
+        addConstraint(_SAILayoutConstraintMake(_titleButton, .centerX, .equal, _backgroundView, .centerX))
         
         // status view
         
         let size = _tipsLabel.sizeThatFits(CGSize(width: .max, height: .max))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_spectrumView, .centerX, .equal, self, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_spectrumView, .centerY, .equal, self, .centerY, -(size.height + 4)))
-        addConstraint(_SAAudioLayoutConstraintMake(_activityIndicatorView, .centerX, .equal, _spectrumView, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_activityIndicatorView, .centerY, .equal, _spectrumView, .centerY))
-        addConstraint(_SAAudioLayoutConstraintMake(_tipsLabel, .top, .equal, _spectrumView, .bottom, 4))
-        addConstraint(_SAAudioLayoutConstraintMake(_tipsLabel, .centerX, .equal, _spectrumView, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_spectrumView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_spectrumView, .centerY, .equal, self, .centerY, -(size.height + 4)))
+        addConstraint(_SAILayoutConstraintMake(_activityIndicatorView, .centerX, .equal, _spectrumView, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_activityIndicatorView, .centerY, .equal, _spectrumView, .centerY))
+        addConstraint(_SAILayoutConstraintMake(_tipsLabel, .top, .equal, _spectrumView, .bottom, 4))
+        addConstraint(_SAILayoutConstraintMake(_tipsLabel, .centerX, .equal, _spectrumView, .centerX))
     }
     
     fileprivate lazy var _playButton: SAIAudioPlayButton = SAIAudioPlayButton()

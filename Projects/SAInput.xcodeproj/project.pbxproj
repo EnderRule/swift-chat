@@ -32,8 +32,6 @@
 		0C09EA2E1DC87629000E11D1 /* keyboard_audio_simulate_effect_select@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA0C1DC87629000E11D1 /* keyboard_audio_simulate_effect_select@3x.png */; };
 		0C09EA2F1DC87629000E11D1 /* keyboard_audio_simulate_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA0D1DC87629000E11D1 /* keyboard_audio_simulate_icon@3x.png */; };
 		0C09EA301DC87629000E11D1 /* keyboard_audio_simulate_text_select@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA0E1DC87629000E11D1 /* keyboard_audio_simulate_text_select@3x.png */; };
-		0C09EA311DC87629000E11D1 /* keyboard_audio_toolbar_cancel_nor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA0F1DC87629000E11D1 /* keyboard_audio_toolbar_cancel_nor@2x.png */; };
-		0C09EA321DC87629000E11D1 /* keyboard_audio_toolbar_cancel_oress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA101DC87629000E11D1 /* keyboard_audio_toolbar_cancel_oress@2x.png */; };
 		0C09EA331DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA111DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_nor@3x.png */; };
 		0C09EA341DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_press@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA121DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_press@3x.png */; };
 		0C09EA351DC87629000E11D1 /* keyboard_audio_toolbar_op_line@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA131DC87629000E11D1 /* keyboard_audio_toolbar_op_line@3x.png */; };
@@ -41,8 +39,8 @@
 		0C09EA371DC87629000E11D1 /* keyboard_audio_toolbar_op_listen_press@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA151DC87629000E11D1 /* keyboard_audio_toolbar_op_listen_press@3x.png */; };
 		0C09EA381DC87629000E11D1 /* keyboard_audio_toolbar_op_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA161DC87629000E11D1 /* keyboard_audio_toolbar_op_nor@3x.png */; };
 		0C09EA391DC87629000E11D1 /* keyboard_audio_toolbar_op_press@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA171DC87629000E11D1 /* keyboard_audio_toolbar_op_press@3x.png */; };
-		0C09EA3A1DC87629000E11D1 /* keyboard_audio_toolbar_send_nor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_send_nor@2x.png */; };
-		0C09EA3B1DC87629000E11D1 /* keyboard_audio_toolbar_send_press@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_send_press@2x.png */; };
+		0C09EA3A1DC87629000E11D1 /* keyboard_audio_toolbar_btn_nor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_btn_nor@2x.png */; };
+		0C09EA3B1DC87629000E11D1 /* keyboard_audio_toolbar_btn_press@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_btn_press@2x.png */; };
 		0C0BB02D1DC72CFB00B5CF4F /* SAInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C0BB2391DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2371DC732DB00B5CF4F /* NSLayoutConstraint+Input.swift */; };
 		0C0BB23A1DC732DB00B5CF4F /* UIImage+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB2381DC732DB00B5CF4F /* UIImage+Input.swift */; };
@@ -121,8 +119,6 @@
 		0C09EA0C1DC87629000E11D1 /* keyboard_audio_simulate_effect_select@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_simulate_effect_select@3x.png"; sourceTree = "<group>"; };
 		0C09EA0D1DC87629000E11D1 /* keyboard_audio_simulate_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_simulate_icon@3x.png"; sourceTree = "<group>"; };
 		0C09EA0E1DC87629000E11D1 /* keyboard_audio_simulate_text_select@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_simulate_text_select@3x.png"; sourceTree = "<group>"; };
-		0C09EA0F1DC87629000E11D1 /* keyboard_audio_toolbar_cancel_nor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_cancel_nor@2x.png"; sourceTree = "<group>"; };
-		0C09EA101DC87629000E11D1 /* keyboard_audio_toolbar_cancel_oress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_cancel_oress@2x.png"; sourceTree = "<group>"; };
 		0C09EA111DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_delete_nor@3x.png"; sourceTree = "<group>"; };
 		0C09EA121DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_press@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_delete_press@3x.png"; sourceTree = "<group>"; };
 		0C09EA131DC87629000E11D1 /* keyboard_audio_toolbar_op_line@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_line@3x.png"; sourceTree = "<group>"; };
@@ -130,8 +126,8 @@
 		0C09EA151DC87629000E11D1 /* keyboard_audio_toolbar_op_listen_press@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_listen_press@3x.png"; sourceTree = "<group>"; };
 		0C09EA161DC87629000E11D1 /* keyboard_audio_toolbar_op_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_nor@3x.png"; sourceTree = "<group>"; };
 		0C09EA171DC87629000E11D1 /* keyboard_audio_toolbar_op_press@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_op_press@3x.png"; sourceTree = "<group>"; };
-		0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_send_nor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_send_nor@2x.png"; sourceTree = "<group>"; };
-		0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_send_press@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_send_press@2x.png"; sourceTree = "<group>"; };
+		0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_btn_nor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_btn_nor@2x.png"; sourceTree = "<group>"; };
+		0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_btn_press@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_audio_toolbar_btn_press@2x.png"; sourceTree = "<group>"; };
 		0C0BB0281DC72CFB00B5CF4F /* SAInput.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAInput.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB02B1DC72CFB00B5CF4F /* SAInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAInput.h; sourceTree = "<group>"; };
 		0C0BB02C1DC72CFB00B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -233,8 +229,6 @@
 				0C09EA0C1DC87629000E11D1 /* keyboard_audio_simulate_effect_select@3x.png */,
 				0C09EA0D1DC87629000E11D1 /* keyboard_audio_simulate_icon@3x.png */,
 				0C09EA0E1DC87629000E11D1 /* keyboard_audio_simulate_text_select@3x.png */,
-				0C09EA0F1DC87629000E11D1 /* keyboard_audio_toolbar_cancel_nor@2x.png */,
-				0C09EA101DC87629000E11D1 /* keyboard_audio_toolbar_cancel_oress@2x.png */,
 				0C09EA111DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_nor@3x.png */,
 				0C09EA121DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_press@3x.png */,
 				0C09EA131DC87629000E11D1 /* keyboard_audio_toolbar_op_line@3x.png */,
@@ -242,8 +236,8 @@
 				0C09EA151DC87629000E11D1 /* keyboard_audio_toolbar_op_listen_press@3x.png */,
 				0C09EA161DC87629000E11D1 /* keyboard_audio_toolbar_op_nor@3x.png */,
 				0C09EA171DC87629000E11D1 /* keyboard_audio_toolbar_op_press@3x.png */,
-				0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_send_nor@2x.png */,
-				0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_send_press@2x.png */,
+				0C09EA181DC87629000E11D1 /* keyboard_audio_toolbar_btn_nor@2x.png */,
+				0C09EA191DC87629000E11D1 /* keyboard_audio_toolbar_btn_press@2x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -308,7 +302,6 @@
 			children = (
 				0C0BB2481DC734B000B5CF4F /* SAIAudioEffect.swift */,
 				0C0BB2491DC734B000B5CF4F /* SAIAudioEffectView.swift */,
-				0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */,
 				0C0BB24B1DC734B000B5CF4F /* SAIAudioInputViewLayout.swift */,
 				0C0BB24C1DC734B000B5CF4F /* SAIAudioPlayButton.swift */,
 				0C0BB24E1DC734B000B5CF4F /* SAIAudioPlayToolbar.swift */,
@@ -324,6 +317,7 @@
 				0C0BB2591DC734B000B5CF4F /* SAIAudioTabbar.swift */,
 				0C0BB25A1DC734B000B5CF4F /* SAIAudioTalkbackView.swift */,
 				0C0BB25B1DC734B000B5CF4F /* SAIAudioView.swift */,
+				0C0BB24A1DC734B000B5CF4F /* SAIAudioInputView.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -468,20 +462,18 @@
 				0C09EA1B1DC87629000E11D1 /* keyboard_audio_play_start_nor@3x.png in Resources */,
 				0C09EA281DC87629000E11D1 /* keyboard_audio_simulate_effect_1@3x.png in Resources */,
 				0C09EA351DC87629000E11D1 /* keyboard_audio_toolbar_op_line@3x.png in Resources */,
-				0C09EA3A1DC87629000E11D1 /* keyboard_audio_toolbar_send_nor@2x.png in Resources */,
-				0C09EA311DC87629000E11D1 /* keyboard_audio_toolbar_cancel_nor@2x.png in Resources */,
+				0C09EA3A1DC87629000E11D1 /* keyboard_audio_toolbar_btn_nor@2x.png in Resources */,
 				0C09EA1C1DC87629000E11D1 /* keyboard_audio_play_start_press@3x.png in Resources */,
 				0C09EA1A1DC87629000E11D1 /* keyboard_audio_play_background@3x.png in Resources */,
 				0C09EA2E1DC87629000E11D1 /* keyboard_audio_simulate_effect_select@3x.png in Resources */,
 				0C09EA201DC87629000E11D1 /* keyboard_audio_record_icon@3x.png in Resources */,
 				0C09EA341DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_press@3x.png in Resources */,
-				0C09EA321DC87629000E11D1 /* keyboard_audio_toolbar_cancel_oress@2x.png in Resources */,
 				0C09EA2D1DC87629000E11D1 /* keyboard_audio_simulate_effect_press@3x.png in Resources */,
 				0C09EA2C1DC87629000E11D1 /* keyboard_audio_simulate_effect_5@3x.png in Resources */,
 				0C09EA1D1DC87629000E11D1 /* keyboard_audio_play_stop_nor@3x.png in Resources */,
 				0C09EA331DC87629000E11D1 /* keyboard_audio_toolbar_op_delete_nor@3x.png in Resources */,
 				0C09EA2A1DC87629000E11D1 /* keyboard_audio_simulate_effect_3@3x.png in Resources */,
-				0C09EA3B1DC87629000E11D1 /* keyboard_audio_toolbar_send_press@2x.png in Resources */,
+				0C09EA3B1DC87629000E11D1 /* keyboard_audio_toolbar_btn_press@2x.png in Resources */,
 				0C09EA251DC87629000E11D1 /* keyboard_audio_record_stop_nor@3x.png in Resources */,
 				0C09EA2F1DC87629000E11D1 /* keyboard_audio_simulate_icon@3x.png in Resources */,
 				0C09EA1E1DC87629000E11D1 /* keyboard_audio_play_stop_press@3x.png in Resources */,

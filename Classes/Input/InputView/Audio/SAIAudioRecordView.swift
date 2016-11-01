@@ -53,7 +53,7 @@ internal class SAIAudioRecordView: SAIAudioView {
             
         case .processed: // 试听状态
             
-            let t = Int(_recorder?.currentTime ?? 0)
+            let t = Int(_recordDuration)
             _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
             
             _playButton.progress = 0
@@ -115,13 +115,14 @@ internal class SAIAudioRecordView: SAIAudioView {
     
     fileprivate func _updateTime() {
         if _status.isRecording {
-            let t = Int(_recorder?.currentTime ?? 0)
+            _recordDuration = _recorder?.currentTime ?? 0
+            let t = Int(_recordDuration)
             _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
             _statusView.spectrumView.isHidden = false
             return
         }
         if _status.isPlaying {
-            let d = TimeInterval(_recorder?.currentTime ?? 0)
+            let d = TimeInterval(_recordDuration)
             let ct = TimeInterval(_player?.currentTime ?? 0)
             
             _playButton.setProgress(CGFloat(ct + 0.2) / CGFloat(d), animated: true)
@@ -196,19 +197,19 @@ internal class SAIAudioRecordView: SAIAudioView {
         addSubview(_playToolbar)
         addSubview(_statusView)
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
     fileprivate lazy var _playButton: SAIAudioPlayButton = SAIAudioPlayButton()
@@ -219,7 +220,8 @@ internal class SAIAudioRecordView: SAIAudioView {
     fileprivate lazy var _status: SAIAudioStatus = .none
     fileprivate lazy var _statusView: SAIAudioStatusView = SAIAudioStatusView()
     
-    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
+    fileprivate var _recordDuration: TimeInterval = 0
+    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sai-audio-record.m3a"))
     
     fileprivate var _recorder: SAMAudioRecorder?
     fileprivate var _player: SAMAudioPlayer?
@@ -242,7 +244,7 @@ extension SAIAudioRecordView {
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _recordFileAtURL
         
         updateStatus(.none)
@@ -252,7 +254,7 @@ extension SAIAudioRecordView {
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _recordFileAtURL
         
         updateStatus(.none)
@@ -343,13 +345,13 @@ extension SAIAudioRecordView: SAMAudioRecorderDelegate {
     public func audioRecorder(didPreparing audioRecorder: SAMedia.SAMAudioRecorder) {
         _logger.trace()
         // 异步一下让系统消息有机会处理
-        DispatchQueue.main.async {
-            guard self._recordButton.isHighlighted else {
-                // 不能直接调用onCancel, 因为没有启动就没有失败
-                return self.updateStatus(.none)
-            }
-            self._recorder?.record()
-        }
+//        DispatchQueue.main.async {
+//            guard self._recordButton.isHighlighted else {
+//                // 不能直接调用onCancel, 因为没有启动就没有失败
+//                return self.updateStatus(.none)
+//            }
+//            self._recorder?.record()
+//        }
     }
 
     public func audioRecorder(shouldRecording audioRecorder: SAMedia.SAMAudioRecorder) -> Bool {

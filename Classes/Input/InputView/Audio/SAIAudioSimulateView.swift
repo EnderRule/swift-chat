@@ -118,7 +118,8 @@ internal class SAIAudioSimulateView: SAIAudioView {
     
     fileprivate func _updateTime() {
         if _status.isRecording {
-            let t = Int(_recorder?.currentTime ?? 0)
+            _recordDuration = _recorder?.currentTime ?? 0
+            let t = Int(_recordDuration)
             _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
             _statusView.spectrumView.isHidden = false
             return
@@ -186,21 +187,21 @@ internal class SAIAudioSimulateView: SAIAudioView {
         addSubview(_simulateView)
         addSubview(_playToolbar)
         
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_simulateView, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_simulateView, .left, .equal, self, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_simulateView, .right, .equal, self, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_simulateView, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_simulateView, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_simulateView, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_simulateView, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_simulateView, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
     fileprivate var _activatedEffect: SAIAudioEffect?
@@ -226,7 +227,9 @@ internal class SAIAudioSimulateView: SAIAudioView {
     fileprivate lazy var _status: SAIAudioStatus = .none
     fileprivate lazy var _statusView: SAIAudioStatusView = SAIAudioStatusView()
     
-    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
+    fileprivate var _recordDuration: TimeInterval = 0
+    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sai-audio-record.m3a"))
+    
     fileprivate var _processedFileAtURL: URL?
     
     fileprivate var _recorder: SAMAudioRecorder?
@@ -250,7 +253,7 @@ extension SAIAudioSimulateView {
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _processedFileAtURL ?? _recordFileAtURL
         
         updateStatus(.none)
@@ -260,7 +263,7 @@ extension SAIAudioSimulateView {
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _processedFileAtURL ?? _recordFileAtURL
         
         updateStatus(.none)
@@ -346,7 +349,7 @@ extension SAIAudioSimulateView: SAIAudioEffectViewDelegate {
         return _player?.currentTime ?? 0
     }
     func audioEffectViewGetProgress(_ audioEffectView: SAIAudioEffectView) -> CGFloat {
-        return CGFloat((TimeInterval(_player?.currentTime ?? 0) + 0.2) / TimeInterval(_recorder?.currentTime ?? 0))
+        return CGFloat((TimeInterval(_player?.currentTime ?? 0) + 0.2) / TimeInterval(_recordDuration))
     }
     
     func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumViewWillUpdateMeters: SAIAudioSpectrumMiniView) {

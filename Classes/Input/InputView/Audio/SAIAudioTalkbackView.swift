@@ -73,7 +73,7 @@ internal class SAIAudioTalkbackView: SAIAudioView {
         case .processed: // 试听状态
             
             // 显示时间
-            let t = Int(_recorder?.currentTime ?? 0)
+            let t = Int(_recordDuration)
             _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
             
             _playButton.progress = 0
@@ -148,14 +148,15 @@ internal class SAIAudioTalkbackView: SAIAudioView {
                 _statusView.text = "松手取消发送"
                 _statusView.spectrumView.isHidden = true
             } else {
-                let t = Int(_recorder?.currentTime ?? 0)
+                _recordDuration = _recorder?.currentTime ?? 0
+                let t = Int(_recordDuration)
                 _statusView.text = String(format: "%0d:%02d", t / 60, t % 60)
                 _statusView.spectrumView.isHidden = false
             }
             return
         }
         if _status.isPlaying {
-            let d = TimeInterval(_recorder?.currentTime ?? 0)
+            let d = TimeInterval(_recordDuration ?? 0)
             let ct = TimeInterval(_player?.currentTime ?? 0)
             
             _playButton.setProgress(CGFloat(ct + 0.2) / CGFloat(d), animated: true)
@@ -233,23 +234,23 @@ internal class SAIAudioTalkbackView: SAIAudioView {
         addSubview(_playToolbar)
         addSubview(_statusView)
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .centerX, .equal, _recordButton, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_playButton, .centerY, .equal, _recordButton, .centerY))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_recordButton, .centerY, .equal, self, .centerY, -8))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
-        addConstraint(_SAAudioLayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_playToolbar, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .top, .equal, _recordButton, .top, -9))
-        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .left, .equal, self, .left, 20))
-        addConstraint(_SAAudioLayoutConstraintMake(_recordToolbar, .right, .equal, self, .right, -20))
+        addConstraint(_SAILayoutConstraintMake(_recordToolbar, .top, .equal, _recordButton, .top, -9))
+        addConstraint(_SAILayoutConstraintMake(_recordToolbar, .left, .equal, self, .left, 20))
+        addConstraint(_SAILayoutConstraintMake(_recordToolbar, .right, .equal, self, .right, -20))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
-        addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .top, .equal, self, .top, 8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .bottom, .equal, _recordButton, .top, -8))
+        addConstraint(_SAILayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
     fileprivate lazy var _playButton: SAIAudioPlayButton = SAIAudioPlayButton()
@@ -261,7 +262,8 @@ internal class SAIAudioTalkbackView: SAIAudioView {
     fileprivate lazy var _status: SAIAudioStatus = .none
     fileprivate lazy var _statusView: SAIAudioStatusView = SAIAudioStatusView()
     
-    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
+    fileprivate var _recordDuration: TimeInterval = 0
+    fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sai-audio-record.m3a"))
     
     fileprivate var _recorder: SAMAudioRecorder?
     fileprivate var _player: SAMAudioPlayer?
@@ -285,7 +287,7 @@ extension SAIAudioTalkbackView {
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _recordFileAtURL
         
         updateStatus(.none)
@@ -295,7 +297,7 @@ extension SAIAudioTalkbackView {
     @objc func onConfirm(_ sender: Any) {
         _logger.trace()
         
-        let duration = _recorder?.currentTime ?? 0
+        let duration = _recordDuration
         let url = _recordFileAtURL
         
         updateStatus(.none)
@@ -511,6 +513,7 @@ extension SAIAudioTalkbackView: SAMAudioRecorderDelegate {
 
     public func audioRecorder(didOccur audioRecorder: SAMedia.SAMAudioRecorder, error: Error?) {
         _logger.trace(error)
+        
         updateStatus(.error(error?.localizedDescription ?? "Unknow error"))
     }
 }

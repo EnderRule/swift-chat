@@ -46,21 +46,21 @@ internal class SAIAudioRecordToolbar: UIView {
         addSubview(_rightView)
         
         // add constraint s
-        addConstraint(_SAAudioLayoutConstraintMake(_line, .top, .equal, self, .top, 14))
-        addConstraint(_SAAudioLayoutConstraintMake(_line, .left, .equal, self, .left, 3.5))
-        addConstraint(_SAAudioLayoutConstraintMake(_line, .right, .equal, self, .right, -3.5))
-        addConstraint(_SAAudioLayoutConstraintMake(_line, .bottom, .equal, self, .bottom))
+        addConstraint(_SAILayoutConstraintMake(_line, .top, .equal, self, .top, 14))
+        addConstraint(_SAILayoutConstraintMake(_line, .left, .equal, self, .left, 3.5))
+        addConstraint(_SAILayoutConstraintMake(_line, .right, .equal, self, .right, -3.5))
+        addConstraint(_SAILayoutConstraintMake(_line, .bottom, .equal, self, .bottom))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_leftBackgroundView, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_leftBackgroundView, .left, .equal, self, .left))
+        addConstraint(_SAILayoutConstraintMake(_leftBackgroundView, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_leftBackgroundView, .left, .equal, self, .left))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_rightBackgroundView, .top, .equal, self, .top))
-        addConstraint(_SAAudioLayoutConstraintMake(_rightBackgroundView, .right, .equal, self, .right))
+        addConstraint(_SAILayoutConstraintMake(_rightBackgroundView, .top, .equal, self, .top))
+        addConstraint(_SAILayoutConstraintMake(_rightBackgroundView, .right, .equal, self, .right))
         
-        addConstraint(_SAAudioLayoutConstraintMake(_leftView, .centerX, .equal, _leftBackgroundView, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_leftView, .centerY, .equal, _leftBackgroundView, .centerY))
-        addConstraint(_SAAudioLayoutConstraintMake(_rightView, .centerX, .equal, _rightBackgroundView, .centerX))
-        addConstraint(_SAAudioLayoutConstraintMake(_rightView, .centerY, .equal, _rightBackgroundView, .centerY))
+        addConstraint(_SAILayoutConstraintMake(_leftView, .centerX, .equal, _leftBackgroundView, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_leftView, .centerY, .equal, _leftBackgroundView, .centerY))
+        addConstraint(_SAILayoutConstraintMake(_rightView, .centerX, .equal, _rightBackgroundView, .centerX))
+        addConstraint(_SAILayoutConstraintMake(_rightView, .centerY, .equal, _rightBackgroundView, .centerY))
     }
     
     private lazy var _line: UIImageView = UIImageView()
