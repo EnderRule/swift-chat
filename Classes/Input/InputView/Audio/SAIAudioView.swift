@@ -1,6 +1,6 @@
 //
-//  SAAudioView.swift
-//  SIMChat
+//  SAIAudioView.swift
+//  SAC
 //
 //  Created by sagesse on 9/16/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,19 +8,19 @@
 
 import UIKit
 
-internal protocol SAAudioViewDelegate: NSObjectProtocol {
+internal protocol SAIAudioViewDelegate: NSObjectProtocol {
     
-    func audioView(_ audioView: SAAudioView, shouldStartRecord url: URL) -> Bool
-    func audioView(_ audioView: SAAudioView, didStartRecord url: URL)
+    func audioView(_ audioView: SAIAudioView, shouldStartRecord url: URL) -> Bool
+    func audioView(_ audioView: SAIAudioView, didStartRecord url: URL)
     
-    func audioView(_ audioView: SAAudioView, didComplete url: URL, duration: TimeInterval)
-    func audioView(_ audioView: SAAudioView, didFailure url: URL, duration: TimeInterval)
+    func audioView(_ audioView: SAIAudioView, didComplete url: URL, duration: TimeInterval)
+    func audioView(_ audioView: SAIAudioView, didFailure url: URL, duration: TimeInterval)
     
 }
 
-internal class SAAudioView: UICollectionViewCell {
+internal class SAIAudioView: UICollectionViewCell {
     
-    var audioType: SAAudioType?
+    var audioType: SAIAudioType?
     
-    weak var delegate: SAAudioViewDelegate?
+    weak var delegate: SAIAudioViewDelegate?
 }

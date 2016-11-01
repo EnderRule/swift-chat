@@ -1,6 +1,6 @@
 //
-//  SAEmoticonPage.swift
-//  SIMChat
+//  SAIEmoticonPage.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAEmoticonPage {
+internal class SAIEmoticonPage {
     
     func draw(in ctx: CGContext) {
         
@@ -26,7 +26,7 @@ internal class SAEmoticonPage {
             fetch(contents.cgImage)
             return
         }
-        SAEmoticonPage.queue.async {
+        SAIEmoticonPage.queue.async {
             
             UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
             
@@ -42,7 +42,7 @@ internal class SAEmoticonPage {
         }
     }
     
-    func addEmoticon(_ emoticon: SAEmoticon) -> Bool {
+    func addEmoticon(_ emoticon: SAIEmoticon) -> Bool {
         guard let lastLine = lines.last else {
             return false
         }
@@ -52,7 +52,7 @@ internal class SAEmoticonPage {
             return true
         }
         let rect = UIEdgeInsetsInsetRect(vaildRect, UIEdgeInsetsMake(visableSize.height + minimumLineSpacing, 0, 0, 0))
-        let line = SAEmoticonLine(emoticon, itemSize, rect, minimumLineSpacing, minimumInteritemSpacing, itemType)
+        let line = SAIEmoticonLine(emoticon, itemSize, rect, minimumLineSpacing, minimumInteritemSpacing, itemType)
         if floor(line.vaildRect.minY + line.visableSize.height) > floor(vaildRect.maxY) {
             return false
         }
@@ -60,7 +60,7 @@ internal class SAEmoticonPage {
         return true
     }
     
-    func emoticon(at indexPath: IndexPath) -> SAEmoticon? {
+    func emoticon(at indexPath: IndexPath) -> SAIEmoticon? {
         guard indexPath.section < lines.count else {
             return nil
         }
@@ -84,28 +84,28 @@ internal class SAEmoticonPage {
     var visableRect: CGRect
     
     var itemSize: CGSize
-    var itemType: SAEmoticonType
+    var itemType: SAIEmoticonType
     
     var minimumLineSpacing: CGFloat
     var minimumInteritemSpacing: CGFloat
     
-    var lines: [SAEmoticonLine]
+    var lines: [SAIEmoticonLine]
     
     private var _contents: UIImage?
     
-    init(_ first: SAEmoticon,
+    init(_ first: SAIEmoticon,
          _ itemSize: CGSize,
          _ rect: CGRect,
          _ bounds: CGRect,
          _ lineSpacing: CGFloat,
          _ interitemSpacing: CGFloat,
-         _ itemType: SAEmoticonType) {
+         _ itemType: SAIEmoticonType) {
         
         let nlsp = lineSpacing / 2
         let nisp = interitemSpacing / 2
         
         let nrect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(nlsp, nisp, nlsp, nisp))
-        let line = SAEmoticonLine(first, itemSize, nrect, lineSpacing, interitemSpacing, itemType)
+        let line = SAIEmoticonLine(first, itemSize, nrect, lineSpacing, interitemSpacing, itemType)
         
         self.bounds = bounds
         self.itemSize = itemSize

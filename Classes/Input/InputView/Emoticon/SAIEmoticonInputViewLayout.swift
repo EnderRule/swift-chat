@@ -1,6 +1,6 @@
 //
-//  SAEmoticonInputViewLayout.swift
-//  SIMChat
+//  SAIEmoticonInputViewLayout.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,16 +9,16 @@
 import UIKit
 
 @objc
-internal protocol SAEmoticonInputViewDelegateLayout: UICollectionViewDelegate {
+internal protocol SAIEmoticonInputViewDelegateLayout: UICollectionViewDelegate {
     
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup?
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, groupAt index: Int) -> SAIEmoticonGroup?
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int
 }
 
 
-internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
+internal class SAIEmoticonInputViewLayout: UICollectionViewLayout {
     
     override var collectionViewContentSize: CGSize {
         if let size = _cacheContentSize {
@@ -84,10 +84,10 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         return allAttributes
     }
     
-    func page(at indexPath: IndexPath) -> SAEmoticonPage {
+    func page(at indexPath: IndexPath) -> SAIEmoticonPage {
         return _pages(at: indexPath.section, with: Int(collectionView?.frame.width ?? 0))[indexPath.item]
     }
-    func pages(in section: Int) -> [SAEmoticonPage] {
+    func pages(in section: Int) -> [SAIEmoticonPage] {
         return _pages(at: section, with: Int(collectionView?.frame.width ?? 0))
     }
     
@@ -99,7 +99,7 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else {
             return 3
         }
-        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+        guard let delegate = collectionView.delegate as? SAIEmoticonInputViewDelegateLayout else {
             return 3
         }
         return delegate.collectionView?(collectionView, layout: self, numberOfRowsForGroupAt: section) ?? 3
@@ -108,7 +108,7 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else {
             return 7
         }
-        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+        guard let delegate = collectionView.delegate as? SAIEmoticonInputViewDelegateLayout else {
             return 7
         }
         return delegate.collectionView?(collectionView, layout: self, numberOfColumnsForGroupAt: section) ?? 7
@@ -117,22 +117,22 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else {
             return .zero
         }
-        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+        guard let delegate = collectionView.delegate as? SAIEmoticonInputViewDelegateLayout else {
             return .zero
         }
         return delegate.collectionView?(collectionView, layout: self, insetForGroupAt: section) ?? .zero
     }
     
-    private func _group(at index: Int) -> SAEmoticonGroup? {
+    private func _group(at index: Int) -> SAIEmoticonGroup? {
         guard let collectionView = collectionView else {
             return nil
         }
-        guard let delegate = collectionView.delegate as? SAEmoticonInputViewDelegateLayout else {
+        guard let delegate = collectionView.delegate as? SAIEmoticonInputViewDelegateLayout else {
             return nil
         }
         return delegate.collectionView?(collectionView, layout: self, groupAt: index)
     }
-    private func _pagesWithoutCache(at index: Int, with width: Int) -> [SAEmoticonPage]  {
+    private func _pagesWithoutCache(at index: Int, with width: Int) -> [SAIEmoticonPage]  {
         guard let group = _group(at: index) else {
             return []
         }
@@ -156,10 +156,10 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
             if let page = $0.last, page.addEmoticon($1) {
                 return $0
             }
-            return $0 + [SAEmoticonPage($1, size, rect, bounds, nlsp, nisp, type)]
+            return $0 + [SAIEmoticonPage($1, size, rect, bounds, nlsp, nisp, type)]
         }
     }
-    private func _pages(at index: Int, with width: Int) -> [SAEmoticonPage]  {
+    private func _pages(at index: Int, with width: Int) -> [SAIEmoticonPage]  {
         if let pages = _allPages[width]?[index] {
             return pages
         }
@@ -178,5 +178,5 @@ internal class SAEmoticonInputViewLayout: UICollectionViewLayout {
     private var _cacheLayoutAttributes: [UICollectionViewLayoutAttributes]?
     
     // width + section + pages
-    private lazy var _allPages: [Int: [Int: [SAEmoticonPage]]] = [:]
+    private lazy var _allPages: [Int: [Int: [SAIEmoticonPage]]] = [:]
 }

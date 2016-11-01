@@ -1,6 +1,6 @@
 //
-//  SAEmoticonPreviewer.swift
-//  SIMChat
+//  SAIEmoticonPreviewer.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAEmoticonPreviewer: UIView {
+internal class SAIEmoticonPreviewer: UIView {
     
-    func preview(_ emoticon: SAEmoticon?, _ itemType: SAEmoticonType, in rect: CGRect) {
+    func preview(_ emoticon: SAIEmoticon?, _ itemType: SAIEmoticonType, in rect: CGRect) {
         guard let emoticon = emoticon else {
             isHidden = true
             return
@@ -60,13 +60,13 @@ internal class SAEmoticonPreviewer: UIView {
         addSubview(_contentView)
     }
     
-    private var _type: SAEmoticonType = .small
+    private var _type: SAIEmoticonType = .small
     private var _inset: UIEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 4)
     private var _popoverFrame: CGRect = .zero
     private var _presenterFrame: CGRect = .zero
     
     private lazy var _contentView: UIView = UIView()
-    private lazy var _backgroundView: SAEmoticonBackgroundView = SAEmoticonBackgroundView()
+    private lazy var _backgroundView: SAIEmoticonBackgroundView = SAIEmoticonBackgroundView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

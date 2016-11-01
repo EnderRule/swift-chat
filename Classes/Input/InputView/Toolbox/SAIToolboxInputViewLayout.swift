@@ -1,6 +1,6 @@
 //
-//  SAToolboxInputViewLayout.swift
-//  SIMChat
+//  SAIToolboxInputViewLayout.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,21 +9,21 @@
 import UIKit
 
 @objc
-internal protocol SAToolboxInputViewLayoutDelegate: UICollectionViewDelegate {
+internal protocol SAIToolboxInputViewLayoutDelegate: UICollectionViewDelegate {
     
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int
-    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int
+    @objc optional func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int
     
 }
 
-internal class SAToolboxInputViewLayout: UICollectionViewLayout {
+internal class SAIToolboxInputViewLayout: UICollectionViewLayout {
     
     func numberOfRows(in section: Int) -> Int {
         guard let collectionView = collectionView else {
             return 2
         }
-        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+        guard let delegate = collectionView.delegate as? SAIToolboxInputViewLayoutDelegate else {
             return 2
         }
         return delegate.collectionView?(collectionView, layout: self, numberOfRowsForSectionAt: section) ?? 2
@@ -32,7 +32,7 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else {
             return 4
         }
-        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+        guard let delegate = collectionView.delegate as? SAIToolboxInputViewLayoutDelegate else {
             return 4
         }
         return delegate.collectionView?(collectionView, layout: self, numberOfColumnsForSectionAt: section) ?? 4
@@ -41,14 +41,14 @@ internal class SAToolboxInputViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else {
             return .zero
         }
-        guard let delegate = collectionView.delegate as? SAToolboxInputViewLayoutDelegate else {
+        guard let delegate = collectionView.delegate as? SAIToolboxInputViewLayoutDelegate else {
             return .zero
         }
         return delegate.collectionView?(collectionView, layout: self, insetForSectionAt: section) ?? .zero
     }
     
-    weak var delegate: SAToolboxInputViewLayoutDelegate? {
-        return collectionView?.delegate as? SAToolboxInputViewLayoutDelegate
+    weak var delegate: SAIToolboxInputViewLayoutDelegate? {
+        return collectionView?.delegate as? SAIToolboxInputViewLayoutDelegate
     }
     
     override var collectionViewContentSize: CGSize {

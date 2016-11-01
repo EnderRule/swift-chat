@@ -1,6 +1,6 @@
 //
-//  SAToolboxItemView.swift
-//  SIMChat
+//  SAIToolboxItemView.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAToolboxItemView: UICollectionViewCell {
+internal class SAIToolboxItemView: UICollectionViewCell {
     
-    var item: SAToolboxItem? {
+    var item: SAIToolboxItem? {
         didSet {
             _titleLabel.text = item?.name
             _iconView.image = item?.image

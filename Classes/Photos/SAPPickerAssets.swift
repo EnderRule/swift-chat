@@ -1,6 +1,6 @@
 //
 //  SAPPickerAssets.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/21/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -184,7 +184,7 @@ internal class SAPPickerAssets: UICollectionViewController, UIGestureRecognizerD
         //SAPLibrary.shared.stopCachingImages(for: photos, targetSize: size, contentMode: .aspectFill, options: options)
     }
     
-    fileprivate func _updateStatus(_ newValue: SAPhotoStatus) {
+    fileprivate func _updateStatus(_ newValue: SAIPhotoStatus) {
         //_logger.trace(newValue)
         
         _status = newValue
@@ -369,7 +369,7 @@ internal class SAPPickerAssets: UICollectionViewController, UIGestureRecognizerD
         }
     }
 
-    private var _status: SAPhotoStatus = .notError
+    private var _status: SAIPhotoStatus = .notError
     private var _statusView: SAPErrorView?
     
     private var _toolbarItems: [UIBarButtonItem]??

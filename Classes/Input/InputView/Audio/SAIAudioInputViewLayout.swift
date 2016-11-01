@@ -1,6 +1,6 @@
 //
-//  SAAudioInputViewLayout.swift
-//  SIMChat
+//  SAIAudioInputViewLayout.swift
+//  SAC
 //
 //  Created by sagesse on 9/17/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAAudioInputViewLayout: UICollectionViewLayout {
+internal class SAIAudioInputViewLayout: UICollectionViewLayout {
     
     var lastIndexPath: IndexPath?
     

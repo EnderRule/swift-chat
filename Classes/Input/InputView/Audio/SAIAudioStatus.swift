@@ -1,6 +1,6 @@
 //
-//  SAAudioStatus.swift
-//  SIMChat
+//  SAIAudioStatus.swift
+//  SAC
 //
 //  Created by sagesse on 9/19/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal enum SAAudioStatus: CustomStringConvertible {
+internal enum SAIAudioStatus: CustomStringConvertible {
     
     case none
     case waiting

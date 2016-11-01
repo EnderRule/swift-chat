@@ -1,6 +1,6 @@
 //
-//  SAAudioInputView.swift
-//  SIMChat
+//  SAIAudioInputView.swift
+//  SAC
 //
 //  Created by sagesse on 9/12/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,35 +9,35 @@
 import UIKit
 
 // ## TODO
-// [x] SAAudioInputView - 横屏支持
-// [x] SAAudioInputView - 变声模式支持 - 99%, 算法没有实现(soundtouch?)
-// [x] SAAudioInputView - 对讲模式支持
-// [x] SAAudioInputView - 录音模式支持
-// [x] SAAudioInputView - 添加MaskView
-// [ ] SAAudioInputView - 检查录音时间
-// [ ] SAAudioInputView - Mini模式支持
-// [x] SAAudioInputView - 更换图标
-// [x] SAAudioInputView - Tabbar支持
-// [x] SAAudioInputView - 初始化时在中心
-// [x] SAAudioTalkbackView - 长按录音
-// [x] SAAudioTalkbackView - 回放
-// [x] SAAudioTalkbackView - 频谱显示
-// [x] SAAudioRecordView - 点击录音
-// [x] SAAudioRecordView - 回放
-// [x] SAAudioRecordView - 频谱显示
-// [x] SAAudioSimulateView - 长按录音
-// [x] SAAudioSimulateView - 回放
-// [x] SAAudioSimulateView - 频谱显示(录音)
-// [x] SAAudioSimulateView - 频谱显示(回放)
-// [ ] SAAudioSimulateView - 各种效果支持(6) - 50%, 主要是算法没有实现
-// [x] SAAudioSpectrumView - 显示波形
-// [ ] SAAudioSpectrumView - 优化(主要是算法)
-// [x] SAAudioTabbar - Index设置
-// [x] SAAudioTabbar - 点击事件
-// [x] SAAudioTabbar - 颜色
+// [x] SAIAudioInputView - 横屏支持
+// [x] SAIAudioInputView - 变声模式支持 - 99%, 算法没有实现(soundtouch?)
+// [x] SAIAudioInputView - 对讲模式支持
+// [x] SAIAudioInputView - 录音模式支持
+// [x] SAIAudioInputView - 添加MaskView
+// [ ] SAIAudioInputView - 检查录音时间
+// [ ] SAIAudioInputView - Mini模式支持
+// [x] SAIAudioInputView - 更换图标
+// [x] SAIAudioInputView - Tabbar支持
+// [x] SAIAudioInputView - 初始化时在中心
+// [x] SAIAudioTalkbackView - 长按录音
+// [x] SAIAudioTalkbackView - 回放
+// [x] SAIAudioTalkbackView - 频谱显示
+// [x] SAIAudioRecordView - 点击录音
+// [x] SAIAudioRecordView - 回放
+// [x] SAIAudioRecordView - 频谱显示
+// [x] SAIAudioSimulateView - 长按录音
+// [x] SAIAudioSimulateView - 回放
+// [x] SAIAudioSimulateView - 频谱显示(录音)
+// [x] SAIAudioSimulateView - 频谱显示(回放)
+// [ ] SAIAudioSimulateView - 各种效果支持(6) - 50%, 主要是算法没有实现
+// [x] SAIAudioSpectrumView - 显示波形
+// [ ] SAIAudioSpectrumView - 优化(主要是算法)
+// [x] SAIAudioTabbar - Index设置
+// [x] SAIAudioTabbar - 点击事件
+// [x] SAIAudioTabbar - 颜色
 
 @objc
-public enum SAAudioType: Int, CustomStringConvertible {
+public enum SAIAudioType: Int, CustomStringConvertible {
     
     case simulate = 0   // 变声
     case talkback = 1   // 对讲
@@ -53,28 +53,28 @@ public enum SAAudioType: Int, CustomStringConvertible {
 }
 
 @objc
-public protocol SAAudioInputViewDataSource: NSObjectProtocol {
+public protocol SAIAudioInputViewDataSource: NSObjectProtocol {
     
-    func numberOfAudioTypes(in audio: SAAudioInputView) -> Int
-    func audio(_ audio: SAAudioInputView, audioTypeForItemAt index: Int) -> SAAudioType
+    func numberOfAudioTypes(in audio: SAIAudioInputView) -> Int
+    func audio(_ audio: SAIAudioInputView, audioTypeForItemAt index: Int) -> SAIAudioType
 }
 
 @objc 
-public protocol SAAudioInputViewDelegate: NSObjectProtocol {
+public protocol SAIAudioInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
-    @objc optional func audio(_ audio: SAAudioInputView, shouldStartRecord url: URL) -> Bool
-    @objc optional func audio(_ audio: SAAudioInputView, didStartRecord url: URL)
+    @objc optional func audio(_ audio: SAIAudioInputView, shouldStartRecord url: URL) -> Bool
+    @objc optional func audio(_ audio: SAIAudioInputView, didStartRecord url: URL)
     
-    @objc optional func audio(_ audio: SAAudioInputView, didRecordComplete url: URL, duration: TimeInterval)
-    @objc optional func audio(_ audio: SAAudioInputView, didRecordFailure url: URL, duration: TimeInterval)
+    @objc optional func audio(_ audio: SAIAudioInputView, didRecordComplete url: URL, duration: TimeInterval)
+    @objc optional func audio(_ audio: SAIAudioInputView, didRecordFailure url: URL, duration: TimeInterval)
 }
 
-open class SAAudioInputView: UIView {
+open class SAIAudioInputView: UIView {
     
-    open weak var dataSource: SAAudioInputViewDataSource?
-    open weak var delegate: SAAudioInputViewDelegate?
+    open weak var dataSource: SAIAudioInputViewDataSource?
+    open weak var delegate: SAIAudioInputViewDelegate?
     
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -131,9 +131,9 @@ open class SAAudioInputView: UIView {
         _contentView.alwaysBounceHorizontal = true
         //_contentView.delaysContentTouches = false
         
-        _contentView.register(SAAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAAudioType.simulate)")
-        _contentView.register(SAAudioTalkbackView.self, forCellWithReuseIdentifier: "\(SAAudioType.talkback)")
-        _contentView.register(SAAudioRecordView.self, forCellWithReuseIdentifier: "\(SAAudioType.record)")
+        _contentView.register(SAIAudioSimulateView.self, forCellWithReuseIdentifier: "\(SAIAudioType.simulate)")
+        _contentView.register(SAIAudioTalkbackView.self, forCellWithReuseIdentifier: "\(SAIAudioType.talkback)")
+        _contentView.register(SAIAudioRecordView.self, forCellWithReuseIdentifier: "\(SAIAudioType.record)")
         
         _contentView.delegate = self
         _contentView.dataSource = self
@@ -156,9 +156,9 @@ open class SAAudioInputView: UIView {
     
     private var _cacheBounds: CGRect?
     
-    fileprivate lazy var _tabbar: SAAudioTabbar = SAAudioTabbar()
+    fileprivate lazy var _tabbar: SAIAudioTabbar = SAIAudioTabbar()
     
-    fileprivate lazy var _contentViewLayout: SAAudioInputViewLayout = SAAudioInputViewLayout()
+    fileprivate lazy var _contentViewLayout: SAIAudioInputViewLayout = SAIAudioInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     fileprivate lazy var _maskView: UIView = UIView()
@@ -176,7 +176,7 @@ open class SAAudioInputView: UIView {
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegate
 
-extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate {
+extension SAIAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if let _ = _contentView.indexPathsForVisibleItems.first {
@@ -193,7 +193,7 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
             fatalError()
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(type)", for: indexPath)
-        if let cell = cell as? SAAudioView {
+        if let cell = cell as? SAIAudioView {
             cell.audioType = type
             cell.delegate = self
         }
@@ -201,23 +201,23 @@ extension SAAudioInputView: UICollectionViewDataSource, UICollectionViewDelegate
     }
 }
 
-// MARK: - SAAudioViewDelegate(Forwarding)
+// MARK: - SAIAudioViewDelegate(Forwarding)
 
-extension SAAudioInputView: SAAudioViewDelegate {
+extension SAIAudioInputView: SAIAudioViewDelegate {
     
-    func audioView(_ audioView: SAAudioView, shouldStartRecord url: URL) -> Bool {
+    func audioView(_ audioView: SAIAudioView, shouldStartRecord url: URL) -> Bool {
         return delegate?.audio?(self, shouldStartRecord: url) ?? true
     }
-    func audioView(_ audioView: SAAudioView, didStartRecord url: URL) {
+    func audioView(_ audioView: SAIAudioView, didStartRecord url: URL) {
         addMaskView()
         delegate?.audio?(self, didStartRecord: url)
     }
     
-    func audioView(_ audioView: SAAudioView, didComplete url: URL, duration: TimeInterval) {
+    func audioView(_ audioView: SAIAudioView, didComplete url: URL, duration: TimeInterval) {
         removeMaskView()
         delegate?.audio?(self, didRecordComplete: url, duration: duration)
     }
-    func audioView(_ audioView: SAAudioView, didFailure url: URL, duration: TimeInterval) {
+    func audioView(_ audioView: SAIAudioView, didFailure url: URL, duration: TimeInterval) {
         removeMaskView()
         delegate?.audio?(self, didRecordFailure: url, duration: duration)
     }
@@ -272,14 +272,14 @@ extension SAAudioInputView: SAAudioViewDelegate {
     }
 }
 
-// MARK: - SAAudioTabbarDelegate
+// MARK: - SAIAudioTabbarDelegate
 
-extension SAAudioInputView: SAAudioTabbarDelegate {
+extension SAIAudioInputView: SAIAudioTabbarDelegate {
     
-    func numberOfItemsInTabbar(_ tabbar: SAAudioTabbar) -> Int {
+    func numberOfItemsInTabbar(_ tabbar: SAIAudioTabbar) -> Int {
         return dataSource?.numberOfAudioTypes(in: self) ?? 0
     }
-    func tabbar(_ tabbar: SAAudioTabbar, titleAt index: Int) -> String {
+    func tabbar(_ tabbar: SAIAudioTabbar, titleAt index: Int) -> String {
         guard let type = dataSource?.audio(self, audioTypeForItemAt: index) else {
             fatalError()
         }
@@ -290,10 +290,10 @@ extension SAAudioInputView: SAAudioTabbarDelegate {
         }
     }
     
-    func tabbar(_ tabbar: SAAudioTabbar, shouldSelectItemAt index: Int) -> Bool {
+    func tabbar(_ tabbar: SAIAudioTabbar, shouldSelectItemAt index: Int) -> Bool {
         return true
     }
-    func tabbar(_ tabbar: SAAudioTabbar, didSelectItemAt index: Int) {
+    func tabbar(_ tabbar: SAIAudioTabbar, didSelectItemAt index: Int) {
         _contentView.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
     }
 }

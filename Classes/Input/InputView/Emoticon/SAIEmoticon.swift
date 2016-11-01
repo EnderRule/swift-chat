@@ -1,6 +1,6 @@
 //
-//  SAEmoticon.swift
-//  SIMChat
+//  SAIEmoticon.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-open class SAEmoticon: NSObject {
+open class SAIEmoticon: NSObject {
     
     open var isBackspace: Bool {
-        return self === SAEmoticon.backspace
+        return self === SAIEmoticon.backspace
     }
     
     /// 退格
-    open static let backspace: SAEmoticon = {
-        let em = SAEmoticon()
+    open static let backspace: SAIEmoticon = {
+        let em = SAIEmoticon()
         em.contents = "⌫"
         return em
     }()
@@ -73,12 +73,12 @@ open class SAEmoticon: NSObject {
     open var contents: Any?
 }
 
-internal protocol SAEmoticonDelegate: class {
+internal protocol SAIEmoticonDelegate: class {
     
-    func emoticon(shouldSelectFor emoticon: SAEmoticon) -> Bool
-    func emoticon(didSelectFor emoticon: SAEmoticon)
+    func emoticon(shouldSelectFor emoticon: SAIEmoticon) -> Bool
+    func emoticon(didSelectFor emoticon: SAIEmoticon)
     
-    func emoticon(shouldPreviewFor emoticon: SAEmoticon?) -> Bool
-    func emoticon(didPreviewFor emoticon: SAEmoticon?)
+    func emoticon(shouldPreviewFor emoticon: SAIEmoticon?) -> Bool
+    func emoticon(didPreviewFor emoticon: SAIEmoticon?)
     
 }

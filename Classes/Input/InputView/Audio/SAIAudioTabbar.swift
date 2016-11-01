@@ -1,6 +1,6 @@
 //
-//  SAAudioTabbar.swift
-//  SIMChat
+//  SAIAudioTabbar.swift
+//  SAC
 //
 //  Created by sagesse on 9/19/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,17 +8,17 @@
 
 import UIKit
 
-internal protocol SAAudioTabbarDelegate: NSObjectProtocol {
+internal protocol SAIAudioTabbarDelegate: NSObjectProtocol {
     
-    func numberOfItemsInTabbar(_ tabbar: SAAudioTabbar) -> Int
-    func tabbar(_ tabbar: SAAudioTabbar, titleAt index: Int) -> String
+    func numberOfItemsInTabbar(_ tabbar: SAIAudioTabbar) -> Int
+    func tabbar(_ tabbar: SAIAudioTabbar, titleAt index: Int) -> String
     
-    func tabbar(_ tabbar: SAAudioTabbar, shouldSelectItemAt index: Int) -> Bool
-    func tabbar(_ tabbar: SAAudioTabbar, didSelectItemAt index: Int)
+    func tabbar(_ tabbar: SAIAudioTabbar, shouldSelectItemAt index: Int) -> Bool
+    func tabbar(_ tabbar: SAIAudioTabbar, didSelectItemAt index: Int)
     
 }
 
-internal class SAAudioTabbar: UIView {
+internal class SAIAudioTabbar: UIView {
 
     override var intrinsicContentSize: CGSize {
         return CGSize(width: -1, height: 26)
@@ -43,7 +43,7 @@ internal class SAAudioTabbar: UIView {
     var textColor: UIColor?
     var textHighlightedColor: UIColor?
     
-    weak var delegate: SAAudioTabbarDelegate?
+    weak var delegate: SAIAudioTabbarDelegate?
     
     var indicatorColor: UIColor? {
         set { return _indicatorView.backgroundColor = newValue }

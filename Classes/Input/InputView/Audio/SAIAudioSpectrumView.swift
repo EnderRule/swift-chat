@@ -1,6 +1,6 @@
 //
-//  SAAudioSpectrumView.swift
-//  SIMChat
+//  SAIAudioSpectrumView.swift
+//  SAC
 //
 //  Created by sagesse on 9/16/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,18 +9,18 @@
 import UIKit
 
 @objc
-public protocol SAAudioSpectrumViewDataSource: NSObjectProtocol {
+public protocol SAIAudioSpectrumViewDataSource: NSObjectProtocol {
     
-    func spectrumView(_ spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float
-    func spectrumView(_ spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float
+    func spectrumView(_ spectrumView: SAIAudioSpectrumView, peakPowerFor channel: Int) -> Float
+    func spectrumView(_ spectrumView: SAIAudioSpectrumView, averagePowerFor channel: Int) -> Float
     
-    @objc optional func spectrumView(willUpdateMeters spectrumView: SAAudioSpectrumView)
-    @objc optional func spectrumView(didUpdateMeters spectrumView: SAAudioSpectrumView)
+    @objc optional func spectrumView(willUpdateMeters spectrumView: SAIAudioSpectrumView)
+    @objc optional func spectrumView(didUpdateMeters spectrumView: SAIAudioSpectrumView)
 }
 
-open class SAAudioSpectrumView: UIView {
+open class SAIAudioSpectrumView: UIView {
     
-    open weak var dataSource: SAAudioSpectrumViewDataSource?
+    open weak var dataSource: SAIAudioSpectrumViewDataSource?
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: 120, height: 24)

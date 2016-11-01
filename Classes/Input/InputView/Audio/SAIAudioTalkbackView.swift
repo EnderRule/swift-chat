@@ -1,6 +1,6 @@
 //
-//  SAAudioTalkbackView.swift
-//  SIMChat
+//  SAIAudioTalkbackView.swift
+//  SAC
 //
 //  Created by sagesse on 9/16/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,9 +9,9 @@
 import UIKit
 import SAMedia
 
-internal class SAAudioTalkbackView: SAAudioView {
+internal class SAIAudioTalkbackView: SAIAudioView {
     
-    func updateStatus(_ status: SAAudioStatus) {
+    func updateStatus(_ status: SAIAudioStatus) {
         _logger.trace(status)
         
         _status = status
@@ -252,14 +252,14 @@ internal class SAAudioTalkbackView: SAAudioView {
         addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
-    fileprivate lazy var _playButton: SAAudioPlayButton = SAAudioPlayButton()
-    fileprivate lazy var _playToolbar: SAAudioPlayToolbar = SAAudioPlayToolbar()
+    fileprivate lazy var _playButton: SAIAudioPlayButton = SAIAudioPlayButton()
+    fileprivate lazy var _playToolbar: SAIAudioPlayToolbar = SAIAudioPlayToolbar()
     
-    fileprivate lazy var _recordButton: SAAudioRecordButton = SAAudioRecordButton()
-    fileprivate lazy var _recordToolbar: SAAudioRecordToolbar = SAAudioRecordToolbar() 
+    fileprivate lazy var _recordButton: SAIAudioRecordButton = SAIAudioRecordButton()
+    fileprivate lazy var _recordToolbar: SAIAudioRecordToolbar = SAIAudioRecordToolbar() 
     
-    fileprivate lazy var _status: SAAudioStatus = .none
-    fileprivate lazy var _statusView: SAAudioStatusView = SAAudioStatusView()
+    fileprivate lazy var _status: SAIAudioStatus = .none
+    fileprivate lazy var _statusView: SAIAudioStatusView = SAIAudioStatusView()
     
     fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
     
@@ -280,7 +280,7 @@ internal class SAAudioTalkbackView: SAAudioView {
 
 // MARK: - Touch Events
 
-extension SAAudioTalkbackView {
+extension SAIAudioTalkbackView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
@@ -405,9 +405,9 @@ extension SAAudioTalkbackView {
     
 }
 
-// MARK: - SAAudioPlayerDelegate
+// MARK: - SAIAudioPlayerDelegate
 
-extension SAAudioTalkbackView: SAMAudioPlayerDelegate {
+extension SAIAudioTalkbackView: SAMAudioPlayerDelegate {
    
     public func audioPlayer(shouldPreparing audioPlayer: SAMedia.SAMAudioPlayer) -> Bool {
         _logger.trace()
@@ -449,9 +449,9 @@ extension SAAudioTalkbackView: SAMAudioPlayerDelegate {
     }
 }
 
-// MARK: - SAAudioRecorderDelegate
+// MARK: - SAIAudioRecorderDelegate
 
-extension SAAudioTalkbackView: SAMAudioRecorderDelegate {
+extension SAIAudioTalkbackView: SAMAudioRecorderDelegate {
     
     public func audioRecorder(shouldPreparing audioRecorder: SAMedia.SAMAudioRecorder) -> Bool {
         _logger.trace()
@@ -515,11 +515,11 @@ extension SAAudioTalkbackView: SAMAudioRecorderDelegate {
     }
 }
 
-// MARK: - SAAudioStatusViewDelegate
+// MARK: - SAIAudioStatusViewDelegate
 
-extension SAAudioTalkbackView: SAAudioStatusViewDelegate {
+extension SAIAudioTalkbackView: SAIAudioStatusViewDelegate {
     
-    func statusView(_ statusView: SAAudioStatusView, spectrumViewWillUpdateMeters: SAAudioSpectrumView) {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumViewWillUpdateMeters: SAIAudioSpectrumView) {
         _updateTime()
         if _status.isPlaying {
             _player?.updateMeters()
@@ -528,14 +528,14 @@ extension SAAudioTalkbackView: SAAudioStatusViewDelegate {
         }
     }
     
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, peakPowerFor channel: Int) -> Float {
         if _status.isPlaying {
             return _player?.peakPower(forChannel: 0) ?? -160
         } else {
             return _recorder?.peakPower(forChannel: 0) ?? -160
         }
     }
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, averagePowerFor channel: Int) -> Float {
         if _status.isPlaying {
             return _player?.averagePower(forChannel: 0) ?? -160
         } else {

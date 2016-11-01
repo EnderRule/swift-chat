@@ -1,6 +1,6 @@
 //
-//  SAToolboxItem.swift
-//  SIMChat
+//  SAIToolboxItem.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc open class SAToolboxItem: NSObject {
+@objc open class SAIToolboxItem: NSObject {
     
     open var name: String
     open var identifier: String

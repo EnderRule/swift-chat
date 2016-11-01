@@ -1,6 +1,6 @@
 //
-//  SAToolboxInputView.swift
-//  SIMChat
+//  SAIToolboxInputView.swift
+//  SAC
 //
 //  Created by sagesse on 9/6/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,37 +9,37 @@
 import UIKit
 
 // ## TODO
-// [x] SAToolboxInputView - 数据源
-// [x] SAToolboxInputView - 代理
-// [x] SAToolboxInputView - 竖屏
-// [x] SAToolboxInputView - 横屏
-// [x] SAToolboxInputView - 自定义行/列数量
-// [x] SAToolboxItemView - 选中高亮
-// [x] SAToolboxItemView - 限制最大大小(80x80)
-// [x] SAToolboxInputViewLayout - 快速滑动时性能问题
+// [x] SAIToolboxInputView - 数据源
+// [x] SAIToolboxInputView - 代理
+// [x] SAIToolboxInputView - 竖屏
+// [x] SAIToolboxInputView - 横屏
+// [x] SAIToolboxInputView - 自定义行/列数量
+// [x] SAIToolboxItemView - 选中高亮
+// [x] SAIToolboxItemView - 限制最大大小(80x80)
+// [x] SAIToolboxInputViewLayout - 快速滑动时性能问题
 
 @objc 
-public protocol SAToolboxInputViewDataSource: NSObjectProtocol {
+public protocol SAIToolboxInputViewDataSource: NSObjectProtocol {
     
-    func numberOfToolboxItems(in toolbox: SAToolboxInputView) -> Int
-    func toolbox(_ toolbox: SAToolboxInputView, toolboxItemForItemAt index: Int) -> SAToolboxItem
+    func numberOfToolboxItems(in toolbox: SAIToolboxInputView) -> Int
+    func toolbox(_ toolbox: SAIToolboxInputView, toolboxItemForItemAt index: Int) -> SAIToolboxItem
     
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfRowsForSectionAt index: Int) -> Int
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int
+    @objc optional func toolbox(_ toolbox: SAIToolboxInputView, numberOfRowsForSectionAt index: Int) -> Int
+    @objc optional func toolbox(_ toolbox: SAIToolboxInputView, numberOfColumnsForSectionAt index: Int) -> Int
 }
 @objc
-public protocol SAToolboxInputViewDelegate: NSObjectProtocol {
+public protocol SAIToolboxInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, insetForSectionAt index: Int) -> UIEdgeInsets
+    @objc optional func toolbox(_ toolbox: SAIToolboxInputView, insetForSectionAt index: Int) -> UIEdgeInsets
     
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, shouldSelectFor item: SAToolboxItem) -> Bool
-    @objc optional func toolbox(_ toolbox: SAToolboxInputView, didSelectFor item: SAToolboxItem) 
+    @objc optional func toolbox(_ toolbox: SAIToolboxInputView, shouldSelectFor item: SAIToolboxItem) -> Bool
+    @objc optional func toolbox(_ toolbox: SAIToolboxInputView, didSelectFor item: SAIToolboxItem) 
     
 }
 
-open class SAToolboxInputView: UIView {
+open class SAIToolboxInputView: UIView {
     
     open func reloadData() {
         _contentView.reloadData()
@@ -58,8 +58,8 @@ open class SAToolboxInputView: UIView {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
     
-    open weak var delegate: SAToolboxInputViewDelegate?
-    open weak var dataSource: SAToolboxInputViewDataSource?
+    open weak var delegate: SAIToolboxInputViewDelegate?
+    open weak var dataSource: SAIToolboxInputViewDataSource?
     
     
     @objc func onPageChanged(_ sender: UIPageControl) {
@@ -104,7 +104,7 @@ open class SAToolboxInputView: UIView {
         _contentView.delaysContentTouches = false
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
-        _contentView.register(SAToolboxItemView.self, forCellWithReuseIdentifier: "Item")
+        _contentView.register(SAIToolboxItemView.self, forCellWithReuseIdentifier: "Item")
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         _contentView.backgroundColor = .clear
         
@@ -128,7 +128,7 @@ open class SAToolboxInputView: UIView {
     
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
     
-    fileprivate lazy var _contentViewLayout: SAToolboxInputViewLayout = SAToolboxInputViewLayout()
+    fileprivate lazy var _contentViewLayout: SAIToolboxInputViewLayout = SAIToolboxInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
@@ -141,9 +141,9 @@ open class SAToolboxInputView: UIView {
     }
 }
 
-// MARK: - UICollectionViewDataSource & SAToolboxInputViewLayoutDelegate
+// MARK: - UICollectionViewDataSource & SAIToolboxInputViewLayoutDelegate
 
-extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayoutDelegate {
+extension SAIToolboxInputView: UICollectionViewDataSource, SAIToolboxInputViewLayoutDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         _pageControl.currentPage = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
@@ -157,7 +157,7 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Item", for: indexPath)
     }
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAToolboxItemView else {
+        guard let cell = cell as? SAIToolboxItemView else {
             return
         }
         
@@ -165,13 +165,13 @@ extension SAToolboxInputView: UICollectionViewDataSource, SAToolboxInputViewLayo
         cell.handler = self
     }
     
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, insetForSectionAt index: Int) -> UIEdgeInsets {
         return delegate?.toolbox?(self, insetForSectionAt: index) ?? UIEdgeInsetsMake(12, 10, 12, 10)
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, numberOfRowsForSectionAt index: Int) -> Int {
         return dataSource?.toolbox?(self, numberOfRowsForSectionAt: index) ?? 2
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIToolboxInputViewLayout, numberOfColumnsForSectionAt index: Int) -> Int {
         return dataSource?.toolbox?(self, numberOfColumnsForSectionAt: index) ?? 4
     }
     

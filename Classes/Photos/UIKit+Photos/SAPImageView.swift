@@ -1,6 +1,6 @@
 //
 //  SAPImageView.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/30/16.
 //  Copyright © 2016 sagesse. All rights reserved.

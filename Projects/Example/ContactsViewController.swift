@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import SAChat
 
 class ContactsViewController: UITableViewController {
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,6 +20,7 @@ class ContactsViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,6 +45,14 @@ class ContactsViewController: UITableViewController {
         return true
     }
     */
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let vc = UIViewController()//SACChatViewController(conversation: )
+        navigationController?.pushViewController(vc, animated: true)
+        //navigationController.push
+    }
 
     /*
     // Override to support editing the table view.

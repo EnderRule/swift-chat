@@ -1,6 +1,6 @@
 //
-//  SAAudioEffect.swift
-//  SIMChat
+//  SAIAudioEffect.swift
+//  SAC
 //
 //  Created by sagesse on 9/19/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal enum SAAudioEffectType: Int {
+internal enum SAIAudioEffectType: Int {
     
     case original = 0
     case ef1 = 1 // 萝莉
@@ -18,16 +18,16 @@ internal enum SAAudioEffectType: Int {
     case ef5 = 5 // 空灵
 }
 
-internal protocol SAAudioEffectDelegate: NSObjectProtocol {
+internal protocol SAIAudioEffectDelegate: NSObjectProtocol {
     
-    func audioEffect(_ audioEffect: SAAudioEffect, shouldStartProcessAt url: URL) -> Bool
-    func audioEffect(_ audioEffect: SAAudioEffect, didStartProcessAt url: URL)
+    func audioEffect(_ audioEffect: SAIAudioEffect, shouldStartProcessAt url: URL) -> Bool
+    func audioEffect(_ audioEffect: SAIAudioEffect, didStartProcessAt url: URL)
     
-    func audioEffect(_ audioEffect: SAAudioEffect, didFinishProcessAt url: URL)
-    func audioEffect(_ audioEffect: SAAudioEffect, didErrorOccur error: NSError)
+    func audioEffect(_ audioEffect: SAIAudioEffect, didFinishProcessAt url: URL)
+    func audioEffect(_ audioEffect: SAIAudioEffect, didErrorOccur error: NSError)
 }
 
-internal class SAAudioEffect: NSObject {
+internal class SAIAudioEffect: NSObject {
     
     func stop() {
     }
@@ -82,8 +82,8 @@ internal class SAAudioEffect: NSObject {
         lastDestURL = nil
     }
     
-    var type: SAAudioEffectType
-    weak var delegate: SAAudioEffectDelegate?
+    var type: SAIAudioEffectType
+    weak var delegate: SAIAudioEffectDelegate?
     
     var title: String? {
         if type.rawValue < _titles.count {
@@ -114,7 +114,7 @@ internal class SAAudioEffect: NSObject {
         "空灵",
     ]
     
-    init(type: SAAudioEffectType) {
+    init(type: SAIAudioEffectType) {
         self.type = type
         super.init()
     }

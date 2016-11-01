@@ -1,6 +1,6 @@
 //
-//  SIMChatViewController+Message.swift
-//  SIMChat
+//  SACViewController+Message.swift
+//  SAC
 //
 //  Created by sagesse on 9/26/15.
 //  Copyright © 2015 Sagesse. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-//extension SIMChatViewController {
-//    class MessageManager: NSObject, SIMChatBrowseAnimatedTransitioningTarget {
-//        init(conversation: SIMChatConversation) {
+//extension SACViewController {
+//    class MessageManager: NSObject, SACBrowseAnimatedTransitioningTarget {
+//        init(conversation: SACConversation) {
 //            _allMessages = []
 //            _conversation = conversation
 //            super.init()
@@ -18,10 +18,10 @@ import UIKit
 //        }
 //        
 //        /// 最后操作的消息
-//        private weak var _lastOperatorMessage: SIMChatMessage?
+//        private weak var _lastOperatorMessage: SACMessage?
 //        
-//        private var _allMessages: Array<SIMChatMessage>
-//        private var _conversation: SIMChatConversation
+//        private var _allMessages: Array<SACMessage>
+//        private var _conversation: SACConversation
 //        private var _isLoading: Bool = false
 //        /// 快速映射
 //        private var _fastMap: Dictionary<String, String> = [:]
@@ -59,12 +59,12 @@ import UIKit
 //            }
 //        }
 //        
-//        private var mediaProvider: SIMChatMediaProvider {
-//            return SIMChatMediaProvider()
+//        private var mediaProvider: SACMediaProvider {
+//            return SACMediaProvider()
 //            //return manager.mediaProvider
 //        }
 //        
-//        private var manager: SIMChatManager {
+//        private var manager: SACManager {
 //            guard let manager = _conversation.manager else {
 //                fatalError("Must provider manager")
 //            }
@@ -73,11 +73,11 @@ import UIKit
 //    }
 //}
 //
-//extension SIMChatViewController.MessageManager: UITableViewDelegate, UITableViewDataSource, SIMChatMessageCellDelegate, SIMChatMessageCellMenuDelegate, SIMChatConversationDelegate {
+//extension SACViewController.MessageManager: UITableViewDelegate, UITableViewDataSource, SACMessageCellDelegate, SACMessageCellMenuDelegate, SACConversationDelegate {
 //    /// some prepare
 //    func prepare() {
 //        // reigster all cell class
-//        SIMChatClassProvider.sharedInstance.registeredAllCells().forEach {
+//        SACClassProvider.sharedInstance.registeredAllCells().forEach {
 //            self.contentView?.register($0.1, forCellReuseIdentifier: $0.0)
 //            SIMLog.debug("\($0.0) => \(NSStringFromClass($0.1))")
 //        }
@@ -87,23 +87,23 @@ import UIKit
 //        }
 //    }
 //    /// query reuseindentifier with message
-//    private func reuseIndentifierWithMessage(_ message: SIMChatMessage) -> String {
+//    private func reuseIndentifierWithMessage(_ message: SACMessage) -> String {
 //        // 获取前置类型
 //        if message.status == .revoked {
-//            return SIMChatRevokedMessageKey
+//            return SACRevokedMessageKey
 //        }
 //        if message.status == .destroyed {
-//            return SIMChatDestoryedMessageKey
+//            return SACDestoryedMessageKey
 //        }
-//        if message is SIMChatTimeLineMessage {
-//            return SIMChatTimeLineMessageKey
+//        if message is SACTimeLineMessage {
+//            return SACTimeLineMessageKey
 //        }
 //        let key = NSStringFromClass(type(of: message.content))
 //        // 读取
 //        return _fastMap[key] ?? {
-//            var ds = SIMChatUnknowMessageKey
+//            var ds = SACUnknowMessageKey
 //            // 查找可以使用的key
-//            if let x = SIMChatClassProvider.sharedInstance.registeredCell(message.content) {
+//            if let x = SACClassProvider.sharedInstance.registeredCell(message.content) {
 //                ds = x.0
 //            }
 //            // 快速缓存
@@ -113,7 +113,7 @@ import UIKit
 //    }
 //    
 //    /// 使用索引获取消息(安全的)
-//    private func _messageWithIndex(_ index: Int) -> SIMChatMessage? {
+//    private func _messageWithIndex(_ index: Int) -> SACMessage? {
 //        guard index >= 0 && index < _allMessages.count else {
 //            return nil
 //        }
@@ -121,7 +121,7 @@ import UIKit
 //    }
 //    
 //    /// 获取索引(结果和参数顺序有关)
-//    private func _indexsOfMessages(_ messages: Array<SIMChatMessage>) -> Array<Int> {
+//    private func _indexsOfMessages(_ messages: Array<SACMessage>) -> Array<Int> {
 ////        // 批量操作测试
 ////        if true {
 ////            var x = messages.flatMap { e in
@@ -150,15 +150,15 @@ import UIKit
 //    ///
 //    /// 检查是否存在timeline
 //    ///
-//    private func _hasTimeLine(_ before: SIMChatMessage?, _ after: SIMChatMessage?) -> Bool {
-//        return before is SIMChatTimeLineMessage
-//            || after is SIMChatTimeLineMessage
+//    private func _hasTimeLine(_ before: SACMessage?, _ after: SACMessage?) -> Bool {
+//        return before is SACTimeLineMessage
+//            || after is SACTimeLineMessage
 //    }
 //    
 //    ///
 //    /// 检查是否需要生成timeline
 //    ///
-//    private func _needMakeTimeLine(_ before: SIMChatMessage?, _ after: SIMChatMessage?) -> Bool {
+//    private func _needMakeTimeLine(_ before: SACMessage?, _ after: SACMessage?) -> Bool {
 //        // 如果存在timeline就不需要添加
 //        if _hasTimeLine(before, after) {
 //            return false
@@ -182,19 +182,19 @@ import UIKit
 //    ///
 //    /// 检查是否需要移除timeline
 //    ///
-//    private func _needRemoveTimeLine(_ before: SIMChatMessage?, _ after: SIMChatMessage?) -> Bool {
+//    private func _needRemoveTimeLine(_ before: SACMessage?, _ after: SACMessage?) -> Bool {
 //        // 两个都是timeline
-//        if before is SIMChatTimeLineMessage
-//            && after is SIMChatTimeLineMessage {
+//        if before is SACTimeLineMessage
+//            && after is SACTimeLineMessage {
 //            return true
 //        }
 //        // 两个都不是timeline
-//        if !(before is SIMChatTimeLineMessage)
-//            && !(after is SIMChatTimeLineMessage) {
+//        if !(before is SACTimeLineMessage)
+//            && !(after is SACTimeLineMessage) {
 //            return false
 //        }
 //        // 必须要有创建才有删除
-//        if let tl = before as? SIMChatTimeLineMessage {
+//        if let tl = before as? SACTimeLineMessage {
 //            guard let after = after else {
 //                // 没有下一条了, 需要删除
 //                return true
@@ -212,7 +212,7 @@ import UIKit
 //                return fabs(bbefore.timestamp.timeIntervalSince(after.timestamp as Date)) < durationInterval
 //            }
 //        }
-//        if let tl = after as? SIMChatTimeLineMessage {
+//        if let tl = after as? SACTimeLineMessage {
 //            guard let before = before else {
 //                // 这是第一条
 //                return false
@@ -236,44 +236,44 @@ import UIKit
 //    ///
 //    /// 检查是否需要更新
 //    ///
-//    private func _needUpdateTimeLine(_ before: SIMChatMessage?, _ after: SIMChatMessage?) -> Bool {
+//    private func _needUpdateTimeLine(_ before: SACMessage?, _ after: SACMessage?) -> Bool {
 //        // 如果没有timeline, 就谈不上更新了
 //        if !_hasTimeLine(before, after) {
 //            return false
 //        }
 //        // 后一条消息改变了
-//        if let tl = before as? SIMChatTimeLineMessage {
+//        if let tl = before as? SACTimeLineMessage {
 //            return tl.afterMessage !== after
 //        }
 //        // 前一条消息改变了
-//        if let tl = after as? SIMChatTimeLineMessage {
+//        if let tl = after as? SACTimeLineMessage {
 //            return tl.beforeMessage !== before
 //        }
 //        return false
 //    }
 //    
-//    private func _updateTimeLine(_ before: SIMChatMessage?, _ after: SIMChatMessage?) {
-//        if let tl = before as? SIMChatTimeLineMessage {
+//    private func _updateTimeLine(_ before: SACMessage?, _ after: SACMessage?) {
+//        if let tl = before as? SACTimeLineMessage {
 //            tl.afterMessage = after
 //        }
-//        if let tl = after as? SIMChatTimeLineMessage {
+//        if let tl = after as? SACTimeLineMessage {
 //            tl.beforeMessage = before
 //        }
 //    }
 //    /// 生成timeline
-//    private func _makeTimeLine(_ beforeMessage: SIMChatMessage?, _ afterMessage: SIMChatMessage?) -> SIMChatMessage {
-//        return SIMChatTimeLineMessage(beforeMessage: beforeMessage, afterMessage: afterMessage)
+//    private func _makeTimeLine(_ beforeMessage: SACMessage?, _ afterMessage: SACMessage?) -> SACMessage {
+//        return SACTimeLineMessage(beforeMessage: beforeMessage, afterMessage: afterMessage)
 //    }
 //    
 //    /// 获取timeline
-//    private func _timeLine(_ beforeIndex: Int, _ afterIndex: Int) -> (Int, SIMChatMessage) {
+//    private func _timeLine(_ beforeIndex: Int, _ afterIndex: Int) -> (Int, SACMessage) {
 //        if let before = self._messageWithIndex(beforeIndex) {
-//            if before is SIMChatTimeLineMessage {
+//            if before is SACTimeLineMessage {
 //                return (beforeIndex, before)
 //            }
 //        }
 //        if let after = self._messageWithIndex(afterIndex) {
-//            if after is SIMChatTimeLineMessage {
+//            if after is SACTimeLineMessage {
 //                return (afterIndex, after)
 //            }
 //        }
@@ -285,14 +285,14 @@ import UIKit
 //    ///
 //    /// 移动消息, 如果有多条消息, 按参数顺序加到index之后
 //    ///
-//    private func _moveMessages(_ ms: Array<SIMChatMessage>, toIndex index: Int, animated: Bool = true) {
+//    private func _moveMessages(_ ms: Array<SACMessage>, toIndex index: Int, animated: Bool = true) {
 //        guard let tableView = self.contentView , !ms.isEmpty else {
 //            return
 //        }
 //        // 计算插入点
 //        let count = _allMessages.count
 //        let position = min(max(index >= 0 ? index : index + count, 0), count)
-//        var newMessages = Array<SIMChatMessage>()
+//        var newMessages = Array<SACMessage>()
 //        // 查找需要执行操作的单元格并转换为组
 //        let indexs = _indexsOfMessages(ms)
 //        let indexGroups = indexs.filter({$0 != position}).sorted().splitInGroup {
@@ -302,14 +302,14 @@ import UIKit
 //            return
 //        }
 //        // 辅助函数
-//        let animation = { (m: SIMChatMessage) -> UITableViewRowAnimation in
+//        let animation = { (m: SACMessage) -> UITableViewRowAnimation in
 //            // 如果是timeline, 取决于他关联的是什么
-//            let isSelf = (m as? SIMChatTimeLineMessage)?.afterMessage?.isSelf ?? m.isSelf
+//            let isSelf = (m as? SACTimeLineMessage)?.afterMessage?.isSelf ?? m.isSelf
 //            // 转换为方向
 //            return isSelf ? .right : .left
 //        }
 //        
-//        SIMChatUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
+//        SACUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
 //            indexs.forEach {
 //                let beginMessage = newMessages.last ?? _allMessages[position]
 //                let message = _allMessages[$0]
@@ -327,7 +327,7 @@ import UIKit
 //                    maker.reloadAtIndex(position, withAnimation: .fade)
 //                }
 //                // 不要移动时间
-//                if message is SIMChatTimeLineMessage {
+//                if message is SACTimeLineMessage {
 //                    maker.removeAtIndex($0, withAnimation: animation(message))
 //                } else {
 //                    newMessages.append(message)
@@ -382,7 +382,7 @@ import UIKit
 //    /// - parameter ms:       消息集合
 //    /// - parameter index:    如果为index < 0, 插入点为count + index + 1
 //    ///
-//    private func _insertMessages(_ ms: Array<SIMChatMessage>, atIndex: Int, animated: Bool = true) {
+//    private func _insertMessages(_ ms: Array<SACMessage>, atIndex: Int, animated: Bool = true) {
 //        guard let tableView = contentView , !ms.isEmpty else {
 //            return
 //        }
@@ -411,7 +411,7 @@ import UIKit
 //        let oldContentOffset = tableView.contentOffset
 //        let firstVisibleCellFrame = needResetOffset ? tableView.rectForRow(at: visibleIndexPaths![0]) : CGRect.zero
 //        
-//        SIMChatUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
+//        SACUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
 //            var message = _messageWithIndex(position - 1)
 //            newMessages.forEach {
 //                // 检查timeline
@@ -500,7 +500,7 @@ import UIKit
 //    ///
 //    /// 更新消息
 //    ///
-//    private func _reloadMessages(_ ms: Array<SIMChatMessage>, animated: Bool = true) {
+//    private func _reloadMessages(_ ms: Array<SACMessage>, animated: Bool = true) {
 //        guard let tableView = contentView , !ms.isEmpty else {
 //            return
 //        }
@@ -513,7 +513,7 @@ import UIKit
 //        }
 //        SIMLog.trace()
 //        
-//        SIMChatUpdatesTransactionPerform(tableView, &_allMessages, animated) {  maker in
+//        SACUpdatesTransactionPerform(tableView, &_allMessages, animated) {  maker in
 //            indexGroups.forEach {
 //                // 更新区间内所有的消息
 //                ($0.first! ... $0.last!).forEach {
@@ -552,7 +552,7 @@ import UIKit
 //    ///
 //    /// 删除消息
 //    ///
-//    private func _removeMessages(_ ms: Array<SIMChatMessage>, animated: Bool = true) {
+//    private func _removeMessages(_ ms: Array<SACMessage>, animated: Bool = true) {
 //        guard let tableView = contentView , !ms.isEmpty else {
 //            return
 //        }
@@ -566,14 +566,14 @@ import UIKit
 //        SIMLog.trace()
 //        
 //        // 辅助函数
-//        let animation = { (m: SIMChatMessage) -> UITableViewRowAnimation in
+//        let animation = { (m: SACMessage) -> UITableViewRowAnimation in
 //            // 如果是timeline, 取决于他关联的是什么
-//            let isSelf = (m.content as? SIMChatTimeLineMessage)?.afterMessage?.isSelf ?? m.isSelf
+//            let isSelf = (m.content as? SACTimeLineMessage)?.afterMessage?.isSelf ?? m.isSelf
 //            // 转换为方向
 //            return isSelf ? .right : .left
 //        }
 //        // 生成然后执行
-//        SIMChatUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
+//        SACUpdatesTransactionPerform(tableView, &_allMessages, animated) { maker in
 //            indexGroups.forEach {
 //                // 移除区间内所有的消息
 //                ($0.first! ... $0.last!).forEach {
@@ -606,7 +606,7 @@ import UIKit
 //    ///
 //    /// 追加消息
 //    ///
-//    private func _appendMessages(_ ms: Array<SIMChatMessage>, animated: Bool = true) {
+//    private func _appendMessages(_ ms: Array<SACMessage>, animated: Bool = true) {
 //        guard let tableView = self.contentView, let last = ms.last else {
 //            return
 //        }
@@ -689,7 +689,7 @@ import UIKit
 //        }
 //    }
 //    /// 自动放弃(停止播放)
-//    private func _autoResignMessage(_ message: SIMChatMessage) {
+//    private func _autoResignMessage(_ message: SACMessage) {
 //        // 最后操作的就是删除的这一条消息, 这需要停止当前正在进行的工作
 //        if message == _lastOperatorMessage {
 //            mediaProvider.stop()
@@ -707,7 +707,7 @@ import UIKit
 //        let message = _allMessages[(indexPath as NSIndexPath).row]
 //        let identifier = reuseIndentifierWithMessage(message)
 //        return tableView.fd_heightForCellWithIdentifier(identifier, cacheByKey: message.identifier) {
-//            if let mcell = $0 as? SIMChatMessageCellProtocol {
+//            if let mcell = $0 as? SACMessageCellProtocol {
 //                // configuation
 //                mcell.conversation = self._conversation
 //                mcell.model = message
@@ -778,7 +778,7 @@ import UIKit
 //    @objc func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 //        
 //        let message = _allMessages[(indexPath as NSIndexPath).row]
-//        if let mcell = cell as? SIMChatMessageCellProtocol {
+//        if let mcell = cell as? SACMessageCellProtocol {
 //            // custom configuation
 //            mcell.conversation = self._conversation
 //            mcell.model = message
@@ -786,34 +786,34 @@ import UIKit
 //        }
 //    }
 //
-//    // MARK: SIMChatConversationDelegate
+//    // MARK: SACConversationDelegate
 //    
 //    /// 接收到消息
-//    func conversation(_ conversation: SIMChatConversation, didReciveMessage message: SIMChatMessage) {
+//    func conversation(_ conversation: SACConversation, didReciveMessage message: SACMessage) {
 //        SIMLog.debug()
 //        _appendMessages([message], animated: true)
 //    }
 //    
 //    /// 删除消息请求
-//    func conversation(_ conversation: SIMChatConversation, didRemoveMessage message: SIMChatMessage) {
+//    func conversation(_ conversation: SACConversation, didRemoveMessage message: SACMessage) {
 //        SIMLog.debug()
 //        _removeMessages([message], animated: true)
 //    }
 //    
 //    /// 更新消息请求
-//    func conversation(_ conversation: SIMChatConversation, didUpdateMessage message: SIMChatMessage) {
+//    func conversation(_ conversation: SACConversation, didUpdateMessage message: SACMessage) {
 //        SIMLog.debug()
 //        _reloadMessages([message], animated: true)
 //    }
 //    
-//    // MARK: SIMChatMessageCellDelegate
+//    // MARK: SACMessageCellDelegate
 //    
 //    // 点击消息
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, shouldPressMessage message: SIMChatMessage) -> Bool {
+//    func cellEvent(_ cell: SACMessageCellProtocol, shouldPressMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    // 点击消息
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, didPressMessage message: SIMChatMessage) {
+//    func cellEvent(_ cell: SACMessageCellProtocol, didPressMessage message: SACMessage) {
 //        guard let cell = cell as? UITableViewCell else {
 //            return // 未知错误
 //        }
@@ -821,13 +821,13 @@ import UIKit
 //        SIMLog.debug(message.identifier)
 //       
 //        switch message.content {
-//        case let content as SIMChatBaseMessageImageContent:
-//            if let view = (cell as? SIMChatBaseMessageImageCell)?.imageView , view.image != nil {
+//        case let content as SACBaseMessageImageContent:
+//            if let view = (cell as? SACBaseMessageImageCell)?.imageView , view.image != nil {
 //                targetView = view
 //                //inputBar.setState(.None, animated: true)
 //                mediaProvider.imageBrowser().browse(content, withTarget: self)
 //            }
-//        case let content as SIMChatBaseMessageAudioContent:
+//        case let content as SACBaseMessageAudioContent:
 //            // 音频.
 //            let player = mediaProvider.audioPlayer(content.origin)
 //            if !player.playing {
@@ -842,20 +842,20 @@ import UIKit
 //    }
 //    
 //    // 长按消息
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, shouldLongPressMessage message: SIMChatMessage) -> Bool {
+//    func cellEvent(_ cell: SACMessageCellProtocol, shouldLongPressMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    // 长按消息
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, didLongPressMessage message: SIMChatMessage) {
+//    func cellEvent(_ cell: SACMessageCellProtocol, didLongPressMessage message: SACMessage) {
 //        SIMLog.debug(message.identifier)
 //        
-//        if let cell = cell as? SIMChatBaseMessageBubbleCell {
+//        if let cell = cell as? SACBaseMessageBubbleCell {
 //            // 准备菜单
-//            let mu = SIMChatMenuController.sharedMenuController()
+//            let mu = SACMenuController.sharedMenuController()
 //            let responder = cell.window?.findFirstResponder()
 //            
 //            // 检查第一响应者, 如果为空或者是cell, 重新激活
-//            if responder == nil || responder is SIMChatBaseMessageBubbleCell {
+//            if responder == nil || responder is SACBaseMessageBubbleCell {
 //                cell.becomeFirstResponder()
 //            }
 //            
@@ -865,40 +865,40 @@ import UIKit
 //    }
 //    
 //    // 点击用户
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, shouldPressUser user: SIMChatUserProtocol) -> Bool {
+//    func cellEvent(_ cell: SACMessageCellProtocol, shouldPressUser user: SACUserProtocol) -> Bool {
 //        return true
 //    }
 //    // 点击用户
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, didPressUser user: SIMChatUserProtocol) {
+//    func cellEvent(_ cell: SACMessageCellProtocol, didPressUser user: SACUserProtocol) {
 //        SIMLog.debug(user.identifier)
 //    }
 //    
 //    // 长按用户
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, shouldLongPressUser user: SIMChatUserProtocol) -> Bool {
+//    func cellEvent(_ cell: SACMessageCellProtocol, shouldLongPressUser user: SACUserProtocol) -> Bool {
 //        return true
 //    }
 //    // 长按用户
-//    func cellEvent(_ cell: SIMChatMessageCellProtocol, didLongPressUser user: SIMChatUserProtocol) {
+//    func cellEvent(_ cell: SACMessageCellProtocol, didLongPressUser user: SACUserProtocol) {
 //        SIMLog.debug(user.identifier)
 //    }
 //    
-//    // MARK: SIMChatMessageCellMenuDelegate
+//    // MARK: SACMessageCellMenuDelegate
 //    
 //    // 复制
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, shouldCopyMessage message: SIMChatMessage) -> Bool {
+//    func cellMenu(_ cell: SACMessageCellProtocol, shouldCopyMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    // 复制
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, didCopyMessage message: SIMChatMessage) {
+//    func cellMenu(_ cell: SACMessageCellProtocol, didCopyMessage message: SACMessage) {
 //        SIMLog.debug(message.identifier)
 //    }
 //    
 //    // 删除
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, shouldRemoveMessage message: SIMChatMessage) -> Bool {
+//    func cellMenu(_ cell: SACMessageCellProtocol, shouldRemoveMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    // 删除
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, didRemoveMessage message: SIMChatMessage) {
+//    func cellMenu(_ cell: SACMessageCellProtocol, didRemoveMessage message: SACMessage) {
 //        SIMLog.debug(message.identifier)
 //        
 //        _autoResignMessage(message)
@@ -914,11 +914,11 @@ import UIKit
 //    }
 //    
 //    /// 重试(发送/上传/下载)
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, shouldRetryMessage message: SIMChatMessage) -> Bool {
+//    func cellMenu(_ cell: SACMessageCellProtocol, shouldRetryMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    /// 重试(发送/上传/下载)
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, didRetryMessage message: SIMChatMessage) {
+//    func cellMenu(_ cell: SACMessageCellProtocol, didRetryMessage message: SACMessage) {
 //        SIMLog.debug(message.identifier)
 //        // 重新发送
 //        _autoResignMessage(message)
@@ -934,11 +934,11 @@ import UIKit
 //    }
 //    
 //    // 撤销
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, shouldRevokeMessage message: SIMChatMessage) -> Bool {
+//    func cellMenu(_ cell: SACMessageCellProtocol, shouldRevokeMessage message: SACMessage) -> Bool {
 //        return true
 //    }
 //    // 撤销
-//    func cellMenu(_ cell: SIMChatMessageCellProtocol, didRevokeMessage message: SIMChatMessage) {
+//    func cellMenu(_ cell: SACMessageCellProtocol, didRevokeMessage message: SACMessage) {
 //        SIMLog.debug(message.identifier)
 //        // 更新状态为revoked
 //        _autoResignMessage(message)
@@ -958,7 +958,7 @@ import UIKit
 //    ///
 //    /// - parameter content: 需要发送的消息
 //    ///
-//    func sendMessage(_ content: SIMChatMessageBody) {
+//    func sendMessage(_ content: SACMessageBody) {
 //        SIMLog.trace()
 //        // 发送
 //        let message = _conversation.sendMessage(content) {
@@ -974,7 +974,7 @@ import UIKit
 //}
 //
 ////// MARK: - Message Send
-////extension SIMChatViewController {
+////extension SACViewController {
 ////    ///
 ////    /// 发送文本
 ////    ///
@@ -986,7 +986,7 @@ import UIKit
 ////            return av.show()
 ////        }
 ////        // 发送
-////        self.sendMessage(SIMChatMessageContentText(text: text))
+////        self.sendMessage(SACMessageContentText(text: text))
 ////    }
 ////    ///
 ////    /// 发送声音
@@ -1006,7 +1006,7 @@ import UIKit
 ////            // 移动文件
 ////            try NSFileManager.defaultManager().moveItemAtURL(url, toURL: nurl)
 ////            // 发送
-////            self.sendMessage(SIMChatMessageContentAudio(url: nurl, duration: duration))
+////            self.sendMessage(SACMessageContentAudio(url: nurl, duration: duration))
 ////            
 ////        } catch let e as NSError {
 ////            // 发送失败
@@ -1021,12 +1021,12 @@ import UIKit
 ////        // 生成连接(这可以降低内存使用)
 ////        // let nurl = NSURL(fileURLWithPath: String(format: "%@/upload/image/%@.jpg", NSTemporaryDirectory(), NSUUID().UUIDString))
 ////        // 发送
-////        self.sendMessage(SIMChatMessageContentImage(origin: image, thumbnail: image))
+////        self.sendMessage(SACMessageContentImage(origin: image, thumbnail: image))
 ////    }
 ////    ///
 ////    /// 发送自定义消息
 ////    ///
-////    func sendMessageForCustom(data: SIMChatMessageBody) {
+////    func sendMessageForCustom(data: SACMessageBody) {
 ////        SIMLog.trace()
 ////        // :)
 ////        self.sendMessage(data)
@@ -1034,14 +1034,14 @@ import UIKit
 ////    ///
 ////    /// 发送内容(禁止外部访问)
 ////    ///
-////    private func sendMessage(content: SIMChatMessageBody) {
+////    private func sendMessage(content: SACMessageBody) {
 ////        // 真正的发送
-////        self._conversation.sendMessage(SIMChatMessage(content), isResend: false, nil, nil)
+////        self._conversation.sendMessage(SACMessage(content), isResend: false, nil, nil)
 ////    }
 ////    ///
 ////    /// 重新发送消息(禁止外部访问)
 ////    ///
-////    private func resendMessage(m: SIMChatMessage) {
+////    private func resendMessage(m: SACMessage) {
 ////        // 真正的发送
 ////        self._conversation.sendMessage(m, isResend: true, nil, nil)
 ////    }
@@ -1049,7 +1049,7 @@ import UIKit
 ////    ///
 ////    /// 加载聊天历史
 ////    ///
-////    func loadHistorys(total: Int, last: SIMChatMessage? = nil) {
+////    func loadHistorys(total: Int, last: SACMessage? = nil) {
 ////        SIMLog.trace()
 ////        // 查询消息
 ////        self._conversation.queryMessages(total, last: last, { [weak self] ms in
@@ -1081,34 +1081,34 @@ import UIKit
 ////}
 ////
 ////// MARK: - Message Cell Event 
-////extension SIMChatViewController : SIMChatMessageCellDelegate {
+////extension SACViewController : SACMessageCellDelegate {
 ////    
 ////    /// 选择了删除.
-////    func chatCellDidDelete(chatCell: SIMChatMessageCell) {
+////    func chatCellDidDelete(chatCell: SACMessageCell) {
 //////        SIMLog.trace()
 //////        if let m = chatCell.message {
 //////            self._conversation.removeMessage(m, nil, nil)
 //////        }
 ////    }
 ////    /// 选择了复制
-////    func chatCellDidCopy(chatCell: SIMChatMessageCell) {
+////    func chatCellDidCopy(chatCell: SACMessageCell) {
 ////        SIMLog.trace()
 ////    }
 ////    /// 点击
-////    func chatCellDidPress(chatCell: SIMChatMessageCell, withEvent event: SIMChatMessageCellEvent) {
+////    func chatCellDidPress(chatCell: SACMessageCell, withEvent event: SACMessageCellEvent) {
 ////        SIMLog.trace(event.type.rawValue)
 ////        // 只处理气泡消息, 目前 
 ////        guard let message = chatCell.message where event.type == .Bubble else {
 ////            return
 ////        }
 ////        // 音频
-////        if let ctx = chatCell.message?.content as? SIMChatMessageContentAudio {
+////        if let ctx = chatCell.message?.content as? SACMessageContentAudio {
 ////            // 有没有加载? 没有的话添加监听
 ////            if !ctx.url.storaged {
 ////                ctx.url.willSet({ [weak message] oldValue in
-////                    SIMChatNotificationCenter.postNotificationName(SIMChatAudioManagerWillLoadNotification, object: message)
+////                    SACNotificationCenter.postNotificationName(SACAudioManagerWillLoadNotification, object: message)
 ////                }).didSet({  [weak message] newValue in
-////                    SIMChatNotificationCenter.postNotificationName(SIMChatAudioManagerDidLoadNotification, object: message)
+////                    SACNotificationCenter.postNotificationName(SACAudioManagerDidLoadNotification, object: message)
 ////                })
 ////            }
 ////            // 获取
@@ -1118,31 +1118,31 @@ import UIKit
 ////                // 加载成功, 并且是没有在播放中
 ////                if let url = url where !ctx.playing {
 ////                    // 播放
-////                    SIMChatAudioManager.sharedManager.delegate = nil
-////                    SIMChatAudioManager.sharedManager.play(url)
+////                    SACAudioManager.sharedManager.delegate = nil
+////                    SACAudioManager.sharedManager.play(url)
 ////                    // :)
 ////                    ctx.played = true
 ////                    ctx.playing = true
 ////                } else {
 ////                    // 停止
-////                    SIMChatAudioManager.sharedManager.delegate = nil
-////                    SIMChatAudioManager.sharedManager.stop()
+////                    SACAudioManager.sharedManager.delegate = nil
+////                    SACAudioManager.sharedManager.stop()
 ////                    // :(
 ////                    ctx.playing = false
 ////                }
 ////            } else {
 ////                // 正在加载中
 ////                // 如果正在播放其他。 停止他
-////                SIMChatAudioManager.sharedManager.delegate = nil
-////                SIMChatAudioManager.sharedManager.stop()
+////                SACAudioManager.sharedManager.delegate = nil
+////                SACAudioManager.sharedManager.stop()
 ////            }
 ////            
 ////            return
 ////        }
 ////        // 图片
-////        if let ctx = chatCell.message?.content as? SIMChatMessageContentImage {
-////            let f = (chatCell as? SIMChatMessageCellImage)?.contentView2 ?? chatCell
-////            let vc = SIMChatPhotoBrowserController()
+////        if let ctx = chatCell.message?.content as? SACMessageContentImage {
+////            let f = (chatCell as? SACMessageCellImage)?.contentView2 ?? chatCell
+////            let vc = SACPhotoBrowserController()
 ////            
 ////            vc.content = ctx
 ////            
@@ -1155,7 +1155,7 @@ import UIKit
 ////        }
 ////    }
 ////    /// 长按
-////    func chatCellDidLongPress(chatCell: SIMChatMessageCell, withEvent event: SIMChatMessageCellEvent) {
+////    func chatCellDidLongPress(chatCell: SACMessageCell, withEvent event: SACMessageCellEvent) {
 ////        // 只响应begin事件
 ////        guard let rec = event.sender as? UIGestureRecognizer where rec.state == .Began else {
 ////            return
@@ -1163,7 +1163,7 @@ import UIKit
 ////        SIMLog.trace(event.type.rawValue)
 ////        // 如果是气泡的按下事件
 ////        if event.type == .Bubble {
-////            if let c = chatCell as? SIMChatMessageCellBubble {
+////            if let c = chatCell as? SACMessageCellBubble {
 ////                // 准备菜单
 ////                let mu = UIMenuController.sharedMenuController()
 ////                // 进入激活状态

@@ -1,6 +1,6 @@
 //
-//  SAAudioEffectView.swift
-//  SIMChat
+//  SAIAudioEffectView.swift
+//  SAC
 //
 //  Created by sagesse on 9/19/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,32 +8,32 @@
 
 import UIKit
 
-internal protocol SAAudioEffectViewDelegate: NSObjectProtocol {
+internal protocol SAIAudioEffectViewDelegate: NSObjectProtocol {
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, shouldSelectItem audioEffect: SAAudioEffect) -> Bool
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, didSelectItem audioEffect: SAAudioEffect)
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, shouldSelectItem audioEffect: SAIAudioEffect) -> Bool
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, didSelectItem audioEffect: SAIAudioEffect)
     
-    func audioEffectViewGetCurrentTime(_ audioEffectView: SAAudioEffectView) -> TimeInterval
-    func audioEffectViewGetProgress(_ audioEffectView: SAAudioEffectView) -> CGFloat
+    func audioEffectViewGetCurrentTime(_ audioEffectView: SAIAudioEffectView) -> TimeInterval
+    func audioEffectViewGetProgress(_ audioEffectView: SAIAudioEffectView) -> CGFloat
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumView: SAIAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumView: SAIAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewWillUpdateMeters: SAAudioSpectrumMiniView)
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewDidUpdateMeters: SAAudioSpectrumMiniView)
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumViewWillUpdateMeters: SAIAudioSpectrumMiniView)
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumViewDidUpdateMeters: SAIAudioSpectrumMiniView)
     
 }
 
-internal class SAAudioEffectView: UICollectionViewCell {
+internal class SAIAudioEffectView: UICollectionViewCell {
     
-    weak var delegate: SAAudioEffectViewDelegate?
+    weak var delegate: SAIAudioEffectViewDelegate?
     
-    var status: SAAudioStatus = .none {
+    var status: SAIAudioStatus = .none {
         willSet {
             _updateStatus(newValue)
         }
     }
-    var effect: SAAudioEffect? {
+    var effect: SAIAudioEffect? {
         willSet {
             _updateEffect(newValue)
         }
@@ -58,7 +58,7 @@ internal class SAAudioEffectView: UICollectionViewCell {
         }
     }
     
-    private func _updateStatus(_ newValue: SAAudioStatus) {
+    private func _updateStatus(_ newValue: SAIAudioStatus) {
         _logger.trace(newValue)
         
         switch newValue {
@@ -121,7 +121,7 @@ internal class SAAudioEffectView: UICollectionViewCell {
         
     }
     
-    private func _updateEffect(_ newValue: SAAudioEffect?) {
+    private func _updateEffect(_ newValue: SAIAudioEffect?) {
         
         _backgroundView.image = newValue?.image
         _titleButton.setTitle(newValue?.title, for: .normal)
@@ -205,14 +205,14 @@ internal class SAAudioEffectView: UICollectionViewCell {
         addConstraint(_SAAudioLayoutConstraintMake(_tipsLabel, .centerX, .equal, _spectrumView, .centerX))
     }
     
-    fileprivate lazy var _playButton: SAAudioPlayButton = SAAudioPlayButton()
+    fileprivate lazy var _playButton: SAIAudioPlayButton = SAIAudioPlayButton()
     
     fileprivate lazy var _backgroundView: UIImageView = UIImageView()
     fileprivate lazy var _foregroundView: UIImageView = UIImageView()
     fileprivate lazy var _titleButton: UIButton = UIButton()
     
     fileprivate lazy var _tipsLabel: UILabel = UILabel()
-    fileprivate lazy var _spectrumView: SAAudioSpectrumMiniView = SAAudioSpectrumMiniView()
+    fileprivate lazy var _spectrumView: SAIAudioSpectrumMiniView = SAIAudioSpectrumMiniView()
     fileprivate lazy var _activityIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .white)
     
     override init(frame: CGRect) {
@@ -225,20 +225,20 @@ internal class SAAudioEffectView: UICollectionViewCell {
     }
 }
 
-extension SAAudioEffectView: SAAudioSpectrumMiniViewDataSource {
+extension SAIAudioEffectView: SAIAudioSpectrumMiniViewDataSource {
     
-    func spectrumMiniView(willUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView) {
+    func spectrumMiniView(willUpdateMeters spectrumMiniView: SAIAudioSpectrumMiniView) {
         _updateTime()
         delegate?.audioEffectView(self, spectrumViewWillUpdateMeters: spectrumMiniView)
     }
-    func spectrumMiniView(didUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView) {
+    func spectrumMiniView(didUpdateMeters spectrumMiniView: SAIAudioSpectrumMiniView) {
         delegate?.audioEffectView(self, spectrumViewDidUpdateMeters: spectrumMiniView)
     }
     
-    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
+    func spectrumMiniView(_ spectrumMiniView: SAIAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
         return delegate?.audioEffectView(self, spectrumView: spectrumMiniView, peakPowerFor: channel) ?? -160
     }
-    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
+    func spectrumMiniView(_ spectrumMiniView: SAIAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
         return delegate?.audioEffectView(self, spectrumView: spectrumMiniView, averagePowerFor: channel) ?? -160
     }
     

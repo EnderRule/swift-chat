@@ -11,6 +11,13 @@
 		0C001CE01DC745B8004A5F08 /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDD1DC745B8004A5F08 /* SAMedia.framework */; };
 		0C001CE11DC745B8004A5F08 /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */; };
 		0C0BB0181DC72C3400B5CF4F /* SAChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C0BB0161DC72C3400B5CF4F /* SAChat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0C3F7BBB1DC83B5600461848 /* SIMChatViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BB71DC83B5600461848 /* SIMChatViewController+Keyboard.swift */; };
+		0C3F7BBC1DC83B5600461848 /* SIMChatViewController+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BB81DC83B5600461848 /* SIMChatViewController+Message.swift */; };
+		0C3F7BBD1DC83B5600461848 /* SIMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BB91DC83B5600461848 /* SIMChatViewController.swift */; };
+		0C3F7BC11DC83C0700461848 /* SACChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */; };
+		0C3F7C141DC83D9500461848 /* SACConversationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BE51DC83D9500461848 /* SACConversationProtocol.swift */; };
+		0C3F7C231DC83DF200461848 /* SACUserProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7C221DC83DF200461848 /* SACUserProtocol.swift */; };
+		0C3F7C251DC8400D00461848 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7C241DC8400D00461848 /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +27,13 @@
 		0C0BB0131DC72C3400B5CF4F /* SAChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SAChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0BB0161DC72C3400B5CF4F /* SAChat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SAChat.h; sourceTree = "<group>"; };
 		0C0BB0171DC72C3400B5CF4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C3F7BB71DC83B5600461848 /* SIMChatViewController+Keyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SIMChatViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		0C3F7BB81DC83B5600461848 /* SIMChatViewController+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SIMChatViewController+Message.swift"; sourceTree = "<group>"; };
+		0C3F7BB91DC83B5600461848 /* SIMChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatViewController.swift; sourceTree = "<group>"; };
+		0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatViewController.swift; sourceTree = "<group>"; };
+		0C3F7BE51DC83D9500461848 /* SACConversationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACConversationProtocol.swift; sourceTree = "<group>"; };
+		0C3F7C221DC83DF200461848 /* SACUserProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACUserProtocol.swift; sourceTree = "<group>"; };
+		0C3F7C241DC8400D00461848 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +63,7 @@
 		0C0BB0091DC72C3400B5CF4F = {
 			isa = PBXGroup;
 			children = (
+				0C3F7AF01DC83B2100461848 /* Chat */,
 				0C0BB0151DC72C3400B5CF4F /* Supporting Files */,
 				0C0BB0141DC72C3400B5CF4F /* Products */,
 				0C001CDB1DC745B8004A5F08 /* Frameworks */,
@@ -66,11 +81,42 @@
 		0C0BB0151DC72C3400B5CF4F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0C3F7C241DC8400D00461848 /* Logger.swift */,
 				0C0BB0161DC72C3400B5CF4F /* SAChat.h */,
 				0C0BB0171DC72C3400B5CF4F /* Info.plist */,
 			);
 			name = "Supporting Files";
 			path = SAChat;
+			sourceTree = "<group>";
+		};
+		0C3F7AF01DC83B2100461848 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				0C3F7BB41DC83B5600461848 /* Controllers */,
+				0C3F7BC21DC83D9500461848 /* Models */,
+			);
+			name = Chat;
+			path = ../Classes/Chat;
+			sourceTree = "<group>";
+		};
+		0C3F7BB41DC83B5600461848 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */,
+				0C3F7BB71DC83B5600461848 /* SIMChatViewController+Keyboard.swift */,
+				0C3F7BB81DC83B5600461848 /* SIMChatViewController+Message.swift */,
+				0C3F7BB91DC83B5600461848 /* SIMChatViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		0C3F7BC21DC83D9500461848 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0C3F7C221DC83DF200461848 /* SACUserProtocol.swift */,
+				0C3F7BE51DC83D9500461848 /* SACConversationProtocol.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,6 +200,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C3F7BC11DC83C0700461848 /* SACChatViewController.swift in Sources */,
+				0C3F7BBC1DC83B5600461848 /* SIMChatViewController+Message.swift in Sources */,
+				0C3F7C231DC83DF200461848 /* SACUserProtocol.swift in Sources */,
+				0C3F7C141DC83D9500461848 /* SACConversationProtocol.swift in Sources */,
+				0C3F7C251DC8400D00461848 /* Logger.swift in Sources */,
+				0C3F7BBD1DC83B5600461848 /* SIMChatViewController.swift in Sources */,
+				0C3F7BBB1DC83B5600461848 /* SIMChatViewController+Keyboard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

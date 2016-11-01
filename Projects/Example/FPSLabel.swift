@@ -1,6 +1,6 @@
 //
 //  FPSLabel.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 2/1/16.
 //  Copyright © 2016 Sagesse. All rights reserved.

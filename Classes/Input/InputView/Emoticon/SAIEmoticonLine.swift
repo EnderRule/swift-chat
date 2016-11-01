@@ -1,6 +1,6 @@
 //
-//  SAEmoticonLine.swift
-//  SIMChat
+//  SAIEmoticonLine.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAEmoticonLine {
+internal class SAIEmoticonLine {
     
     func draw(in ctx: CGContext) {
         _ = emoticons.reduce(CGRect(origin: vaildRect.origin, size: itemSize)) { 
@@ -25,7 +25,7 @@ internal class SAEmoticonLine {
         return CGRect(origin: CGPoint(x: vaildRect.minX + nwidth, y: vaildRect.minY), size: itemSize)
     }
     
-    func addEmoticon(_ emoticon: SAEmoticon) -> Bool {
+    func addEmoticon(_ emoticon: SAIEmoticon) -> Bool {
         let isp = minimumInteritemSpacing
         let nwidth = visableSize.width + isp + itemSize.width
         let nwidthWithDelete = visableSize.width + (isp + itemSize.width) * 2
@@ -56,7 +56,7 @@ internal class SAEmoticonLine {
     var vaildRect: CGRect
     var visableSize: CGSize
     
-    var itemType: SAEmoticonType
+    var itemType: SAIEmoticonType
     var isLastLine: Bool {
         if let isLastLine = _isLastLine {
             return isLastLine
@@ -69,16 +69,16 @@ internal class SAEmoticonLine {
     var minimumLineSpacing: CGFloat
     var minimumInteritemSpacing: CGFloat
     
-    var emoticons: [SAEmoticon] 
+    var emoticons: [SAIEmoticon] 
     
     var _isLastLine: Bool?
     
-    init(_ first: SAEmoticon, 
+    init(_ first: SAIEmoticon, 
          _ itemSize: CGSize,
          _ rect: CGRect, 
          _ lineSpacing: CGFloat,
          _ interitemSpacing: CGFloat,
-         _ itemType: SAEmoticonType) {
+         _ itemType: SAIEmoticonType) {
         
         self.itemSize = itemSize
         self.itemType = itemType

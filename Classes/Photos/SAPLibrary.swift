@@ -1,6 +1,6 @@
 //
 //  SAPLibrary.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/20/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-public enum SAPhotoStatus {
+public enum SAIPhotoStatus {
    
     case notPermission
     case notData
@@ -94,7 +94,7 @@ public class SAPLibrary: NSObject {
             let os = image?.size ?? .zero
             let ns = img.size
             // 必须小于或者等于size
-            guard (ns.width <= size.width && ns.height <= size.height) || (size == SAPhotoMaximumSize) else {
+            guard (ns.width <= size.width && ns.height <= size.height) || (size == SAIPhotoMaximumSize) else {
                 return
             }
             // 必须大于当前的图片
@@ -225,7 +225,7 @@ public class SAPLibrary: NSObject {
     
     private var _needsClearCaches: Bool = false
 
-    private lazy var _queue: DispatchQueue = DispatchQueue(label: "SAPhotoImageLoadQueue")
+    private lazy var _queue: DispatchQueue = DispatchQueue(label: "SAIPhotoImageLoadQueue")
     private lazy var _allCaches: [String: [String: SAPWKObject<UIImage>]] = [:]
 }
 
@@ -237,7 +237,7 @@ extension SAPLibrary: PHPhotoLibraryChangeObserver {
 }
 
 private func _SAPhotoResouceId(_ photo: SAPAsset, size: CGSize) -> UInt {
-    guard size != SAPhotoMaximumSize else {
+    guard size != SAIPhotoMaximumSize else {
         return UInt.max
     }
     return UInt(size.width) / 16
@@ -245,7 +245,7 @@ private func _SAPhotoResouceId(_ photo: SAPAsset, size: CGSize) -> UInt {
 private func _SAPhotoResouceSize(_ photo: SAPAsset, size: CGSize) -> CGSize {
     let id = _SAPhotoResouceId(photo, size: size)
     guard id != .max else {
-        return SAPhotoMaximumSize
+        return SAIPhotoMaximumSize
     }
 //    let ratio = CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight)
 //    let width = CGFloat(id + 1) * 16
@@ -255,5 +255,5 @@ private func _SAPhotoResouceSize(_ photo: SAPAsset, size: CGSize) -> CGSize {
 }
 
 
-public let SAPhotoMaximumSize = PHImageManagerMaximumSize
+public let SAIPhotoMaximumSize = PHImageManagerMaximumSize
 

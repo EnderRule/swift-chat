@@ -1,6 +1,6 @@
 //
-//  SAPhotoScrollView2.swift
-//  SIMChat
+//  SAIPhotoScrollView2.swift
+//  SAC
 //
 //  Created by sagesse on 10/24/16.
 //  Copyright © 2016 sagesse. All rights reserved.

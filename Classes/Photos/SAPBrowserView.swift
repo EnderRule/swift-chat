@@ -1,6 +1,6 @@
 //
 //  SAPBrowserView.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/29/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -76,7 +76,7 @@ internal class SAPBrowserView: UIView, SAPPreviewable {
         return photo?.size ?? .zero
     }
     var previewingContentVisableSize: CGSize {
-        return SAPhotoMaximumSize
+        return SAIPhotoMaximumSize
     }
     
     var previewingContentMode: UIViewContentMode {
@@ -200,7 +200,7 @@ internal class SAPBrowserView: UIView, SAPPreviewable {
 //        _scrollView.setContentOffset(npt, animated: animated)
 //    }
 //    
-////    fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
+////    fileprivate func _updateContent(for loader: SAIPhotoLoaderType, animated: Bool) {
 ////        //_logger.trace()
 ////        
 ////        _imageView.image = loader.image

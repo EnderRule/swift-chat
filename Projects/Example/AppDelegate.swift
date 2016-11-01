@@ -399,8 +399,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //SBSCopyLocalizedApplicationNameForDisplayIdentifier
         
 //
-//        let ems: [SIMChatBaseEmoticon]? = (NSArray(contentsOfFile: "/Users/sagesse/Desktop/emoji.plist") as? Array<NSDictionary>)?.flatMap{
-//            let em = SIMChatBaseEmoticon()
+//        let ems: [SACBaseEmoticon]? = (NSArray(contentsOfFile: "/Users/sagesse/Desktop/emoji.plist") as? Array<NSDictionary>)?.flatMap{
+//            let em = SACBaseEmoticon()
 //            em.setValuesForKeysWithDictionary($0 as! [String : AnyObject])
 //            return em
 //        }
@@ -430,11 +430,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
 //
-//        let arr = NSArray(contentsOfFile: "/Users/sagesse/Projects/swift-chat/SIMChat/Supporting Files/SIMChat.bundle/Emoticons/emoticons.plist") as? Array<NSDictionary>
+//        let arr = NSArray(contentsOfFile: "/Users/sagesse/Projects/swift-chat/SAC/Supporting Files/SAC.bundle/Emoticons/emoticons.plist") as? Array<NSDictionary>
         
 //        let a: Array<Dictionary<String, AnyObject>>? = arr?.flatMap {
 //            
-//            let em = SIMChatBaseEmoticon()
+//            let em = SACBaseEmoticon()
 //            
 //            let dv = { (v: String?) -> String? in
 //                if let str = v as? NSString where str.hasPrefix("[") && str.hasSuffix("]") {

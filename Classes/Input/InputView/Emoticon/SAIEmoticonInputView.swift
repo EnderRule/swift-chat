@@ -1,6 +1,6 @@
 //
-//  SAEmoticonInputView.swift
-//  SIMChat
+//  SAIEmoticonInputView.swift
+//  SAC
 //
 //  Created by sagesse on 9/6/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -11,59 +11,59 @@ import UIKit
 // ## TODO
 // [ ] * - Version 2, 参考系统Emoji键盘
 // [x] * - 横屏支持
-// [x] SAEmoticonInputView - 小表情支持
-// [x] SAEmoticonInputView - 大表情支持
-// [x] SAEmoticonInputView - 自定义行/列数量
-// [x] SAEmoticonInputView - Tabbar支持
-// [x] SAEmoticonInputView - 更新page
-// [ ] SAEmoticonInputView - 长按删除
-// [x] SAEmoticonInputView - 更多(More)支持
-// [x] SAEmoticonInputView - 快速切换的时显示异常
-// [ ] SAEmoticon - UIView支持
-// [x] SAEmoticon - UIImage支持
-// [x] SAEmoticon - NSString/NSAttributedString支持
-// [ ] SAEmoticonPreviewer - emoji支持(即字符串)
-// [ ] SAEmoticonPreviewer - 动态图片支持
-// [x] SAEmoticonPage - Add支持
-// [x] SAEmoticonPage - 删除按钮
-// [x] SAEmoticonPage - 异步绘制
-// [x] SAEmoticonPageView - 选中
-// [x] SAEmoticonPageView - 选中高亮
-// [x] SAEmoticonPageView - 长按预览
-// [x] SAEmoticonPageView - 横屏支持
-// [x] SAEmoticonPageView - 限制最大大小(80x80)
-// [x] SAEmoticonTabItemView - 选中
-// [x] SAEmoticonTabItemView - 选中高亮
+// [x] SAIEmoticonInputView - 小表情支持
+// [x] SAIEmoticonInputView - 大表情支持
+// [x] SAIEmoticonInputView - 自定义行/列数量
+// [x] SAIEmoticonInputView - Tabbar支持
+// [x] SAIEmoticonInputView - 更新page
+// [ ] SAIEmoticonInputView - 长按删除
+// [x] SAIEmoticonInputView - 更多(More)支持
+// [x] SAIEmoticonInputView - 快速切换的时显示异常
+// [ ] SAIEmoticon - UIView支持
+// [x] SAIEmoticon - UIImage支持
+// [x] SAIEmoticon - NSString/NSAttributedString支持
+// [ ] SAIEmoticonPreviewer - emoji支持(即字符串)
+// [ ] SAIEmoticonPreviewer - 动态图片支持
+// [x] SAIEmoticonPage - Add支持
+// [x] SAIEmoticonPage - 删除按钮
+// [x] SAIEmoticonPage - 异步绘制
+// [x] SAIEmoticonPageView - 选中
+// [x] SAIEmoticonPageView - 选中高亮
+// [x] SAIEmoticonPageView - 长按预览
+// [x] SAIEmoticonPageView - 横屏支持
+// [x] SAIEmoticonPageView - 限制最大大小(80x80)
+// [x] SAIEmoticonTabItemView - 选中
+// [x] SAIEmoticonTabItemView - 选中高亮
 
 
 @objc 
-public protocol SAEmoticonInputViewDataSource: NSObjectProtocol {
+public protocol SAIEmoticonInputViewDataSource: NSObjectProtocol {
     
-    func numberOfEmotionGroups(in emoticon: SAEmoticonInputView) -> Int
-    func emoticon(_ emoticon: SAEmoticonInputView, emotionGroupForItemAt index: Int) -> SAEmoticonGroup
+    func numberOfEmotionGroups(in emoticon: SAIEmoticonInputView) -> Int
+    func emoticon(_ emoticon: SAIEmoticonInputView, emotionGroupForItemAt index: Int) -> SAIEmoticonGroup
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, numberOfRowsForGroupAt index: Int) -> Int
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, numberOfColumnsForGroupAt index: Int) -> Int
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, moreViewForGroupAt index: Int) -> UIView?
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, moreViewForGroupAt index: Int) -> UIView?
 }
 
 @objc 
-public protocol SAEmoticonInputViewDelegate: NSObjectProtocol {
+public protocol SAIEmoticonInputViewDelegate: NSObjectProtocol {
     
     @objc optional func inputViewContentSize(_ inputView: UIView) -> CGSize
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, insetForGroupAt index: Int) -> UIEdgeInsets
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, insetForGroupAt index: Int) -> UIEdgeInsets
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldSelectFor item: SAEmoticon) -> Bool
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didSelectFor item: SAEmoticon)
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, shouldSelectFor item: SAIEmoticon) -> Bool
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, didSelectFor item: SAIEmoticon)
     
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, shouldPreviewFor item: SAEmoticon?) -> Bool
-    @objc optional func emoticon(_ emoticon: SAEmoticonInputView, didPreviewFor item: SAEmoticon?)
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, shouldPreviewFor item: SAIEmoticon?) -> Bool
+    @objc optional func emoticon(_ emoticon: SAIEmoticonInputView, didPreviewFor item: SAIEmoticon?)
     
 }
 
-open class SAEmoticonInputView: UIView {
+open class SAIEmoticonInputView: UIView {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -80,8 +80,8 @@ open class SAEmoticonInputView: UIView {
         return delegate?.inputViewContentSize?(self) ?? CGSize(width: frame.width, height: 253)
     }
    
-    open weak var dataSource: SAEmoticonInputViewDataSource?
-    open weak var delegate: SAEmoticonInputViewDelegate?
+    open weak var dataSource: SAIEmoticonInputViewDataSource?
+    open weak var delegate: SAIEmoticonInputViewDelegate?
     
     // MARK: Private Method
     
@@ -122,7 +122,7 @@ open class SAEmoticonInputView: UIView {
         _contentView.delaysContentTouches = true
         _contentView.showsVerticalScrollIndicator = false
         _contentView.showsHorizontalScrollIndicator = false
-        _contentView.register(SAEmoticonPageView.self, forCellWithReuseIdentifier: "Page")
+        _contentView.register(SAIEmoticonPageView.self, forCellWithReuseIdentifier: "Page")
         _contentView.translatesAutoresizingMaskIntoConstraints = false
         _contentView.backgroundColor = .clear
         
@@ -133,7 +133,7 @@ open class SAEmoticonInputView: UIView {
         _tabbarLayout.minimumLineSpacing = 0
         _tabbarLayout.minimumInteritemSpacing = 0
         
-        _tabbar.register(SAEmoticonTabItemView.self, forCellWithReuseIdentifier: "Page")
+        _tabbar.register(SAIEmoticonTabItemView.self, forCellWithReuseIdentifier: "Page")
         _tabbar.translatesAutoresizingMaskIntoConstraints = false
         _tabbar.dataSource = self
         _tabbar.backgroundColor = .white
@@ -183,10 +183,10 @@ open class SAEmoticonInputView: UIView {
     fileprivate lazy var _tabbarLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _tabbar: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._tabbarLayout)
     
-    fileprivate lazy var _previewer: SAEmoticonPreviewer = SAEmoticonPreviewer()
+    fileprivate lazy var _previewer: SAIEmoticonPreviewer = SAIEmoticonPreviewer()
     fileprivate lazy var _pageControl: UIPageControl = UIPageControl()
     
-    fileprivate lazy var _contentViewLayout: SAEmoticonInputViewLayout = SAEmoticonInputViewLayout()
+    fileprivate lazy var _contentViewLayout: SAIEmoticonInputViewLayout = SAIEmoticonInputViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
     
     public override init(frame: CGRect) {
@@ -199,28 +199,28 @@ open class SAEmoticonInputView: UIView {
     }
 }
 
-// MARK: - SAEmoticonDelegate(Forwarding)
+// MARK: - SAIEmoticonDelegate(Forwarding)
 
-extension SAEmoticonInputView: SAEmoticonDelegate {
+extension SAIEmoticonInputView: SAIEmoticonDelegate {
     
-    open func emoticon(shouldSelectFor emoticon: SAEmoticon) -> Bool {
+    open func emoticon(shouldSelectFor emoticon: SAIEmoticon) -> Bool {
         return delegate?.emoticon?(self, shouldSelectFor: emoticon) ?? true
     }
-    open func emoticon(shouldPreviewFor emoticon: SAEmoticon?) -> Bool {
+    open func emoticon(shouldPreviewFor emoticon: SAIEmoticon?) -> Bool {
         return delegate?.emoticon?(self, shouldPreviewFor: emoticon) ?? true
     }
     
-    open func emoticon(didSelectFor emoticon: SAEmoticon) {
+    open func emoticon(didSelectFor emoticon: SAIEmoticon) {
         delegate?.emoticon?(self, didSelectFor: emoticon) 
     }
-    open func emoticon(didPreviewFor emoticon: SAEmoticon?) {
+    open func emoticon(didPreviewFor emoticon: SAIEmoticon?) {
         delegate?.emoticon?(self, didPreviewFor: emoticon) 
     }
 }
 
-// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout & SAEmoticonInputViewDelegateLayout
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout & SAIEmoticonInputViewDelegateLayout
 
-extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SAEmoticonInputViewDelegateLayout {
+extension SAIEmoticonInputView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SAIEmoticonInputViewDelegateLayout {
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollView === _tabbar {
@@ -266,13 +266,13 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
         return collectionView.dequeueReusableCell(withReuseIdentifier: "Page", for: indexPath)
     }
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? SAEmoticonPageView {
+        if let cell = cell as? SAIEmoticonPageView {
             cell.page = _contentViewLayout.page(at: indexPath)
             cell.delegate = self
             cell.previewer = _previewer
             return
         } 
-        if let cell = cell as? SAEmoticonTabItemView {
+        if let cell = cell as? SAIEmoticonTabItemView {
             cell.group = dataSource?.emoticon(self, emotionGroupForItemAt: indexPath.item)
             cell.selectedBackgroundView?.backgroundColor = _color
             return
@@ -300,16 +300,16 @@ extension SAEmoticonInputView: UICollectionViewDataSource, UICollectionViewDeleg
         }
         return .zero
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, groupAt index: Int) -> SAEmoticonGroup? {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, groupAt index: Int) -> SAIEmoticonGroup? {
         return dataSource?.emoticon(self, emotionGroupForItemAt: index)
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, numberOfRowsForGroupAt index: Int) -> Int {
         return dataSource?.emoticon?(self, numberOfRowsForGroupAt: index) ?? 3
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int { 
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, numberOfColumnsForGroupAt index: Int) -> Int { 
         return dataSource?.emoticon?(self, numberOfColumnsForGroupAt: index) ?? 7
     }
-    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets {
+    internal func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: SAIEmoticonInputViewLayout, insetForGroupAt index: Int) -> UIEdgeInsets {
         return delegate?.emoticon?(self, insetForGroupAt: index) ?? UIEdgeInsetsMake(12, 10, 12 + 30, 10)
     }
     

@@ -1,6 +1,6 @@
 //
 //  SAPBrowser.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/21/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -67,7 +67,7 @@ open class SAPBrowser: UIViewController {
 //    fileprivate lazy var _contentViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 //    fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
 //    
-//    fileprivate var _allLoader: [Int: SAPhotoLoader] = [:]
+//    fileprivate var _allLoader: [Int: SAIPhotoLoader] = [:]
 //}
 //
 //extension SAPBrowser: SAPBrowserViewDelegate {
@@ -120,7 +120,7 @@ open class SAPBrowser: UIViewController {
 ////        if let photo = dataSource?.photoPreviewer(self, photoForItemAt: indexPath.item) {
 ////            cell.delegate = self
 ////            cell.loader = _allLoader[photo.hashValue] ?? {
-////                let loader = SAPhotoLoader(photo: photo)
+////                let loader = SAIPhotoLoader(photo: photo)
 ////                _allLoader[photo.hashValue] = loader
 ////                return loader
 ////            }()

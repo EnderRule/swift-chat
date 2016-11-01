@@ -1,6 +1,6 @@
 //
-//  SAEmoticonTabItemView.swift
-//  SIMChat
+//  SAIEmoticonTabItemView.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 
-internal class SAEmoticonTabItemView: UICollectionViewCell {
+internal class SAIEmoticonTabItemView: UICollectionViewCell {
     
-    var group: SAEmoticonGroup? {
+    var group: SAIEmoticonGroup? {
         willSet {
             guard group !== newValue else {
                 return
@@ -55,7 +55,7 @@ internal class SAEmoticonTabItemView: UICollectionViewCell {
 /////
 ///// 页面控制视图
 /////
-//internal class SIMChatInputPanelPageControl: UIView {
+//internal class SACInputPanelPageControl: UIView {
 //    
 //    var hidesForSinglePage: Bool = false
 //    
@@ -179,7 +179,7 @@ internal class SAEmoticonTabItemView: UICollectionViewCell {
 //        }
 //    }
 //    
-//    weak var delegate: SIMChatInputPanelPageControlDelegate?
+//    weak var delegate: SACInputPanelPageControlDelegate?
 //  
 //    override var intrinsicContentSize: CGSize {
 //        return CGSize(width: bounds.width, height: 25)

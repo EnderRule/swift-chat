@@ -1,6 +1,6 @@
 //
 //  SAPPreviewerCell.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/24/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -128,7 +128,7 @@ extension SAPPreviewerCell: SAPPreviewable {
         return photo?.size ?? .zero
     }
     var previewingContentVisableSize: CGSize {
-        return SAPhotoMaximumSize
+        return SAIPhotoMaximumSize
     }
     
     var previewingContentMode: UIViewContentMode {
@@ -256,7 +256,7 @@ extension SAPPreviewerCell: SAPPreviewable {
 ////        _scrollView.setContentOffset(npt, animated: animated)
 ////    }
 ////    
-//////    fileprivate func _updateContent(for loader: SAPhotoLoaderType, animated: Bool) {
+//////    fileprivate func _updateContent(for loader: SAIPhotoLoaderType, animated: Bool) {
 //////        //_logger.trace()
 //////        
 //////        _imageView.image = loader.image

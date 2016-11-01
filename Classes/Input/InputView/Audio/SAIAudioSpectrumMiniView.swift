@@ -1,6 +1,6 @@
 //
-//  SAAudioSpectrumMiniView.swift
-//  SIMChat
+//  SAIAudioSpectrumMiniView.swift
+//  SAC
 //
 //  Created by sagesse on 9/20/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,17 +9,17 @@
 import UIKit
 
 @objc
-public protocol SAAudioSpectrumMiniViewDataSource: NSObjectProtocol {
+public protocol SAIAudioSpectrumMiniViewDataSource: NSObjectProtocol {
     
-    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float
-    func spectrumMiniView(_ spectrumMiniView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float
+    func spectrumMiniView(_ spectrumMiniView: SAIAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float
+    func spectrumMiniView(_ spectrumMiniView: SAIAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float
     
-    @objc optional func spectrumMiniView(willUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView)
-    @objc optional func spectrumMiniView(didUpdateMeters spectrumMiniView: SAAudioSpectrumMiniView)
+    @objc optional func spectrumMiniView(willUpdateMeters spectrumMiniView: SAIAudioSpectrumMiniView)
+    @objc optional func spectrumMiniView(didUpdateMeters spectrumMiniView: SAIAudioSpectrumMiniView)
 }
 
 
-open class SAAudioSpectrumMiniView: UIView {
+open class SAIAudioSpectrumMiniView: UIView {
     
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: _size.width, height: 24)
@@ -40,7 +40,7 @@ open class SAAudioSpectrumMiniView: UIView {
         }
     }
     
-    weak var dataSource: SAAudioSpectrumMiniViewDataSource?
+    weak var dataSource: SAIAudioSpectrumMiniViewDataSource?
     
     open var isAnimating: Bool {
         return false

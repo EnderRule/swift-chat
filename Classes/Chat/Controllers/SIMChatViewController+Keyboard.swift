@@ -1,6 +1,6 @@
 //
-//  SIMChatViewController+Keyboard.swift
-//  SIMChat
+//  SACViewController+Keyboard.swift
+//  SAC
 //
 //  Created by sagesse on 9/26/15.
 //  Copyright © 2015 Sagesse. All rights reserved.
@@ -9,22 +9,22 @@
 import UIKit
 import AVFoundation
 
-//extension SIMChatViewController: /*SIMChatInputBarDelegate,*/ SIMChatInputPanelToolBoxDelegate, SIMChatInputPanelEmoticonViewDelegate, SIMChatInputPanelAudioViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+//extension SACViewController: /*SACInputBarDelegate,*/ SACInputPanelToolBoxDelegate, SACInputPanelEmoticonViewDelegate, SACInputPanelAudioViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 //    
 //    
-//    // MARK: SIMChatInputPanelAudioViewDelegate
+//    // MARK: SACInputPanelAudioViewDelegate
 //    
 //    ///
 //    /// 请求一个音频录音器, 如果拒绝该请求返回nil
 //    ///
-//    public func inputPanelAudioRecorder(_ inputPanel: UIView, resource: SIMChatResourceProtocol) -> SIMChatMediaRecorderProtocol? {
+//    public func inputPanelAudioRecorder(_ inputPanel: UIView, resource: SACResourceProtocol) -> SACMediaRecorderProtocol? {
 //        return nil
 ////        return manager.mediaProvider.audioRecorder(resource)
 //    }
 //    ///
 //    /// 请求一个音频播放器, 如果拒绝该请求返回nil
 //    ///
-//    public func inputPanelAudioPlayer(_ inputPanel: UIView, resource: SIMChatResourceProtocol) -> SIMChatMediaPlayerProtocol? {
+//    public func inputPanelAudioPlayer(_ inputPanel: UIView, resource: SACResourceProtocol) -> SACMediaPlayerProtocol? {
 //        return nil
 ////        return manager.mediaProvider.audioPlayer(resource)
 //    }
@@ -32,9 +32,9 @@ import AVFoundation
 //    ///
 //    /// 将要发送音频
 //    ///
-//    public func inputPanelShouldSendAudio(_ inputPanel: UIView, resource: SIMChatResourceProtocol, duration: TimeInterval) -> Bool {
+//    public func inputPanelShouldSendAudio(_ inputPanel: UIView, resource: SACResourceProtocol, duration: TimeInterval) -> Bool {
 //        if duration < 1 {
-//            SIMChatMessageBox.Alert.error("录音时间太短了")
+//            SACMessageBox.Alert.error("录音时间太短了")
 //            return false
 //        }
 //        return true
@@ -42,10 +42,10 @@ import AVFoundation
 //    ///
 //    /// 发送音频
 //    ///
-//    public func inputPanelDidSendAudio(_ inputPanel: UIView, resource: SIMChatResourceProtocol, duration: TimeInterval) {
+//    public func inputPanelDidSendAudio(_ inputPanel: UIView, resource: SACResourceProtocol, duration: TimeInterval) {
 //        SIMLog.trace(resource.resourceURL)
 //        
-//        let content = SIMChatBaseMessageAudioContent(origin: resource, duration: duration)
+//        let content = SACBaseMessageAudioContent(origin: resource, duration: duration)
 //        
 //        content.localURL = resource.resourceURL
 //        
@@ -54,10 +54,10 @@ import AVFoundation
 //        }
 //    }
 //    
-//    // MARK: SIMChatInputBarDelegate
+//    // MARK: SACInputBarDelegate
 //    
 //    // TODO: No imp
-////    public func inputBar(inputBar: SIMChatInputBar, shouldSelectItem item: SIMChatInputItemProtocol) -> Bool {
+////    public func inputBar(inputBar: SACInputBar, shouldSelectItem item: SACInputItemProtocol) -> Bool {
 ////        SIMLog.trace(item.itemIdentifier)
 ////        switch item.itemIdentifier {
 ////        case let x where x.isEmpty:
@@ -80,12 +80,12 @@ import AVFoundation
 ////            return true
 ////        }
 ////    }
-////    public func inputBar(inputBar: SIMChatInputBar, didSelectItem item: SIMChatInputItemProtocol) {
+////    public func inputBar(inputBar: SACInputBar, didSelectItem item: SACInputItemProtocol) {
 ////        SIMLog.trace()
 ////        inputBar.editing = (item.itemIdentifier == "kb:emoticon")
 ////        inputPanelContainer.currentInputItem = item
 ////    }
-////    public func inputBar(inputBar: SIMChatInputBar, didDeselectItem item: SIMChatInputItemProtocol) {
+////    public func inputBar(inputBar: SACInputBar, didDeselectItem item: SACInputItemProtocol) {
 ////        SIMLog.trace()
 ////        // 最后一次显示
 ////        if inputBar.selectedBarButtonItem == nil {
@@ -93,18 +93,18 @@ import AVFoundation
 ////            onHidePanel()
 ////        }
 ////    }
-////    public func inputBarShouldReturn(inputBar: SIMChatInputBar) -> Bool {
+////    public func inputBarShouldReturn(inputBar: SACInputBar) -> Bool {
 ////        // 发送.
 ////        if let text = inputBar.text where !text.isEmpty {
 ////            inputBar.clearText()
 ////            dispatch_async(dispatch_get_main_queue()) {
-////                self.messageManager.sendMessage(SIMChatBaseMessageTextContent(content: text))
+////                self.messageManager.sendMessage(SACBaseMessageTextContent(content: text))
 ////            }
 ////        }
 ////        return false
 ////    }
 //    
-//    // MARK: SIMChatInputPanelEmoticonViewDelegate
+//    // MARK: SACInputPanelEmoticonViewDelegate
 //    
 //    ///
 //    /// 获取表情组数量
@@ -115,19 +115,19 @@ import AVFoundation
 //    ///
 //    /// 获取一个表情组
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, emoticonGroupAtIndex index: Int) -> SIMChatEmoticonGroup? {
+//    public func inputPanel(_ inputPanel: UIView, emoticonGroupAtIndex index: Int) -> SACEmoticonGroup? {
 //        return nil
 //    }
 //    ///
 //    /// 将要选择表情, 返回false拦截该处理
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, shouldSelectEmoticon emoticon: SIMChatEmoticon) -> Bool {
+//    public func inputPanel(_ inputPanel: UIView, shouldSelectEmoticon emoticon: SACEmoticon) -> Bool {
 //        return true
 //    }
 //    ///
 //    /// 选择了表情
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, didSelectEmoticon emoticon: SIMChatEmoticon) {
+//    public func inputPanel(_ inputPanel: UIView, didSelectEmoticon emoticon: SACEmoticon) {
 //        SIMLog.debug("\(emoticon.code)")
 ////        if emoticon.type == 0 {
 ////            // 表情
@@ -159,7 +159,7 @@ import AVFoundation
 //        return true
 //    }
 //    
-//    // MARK: SIMChatInputPanelToolBoxDelegate
+//    // MARK: SACInputPanelToolBoxDelegate
 //    
 //    ///
 //    /// 获取工具箱中的工具数量
@@ -170,20 +170,20 @@ import AVFoundation
 //    ///
 //    /// 获取工具箱中的每一个工具
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, toolBoxItemAtIndex index: Int) -> SIMChatInputItemProtocol? {
+//    public func inputPanel(_ inputPanel: UIView, toolBoxItemAtIndex index: Int) -> SACInputItemProtocol? {
 //        return inputPanelToolItems[index]
 //    }
 //    
 //    ///
 //    /// 将要选择工具, 返回false表示拦截接下来的操作
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, shouldSelectToolBoxItem item: SIMChatInputItemProtocol) -> Bool {
+//    public func inputPanel(_ inputPanel: UIView, shouldSelectToolBoxItem item: SACInputItemProtocol) -> Bool {
 //        return true
 //    }
 //    ///
 //    /// 选择工具
 //    ///
-//    public func inputPanel(_ inputPanel: UIView, didSelectToolBoxItem item: SIMChatInputItemProtocol) {
+//    public func inputPanel(_ inputPanel: UIView, didSelectToolBoxItem item: SACInputItemProtocol) {
 //        SIMLog.debug("\(item.itemIdentifier) => \(item.itemName)")
 //    }
 //    
@@ -202,7 +202,7 @@ import AVFoundation
 //        
 //        picker.dismiss(animated: true) {
 //            SIMLog.trace()
-//            let content = SIMChatBaseMessageImageContent(origin: SIMChatBaseImageResource(path), size: image.size)
+//            let content = SACBaseMessageImageContent(origin: SACBaseImageResource(path), size: image.size)
 //            content.localURL = URL(fileURLWithPath: path)
 //            self.messageManager.sendMessage(content)
 //        }
@@ -341,8 +341,8 @@ import AVFoundation
 ////    }
 //}
 //
-////extension SIMChatViewController: SIMChatInputPanelAudioDelegate {
-////    public func inputPanelShouldStartRecord(inputPanel: UIView) -> SIMChatRequest<Void>? {
+////extension SACViewController: SACInputPanelAudioDelegate {
+////    public func inputPanelShouldStartRecord(inputPanel: UIView) -> SACRequest<Void>? {
 ////        SIMLog.trace()
 ////    }
 ////    public func inputPanelDidStartRecord(inputPanel: UIView) {
@@ -354,9 +354,9 @@ import AVFoundation
 ////}
 //
 ////// MARK: - Extension Keyboard Audio
-////extension SIMChatViewController : SIMChatKeyboardAudioDelegate {
+////extension SACViewController : SACKeyboardAudioDelegate {
 ////    /// 开始音频输入
-////    func chatKeyboardAudioDidBegin(chatKeyboardAudio: SIMChatKeyboardAudio) {
+////    func chatKeyboardAudioDidBegin(chatKeyboardAudio: SACKeyboardAudio) {
 ////        SIMLog.trace()
 ////        self.textField.enabled = false
 ////        // 计算高度
@@ -372,7 +372,7 @@ import AVFoundation
 ////        }
 ////    }
 ////    /// 结束音频输入
-////    func chatKeyboardAudioDidEnd(chatKeyboardAudio: SIMChatKeyboardAudio) {
+////    func chatKeyboardAudioDidEnd(chatKeyboardAudio: SACKeyboardAudio) {
 ////        SIMLog.trace()
 ////        self.textField.enabled = true
 ////        // duang
@@ -385,14 +385,14 @@ import AVFoundation
 ////        })
 ////    }
 ////    /// 得到结果
-////    func chatKeyboardAudioDidFinish(chatKeyboardAudio: SIMChatKeyboardAudio, url: NSURL, duration: NSTimeInterval) {
+////    func chatKeyboardAudioDidFinish(chatKeyboardAudio: SACKeyboardAudio, url: NSURL, duration: NSTimeInterval) {
 ////        self.sendMessageForAudio(url, duration: duration)
 ////    }
 ////}
 //
 //
 /////// MAKR: - /// Select Image
-////extension SIMChatViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+////extension SACViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 ////    /// 完成选择
 ////    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
 ////        // 修正方向.

@@ -1,6 +1,6 @@
 //
 //  SAPPickerView.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/21/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -143,7 +143,7 @@ import Photos
         NotificationCenter.default.addObserver(self, selector: #selector(didDeselectItem(_:)), name: .SAPSelectionableDidDeselectItem, object: nil)
     }
     
-    fileprivate var _status: SAPhotoStatus = .notError
+    fileprivate var _status: SAIPhotoStatus = .notError
     
     fileprivate var _album: SAPAlbum?
     
@@ -227,7 +227,7 @@ private extension SAPPickerView {
 
 fileprivate extension SAPPickerView {
     
-    func _updateStatus(_ newValue: SAPhotoStatus) {
+    func _updateStatus(_ newValue: SAIPhotoStatus) {
         //_logger.trace(newValue)
         
         _status = newValue

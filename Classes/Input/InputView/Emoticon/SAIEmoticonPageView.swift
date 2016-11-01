@@ -1,6 +1,6 @@
 //
-//  SAEmoticonPageView.swift
-//  SIMChat
+//  SAIEmoticonPageView.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDelegate {
+internal class SAIEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDelegate {
     
-    weak var delegate: SAEmoticonDelegate?
-    weak var previewer: SAEmoticonPreviewer?
+    weak var delegate: SAIEmoticonDelegate?
+    weak var previewer: SAIEmoticonPreviewer?
     
     func setupBackspace() {
         _backspaceButton.isHidden = !(page?.itemType.isSmall ?? true)
@@ -31,7 +31,7 @@ internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDele
         }
     }
     
-    var page: SAEmoticonPage? {
+    var page: SAIEmoticonPage? {
         didSet {
             let newValue = self.page
             guard newValue !== oldValue else {
@@ -75,7 +75,7 @@ internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDele
         
         var idx: IndexPath?
         var rect: CGRect?
-        var emoticon: SAEmoticon?
+        var emoticon: SAIEmoticon?
         
         let isbegin = sender.state == .began || sender.state == .possible
         let isend = sender.state == .cancelled || sender.state == .failed || sender.state == .ended
@@ -132,8 +132,8 @@ internal class SAEmoticonPageView: UICollectionViewCell, UIGestureRecognizerDele
     func onBackspace(_ sender: UIButton) {
         //_logger.trace()
         
-        if delegate?.emoticon(shouldSelectFor: SAEmoticon.backspace) ?? true {
-            delegate?.emoticon(didSelectFor: SAEmoticon.backspace)
+        if delegate?.emoticon(shouldSelectFor: SAIEmoticon.backspace) ?? true {
+            delegate?.emoticon(didSelectFor: SAIEmoticon.backspace)
         }
     }
     

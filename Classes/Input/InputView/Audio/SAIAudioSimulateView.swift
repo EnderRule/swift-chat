@@ -1,6 +1,6 @@
 //
-//  SAAudioSimulateView.swift
-//  SIMChat
+//  SAIAudioSimulateView.swift
+//  SAC
 //
 //  Created by sagesse on 9/16/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,9 +9,9 @@
 import UIKit
 import SAMedia
 
-internal class SAAudioSimulateView: SAAudioView {
+internal class SAIAudioSimulateView: SAIAudioView {
     
-    func updateStatus(_ status: SAAudioStatus) {
+    func updateStatus(_ status: SAIAudioStatus) {
         _logger.trace(status)
         
         _status = status
@@ -159,7 +159,7 @@ internal class SAAudioSimulateView: SAAudioView {
         _simulateView.dataSource = self
         _simulateView.allowsSelection = false
         _simulateView.allowsMultipleSelection = false
-        _simulateView.register(SAAudioEffectView.self, forCellWithReuseIdentifier: "Item")
+        _simulateView.register(SAIAudioEffectView.self, forCellWithReuseIdentifier: "Item")
         _simulateView.showsVerticalScrollIndicator = false
         _simulateView.showsHorizontalScrollIndicator = false
         _simulateView.contentInset = UIEdgeInsetsMake(18, 10, 18 + 44, 10)
@@ -203,28 +203,28 @@ internal class SAAudioSimulateView: SAAudioView {
         addConstraint(_SAAudioLayoutConstraintMake(_statusView, .centerX, .equal, self, .centerX))
     }
     
-    fileprivate var _activatedEffect: SAAudioEffect?
-    fileprivate weak var _activatedEffectView: SAAudioEffectView?
+    fileprivate var _activatedEffect: SAIAudioEffect?
+    fileprivate weak var _activatedEffectView: SAIAudioEffectView?
     
-    fileprivate lazy var _supportEffects: [SAAudioEffect] = [
-        SAAudioEffect(type: .original),
-        SAAudioEffect(type: .ef1),
-        SAAudioEffect(type: .ef2),
-        SAAudioEffect(type: .ef3),
-        SAAudioEffect(type: .ef4),
-        SAAudioEffect(type: .ef5),
+    fileprivate lazy var _supportEffects: [SAIAudioEffect] = [
+        SAIAudioEffect(type: .original),
+        SAIAudioEffect(type: .ef1),
+        SAIAudioEffect(type: .ef2),
+        SAIAudioEffect(type: .ef3),
+        SAIAudioEffect(type: .ef4),
+        SAIAudioEffect(type: .ef5),
     ]
     
     
     fileprivate lazy var _simulateViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
     fileprivate lazy var _simulateView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._simulateViewLayout)
     
-    fileprivate lazy var _playToolbar: SAAudioPlayToolbar = SAAudioPlayToolbar()
+    fileprivate lazy var _playToolbar: SAIAudioPlayToolbar = SAIAudioPlayToolbar()
     
-    fileprivate lazy var _recordButton: SAAudioRecordButton = SAAudioRecordButton()
+    fileprivate lazy var _recordButton: SAIAudioRecordButton = SAIAudioRecordButton()
     
-    fileprivate lazy var _status: SAAudioStatus = .none
-    fileprivate lazy var _statusView: SAAudioStatusView = SAAudioStatusView()
+    fileprivate lazy var _status: SAIAudioStatus = .none
+    fileprivate lazy var _statusView: SAIAudioStatusView = SAIAudioStatusView()
     
     fileprivate lazy var _recordFileAtURL: URL = URL(fileURLWithPath: NSTemporaryDirectory().appending("sa-audio-record.m3a"))
     fileprivate var _processedFileAtURL: URL?
@@ -245,7 +245,7 @@ internal class SAAudioSimulateView: SAAudioView {
 
 // MARK: - Toucn Events
 
-extension SAAudioSimulateView {
+extension SAIAudioSimulateView {
     
     @objc func onCancel(_ sender: Any) {
         _logger.trace()
@@ -302,14 +302,14 @@ extension SAAudioSimulateView {
     }
 }
 
-// MARK: - SAAudioEffectView
+// MARK: - SAIAudioEffectView
 
-extension SAAudioSimulateView: SAAudioEffectViewDelegate {
+extension SAIAudioSimulateView: SAIAudioEffectViewDelegate {
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, shouldSelectItem audioEffect: SAAudioEffect) -> Bool {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, shouldSelectItem audioEffect: SAIAudioEffect) -> Bool {
         return true
     }
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, didSelectItem audioEffect: SAAudioEffect) {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, didSelectItem audioEffect: SAIAudioEffect) {
         _logger.trace(audioEffect)
         
         if let view = _activatedEffectView, view.status.isPlaying || view.status.isProcessing {
@@ -342,30 +342,30 @@ extension SAAudioSimulateView: SAAudioEffectViewDelegate {
         audioEffect.process(at: _recordFileAtURL)
     }
     
-    func audioEffectViewGetCurrentTime(_ audioEffectView: SAAudioEffectView) -> TimeInterval {
+    func audioEffectViewGetCurrentTime(_ audioEffectView: SAIAudioEffectView) -> TimeInterval {
         return _player?.currentTime ?? 0
     }
-    func audioEffectViewGetProgress(_ audioEffectView: SAAudioEffectView) -> CGFloat {
+    func audioEffectViewGetProgress(_ audioEffectView: SAIAudioEffectView) -> CGFloat {
         return CGFloat((TimeInterval(_player?.currentTime ?? 0) + 0.2) / TimeInterval(_recorder?.currentTime ?? 0))
     }
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewWillUpdateMeters: SAAudioSpectrumMiniView) {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumViewWillUpdateMeters: SAIAudioSpectrumMiniView) {
         _player?.updateMeters()
     }
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumViewDidUpdateMeters: SAAudioSpectrumMiniView) {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumViewDidUpdateMeters: SAIAudioSpectrumMiniView) {
     }
     
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumView: SAIAudioSpectrumMiniView, peakPowerFor channel: Int) -> Float {
         return _player?.peakPower(forChannel: 0) ?? -160
     }
-    func audioEffectView(_ audioEffectView: SAAudioEffectView, spectrumView: SAAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
+    func audioEffectView(_ audioEffectView: SAIAudioEffectView, spectrumView: SAIAudioSpectrumMiniView, averagePowerFor channel: Int) -> Float {
         return _player?.averagePower(forChannel: 0) ?? -160
     }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 
-extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SAIAudioSimulateView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return _supportEffects.count
@@ -376,7 +376,7 @@ extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? SAAudioEffectView else {
+        guard let cell = cell as? SAIAudioEffectView else {
             return
         }
         cell.effect = _supportEffects[indexPath.item]
@@ -386,19 +386,19 @@ extension SAAudioSimulateView: UICollectionViewDataSource, UICollectionViewDeleg
 }
 
 
-// MARK: - SAAudioEffect
+// MARK: - SAIAudioEffect
 
-extension SAAudioSimulateView: SAAudioEffectDelegate {
+extension SAIAudioSimulateView: SAIAudioEffectDelegate {
     
-    func audioEffect(_ audioEffect: SAAudioEffect, shouldStartProcessAt url: URL) -> Bool {
+    func audioEffect(_ audioEffect: SAIAudioEffect, shouldStartProcessAt url: URL) -> Bool {
         _activatedEffectView?.status = .processing
         return true
     }
-    func audioEffect(_ audioEffect: SAAudioEffect, didStartProcessAt url: URL) {
+    func audioEffect(_ audioEffect: SAIAudioEffect, didStartProcessAt url: URL) {
         _logger.trace()
     }
     
-    func audioEffect(_ audioEffect: SAAudioEffect, didFinishProcessAt url: URL) {
+    func audioEffect(_ audioEffect: SAIAudioEffect, didFinishProcessAt url: URL) {
         _logger.trace()
         
         _playToolbar.confirmButton.isEnabled = true
@@ -409,7 +409,7 @@ extension SAAudioSimulateView: SAAudioEffectDelegate {
         _player = _makePlayer(url)
         _player?.play()
     }
-    func audioEffect(_ audioEffect: SAAudioEffect, didErrorOccur error: NSError) {
+    func audioEffect(_ audioEffect: SAIAudioEffect, didErrorOccur error: NSError) {
         _logger.trace()
         
         // TODO: 弹出提示窗
@@ -419,9 +419,9 @@ extension SAAudioSimulateView: SAAudioEffectDelegate {
 }
 
 
-// MARK: - SAAudioPlayerDelegate
+// MARK: - SAIAudioPlayerDelegate
 
-extension SAAudioSimulateView: SAMAudioPlayerDelegate {
+extension SAIAudioSimulateView: SAMAudioPlayerDelegate {
    
     public func audioPlayer(shouldPreparing audioPlayer: SAMedia.SAMAudioPlayer) -> Bool {
         _logger.trace()
@@ -468,9 +468,9 @@ extension SAAudioSimulateView: SAMAudioPlayerDelegate {
     }
 }
 
-// MARK: - SAAudioRecorderDelegate
+// MARK: - SAIAudioRecorderDelegate
 
-extension SAAudioSimulateView: SAMAudioRecorderDelegate {
+extension SAIAudioSimulateView: SAMAudioRecorderDelegate {
     
     public func audioRecorder(shouldPreparing audioRecorder: SAMedia.SAMAudioRecorder) -> Bool {
         _logger.trace()
@@ -526,11 +526,11 @@ extension SAAudioSimulateView: SAMAudioRecorderDelegate {
 
 
 
-// MARK: - SAAudioStatusViewDelegate
+// MARK: - SAIAudioStatusViewDelegate
 
-extension SAAudioSimulateView: SAAudioStatusViewDelegate {
+extension SAIAudioSimulateView: SAIAudioStatusViewDelegate {
     
-    func statusView(_ statusView: SAAudioStatusView, spectrumViewWillUpdateMeters: SAAudioSpectrumView) {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumViewWillUpdateMeters: SAIAudioSpectrumView) {
         _updateTime()
         if _status.isPlaying {
             _player?.updateMeters()
@@ -539,14 +539,14 @@ extension SAAudioSimulateView: SAAudioStatusViewDelegate {
         }
     }
     
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, peakPowerFor channel: Int) -> Float {
         if _status.isPlaying {
             return _player?.peakPower(forChannel: 0) ?? -160
         } else {
             return _recorder?.peakPower(forChannel: 0) ?? -160
         }
     }
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float {
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, averagePowerFor channel: Int) -> Float {
         if _status.isPlaying {
             return _player?.averagePower(forChannel: 0) ?? -160
         } else {

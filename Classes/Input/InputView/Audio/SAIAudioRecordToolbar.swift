@@ -1,6 +1,6 @@
 //
-//  SAAudioRecordToolbar.swift
-//  SIMChat
+//  SAIAudioRecordToolbar.swift
+//  SAC
 //
 //  Created by sagesse on 9/16/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAAudioRecordToolbar: UIView {
+internal class SAIAudioRecordToolbar: UIView {
     
     var leftView: UIImageView { return _leftView }
     var rightView: UIImageView { return _rightView }

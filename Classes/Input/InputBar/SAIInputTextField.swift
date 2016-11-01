@@ -61,7 +61,7 @@ internal class SAIInputTextField: UITextView {
 }
 
 // 旧的
-//internal class SIMChatInputBarTextView: UITextView {
+//internal class SACInputBarTextView: UITextView {
 //    
 //    required init?(coder aDecoder: NSCoder) {
 //        super.init(coder: aDecoder)
@@ -149,7 +149,7 @@ internal class SAIInputTextField: UITextView {
 //                // 必须显示父视图, 因为这个改变会导致父视图大小改变
 //                self.superview?.layoutIfNeeded()
 //            }
-//            SIMChatNotificationCenter.postNotificationName(SIMChatInputBarFrameDidChangeNotification, object: superview)
+//            SACNotificationCenter.postNotificationName(SACInputBarFrameDidChangeNotification, object: superview)
 //        }
 //    }
 //    
@@ -162,16 +162,16 @@ internal class SAIInputTextField: UITextView {
 //    
 //    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
 //        // 如果是自定义菜单, 完全转发
-//        if SIMChatMenuController.sharedMenuController().isCustomMenu() {
-//            return SIMChatMenuController.sharedMenuController().canPerformAction(action, withSender: sender)
+//        if SACMenuController.sharedMenuController().isCustomMenu() {
+//            return SACMenuController.sharedMenuController().canPerformAction(action, withSender: sender)
 //        }
 //        return super.canPerformAction(action, withSender: sender)
 //    }
 //    
 //    override func forwardingTargetForSelector(aSelector: Selector) -> AnyObject? {
 //        // 如果是自定义菜单, 完全转发
-//        if SIMChatMenuController.sharedMenuController().isCustomMenu() {
-//            return SIMChatMenuController.sharedMenuController().forwardingTargetForSelector(aSelector)
+//        if SACMenuController.sharedMenuController().isCustomMenu() {
+//            return SACMenuController.sharedMenuController().forwardingTargetForSelector(aSelector)
 //        }
 //        return super.forwardingTargetForSelector(aSelector)
 //    }

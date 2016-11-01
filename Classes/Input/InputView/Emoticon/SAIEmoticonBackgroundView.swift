@@ -1,6 +1,6 @@
 //
-//  SAEmoticonBackgroundView.swift
-//  SIMChat
+//  SAIEmoticonBackgroundView.swift
+//  SAC
 //
 //  Created by sagesse on 9/15/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-internal class SAEmoticonBackgroundView: UIView {
+internal class SAIEmoticonBackgroundView: UIView {
     
     var popoverFrame: CGRect {
         set { return frame = newValue }
@@ -16,7 +16,7 @@ internal class SAEmoticonBackgroundView: UIView {
     }
     var presenterFrame: CGRect = .zero
     
-    func boundsOfContent(for type: SAEmoticonType) -> CGRect {
+    func boundsOfContent(for type: SAIEmoticonType) -> CGRect {
         let rect = bounds(for: type)
         
         switch type {
@@ -25,7 +25,7 @@ internal class SAEmoticonBackgroundView: UIView {
         }
     }
    
-    func bounds(for type: SAEmoticonType) -> CGRect {
+    func bounds(for type: SAIEmoticonType) -> CGRect {
         var frame = CGRect.zero
         switch type {
         case .small:
@@ -42,7 +42,7 @@ internal class SAEmoticonBackgroundView: UIView {
         return frame
     }
     
-    func updateBackgroundImages(with type: SAEmoticonType) {
+    func updateBackgroundImages(with type: SAIEmoticonType) {
         guard _type != type else {
             return
         }
@@ -106,7 +106,7 @@ internal class SAEmoticonBackgroundView: UIView {
         addConstraint(_SAEmoticonLayoutConstraintMake(_rightView, .bottom, .equal, self, .bottom))
     }
     
-    private var _type: SAEmoticonType = .small
+    private var _type: SAIEmoticonType = .small
     private var _middleViewBottom: NSLayoutConstraint?
     private var _middleViewCenterX: NSLayoutConstraint?
     

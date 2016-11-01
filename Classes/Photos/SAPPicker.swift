@@ -1,6 +1,6 @@
 //
 //  SAPPicker.swift
-//  SIMChat
+//  SAC
 //
 //  Created by sagesse on 9/21/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -161,7 +161,7 @@ import Photos
     }
     
     internal static var bundle: Bundle? {
-        let bundle = _bundle ?? Bundle(identifier: "SA.SAPhotos")
+        let bundle = _bundle ?? Bundle(identifier: "SA.SAIPhotos")
         _bundle = bundle
         return bundle
     }

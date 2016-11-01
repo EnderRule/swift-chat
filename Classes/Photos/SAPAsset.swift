@@ -1,6 +1,6 @@
 //
 //  SAPAsset.swift
-//  SAPhotos
+//  SAIPhotos
 //
 //  Created by sagesse on 31/10/2016.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -76,7 +76,7 @@ public class SAPAsset: NSObject {
         return CGSize(width: pixelWidth, height: pixelHeight)
     }
     public var image: UIImage? {
-        return image(with: SAPhotoMaximumSize)
+        return image(with: SAIPhotoMaximumSize)
     }
   
     public func size(with orientation: UIImageOrientation) -> CGSize {

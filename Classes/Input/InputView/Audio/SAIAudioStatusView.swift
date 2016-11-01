@@ -1,6 +1,6 @@
 //
-//  SAAudioStatusView.swift
-//  SIMChat
+//  SAIAudioStatusView.swift
+//  SAC
 //
 //  Created by sagesse on 9/18/16.
 //  Copyright © 2016 sagesse. All rights reserved.
@@ -9,22 +9,22 @@
 import UIKit
 
 @objc
-internal protocol SAAudioStatusViewDelegate: NSObjectProtocol {
+internal protocol SAIAudioStatusViewDelegate: NSObjectProtocol {
     
     
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float
-    func statusView(_ statusView: SAAudioStatusView, spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, peakPowerFor channel: Int) -> Float
+    func statusView(_ statusView: SAIAudioStatusView, spectrumView: SAIAudioSpectrumView, averagePowerFor channel: Int) -> Float
     
-    @objc optional func statusView(_ statusView: SAAudioStatusView, spectrumViewWillUpdateMeters: SAAudioSpectrumView)
-    @objc optional func statusView(_ statusView: SAAudioStatusView, spectrumViewDidUpdateMeters: SAAudioSpectrumView)
+    @objc optional func statusView(_ statusView: SAIAudioStatusView, spectrumViewWillUpdateMeters: SAIAudioSpectrumView)
+    @objc optional func statusView(_ statusView: SAIAudioStatusView, spectrumViewDidUpdateMeters: SAIAudioSpectrumView)
 }
 
-internal class SAAudioStatusView: UIView {
+internal class SAIAudioStatusView: UIView {
     
     var textLabel: UILabel {
         return _textLabel
     }
-    var spectrumView: SAAudioSpectrumView {
+    var spectrumView: SAIAudioSpectrumView {
         return _spectrumView
     }
     var activityIndicatorView: UIActivityIndicatorView {
@@ -46,15 +46,15 @@ internal class SAAudioStatusView: UIView {
         get { return _textLabel.textColor }
     }
     
-    var status: SAAudioStatus = .none {
+    var status: SAIAudioStatus = .none {
         willSet {
             _updateStatus(newValue, status)
         }
     }
     
-    weak var delegate: SAAudioStatusViewDelegate?
+    weak var delegate: SAIAudioStatusViewDelegate?
     
-    private func _updateStatus(_ newValue: SAAudioStatus, _ oldValue: SAAudioStatus) {
+    private func _updateStatus(_ newValue: SAIAudioStatus, _ oldValue: SAIAudioStatus) {
         switch newValue {
         case .none: // 默认状态
             
@@ -171,7 +171,7 @@ internal class SAAudioStatusView: UIView {
     }
     
     fileprivate lazy var _textLabel: UILabel = UILabel()
-    fileprivate lazy var _spectrumView: SAAudioSpectrumView = SAAudioSpectrumView()
+    fileprivate lazy var _spectrumView: SAIAudioSpectrumView = SAIAudioSpectrumView()
     fileprivate lazy var _activityIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     override init(frame: CGRect) {
@@ -184,20 +184,20 @@ internal class SAAudioStatusView: UIView {
     }
 }
 
-extension SAAudioStatusView: SAAudioSpectrumViewDataSource {
+extension SAIAudioStatusView: SAIAudioSpectrumViewDataSource {
     
-    func spectrumView(willUpdateMeters spectrumView: SAAudioSpectrumView) {
+    func spectrumView(willUpdateMeters spectrumView: SAIAudioSpectrumView) {
         delegate?.statusView?(self, spectrumViewWillUpdateMeters: spectrumView)
     }
     
-    func spectrumView(_ spectrumView: SAAudioSpectrumView, peakPowerFor channel: Int) -> Float {
+    func spectrumView(_ spectrumView: SAIAudioSpectrumView, peakPowerFor channel: Int) -> Float {
         return delegate?.statusView(self, spectrumView: spectrumView, peakPowerFor: channel) ?? -160
     }
-    func spectrumView(_ spectrumView: SAAudioSpectrumView, averagePowerFor channel: Int) -> Float {
+    func spectrumView(_ spectrumView: SAIAudioSpectrumView, averagePowerFor channel: Int) -> Float {
         return delegate?.statusView(self, spectrumView: spectrumView, averagePowerFor: channel) ?? -160
     }
     
-    func spectrumView(didUpdateMeters spectrumView: SAAudioSpectrumView) {
+    func spectrumView(didUpdateMeters spectrumView: SAIAudioSpectrumView) {
         delegate?.statusView?(self, spectrumViewDidUpdateMeters: spectrumView)
     }
 }
