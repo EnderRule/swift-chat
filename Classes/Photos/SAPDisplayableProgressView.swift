@@ -46,64 +46,55 @@ open class SAPDisplayableProgressView: UIView {
     
     private func _updateOval(with progress: Double, animated: Bool) {
         
-        let st: CGFloat = 6
+        let st: CGFloat = 3
+        let frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(st, st, st, st))
         
-        if _oval1.bounds.size != bounds.size {
-            _oval1.frame = bounds
-            _oval1.path = UIBezierPath(roundedRect: bounds, cornerRadius: bounds.width / 2).cgPath
+        if _mask1.bounds.size != bounds.size {
+            let path = UIBezierPath()
+            
+            path.append(UIBezierPath(roundedRect: frame, cornerRadius: frame.width / 2))
+            
+            _mask1.lineWidth = frame.width
+            _mask1.frame = bounds
+            _mask1.path = path.cgPath
         }
-        if _oval2.bounds.size != bounds.size {
+        if _oval1.bounds.size != bounds.size {
             
-            let frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(st, st, st, st))
-            let center = CGPoint(x: frame.midX, y: frame.midY)
+            let path = UIBezierPath()
             
-            let path1 = UIBezierPath()
-            let path2 = UIBezierPath()
+            path.append(UIBezierPath(roundedRect: bounds, cornerRadius: bounds.width / 2))
+            path.append(UIBezierPath(roundedRect: frame, cornerRadius: frame.width / 2))
             
-            path1.move(to: center)
-            path1.addArc(withCenter: center,
-                         radius: frame.width / 2, 
-                         startAngle: CGFloat(-M_PI_2),
-                         endAngle: CGFloat(-M_PI_2) - CGFloat(2 * M_PI),
-                         clockwise: false)
-            
-            path2.move(to: center)
-            path2.addArc(withCenter: center,
-                         radius: frame.width / 2, 
-                         startAngle: CGFloat(-M_PI_2),
-                         endAngle: CGFloat(-M_PI_2) + CGFloat(2 * M_PI),
-                         clockwise: true)
-            
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
+            _oval1.frame = bounds
+            _oval1.path = path.cgPath
+            _oval1.fillRule = kCAFillRuleEvenOdd
             
             _oval2.frame = bounds
-            _oval2.path = path1.cgPath
+            _oval2.path = UIBezierPath(roundedRect: frame, cornerRadius: frame.width / 2).cgPath
             
-            _oval3.frame = bounds
-            _oval3.path = path2.cgPath
-            _oval3.strokeEnd = (frame.width / 2) / (frame.width * (0.5 + CGFloat(M_PI)))
+            let path2 = UIBezierPath()
             
-            CATransaction.commit()
+            path2.move(to: CGPoint(x: bounds.midX, y: bounds.midY))
+            path2.addLine(to: CGPoint(x: frame.midX, y: frame.minY - _line1.lineWidth / 2))
+            
+            _line1.frame = bounds
+            _line2.frame = bounds
+            _line1.path = path2.cgPath
+            _line2.path = path2.cgPath
             
             _progress = -1
         }
+        
         if _progress != progress {
             _progress = progress
-            
-            let frame = _oval2.frame
-            let angle = CGFloat(2 * M_PI) * CGFloat(progress)
-            
-            let width = frame.width / 2 + _oval2.frame.width * CGFloat(M_PI) * CGFloat(1 - progress)
-            let mwidth = frame.width / 2 + _oval2.frame.width * CGFloat(M_PI)
-            
-            let start = (frame.width / 2) / (frame.width * (0.5 + CGFloat(M_PI)))
             
             if progress > 0 {
                 CATransaction.begin()
                 CATransaction.setDisableActions(true)
-                self._oval3.strokeStart = 0
-                self._oval2.strokeStart = 0
+                
+                _line1.isHidden = false
+                _line2.isHidden = false
+                
                 CATransaction.commit()
             }
             
@@ -114,42 +105,53 @@ open class SAPDisplayableProgressView: UIView {
                 if progress <= 0 || progress >= 1 {
                     CATransaction.begin()
                     CATransaction.setDisableActions(true)
-                    self?._oval3.strokeStart = start
-                    self?._oval2.strokeStart = start
+                    self?._line1.isHidden = true
+                    self?._line2.isHidden = true
                     CATransaction.commit()
                 }
             })
             
-            _oval3.transform = CATransform3DMakeRotation(angle, 0, 0, 1)
-            _oval2.strokeEnd = width / mwidth
+            _mask1.strokeEnd = CGFloat(progress)
+            _line2.transform = CATransform3DMakeRotation(CGFloat(2 * M_PI * progress), 0, 0, 1)
             
             CATransaction.commit()
-            
         }
     }
     
     private func _init() {
         
+        
+        isUserInteractionEnabled = false
+        
+        _mask1.strokeColor = UIColor.white.cgColor
+        _mask1.fillColor = UIColor.clear.cgColor
+        
         _oval1.lineWidth = 1 / UIScreen.main.scale
+        _oval2.lineWidth = 1 / UIScreen.main.scale * 2
+        _line1.lineWidth = 1 / UIScreen.main.scale
+        _line2.lineWidth = 1 / UIScreen.main.scale
+        
         _oval1.strokeColor = UIColor.gray.cgColor
-        _oval1.fillColor = UIColor.clear.cgColor
+        _oval1.fillColor = UIColor.white.cgColor
         
-        _oval2.lineWidth = 1 / UIScreen.main.scale
-        _oval2.strokeColor = UIColor.gray.cgColor
-        _oval2.fillColor = UIColor.clear.cgColor
+        _oval2.strokeColor = UIColor.white.cgColor
+        _oval2.fillColor = UIColor.white.cgColor
+        _oval2.mask = _mask1
         
-        _oval3.lineWidth = 1 / UIScreen.main.scale
-        _oval3.strokeColor = UIColor.gray.cgColor
-        _oval3.fillColor = UIColor.clear.cgColor
+        _line1.strokeColor = UIColor.gray.cgColor
+        _line2.strokeColor = UIColor.gray.cgColor
         
         layer.addSublayer(_oval1)
         layer.addSublayer(_oval2)
-        layer.addSublayer(_oval3)
+        layer.addSublayer(_line1)
+        layer.addSublayer(_line2)
     }
     
+    private var _progress: Double = 0
+    
+    private var _line1: CAShapeLayer = CAShapeLayer()
+    private var _line2: CAShapeLayer = CAShapeLayer()
     private var _oval1: CAShapeLayer = CAShapeLayer()
     private var _oval2: CAShapeLayer = CAShapeLayer()
-    private var _oval3: CAShapeLayer = CAShapeLayer()
-    
-    private var _progress: Double = 0
+    private var _mask1: CAShapeLayer = CAShapeLayer()
 }

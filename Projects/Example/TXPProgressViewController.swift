@@ -17,16 +17,19 @@ class TXPProgressViewController: UIViewController {
         
         stepper.value = Double(slider.value)
         progressView.progress = Double(slider.value)
+        progressView2.progress = Double(slider.value)
     }
     @IBAction func stepChanged(_ sender: Any) {
         _logger.trace(stepper.value)
         
         slider.setValue(Float(stepper.value), animated: true)
         progressView.setProgress(stepper.value, animated: true)
+        progressView2.setProgress(stepper.value, animated: true)
     }
     
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var stepper: UIStepper!
     
     @IBOutlet weak var progressView: SAPDisplayableProgressView!
+    @IBOutlet weak var progressView2: SAPDisplayableProgressView!
 }
