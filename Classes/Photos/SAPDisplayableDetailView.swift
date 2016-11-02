@@ -68,10 +68,19 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
             nframe.origin.x = contentView.frame.maxX - nframe.width - 8
             nframe.origin.y = contentView.frame.maxY - nframe.height - 8
             
-            _logger.trace("\(convert(nframe, from: _containterView)) => \(contentView.superview?.frame)")
+            var bn = convert(nframe, from: contentView.superview)
             
-
-            view.frame = nframe
+            bn.origin.x = min(bn.origin.x, bounds.width - nframe.width - 8)
+            bn.origin.y = min(bn.origin.y, bounds.height - nframe.height - 8)
+            
+            var tn = convert(bn, to: contentView.superview)
+            
+            _logger.trace("\(nframe) => \(bn) => \(tn)")
+            
+            tn.size.width = nframe.width
+            tn.size.height = nframe.height
+            
+            view.frame = tn
         }
     }
     
