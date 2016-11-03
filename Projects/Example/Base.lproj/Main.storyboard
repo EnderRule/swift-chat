@@ -137,8 +137,28 @@
                         <sections>
                             <tableViewSection headerTitle="Photos" id="APx-cs-Lcn" userLabel="Photos">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="32h-Pn-VWJ" style="IBUITableViewCellStyleDefault" id="Us4-aZ-Z99">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="VWy-6W-fw9" style="IBUITableViewCellStyleDefault" id="Z0b-zw-UzZ">
                                         <rect key="frame" x="0.0" y="92" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z0b-zw-UzZ" id="Qnf-fl-9VU">
+                                            <frame key="frameInset" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPContainterView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VWy-6W-fw9">
+                                                    <frame key="frameInset" minX="15" width="290" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="4hT-d3-zzh" kind="show" id="GGE-M8-gNz"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="32h-Pn-VWJ" style="IBUITableViewCellStyleDefault" id="Us4-aZ-Z99">
+                                        <rect key="frame" x="0.0" y="136" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Us4-aZ-Z99" id="BTk-C6-SMY">
                                             <frame key="frameInset" width="320" height="43"/>
@@ -158,7 +178,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="Vwh-EA-0GJ" style="IBUITableViewCellStyleDefault" id="qc2-nb-EAb">
-                                        <rect key="frame" x="0.0" y="136" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="180" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qc2-nb-EAb" id="qey-n8-KOp">
                                             <frame key="frameInset" width="320" height="43"/>
@@ -287,6 +307,39 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oeC-Rm-OH0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3137" y="2154"/>
+        </scene>
+        <!--SAPContainterView-->
+        <scene sceneID="tDB-aY-bm4">
+            <objects>
+                <viewController hidesBottomBarWhenPushed="YES" id="4hT-d3-zzh" customClass="ContainterViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yHP-o2-dNz"/>
+                        <viewControllerLayoutGuide type="bottom" id="udJ-mh-Gqp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4gc-UD-hxD">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="90c-8z-uMD" customClass="SAPContainterView" customModule="SAPhotos">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="90c-8z-uMD" secondAttribute="trailing" id="Ll2-nq-KsX"/>
+                            <constraint firstItem="90c-8z-uMD" firstAttribute="top" secondItem="4gc-UD-hxD" secondAttribute="top" id="gNU-zj-49o"/>
+                            <constraint firstAttribute="bottom" secondItem="90c-8z-uMD" secondAttribute="bottom" id="lgt-9b-vll"/>
+                            <constraint firstItem="90c-8z-uMD" firstAttribute="leading" secondItem="4gc-UD-hxD" secondAttribute="leading" id="tlf-9I-Jw9"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="SAPContainterView" id="tN6-w7-ClU"/>
+                    <connections>
+                        <outlet property="containterView" destination="90c-8z-uMD" id="FPp-hc-j8e"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A7J-iF-DLL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3741" y="2154"/>
         </scene>
     </scenes>
     <resources>

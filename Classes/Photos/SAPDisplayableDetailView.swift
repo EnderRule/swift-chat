@@ -46,41 +46,61 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         return _contentView
     }
     
+    func containterViewDidScroll(_ containterView: SAPContainterView) {
+        _updateEdgeInsets()
+    }
     func containterViewDidZoom(_ containterView: SAPContainterView) {
         _updateEdgeInsets()
     }
+    func containterViewDidRotation(_ containterView: SAPContainterView) {
+        _updateEdgeInsets()
+    }
+    
+    func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
+        if let view = _progressView {
+            UIView.animate(withDuration: 0.1) {
+                view.alpha = 0
+            }
+        }
+        return true
+    }
+    
     func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         // 更新图片
         if let view = view as? UIImageView {
             view.image = view.image?.withOrientation(orientation)
         }
-        
         _updateEdgeInsets()
+        if let view = _progressView, view.alpha != 1 {
+            UIView.animate(withDuration: 0.25) {
+                view.alpha = 1
+            }
+        }
     }
     
     private func _updateEdgeInsets() {
         
         if let view = _progressView, let contentView = _contentView {
             
+            let edg = UIEdgeInsetsMake(8, 8, 8, 8)
+            let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
+            let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
             
-            var nframe = view.frame
+            let width_2 = view.frame.width / 2
+            let height_2 = view.frame.height / 2
             
-            nframe.origin.x = contentView.frame.maxX - nframe.width - 8
-            nframe.origin.y = contentView.frame.maxY - nframe.height - 8
+            var npt = CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2)
+            var pt = convert(npt, from: contentView.superview)
             
-            var bn = convert(nframe, from: contentView.superview)
+            pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
+            pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
             
-            bn.origin.x = min(bn.origin.x, bounds.width - nframe.width - 8)
-            bn.origin.y = min(bn.origin.y, bounds.height - nframe.height - 8)
+            npt = convert(pt, to: contentView.superview)
             
-            var tn = convert(bn, to: contentView.superview)
+            npt.x = min(npt.x, nframe.maxX - width_2)
+            npt.y = min(npt.y, nframe.maxY - height_2)
             
-            _logger.trace("\(nframe) => \(bn) => \(tn)")
-            
-            tn.size.width = nframe.width
-            tn.size.height = nframe.height
-            
-            view.frame = tn
+            view.center = npt
         }
     }
     

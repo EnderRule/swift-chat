@@ -96,6 +96,7 @@
 		0C7DC8031DC8E20B0040F58F /* SAPDisplayableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8021DC8E20B0040F58F /* SAPDisplayableDetailView.swift */; };
 		0C7DC8051DC8E3910040F58F /* SAPDisplayableProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */; };
 		0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */; };
+		0CE8D8E01DCB116300BFFB2A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8DF1DCB116300BFFB2A /* Debugger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -191,6 +192,7 @@
 		0C7DC8021DC8E20B0040F58F /* SAPDisplayableDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableDetailView.swift; sourceTree = "<group>"; };
 		0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableProgressView.swift; sourceTree = "<group>"; };
 		0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../../Projects/Example/UIColor+Random.swift"; sourceTree = "<group>"; };
+		0CE8D8DF1DCB116300BFFB2A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Debugger.swift; path = ../Example/Debugger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				0C0BB17B1DC72F2D00B5CF4F /* Logger.swift */,
+				0CE8D8DF1DCB116300BFFB2A /* Debugger.swift */,
 				0C001A971DC73995004A5F08 /* README.md */,
 				0C0BB0401DC72D5C00B5CF4F /* SAPhotos.h */,
 				0C0BB0411DC72D5C00B5CF4F /* Info.plist */,
@@ -522,6 +525,7 @@
 				0C0BB2151DC731B400B5CF4F /* SAPErrorView.swift in Sources */,
 				0C7DC8031DC8E20B0040F58F /* SAPDisplayableDetailView.swift in Sources */,
 				0C0BB2121DC731B400B5CF4F /* SAPBrowserVideoView.swift in Sources */,
+				0CE8D8E01DCB116300BFFB2A /* Debugger.swift in Sources */,
 				0C0BB2111DC731B400B5CF4F /* SAPBrowserImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -410,22 +410,20 @@ fileprivate extension SAPContainterView {
             }
         }
         let completion: (Bool) -> Void = { [_scrollView] isFinished in
-            handler?(isFinished)
             
-            guard oldOrientation != newOrientation else {
-                return
+            if oldOrientation != newOrientation {
+                
+                _scrollView.transform = .identity
+                _scrollView.frame = self.bounds
+                
+                view?.frame = nbounds
+                view?.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
             }
             
-            _scrollView.transform = .identity
-            _scrollView.frame = self.bounds
-            
-            view?.frame = nbounds
-            view?.center = CGPoint(x: _scrollView.bounds.midX, y: _scrollView.bounds.midY)
+            handler?(isFinished)
         }
-        
         // update
         _orientation = newOrientation
-        
         // can use animation?
         if !animated {
             animations()
@@ -445,6 +443,7 @@ fileprivate extension SAPContainterView {
         _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
         // state is end?
         guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
+            delegate?.containterViewDidRotation?(self)
             return
         }
         // call update orientation
