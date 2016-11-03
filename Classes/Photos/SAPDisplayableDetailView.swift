@@ -118,9 +118,6 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         
         addSubview(_containterView)
         
-        backgroundColor = .random
-        _containterView.backgroundColor = .random
-        
         
         let view = UIImageView()
         let image = UIImage(named: "t3.jpg")
