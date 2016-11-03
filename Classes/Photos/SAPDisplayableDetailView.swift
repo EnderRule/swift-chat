@@ -80,7 +80,7 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     
     private func _updateEdgeInsets() {
         
-        if let view = _progressView, let contentView = _contentView {
+        if let view = _progressView, let contentView = _contentView, !_containterView.isRotationing {
             
             let edg = UIEdgeInsetsMake(8, 8, 8, 8)
             let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
@@ -89,18 +89,12 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
             let width_2 = view.frame.width / 2
             let height_2 = view.frame.height / 2
             
-            var npt = CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2)
-            var pt = convert(npt, from: contentView.superview)
+            var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: contentView.superview)
             
             pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
             pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
             
-            npt = convert(pt, to: contentView.superview)
-            
-            npt.x = min(npt.x, nframe.maxX - width_2)
-            npt.y = min(npt.y, nframe.maxY - height_2)
-            
-            view.center = npt
+            view.center = pt
         }
     }
     
@@ -139,7 +133,8 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         
         _progressView = view2
         
-        _containterView.addSubview(view2)
+        
+        addSubview(view2)
     }
     
     private var _contentInset: UIEdgeInsets = .zero

@@ -30,7 +30,7 @@
 		0CCD07C41DC8F4CA00372008 /* TXPProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */; };
 		0CCD07C61DC8FAFB00372008 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCD07C51DC8FAFB00372008 /* Logger.swift */; };
 		0CE8D8DE1DCB0D0100BFFB2A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */; };
-		0CE8D8E21DCB2E5700BFFB2A /* ContainterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */; };
+		0CE8D8E21DCB2E5700BFFB2A /* TXPContainterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E11DCB2E5700BFFB2A /* TXPContainterViewController.swift */; };
 		0CE8D8E61DCB30CE00BFFB2A /* t3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */; };
 /* End PBXBuildFile section */
 
@@ -73,7 +73,7 @@
 		0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TXPProgressViewController.swift; sourceTree = "<group>"; };
 		0CCD07C51DC8FAFB00372008 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 		0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
-		0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainterViewController.swift; sourceTree = "<group>"; };
+		0CE8D8E11DCB2E5700BFFB2A /* TXPContainterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TXPContainterViewController.swift; sourceTree = "<group>"; };
 		0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t3.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,8 +147,8 @@
 			isa = PBXGroup;
 			children = (
 				0C3F7AED1DC74FFE00461848 /* ContactsViewController.swift */,
-				0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */,
 				0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */,
+				0CE8D8E11DCB2E5700BFFB2A /* TXPContainterViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -241,7 +241,7 @@
 				0C3F7AEE1DC74FFE00461848 /* ContactsViewController.swift in Sources */,
 				0C001AB11DC742C3004A5F08 /* AppDelegate.swift in Sources */,
 				0C001CF11DC74957004A5F08 /* FPSLabel.swift in Sources */,
-				0CE8D8E21DCB2E5700BFFB2A /* ContainterViewController.swift in Sources */,
+				0CE8D8E21DCB2E5700BFFB2A /* TXPContainterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

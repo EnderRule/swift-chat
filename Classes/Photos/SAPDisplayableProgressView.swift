@@ -102,6 +102,9 @@ open class SAPDisplayableProgressView: UIView {
             
             CATransaction.setDisableActions(!animated)
             CATransaction.setCompletionBlock({ [weak self] in
+                guard self?._progress == progress else {
+                    return
+                }
                 if progress <= 0 || progress >= 1 {
                     CATransaction.begin()
                     CATransaction.setDisableActions(true)
