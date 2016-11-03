@@ -46,7 +46,7 @@ open class SAPDisplayableProgressView: UIView {
     
     private func _updateOval(with progress: Double, animated: Bool) {
         
-        let st: CGFloat = 3
+        let st: CGFloat = 2
         let frame = UIEdgeInsetsInsetRect(bounds, UIEdgeInsetsMake(st, st, st, st))
         
         if _mask1.bounds.size != bounds.size {

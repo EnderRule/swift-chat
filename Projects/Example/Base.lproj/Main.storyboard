@@ -281,7 +281,7 @@
         <!--SAPDisplayableDetailView-->
         <scene sceneID="uBz-27-uep">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="gj4-8S-5k6" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="gj4-8S-5k6" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oNA-g3-S4O"/>
                         <viewControllerLayoutGuide type="bottom" id="IOP-i1-WHf"/>

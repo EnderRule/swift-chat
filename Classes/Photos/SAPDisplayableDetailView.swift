@@ -123,19 +123,20 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         
         
         let view = UIImageView()
+        let image = UIImage(named: "t3.jpg")
         
-        view.image = UIImage(named: "t3.jpg")
+        view.image = image
         view.backgroundColor = .random
         view.isUserInteractionEnabled = false
         
         _containterView.addSubview(view)
-        _containterView.contentSize = CGSize(width: 1600, height: 1200)
+        _containterView.contentSize = image?.size ?? CGSize(width: 1600, height: 1200)
         _contentView = view
         
         
         let view2 = SAPDisplayableProgressView()
         
-        view2.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
+        view2.frame = CGRect(x: 0, y: 0, width: 22, height: 22)
         view2.progress = 0.2
         view2.isUserInteractionEnabled = false
         

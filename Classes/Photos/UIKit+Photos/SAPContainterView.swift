@@ -286,7 +286,9 @@ import UIKit
         return delegate?.viewForZooming?(in: self)
     }
     
-    fileprivate lazy var _scrollView: UIScrollView = SAPContainterScrollView()
+    fileprivate lazy var _scrollView: UIScrollView = UIScrollView()
+    fileprivate lazy var _backgroundView: UIImageView = UIImageView()
+    
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))
     
     
@@ -306,6 +308,12 @@ fileprivate extension SAPContainterView {
         
         clipsToBounds = true
         
+        // 主要是为了阻止automaticallyAdjustsScrollViewInsets
+        _backgroundView.frame = bounds
+        _backgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _backgroundView.isHidden = true
+        _backgroundView.isUserInteractionEnabled = false
+        
         _scrollView.frame = bounds
         _scrollView.delegate = self
         _scrollView.clipsToBounds = false
@@ -318,6 +326,7 @@ fileprivate extension SAPContainterView {
         
         _rotationGestureRecognizer.delegate = self
         
+        super.addSubview(_backgroundView)
         super.addSubview(_scrollView)
         super.addGestureRecognizer(_rotationGestureRecognizer)
     }
