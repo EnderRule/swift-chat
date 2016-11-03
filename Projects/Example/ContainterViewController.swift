@@ -1,5 +1,5 @@
 //
-//  ContainterViewController.swift
+//  TXPContainterViewController.swift
 //  Example
 //
 //  Created by sagesse on 03/11/2016.
@@ -9,7 +9,7 @@
 import UIKit
 import SAPhotos
 
-class ContainterViewController: UIViewController, SAPContainterViewDelegate {
+class TXPContainterViewController: UIViewController, SAPContainterViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()

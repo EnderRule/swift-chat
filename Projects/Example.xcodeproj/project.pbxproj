@@ -147,8 +147,8 @@
 			isa = PBXGroup;
 			children = (
 				0C3F7AED1DC74FFE00461848 /* ContactsViewController.swift */,
-				0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */,
 				0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */,
+				0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
