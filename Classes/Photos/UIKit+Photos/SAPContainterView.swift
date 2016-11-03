@@ -38,6 +38,7 @@ import UIKit
     @objc optional func containterViewDidEndZooming(_ containterView: SAPContainterView, with view: UIView?, atScale scale: CGFloat) // scale between minimum and maximum. called after any 'bounce' animations
 
     @objc optional func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool // called before the scroll view begins zooming its content
+    @objc optional func containterViewWillEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation)
     @objc optional func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
 }
 
@@ -452,7 +453,7 @@ fileprivate extension SAPContainterView {
         _scrollView.transform = CGAffineTransform(rotationAngle: sender.rotation)
         // state is end?
         guard sender.state == .ended || sender.state == .cancelled || sender.state == .failed else {
-            delegate?.containterViewDidRotation?(self)
+            //delegate?.containterViewDidRotation?(self)
             return
         }
         // call update orientation

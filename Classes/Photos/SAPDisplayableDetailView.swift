@@ -26,64 +26,38 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     func setProgress(_ progress: Double, animated: Bool) {
-       
+        
+        _progressView.setProgress(progress, animated: _progress < progress && animated) 
         _progress = progress
-        _progressView?.setProgress(progress, animated: animated)
         
         if fabs(1 - progress) < 0.000001 {
             // 隐藏进度条
-            guard let view = _progressView else {
+            guard animated else {
+                _hideProgressView(animated: animated)
                 return
             }
-            guard animated && !_containterView.isRotationing else {
-                _progressView?.removeFromSuperview()
-                _progressView = nil
-                return
-            }
-            UIView.animate(withDuration: 0.25, delay: 0.25, options: .curveEaseIn, animations: {
-                view.alpha = 0
-            }, completion: { isFinished in
+            // 等待动画完成
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(250)) {
                 guard progress == self._progress else {
                     return
                 }
-                self._progressView?.removeFromSuperview()
-                self._progressView = nil
-            })
+                self._hideProgressView(animated: animated)
+            }
         } else {
             // 显示进度条
-            let view = _progressView ?? SAPDisplayableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
-            
-            _progressView = view
-            _updateEdgeInsets()
-            
-            guard view.superview != self else {
+            guard _canChangeProgressView else {
                 return
             }
-            addSubview(view)
-            _progressView?.setProgress(progress, animated: animated)
-            
-            guard !_containterView.isRotationing else {
-                view.alpha = 0
-                return
-            }
-            guard animated  else {
-                view.alpha = 1
-                return
-            }
-            
-            view.alpha = 0
-            UIView.transition(with: view, duration: 0.25, options: .curveEaseIn, animations: {
-                view.alpha = 1
-            }, completion: { isFinished in
-                // ..
-            })
+            _showProgressView(animated: animated)
         }
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        _updateEdgeInsets()
+        if let contentView = _contentView, _cacheBounds?.size != contentView.bounds.size {
+            _updateEdgeInsets()
+        }
     }
     
     // MARK: - Events
@@ -109,25 +83,19 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     func containterViewDidScroll(_ containterView: SAPContainterView) {
-        if !containterView.isRotationing {
+        if _canChangeProgressView {
             _updateEdgeInsets()
         }
     }
     func containterViewDidZoom(_ containterView: SAPContainterView) {
-        if !containterView.isRotationing {
+        if _canChangeProgressView {
             _updateEdgeInsets()
         }
     }
-//    func containterViewDidRotation(_ containterView: SAPContainterView) {
-//        _updateEdgeInsets()
-//    }
     
     func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
-        if let view = _progressView {
-            UIView.animate(withDuration: 0.1) {
-                view.alpha = 0
-            }
-        }
+        _canChangeProgressView = false
+        _hideProgressView(animated: false)
         return true
     }
     
@@ -137,30 +105,87 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
             view.image = view.image?.withOrientation(orientation)
         }
         _updateEdgeInsets()
-        if let view = _progressView, view.alpha != 1 {
-            UIView.animate(withDuration: 0.25) {
-                view.alpha = 1
-            }
+        _showProgressView(animated: true)
+        _canChangeProgressView = true
+    }
+    
+    private func _showProgressView(animated: Bool) {
+        guard _progressViewIsHidden else {
+            return
         }
+        _progressViewIsHidden = false
+        
+        // prepare
+        let view = _progressView
+        view.alpha = 0
+        view.isHidden = false
+        addSubview(view)
+        
+        let animations: (Void) -> Void = {
+            view.alpha = 1
+        }
+        let completion: (Bool) -> Void = { _ in
+            guard !self._progressViewIsHidden else {
+                return
+            }
+            view.alpha = 1
+            view.isHidden = false
+        }
+        guard animated else {
+            animations()
+            completion(false)
+            return
+        }
+        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: animations, completion: completion)
+    }
+    private func _hideProgressView(animated: Bool) {
+        guard !_progressViewIsHidden else {
+            return
+        }
+        _progressViewIsHidden = true
+        
+        // prepare
+        let view = _progressView
+        view.alpha = 1
+        view.isHidden = false
+        
+        let animations: (Void) -> Void = {
+            view.alpha = 0
+        }
+        let completion: (Bool) -> Void = { _ in
+            guard self._progressViewIsHidden else {
+                return
+            }
+            view.alpha = 1
+            view.isHidden = true
+            view.removeFromSuperview()
+        }
+        guard animated else {
+            animations()
+            completion(false)
+            return
+        }
+        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: animations, completion: completion)
     }
     
     private func _updateEdgeInsets() {
-        
-        if let view = _progressView, let contentView = _contentView {
-            let edg = UIEdgeInsetsMake(8, 8, 8, 8)
-            let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
-            let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
-            
-            let width_2 = view.frame.width / 2
-            let height_2 = view.frame.height / 2
-            
-            var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: contentView.superview)
-            
-            pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
-            pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
-            
-            view.center = pt
+        guard let contentView = _contentView else {
+            return
         }
+        let edg = UIEdgeInsetsMake(8, 8, 8, 8)
+        let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
+        let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
+        
+        let width_2 = _progressView.frame.width / 2
+        let height_2 = _progressView.frame.height / 2
+        
+        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: contentView.superview)
+        
+        pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
+        pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
+        
+        _progressView.center = pt
+        _cacheBounds = contentView.bounds
     }
     
     private func _init() {
@@ -189,9 +214,10 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         _containterView.contentSize = image?.size ?? CGSize(width: 1600, height: 1200)
         _contentView = view
         
-        
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
+        
+        //progress = 0.2
         let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
         
         RunLoop.current.add(t, forMode: .commonModes)
@@ -210,13 +236,16 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     
     var timer: Timer?
     
+    private var _cacheBounds: CGRect?
+    private var _canChangeProgressView: Bool = true
+    
     private var _contentInset: UIEdgeInsets = .zero
     
     private var _contentView: UIView?
     
     private var _progress: Double = 1
-    private var _progressView: SAPDisplayableProgressView?
-    private var _progressIsAnimating: Bool = false
+    private var _progressView: SAPDisplayableProgressView = SAPDisplayableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    private var _progressViewIsHidden: Bool = true
     
     private var _controlView: UIView?
     
