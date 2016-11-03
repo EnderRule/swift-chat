@@ -20,15 +20,77 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         _init()
     }
     
+    var progress: Double {
+        set { return setProgress(newValue, animated: false) }
+        get { return _progress }
+    }
+    
+    func setProgress(_ progress: Double, animated: Bool) {
+       
+        _progress = progress
+        _progressView?.setProgress(progress, animated: animated)
+        
+        if fabs(1 - progress) < 0.000001 {
+            // 隐藏进度条
+            guard let view = _progressView else {
+                return
+            }
+            guard animated && !_containterView.isRotationing else {
+                _progressView?.removeFromSuperview()
+                _progressView = nil
+                return
+            }
+            UIView.animate(withDuration: 0.25, delay: 0.25, options: .curveEaseIn, animations: {
+                view.alpha = 0
+            }, completion: { isFinished in
+                guard progress == self._progress else {
+                    return
+                }
+                self._progressView?.removeFromSuperview()
+                self._progressView = nil
+            })
+        } else {
+            // 显示进度条
+            let view = _progressView ?? SAPDisplayableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+            
+            _progressView = view
+            _updateEdgeInsets()
+            
+            guard view.superview != self else {
+                return
+            }
+            addSubview(view)
+            _progressView?.setProgress(progress, animated: animated)
+            
+            guard !_containterView.isRotationing else {
+                view.alpha = 0
+                return
+            }
+            guard animated  else {
+                view.alpha = 1
+                return
+            }
+            
+            view.alpha = 0
+            UIView.transition(with: view, duration: 0.25, options: .curveEaseIn, animations: {
+                view.alpha = 1
+            }, completion: { isFinished in
+                // ..
+            })
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-       
+        
         _updateEdgeInsets()
     }
     
     // MARK: - Events
     
     dynamic func tapHandler(_ sender: AnyObject) {
+        _logger.trace()
+        
     }
     dynamic func doubleTapHandler(_ sender: UITapGestureRecognizer) {
         guard let contentView = _contentView else {
@@ -47,14 +109,18 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     func containterViewDidScroll(_ containterView: SAPContainterView) {
-        _updateEdgeInsets()
+        if !containterView.isRotationing {
+            _updateEdgeInsets()
+        }
     }
     func containterViewDidZoom(_ containterView: SAPContainterView) {
-        _updateEdgeInsets()
+        if !containterView.isRotationing {
+            _updateEdgeInsets()
+        }
     }
-    func containterViewDidRotation(_ containterView: SAPContainterView) {
-        _updateEdgeInsets()
-    }
+//    func containterViewDidRotation(_ containterView: SAPContainterView) {
+//        _updateEdgeInsets()
+//    }
     
     func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
         if let view = _progressView {
@@ -80,8 +146,7 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     
     private func _updateEdgeInsets() {
         
-        if let view = _progressView, let contentView = _contentView, !_containterView.isRotationing {
-            
+        if let view = _progressView, let contentView = _contentView {
             let edg = UIEdgeInsetsMake(8, 8, 8, 8)
             let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
             let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
@@ -125,24 +190,35 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         _contentView = view
         
         
-        let view2 = SAPDisplayableProgressView()
+        _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
-        view2.frame = CGRect(x: 0, y: 0, width: 22, height: 22)
-        view2.progress = 0.2
-        view2.isUserInteractionEnabled = false
+        let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
         
-        _progressView = view2
+        RunLoop.current.add(t, forMode: .commonModes)
         
-        
-        addSubview(view2)
+        self.timer = t
+        self.timer?.fire()
     }
+    func clock() {
+        
+        if self.progress > 1 || fabs(1 - self.progress) < 0.000001 {
+            self.setProgress(0, animated: true)
+        } else {
+            self.setProgress(progress + 0.25, animated: true)
+        }
+    }
+    
+    var timer: Timer?
     
     private var _contentInset: UIEdgeInsets = .zero
     
     private var _contentView: UIView?
     
+    private var _progress: Double = 1
+    private var _progressView: SAPDisplayableProgressView?
+    private var _progressIsAnimating: Bool = false
+    
     private var _controlView: UIView?
-    private var _progressView: UIView?
     
     private lazy var _containterView: SAPContainterView = SAPContainterView()
     

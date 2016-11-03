@@ -105,7 +105,8 @@ open class SAPDisplayableProgressView: UIView {
                 guard self?._progress == progress else {
                     return
                 }
-                if progress <= 0 || progress >= 1 {
+                
+                if progress <= 0.000001 || progress >= 1 || fabs(1 - progress) <= 0.000001 {
                     CATransaction.begin()
                     CATransaction.setDisableActions(true)
                     self?._line1.isHidden = true

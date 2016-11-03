@@ -58,7 +58,7 @@
                                 <rect key="frame" x="0.0" y="92" width="320" height="64"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gK5-H1-rd5" id="nN2-CD-ldT">
-                                    <frame key="frameInset" width="320" height="63"/>
+                                    <frame key="frameInset" width="320" height="63.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="head" translatesAutoresizingMaskIntoConstraints="NO" id="3Xn-gg-UA5">
@@ -141,11 +141,11 @@
                                         <rect key="frame" x="0.0" y="92" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z0b-zw-UzZ" id="Qnf-fl-9VU">
-                                            <frame key="frameInset" width="320" height="43"/>
+                                            <frame key="frameInset" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPContainterView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VWy-6W-fw9">
-                                                    <frame key="frameInset" minX="15" width="290" height="43"/>
+                                                    <frame key="frameInset" minX="15" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -161,11 +161,11 @@
                                         <rect key="frame" x="0.0" y="136" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Us4-aZ-Z99" id="BTk-C6-SMY">
-                                            <frame key="frameInset" width="320" height="43"/>
+                                            <frame key="frameInset" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPDisplayableDetailView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="32h-Pn-VWJ">
-                                                    <frame key="frameInset" minX="15" width="290" height="43"/>
+                                                    <frame key="frameInset" minX="15" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -181,11 +181,11 @@
                                         <rect key="frame" x="0.0" y="180" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qc2-nb-EAb" id="qey-n8-KOp">
-                                            <frame key="frameInset" width="320" height="43"/>
+                                            <frame key="frameInset" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPDisplayableProgressView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Vwh-EA-0GJ">
-                                                    <frame key="frameInset" minX="15" width="290" height="43"/>
+                                                    <frame key="frameInset" minX="15" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -314,13 +314,31 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="90c-8z-uMD" customClass="SAPContainterView" customModule="SAPhotos"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oLT-rT-ELX">
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="0.5" id="YPo-gg-API"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y2e-fs-ud9">
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="0.5" id="esa-lV-GfZ"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="oLT-rT-ELX" firstAttribute="top" secondItem="4gc-UD-hxD" secondAttribute="top" id="3fV-8l-Dpa"/>
+                            <constraint firstItem="Y2e-fs-ud9" firstAttribute="leading" secondItem="4gc-UD-hxD" secondAttribute="leading" id="3oV-lx-O7A"/>
+                            <constraint firstItem="Y2e-fs-ud9" firstAttribute="centerY" secondItem="4gc-UD-hxD" secondAttribute="centerY" id="6Bl-2F-vbd"/>
                             <constraint firstAttribute="trailing" secondItem="90c-8z-uMD" secondAttribute="trailing" id="Ll2-nq-KsX"/>
+                            <constraint firstAttribute="trailing" secondItem="Y2e-fs-ud9" secondAttribute="trailing" id="P2i-NJ-eLm"/>
+                            <constraint firstAttribute="bottom" secondItem="oLT-rT-ELX" secondAttribute="bottom" id="SAB-Pc-aOF"/>
                             <constraint firstItem="90c-8z-uMD" firstAttribute="top" secondItem="4gc-UD-hxD" secondAttribute="top" id="gNU-zj-49o"/>
                             <constraint firstAttribute="bottom" secondItem="90c-8z-uMD" secondAttribute="bottom" id="lgt-9b-vll"/>
                             <constraint firstItem="90c-8z-uMD" firstAttribute="leading" secondItem="4gc-UD-hxD" secondAttribute="leading" id="tlf-9I-Jw9"/>
+                            <constraint firstItem="oLT-rT-ELX" firstAttribute="centerX" secondItem="4gc-UD-hxD" secondAttribute="centerX" id="wec-OX-Wqf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="SAPContainterView" id="tN6-w7-ClU"/>
@@ -330,7 +348,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="A7J-iF-DLL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3439" y="2158"/>
+            <point key="canvasLocation" x="3438.75" y="2157.0422535211269"/>
         </scene>
     </scenes>
     <resources>

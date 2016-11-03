@@ -31,12 +31,6 @@ class TXPContainterViewController: UIViewController, SAPContainterViewDelegate {
         containterView.addGestureRecognizer(tap)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        view.debugger.addPoint(view.center, key: "center")
-    }
-    
     func tapHandler(_ sender: UITapGestureRecognizer) {
         
         let pt = sender.location(in: imageView)
