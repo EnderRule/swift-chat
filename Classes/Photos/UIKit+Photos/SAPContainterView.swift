@@ -286,7 +286,7 @@ import UIKit
         return delegate?.viewForZooming?(in: self)
     }
     
-    fileprivate lazy var _scrollView: UIScrollView = UIScrollView()
+    fileprivate lazy var _scrollView: UIScrollView = SAPContainterScrollView()
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))
     
     

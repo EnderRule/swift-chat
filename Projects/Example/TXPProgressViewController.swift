@@ -22,6 +22,7 @@ class TXPProgressViewController: UIViewController {
     @IBAction func stepChanged(_ sender: Any) {
         _logger.trace(stepper.value)
         
+        
         slider.setValue(Float(stepper.value), animated: true)
         progressView.setProgress(stepper.value, animated: true)
         progressView2.setProgress(stepper.value, animated: true)

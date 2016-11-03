@@ -31,6 +31,7 @@
 		0CCD07C61DC8FAFB00372008 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCD07C51DC8FAFB00372008 /* Logger.swift */; };
 		0CE8D8DE1DCB0D0100BFFB2A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */; };
 		0CE8D8E21DCB2E5700BFFB2A /* ContainterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */; };
+		0CE8D8E61DCB30CE00BFFB2A /* t3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -73,6 +74,7 @@
 		0CCD07C51DC8FAFB00372008 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 		0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
 		0CE8D8E11DCB2E5700BFFB2A /* ContainterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainterViewController.swift; sourceTree = "<group>"; };
+		0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t3.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 		0C001AAF1DC742C3004A5F08 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */,
 				0C3346B11DC9C55200614AEA /* t1_g.jpg */,
 				0C3346B21DC9C55200614AEA /* t1_t.jpg */,
 				0C3346B31DC9C55200614AEA /* t1.jpg */,
@@ -220,6 +223,7 @@
 				0C3346B91DC9C55200614AEA /* t2_t.jpg in Resources */,
 				0C3346B81DC9C55200614AEA /* t1.jpg in Resources */,
 				0C001AB61DC742C3004A5F08 /* Main.storyboard in Resources */,
+				0CE8D8E61DCB30CE00BFFB2A /* t3.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

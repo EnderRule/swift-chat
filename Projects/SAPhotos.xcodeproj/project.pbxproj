@@ -97,6 +97,7 @@
 		0C7DC8051DC8E3910040F58F /* SAPDisplayableProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */; };
 		0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */; };
 		0CE8D8E01DCB116300BFFB2A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8DF1DCB116300BFFB2A /* Debugger.swift */; };
+		0CE8D8E41DCB2FB100BFFB2A /* SAPContainterScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8E31DCB2FB100BFFB2A /* SAPContainterScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -193,6 +194,7 @@
 		0C7DC8041DC8E3910040F58F /* SAPDisplayableProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPDisplayableProgressView.swift; sourceTree = "<group>"; };
 		0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../../Projects/Example/UIColor+Random.swift"; sourceTree = "<group>"; };
 		0CE8D8DF1DCB116300BFFB2A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Debugger.swift; path = ../Example/Debugger.swift; sourceTree = "<group>"; };
+		0CE8D8E31DCB2FB100BFFB2A /* SAPContainterScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPContainterScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -346,6 +348,7 @@
 			children = (
 				0C0BB1DD1DC731B400B5CF4F /* SAPButtonBarItem.swift */,
 				0C0BB1DE1DC731B400B5CF4F /* SAPContainterView.swift */,
+				0CE8D8E31DCB2FB100BFFB2A /* SAPContainterScrollView.swift */,
 				0C0BB1DF1DC731B400B5CF4F /* SAPImageView.swift */,
 				0C0BB1E01DC731B400B5CF4F /* SAPNavigationBar.swift */,
 				0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */,
@@ -525,6 +528,7 @@
 				0C0BB2151DC731B400B5CF4F /* SAPErrorView.swift in Sources */,
 				0C7DC8031DC8E20B0040F58F /* SAPDisplayableDetailView.swift in Sources */,
 				0C0BB2121DC731B400B5CF4F /* SAPBrowserVideoView.swift in Sources */,
+				0CE8D8E41DCB2FB100BFFB2A /* SAPContainterScrollView.swift in Sources */,
 				0CE8D8E01DCB116300BFFB2A /* Debugger.swift in Sources */,
 				0C0BB2111DC731B400B5CF4F /* SAPBrowserImageView.swift in Sources */,
 			);

@@ -124,7 +124,7 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         
         let view = UIImageView()
         
-        view.image = UIImage(named: "t1_g.jpg")
+        view.image = UIImage(named: "t3.jpg")
         view.backgroundColor = .random
         view.isUserInteractionEnabled = false
         
