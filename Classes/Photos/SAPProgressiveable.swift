@@ -95,19 +95,7 @@ extension NSObject: ProgressiveObserver {
         return _progressiveValues[key] as? Progressiveable
     }
     open dynamic func progressiveValue(forKeyPath keyPath: String) -> Progressiveable? {
-        if let value = self.progressiveValue(forKey: keyPath) {
-            return value
-        }
-        // split property
-        guard let r = keyPath.range(of: "."), !r.isEmpty else {
-            // no children propertys, read the current progressiveValue
-            return self.progressiveValue(forKey: keyPath)
-        }
-        let sk = keyPath.substring(to: r.lowerBound)
-        let skp = keyPath.substring(from: r.upperBound)
-        // read children propertys
-        let ob = self.value(forKey: sk) as? NSObject
-        return ob?.progressiveValue(forKeyPath: skp)
+        return _progressiveValues[keyPath] as? Progressiveable
     }
     
     open dynamic func setProgressiveValue(_ value: Progressiveable?, forKey key: String) {
