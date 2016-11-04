@@ -1,5 +1,5 @@
 //
-//  SAPDisplayableProgressView.swift
+//  SAPBrowseableProgressView.swift
 //  SAPhotos
 //
 //  Created by sagesse on 11/1/16.
@@ -10,7 +10,7 @@ import UIKit
 
 // 44x44
 
-open class SAPDisplayableProgressView: UIView {
+open class SAPBrowseableProgressView: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)

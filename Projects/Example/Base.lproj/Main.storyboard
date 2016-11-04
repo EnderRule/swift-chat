@@ -164,7 +164,7 @@
                                             <frame key="frameInset" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPDisplayableDetailView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="32h-Pn-VWJ">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPBrowseableDetailView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="32h-Pn-VWJ">
                                                     <frame key="frameInset" minX="15" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -184,7 +184,7 @@
                                             <frame key="frameInset" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPDisplayableProgressView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Vwh-EA-0GJ">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="SAPBrowseableProgressView" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Vwh-EA-0GJ">
                                                     <frame key="frameInset" minX="15" width="290" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -211,7 +211,7 @@
             </objects>
             <point key="canvasLocation" x="2835" y="1370"/>
         </scene>
-        <!--SAPDisplayableProgressView-->
+        <!--SAPBrowseableProgressView-->
         <scene sceneID="0Tk-Lw-wtn">
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="BeJ-Bh-XmG" customClass="TXPProgressViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -223,7 +223,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OL1-EG-pgb" customClass="SAPDisplayableProgressView" customModule="SAPhotos">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OL1-EG-pgb" customClass="SAPBrowseableProgressView" customModule="SAPhotos">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="RYY-aV-teJ"/>
@@ -240,7 +240,7 @@
                                     <action selector="stepChanged:" destination="BeJ-Bh-XmG" eventType="valueChanged" id="xlZ-zP-QDn"/>
                                 </connections>
                             </stepper>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ve4-og-VW8" customClass="SAPDisplayableProgressView" customModule="SAPhotos">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ve4-og-VW8" customClass="SAPBrowseableProgressView" customModule="SAPhotos">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="24" id="02U-WE-bZV"/>
@@ -261,7 +261,7 @@
                             <constraint firstItem="OL1-EG-pgb" firstAttribute="centerX" secondItem="WNd-SZ-Ifh" secondAttribute="centerX" constant="-12" id="zNh-nq-zJa"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="SAPDisplayableProgressView" id="mdj-2q-qVg"/>
+                    <navigationItem key="navigationItem" title="SAPBrowseableProgressView" id="mdj-2q-qVg"/>
                     <connections>
                         <outlet property="progressView" destination="OL1-EG-pgb" id="DxU-JY-BgB"/>
                         <outlet property="progressView2" destination="Ve4-og-VW8" id="9eq-uq-GvD"/>
@@ -273,7 +273,7 @@
             </objects>
             <point key="canvasLocation" x="2231" y="2158"/>
         </scene>
-        <!--SAPDisplayableDetailView-->
+        <!--SAPBrowseableDetailView-->
         <scene sceneID="uBz-27-uep">
             <objects>
                 <viewController hidesBottomBarWhenPushed="YES" id="gj4-8S-5k6" sceneMemberID="viewController">
@@ -285,7 +285,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bx-zd-1BF" customClass="SAPDisplayableDetailView" customModule="SAPhotos"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bx-zd-1BF" customClass="SAPBrowseableDetailView" customModule="SAPhotos"/>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -295,7 +295,7 @@
                             <constraint firstItem="9bx-zd-1BF" firstAttribute="leading" secondItem="7oC-SV-0PY" secondAttribute="leading" id="pDH-Xp-BnQ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="SAPDisplayableDetailView" id="OAZ-Le-H3O"/>
+                    <navigationItem key="navigationItem" title="SAPBrowseableDetailView" id="OAZ-Le-H3O"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oeC-Rm-OH0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

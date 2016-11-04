@@ -393,7 +393,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        srand(UInt32(time(nil)))
         
         
-        
         //-(BOOL)_canOpenURL:(id)url publicURLsOnly:(BOOL)only;
         //SBSCopyLocalizedApplicationNameForDisplayIdentifier
         

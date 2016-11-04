@@ -165,6 +165,7 @@ extension UIImageView: SAPProgressiveableObserver {
             guard oldValue !== newValue else {
                 return // no change
             }
+            
             oldValue?.removeObserver(self)
             newValue?.addObserver(self)
             

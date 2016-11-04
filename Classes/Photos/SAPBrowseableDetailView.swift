@@ -1,5 +1,5 @@
 //
-//  SAPDisplayableDetailView.swift
+//  SAPBrowseableDetailView.swift
 //  SAPhotos
 //
 //  Created by sagesse on 11/1/16.
@@ -8,7 +8,10 @@
 
 import UIKit
 
-internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
+class Test: NSObject, Progressiveable {
+}
+
+internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -216,14 +219,19 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
         
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
+        let tx = Test()
+        view.setProgressiveValue(tx, forKey: "image")
+//        view.setProgressiveValue(tx, forKey: "image")
+//        view.setProgressiveValue(nil, forKey: "image")
         
-        //progress = 0.2
-        let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
-        
-        RunLoop.current.add(t, forMode: .commonModes)
-        
-        self.timer = t
-        self.timer?.fire()
+//        
+//        //progress = 0.2
+//        let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
+//        
+//        RunLoop.current.add(t, forMode: .commonModes)
+//        
+//        self.timer = t
+//        self.timer?.fire()
     }
     func clock() {
         
@@ -244,7 +252,7 @@ internal class SAPDisplayableDetailView: UIView, SAPContainterViewDelegate {
     private var _contentView: UIView?
     
     private var _progress: Double = 1
-    private var _progressView: SAPDisplayableProgressView = SAPDisplayableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    private var _progressView: SAPBrowseableProgressView = SAPBrowseableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
     private var _progressViewIsHidden: Bool = true
     
     private var _controlView: UIView?

@@ -31,6 +31,6 @@ class TXPProgressViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var stepper: UIStepper!
     
-    @IBOutlet weak var progressView: SAPDisplayableProgressView!
-    @IBOutlet weak var progressView2: SAPDisplayableProgressView!
+    @IBOutlet weak var progressView: SAPBrowseableProgressView!
+    @IBOutlet weak var progressView2: SAPBrowseableProgressView!
 }
