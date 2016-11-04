@@ -91,24 +91,13 @@ extension NSObject: ProgressiveObserver {
     
     // MARK: - KVC
     
-    ///
-    /// Returns the progressive value for the property identified by a given key.
-    ///
-    /// - Parameter key: The name of one of the receiver's properties.
-    /// - Returns: The progressive value for the property identified by key.
-    ///
     open dynamic func progressiveValue(forKey key: String) -> Progressiveable? {
         return _progressiveValues[key] as? Progressiveable
     }
-    ///
-    /// The default implementation gets the destination object for each relationship using progressiveValue(forKey:)
-    /// and returns the result of a progressiveValue(forKey:) message to the final object
-    ///
-    /// - Parameter keyPath: A key path of the form relationship.property (with one or more relationships); 
-    ///                      for example "department.name" or "department.manager.lastName".
-    /// - Returns: The progressive value for the derived property identified by keyPath. 
-    ///
     open dynamic func progressiveValue(forKeyPath keyPath: String) -> Progressiveable? {
+        if let value = self.progressiveValue(forKey: keyPath) {
+            return value
+        }
         // split property
         guard let r = keyPath.range(of: "."), !r.isEmpty else {
             // no children propertys, read the current progressiveValue
@@ -121,44 +110,11 @@ extension NSObject: ProgressiveObserver {
         return ob?.progressiveValue(forKeyPath: skp)
     }
     
-    ///
-    /// Sets the property of the receiver specified by a given key to a given value.
-    ///
-    /// If key identifies a to-one relationship, relate the object specified by value to the receiver,
-    /// unrelating the previously related object if there was one. 
-    /// Given a collection object and a key that identifies a to-many relationship, 
-    /// relate the objects contained in the collection to the receiver, unrelating previously related objects if there were any.
-    ///
-    /// The search pattern that setValue:forKey: uses is described in Accessor Search Patterns in Key-Value Coding Programming Guide.
-    ///
-    /// In a reference-counted environment, if the instance variable is accessed directly, value is retained.
-    ///
-    /// - Parameters:
-    ///   - value: The value for the property identified by key.
-    ///   - key: The name of one of the receiver's properties.
-    ///
     open dynamic func setProgressiveValue(_ value: Progressiveable?, forKey key: String) {
         _progressiveValues[key] = value
     }
-    ///
-    /// Sets the value for the property identified by a given key path to a given value.
-    ///
-    /// The default implementation of this method gets the destination object for each relationship using value(forKey:), and sends the final object a setValue(_:forKey:) message.
-    ///
-    /// - Parameters:
-    ///   - value: The value for the property identified by keyPath.
-    ///   - keyPath: A key path of the form relationship.property (with one or more relationships): for example "department.name" or "department.manager.lastName."
-    ///
     open dynamic func setProgressiveValue(_ value: Progressiveable?, forKeyPath keyPath: String) {
-        // split property
-        guard let r = keyPath.range(of: "."), !r.isEmpty else {
-            return self.setProgressiveValue(value, forKey: keyPath)
-        }
-        let sk = keyPath.substring(to: r.lowerBound)
-        let skp = keyPath.substring(from: r.upperBound)
-        // read children propertys
-        let ob = self.value(forKey: sk) as? NSObject
-        ob?.setProgressiveValue(value, forKeyPath: skp)
+        _progressiveValues[keyPath] = value
     }
     
     // MARK: - KVO
