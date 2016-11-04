@@ -73,7 +73,7 @@ public protocol Progressiveable {
 }
 
 @objc
-public protocol ProgressiveObserver {
+public protocol ProgressiveObserver: NSObjectProtocol {
     
     ///
     /// Informs the observing object when the progressive value has changed.
@@ -81,9 +81,8 @@ public protocol ProgressiveObserver {
     /// - Parameters:
     ///   - identifier: The identifier
     ///   - object: The source object of the key path keyPath.
-    ///   - change: The dictionary is progressiveable content
     ///
-    func observeProgressiveValue(forIdentifier identifier: String, of object: Progressiveable?, change: [NSKeyValueChangeKey : Any]?)
+    func observeProgressiveValue(forIdentifier identifier: String, of object: Progressiveable?)
 }
 
 
@@ -105,6 +104,26 @@ extension NSObject: ProgressiveObserver {
         _progressiveValues[keyPath] = value
     }
     
+    open dynamic func willChangeProgressiveValue(forKey key: String) {
+        guard let _ = self as? Progressiveable else {
+            return
+        }
+    }
+    open dynamic func didChangeProgressiveValue(forKey key: String) {
+        guard let pv = self as? Progressiveable else {
+            return
+        }
+        _progressiveObservers.forEach { 
+            guard let ob = $0 as? ProgressiveObserverTarget else {
+                return
+            }
+            guard let observer = ob.observer else {
+                return
+            }
+            observer.observeProgressiveValue(forIdentifier: ob.identifier, of: pv)
+        }
+    }
+    
     // MARK: - KVO
     
     ///
@@ -118,7 +137,22 @@ extension NSObject: ProgressiveObserver {
     ///   - identifier: The identifier
     ///
     open dynamic func addProgressiveObserver(_ observer: ProgressiveObserver, forIdentifier identifier: String) {
-        _logger.trace(identifier)
+        guard let _ = self as? Progressiveable else {
+            return
+        }
+        let index = _progressiveObservers.indexOfObject(options: .init(rawValue: 0)) { 
+            guard let ob = $0.0 as? ProgressiveObserverTarget else {
+                return false
+            }
+            guard ob.observer !== observer && ob.identifier == identifier else {
+                return true // is added
+            }
+            return false
+        }
+        guard index == NSNotFound else {
+            return // is added
+        }
+        _progressiveObservers.add(ProgressiveObserverTarget(observer, identifier))
     }
     ///
     /// Stops the observer object from receiving change notifications for progressive value.
@@ -131,14 +165,22 @@ extension NSObject: ProgressiveObserver {
     ///   - identifier: The identifier
     ///
     open dynamic func removeProgressiveObserver(_ observer: ProgressiveObserver, forIdentifier identifier: String) {
-        _logger.trace(identifier)
-    }
-    
-    open dynamic func willChangeProgressiveValue(forKey key: String) {
-        willChangeValue(forKey: "")
-    }
-    open dynamic func didChangeProgressiveValue(forKey key: String) {
-        didChangeValue(forKey: "")
+        guard let _ = self as? Progressiveable else {
+            return
+        }
+        let indexes = _progressiveObservers.indexesOfObjects(options: .init(rawValue: 0)) {
+            guard let ob = $0.0 as? ProgressiveObserverTarget else {
+                return false
+            }
+            guard ob.observer !== nil else {
+                return true // is release
+            }
+            guard ob.observer !== observer && ob.identifier == identifier else {
+                return true // is removed
+            }
+            return false
+        }
+        _progressiveObservers.removeObjects(at: indexes)
     }
     
     ///
@@ -149,9 +191,8 @@ extension NSObject: ProgressiveObserver {
     ///   - object: The source object of the key path keyPath.
     ///   - change: The dictionary is progressiveable content
     ///
-    open dynamic func observeProgressiveValue(forIdentifier identifier: String, of object: Progressiveable?, change: [NSKeyValueChangeKey : Any]?) {
-        _logger.trace()
-        
+    open dynamic func observeProgressiveValue(forIdentifier identifier: String, of object: Progressiveable?) {
+        _logger.trace(identifier)
     }
     
     // MARK: - Ivar
@@ -166,15 +207,26 @@ extension NSObject: ProgressiveObserver {
     }
     
     private static var _progressiveObserversKey: String = "_progressiveObserversKey"
-    private var _progressiveObservers: NSHashTable<ProgressiveObserver> {
-        return objc_getAssociatedObject(self, &NSObject._progressiveValuesKey) as? NSHashTable<ProgressiveObserver> ?? {
-            let dic = NSHashTable<ProgressiveObserver>.weakObjects()
-            objc_setAssociatedObject(self, &NSObject._progressiveValuesKey, dic, .OBJC_ASSOCIATION_RETAIN)
+    private var _progressiveObservers: NSMutableArray {
+        return objc_getAssociatedObject(self, &NSObject._progressiveObserversKey) as? NSMutableArray ?? {
+            let dic = NSMutableArray()
+            objc_setAssociatedObject(self, &NSObject._progressiveObserversKey, dic, .OBJC_ASSOCIATION_RETAIN)
             return dic
         }()
     }
 }
 
+private class ProgressiveObserverTarget: NSObject {
+    
+    init(_ observer: ProgressiveObserver, _ identifier: String) {
+        self.identifier = identifier
+        super.init()
+        self.observer = observer
+    }
+    
+    var identifier: String
+    weak var observer: ProgressiveObserver?
+}
 private class ProgressiveObserveDictionary: NSObject {
     
     init(observer: ProgressiveObserver) {
@@ -205,15 +257,17 @@ private class ProgressiveObserveDictionary: NSObject {
             if let ob = oldValue as? Progressiveable {
                 ob.removeProgressiveObserver(self, forIdentifier: key)
             }
+            _imp[key] = newValue 
             if let ob = newValue as? Progressiveable {
                 ob.addProgressiveObserver(self, forIdentifier: key)
+                // notifi on set
+                observeProgressiveValue(forIdentifier: key, of: ob)
             }
-            return _imp[key] = newValue 
         }
     }
     
-    override func observeProgressiveValue(forIdentifier keyPath: String, of object: Progressiveable?, change: [NSKeyValueChangeKey : Any]?) {
-        _observer?.observeProgressiveValue(forIdentifier: keyPath, of: object, change: change)
+    override func observeProgressiveValue(forIdentifier keyPath: String, of object: Progressiveable?) {
+        _observer?.observeProgressiveValue(forIdentifier: keyPath, of: object)
     }
     
     private lazy var _imp: NSMutableDictionary = NSMutableDictionary()
