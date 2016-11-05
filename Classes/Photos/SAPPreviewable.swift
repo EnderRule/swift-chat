@@ -21,7 +21,7 @@ import UIKit
     
     var previewingFrame: CGRect { get }
     
-    var previewingContent: UIImage? { get }
+    var previewingContent: Progressiveable? { get }
     var previewingContentSize: CGSize { get }
     
     var previewingContentMode: UIViewContentMode { get }

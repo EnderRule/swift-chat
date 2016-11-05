@@ -120,9 +120,8 @@ internal class SAPPreviewerCell: UICollectionViewCell, SAPContainterViewDelegate
 
 extension SAPPreviewerCell: SAPPreviewable {
     
-    var previewingContent: UIImage? {
-        return nil
-        //return _imageView.image
+    var previewingContent: Progressiveable? {
+        return contentView.progressiveValue(forKey: "image")
     }
     var previewingContentSize: CGSize {
         return photo?.size ?? .zero

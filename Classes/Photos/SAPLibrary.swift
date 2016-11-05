@@ -66,10 +66,10 @@ public class SAPLibrary: NSObject {
                 return
             }
             self._requestImage(asset, size, .aspectFill, options) { (img, info) in
-                guard let item = item else {
+                guard item != nil else {
                     return
                 }
-                let os = (item.content as? UIImage)?.size ?? .zero
+                let os = (item?.content as? UIImage)?.size ?? .zero
                 let ns = img?.size ?? .zero
                 // 检查是否己经加载完成了
                 let isError = (info?[PHImageErrorKey] as? NSError) != nil
@@ -78,15 +78,18 @@ public class SAPLibrary: NSObject {
                 
                 // 添加任务到主线程
                 _SAPhotoQueueTasksAdd(.main) {
+                    guard item != nil else {
+                        return
+                    }
                     // 新加载的图片必须比当前的图片大
                     if ns.width >= os.width && ns.height >= os.height {
                         // 更新内容
-                        item.content = img
+                        item?.content = img
                     }
                     // 检查是否己经载完成
                     if isError || isCancel || !isDegraded {
                         // 更新进度
-                        item.progress = 1
+                        item?.progress = 1
                     }
                 }
             }
@@ -288,24 +291,29 @@ private func _SAPhotoQueueTasksAdd(_ queue: DispatchQueue, task: @escaping () ->
     // 合并任务, 减少线程唤醒次数
     objc_sync_enter(SAPLibrary.self)
     
+    var isstart = _SAPhotoQueueTasks != nil
     if _SAPhotoQueueTasks == nil {
         _SAPhotoQueueTasks = [task]
-        // 开启线程
-        queue.async {
-            objc_sync_enter(SAPLibrary.self)
-            let tasks = _SAPhotoQueueTasks
-            _SAPhotoQueueTasks = nil
-            objc_sync_exit(SAPLibrary.self)
-            
-            tasks?.forEach {
-                $0()
-            }
-        }
     } else {
         _SAPhotoQueueTasks?.append(task)
     }
     
     objc_sync_exit(SAPLibrary.self)
+    
+    guard !isstart else {
+        return
+    }
+    // 开启线程
+    queue.async {
+        objc_sync_enter(SAPLibrary.self)
+        let tasks = _SAPhotoQueueTasks
+        _SAPhotoQueueTasks = nil
+        objc_sync_exit(SAPLibrary.self)
+        
+        tasks?.forEach {
+            $0()
+        }
+    }
 }
 
 

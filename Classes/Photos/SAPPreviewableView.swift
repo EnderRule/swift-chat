@@ -11,7 +11,7 @@ import UIKit
 
 internal class SAPPreviewableView: UIView {
     
-    var image: UIImage? {
+    dynamic var image: UIImage? {
         willSet {
             // 添加切换动画
             UIView.performWithoutAnimation {
@@ -21,7 +21,7 @@ internal class SAPPreviewableView: UIView {
             presentationView.alpha = 0
             
             //contentView.setProgressiveValue(<#T##value: Progressiveable?##Progressiveable?#>, forKey: <#T##String#>)
-            //contentView.image = newValue?.withOrientation(.up)
+            contentView.image = newValue//?.withOrientation(.up)
         }
     }
     var imageSize: CGSize = .zero {
@@ -48,7 +48,8 @@ internal class SAPPreviewableView: UIView {
             setNeedsLayout()
             
             imageOrientation = newValue?.previewingContentOrientation ?? .up
-            image = newValue?.previewingContent
+            
+            setProgressiveValue(newValue?.previewingContent, forKey: "image")
             
             imageContentMode = newValue?.previewingContentMode ?? .scaleToFill
             imageSize = newValue?.previewingContentSize ?? .zero

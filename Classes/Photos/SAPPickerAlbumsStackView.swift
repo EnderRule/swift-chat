@@ -29,16 +29,12 @@ internal class SAPPickerAlbumsStackView: UIView {
         }
     }
     
-//    func progressiveable(_ progressiveable: Progressiveable, didChangeContent content: Any?) {
-//        guard let index = _images.index(where: { $1 === progressiveable }) else {
-//            return
-//        }
-//        let key = _images[index].key
-//        guard key < _imageLayers.count else {
-//            return
-//        }
-//        _imageLayers[key].contents = (content as? UIImage)?.cgImage
-//    }
+    override func progressiveValue(_ progressiveValue: Progressiveable?, didChangeContent value: Any?, context: String) {
+        guard let index = Int(context) else {
+            return
+        }
+        _imageLayers[index].contents = (value as? UIImage)?.cgImage
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -100,8 +96,7 @@ internal class SAPPickerAlbumsStackView: UIView {
                 $0.element.isHidden = false
                 $0.element.backgroundColor = UIColor(white: 0.9, alpha: 1).cgColor
                 
-//                _setImage(nil, at: $0.offset)
-                
+                setProgressiveValue(nil, forKey: "\($0.offset)")
                 return
             }
             guard $0.offset < photos.count else {
@@ -109,7 +104,7 @@ internal class SAPPickerAlbumsStackView: UIView {
                 $0.element.isHidden = true
                 $0.element.contentsGravity = kCAGravityResizeAspectFill
                 
-//                return _setImage(nil, at: $0.offset)
+                setProgressiveValue(nil, forKey: "\($0.offset)")
                 return
             }
             let photo = photos[$0.offset]
@@ -117,7 +112,7 @@ internal class SAPPickerAlbumsStackView: UIView {
             $0.element.isHidden = false
             $0.element.backgroundColor = UIColor.white.cgColor
             
-//            _setImage(photo.image(with: size) as? ProgressiveableImage, at: $0.offset)
+            setProgressiveValue(photo.imageItem(with: size), forKey: "\($0.offset)")
         }
         
         if photos.isEmpty {
@@ -144,20 +139,6 @@ internal class SAPPickerAlbumsStackView: UIView {
             _iconView = nil
         }
     }
-    
-//    private func _setImage(_ newValue: ProgressiveableImage?, at index: Int) {
-//        
-//        let oldValue = _images[index] ?? nil
-//        guard oldValue != newValue else {
-//            return
-//        }
-//        
-//        oldValue?.removeObserver(self)
-//        newValue?.addObserver(self)
-//        
-//        _images[index] = newValue
-//        _imageLayers[index].contents = (newValue?.content as? UIImage)?.cgImage
-//    }
     
     private func _init() {
         //_logger.trace()
@@ -188,6 +169,5 @@ internal class SAPPickerAlbumsStackView: UIView {
     private var _iconView: UIImageView?
     private var _badgeView: SAPBadgeView?
     
-//    private lazy var _images: [Int: ProgressiveableImage?] = [:]
     private lazy var _imageLayers: [CALayer] = []
 }

@@ -58,7 +58,7 @@ import UIKit
 public extension NSObject {
     
     open dynamic func progressiveValue(forKey key: String) -> Progressiveable? {
-        return _progressiveValues[key] as? Progressiveable
+        return _progressiveValues[key]
     }
     open dynamic func progressiveValue(forKeyPath keyPath: String) -> Progressiveable? {
         // split property
@@ -171,7 +171,7 @@ public extension NSObject {
     private static var _progressiveObserversKey: String = "_progressiveObserversKey"
     private var _progressiveObservers: NSMutableArray {
         return objc_getAssociatedObject(self, &NSObject._progressiveObserversKey) as? NSMutableArray ?? {
-            let dic = NSMutableArray()
+            let dic = NSMutableArray(capacity: 4)
             objc_setAssociatedObject(self, &NSObject._progressiveObserversKey, dic, .OBJC_ASSOCIATION_RETAIN)
             return dic
         }()
@@ -220,12 +220,12 @@ private class ProgressiveChangeObserveDictionary: NSObject {
         }
     }
     
-    subscript(key: String) -> AnyObject? {
+    subscript(key: String) -> Progressiveable? {
         get {
-            return _imp[key] as? AnyObject
+            return _imp[key] as? Progressiveable
         }
         set { 
-            let newValue = newValue as? Progressiveable
+            let newValue = newValue
             let oldValue = _imp[key] as? Progressiveable
             // value is change?
             guard newValue !== oldValue else {
@@ -249,7 +249,7 @@ private class ProgressiveChangeObserveDictionary: NSObject {
         _observer?.progressiveValue(progressiveValue, didChangeProgress: value, context: context)
     }
     
-    private lazy var _imp: NSMutableDictionary = NSMutableDictionary()
+    private lazy var _imp: NSMutableDictionary = NSMutableDictionary(capacity: 4)
     private weak var _observer: ProgressiveChangeObserver?
 }
 

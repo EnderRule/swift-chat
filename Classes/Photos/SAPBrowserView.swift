@@ -45,9 +45,8 @@ internal class SAPBrowserViewFastPreviewing: NSObject, SAPPreviewable {
     }
     
     
-    var previewingContent: UIImage? {
-        //return photo.image
-        return nil
+    var previewingContent: Progressiveable? {
+        return photo.imageItem
     }
     var previewingContentSize: CGSize {
         return photo.size
@@ -70,8 +69,8 @@ internal class SAPBrowserViewFastPreviewing: NSObject, SAPPreviewable {
 
 internal class SAPBrowserView: UIView, SAPPreviewable {
     
-    var previewingContent: UIImage? {
-        return _imageView.image
+    var previewingContent: Progressiveable? {
+        return _imageView.progressiveValue(forKey: "image")
     }
     var previewingContentSize: CGSize {
         return photo?.size ?? .zero

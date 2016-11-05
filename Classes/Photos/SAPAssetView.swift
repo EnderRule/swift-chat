@@ -16,8 +16,8 @@ internal class SAPAssetView: UIImageView, SAPPreviewable {
         return rect
     }
     
-    var previewingContent: UIImage? {
-        return image
+    var previewingContent: Progressiveable? {
+        return progressiveValue(forKey: "image")
     }
     var previewingContentSize: CGSize {
         return bounds.size
