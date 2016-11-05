@@ -40,7 +40,8 @@ internal class SAPAssetView: UIImageView, SAPPreviewable {
             size.width *= UIScreen.main.scale + 1
             size.height *= UIScreen.main.scale + 1
             
-            image = newValue.image(with: size)
+            // 更新图片
+            setProgressiveValue(newValue.imageItem(with: size), forKey: "image")
             
             _updateIcon(SAPBadge(photo: newValue))
             _updateSelection(with: newValue, animated: false)

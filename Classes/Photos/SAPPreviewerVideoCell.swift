@@ -18,12 +18,12 @@ internal class SAPPreviewerVideoCell: SAPPreviewerCell {
             
             _player.stop()
             
-            newValue?.playerItem { [weak self] item in
-                guard let item = item else {
-                    return
-                }
-                self?._player.item = item
-            }
+//            newValue?.playerItem { [weak self] item in
+//                guard let item = item else {
+//                    return
+//                }
+//                self?._player.item = item
+//            }
         }
     }
     

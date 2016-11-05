@@ -58,7 +58,7 @@ class TXPContainterViewController: UIViewController, SAPContainterViewDelegate {
         return true
     }
     func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
-        imageView.image = imageView.image?.withOrientation(orientation)
+//        imageView.image = imageView.image?.withOrientation(orientation)
     }
     
     lazy var imageView: UIImageView = UIImageView()

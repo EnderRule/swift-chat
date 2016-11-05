@@ -46,7 +46,8 @@ internal class SAPBrowserViewFastPreviewing: NSObject, SAPPreviewable {
     
     
     var previewingContent: UIImage? {
-        return photo.image
+        //return photo.image
+        return nil
     }
     var previewingContentSize: CGSize {
         return photo.size
@@ -100,7 +101,9 @@ internal class SAPBrowserView: UIView, SAPPreviewable {
     var photo: SAPAsset? {
         willSet {
             
-            _imageView.image = newValue?.image?.withOrientation(_orientation)
+//            _imageView.image = newValue?.image?.withOrientation(_orientation)
+            _imageView.setProgressiveValue(newValue?.imageItem, forKey: "image")
+            
             _containterView.contentSize = newValue?.size ?? .zero
             _containterView.zoom(to: _containterView.bounds, with: .up, animated: false)
         }
@@ -404,7 +407,7 @@ extension SAPBrowserView: SAPContainterViewDelegate {
             return
         }
         _orientation = orientation
-        _imageView.image = _imageView.image?.withOrientation(orientation)
+//        _imageView.image = _imageView.image?.withOrientation(orientation)
         _delegate?.browserView?(self, didRotation: photo, orientation: orientation)
     }
 }

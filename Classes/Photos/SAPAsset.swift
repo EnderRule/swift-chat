@@ -12,7 +12,12 @@ import Photos
 public class SAPAsset: NSObject {
     
     public var identifier: String {
-        return asset.localIdentifier
+        if let identifier = _identifier {
+            return identifier
+        }
+        let identifier = asset.localIdentifier
+        _identifier = identifier
+        return identifier
     }
     
     public var pixelWidth: Int { 
@@ -75,10 +80,6 @@ public class SAPAsset: NSObject {
     public var size: CGSize {
         return CGSize(width: pixelWidth, height: pixelHeight)
     }
-    public var image: UIImage? {
-        return image(with: SAPhotoMaximumSize)
-    }
-  
     public func size(with orientation: UIImageOrientation) -> CGSize {
         switch orientation {
         case .left, .leftMirrored, .right, .rightMirrored:
@@ -88,8 +89,16 @@ public class SAPAsset: NSObject {
             return CGSize(width: pixelWidth, height: pixelHeight)
         }
     }
-    public func image(with size: CGSize) -> UIImage? {
-        return SAPLibrary.shared.image(with: self, size: size)
+    
+    public var imageItem: SAPProgressiveItem? {
+        return SAPLibrary.shared.imageItem(with: self, size: SAPhotoMaximumSize)
+    }
+    public func imageItem(with size: CGSize) -> SAPProgressiveItem? {
+        return SAPLibrary.shared.imageItem(with: self, size: size)
+    }
+    
+    public var playerItem: SAPProgressiveItem? {
+        return SAPLibrary.shared.playerItem(with: self)
     }
     
     public var data: Data?
@@ -100,19 +109,6 @@ public class SAPAsset: NSObject {
         return SAPLibrary.shared.data(with: self) { [weak self](data, dataUTI, orientation, info) in
             self?.data = data
             handler(data)
-        }
-    }
-    
-    public weak var playerItem: AVPlayerItem?
-    public func playerItem(with handler: @escaping (AVPlayerItem?) -> Void) {
-        if let playerItem = playerItem {
-            return handler(playerItem)
-        }
-        SAPLibrary.shared.playerItem(with: self) { [weak self](item, info) in
-            self?.playerItem = item
-            DispatchQueue.main.async {
-                handler(item)
-            }
         }
     }
     
@@ -131,6 +127,8 @@ public class SAPAsset: NSObject {
         self.album = album
         super.init()
     }
+    
+    private var _identifier: String?
 }
 
 public func SAPStringForDuration(_ duration: TimeInterval) -> String {

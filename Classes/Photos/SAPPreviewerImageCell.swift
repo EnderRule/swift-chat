@@ -12,7 +12,8 @@ internal class SAPPreviewerImageCell: SAPPreviewerCell {
     
     override var photo: SAPAsset? {
         willSet {
-            _imageView.image = newValue?.image?.withOrientation(orientation)
+//            _imageView.image = newValue?.image?.withOrientation(orientation)
+            _imageView.setProgressiveValue(newValue?.imageItem, forKey: "image")
         }
     }
     
@@ -23,7 +24,7 @@ internal class SAPPreviewerImageCell: SAPPreviewerCell {
     override func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         super.containterViewDidEndRotationing(containterView, with: view, atOrientation: orientation)
         // 更新图片
-        _imageView.image = _imageView.image?.withOrientation(orientation)
+//        _imageView.image = _imageView.image?.withOrientation(orientation)
     }
     
     private lazy var _imageView: SAPImageView = SAPImageView()

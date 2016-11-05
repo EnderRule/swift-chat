@@ -184,13 +184,10 @@ public extension NSObject {
 extension NSObject: ProgressiveChangeObserver {
     
     open dynamic func progressiveValue(_ progressiveValue: Progressiveable?, didChangeContent value: Any?, context: String) {
-        _logger.trace(value)
-        
         setValue(value, forKeyPath: context)
     }
     
     open dynamic func progressiveValue(_ progressiveValue: Progressiveable?, didChangeProgress value: Any?, context: String) {
-        _logger.trace(value)
     }
 }
 

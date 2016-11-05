@@ -19,7 +19,9 @@ internal class SAPPreviewableView: UIView {
                 presentationView.image = contentView.image
             }
             presentationView.alpha = 0
-            contentView.image = newValue?.withOrientation(.up)
+            
+            //contentView.setProgressiveValue(<#T##value: Progressiveable?##Progressiveable?#>, forKey: <#T##String#>)
+            //contentView.image = newValue?.withOrientation(.up)
         }
     }
     var imageSize: CGSize = .zero {

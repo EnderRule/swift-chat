@@ -32,77 +32,106 @@ public class SAPLibrary: NSObject {
         lib.unregisterChangeObserver(observer)
     }
     
-    public func image(with photo: SAPAsset, size: CGSize) -> UIImage? {
+    
+    public func imageItem(with asset: SAPAsset, size: CGSize) -> SAPProgressiveItem? {
         //_logger.trace()
         
+        let key = asset.identifier
         let name = "\(Int(size.width))x\(Int(size.height)).png"
         // 读取缓存
-        if let image = _allCaches[photo.identifier]?[name]?.object {
-            return image
+        if let item = _allCaches[key]?[name]?.object {
+            return item
         }
-        let image = ProgressiveableImage()
+        let item = SAPProgressiveItem(size: size)
         let options = PHImageRequestOptions()
         
         // 获取最接近的一张图片
-        image.content = imageForAlmost(with: photo, size: size)
+        item.content = _cachedImage(with: asset, size: size)
         
         //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
         options.deliveryMode = .opportunistic
         options.resizeMode = .fast
         options.isNetworkAccessAllowed = true
-        
-        // 创建缓冲池
-        if _allCaches.index(forKey: photo.identifier) == nil {
-            _allCaches[photo.identifier] = [:]
+        options.progressHandler = { [weak item](progress, error, stop, info) in
+            item?.progress = progress
         }
-        
-        _allCaches[photo.identifier]?[name] = SAPWKObject(object: image)
-        _queue.async {
-            self._requestImage(photo, size, .aspectFill, options) { (img, info) in
-                let os = image.size
-                let ns = img?.size ?? .zero
-                
-                DispatchQueue.main.async {
-                if ns.width >= os.width && ns.height >= os.height {
-                    image.content = img
-                    
-                    // // 检查是否己经完成了任务
-                    // let isError = (info?[PHImageErrorKey] as? NSError) != nil
-                    // let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
-                    // let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
-                    // let isLoaded = isError || isCancel || !isDegraded
+        // 创建缓冲池
+        if _allCaches.index(forKey: asset.identifier) == nil {
+            _allCaches[key] = [:]
+        }
+        _allCaches[key]?[name] = SAPWKObject(object: item)
+        // 异步请求
+        _queue.async { [weak item] in
+            guard item != nil else {
+                return
+            }
+            self._requestImage(asset, size, .aspectFill, options) { (img, info) in
+                guard let item = item else {
+                    return
                 }
+                let os = (item.content as? UIImage)?.size ?? .zero
+                let ns = img?.size ?? .zero
+                // 检查是否己经加载完成了
+                let isError = (info?[PHImageErrorKey] as? NSError) != nil
+                let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
+                let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+                
+                // 添加任务到主线程
+                _SAPhotoQueueTasksAdd(.main) {
+                    // 新加载的图片必须比当前的图片大
+                    if ns.width >= os.width && ns.height >= os.height {
+                        // 更新内容
+                        item.content = img
+                    }
+                    // 检查是否己经载完成
+                    if isError || isCancel || !isDegraded {
+                        // 更新进度
+                        item.progress = 1
+                    }
                 }
             }
         }
         
-        return image
+        return item
     }
-    public func imageForAlmost(with photo: SAPAsset, size: CGSize) -> UIImage? {
+    public func playerItem(with asset: SAPAsset) -> SAPProgressiveItem? {
         //_logger.trace()
         
-        guard let caches = _allCaches[photo.identifier] else {
+        let item = SAPProgressiveItem(size: asset.size)
+        
+        _requestPlayerItem(asset, nil) { (pitem, info) in
+            item.content = pitem
+            item.progress = 1
+        }
+        
+        return item
+    }
+    
+    private func _cachedImage(with asset: SAPAsset, size: CGSize) -> UIImage? {
+        // is cache?
+        guard let caches = _allCaches[asset.identifier] else {
             return nil
         }
         var image: UIImage?
         
         // 查找
         caches.forEach {
-            guard let img = $1.object as? ProgressiveableImage else {
+            guard let item = $1.object else {
                 return
             }
-            let os = image?.size ?? .zero
-            let ns = img.size
+            // 当前找到的最符合的图片大小
+            let crs = image?.size ?? .zero
+            // 当前item的图片大小
+            let cis = (item.content as? UIImage)?.size ?? .zero
             // 必须小于或者等于size
-            guard (ns.width <= size.width && ns.height <= size.height) || (size == SAPhotoMaximumSize) else {
+            guard (cis.width <= size.width && cis.height <= size.height) || (size == SAPhotoMaximumSize) else {
                 return
             }
             // 必须大于当前的图片
-            guard (ns.width >= os.width && ns.height >= os.height) else {
+            guard (cis.width >= crs.width && cis.height >= crs.height) else {
                 return
             }
-            
-            image = img.content as? UIImage
+            image = item.content as? UIImage
         }
         
         return image
@@ -224,9 +253,9 @@ public class SAPLibrary: NSObject {
     }()
     
     private var _needsClearCaches: Bool = false
-
+    
     private lazy var _queue: DispatchQueue = DispatchQueue(label: "SAPhotoImageLoadQueue")
-    private lazy var _allCaches: [String: [String: SAPWKObject<UIImage>]] = [:]
+    private lazy var _allCaches: [String: [String: SAPWKObject<SAPProgressiveItem>]] = [:]
 }
 
 extension SAPLibrary: PHPhotoLibraryChangeObserver {
@@ -254,6 +283,32 @@ private func _SAPhotoResouceSize(_ photo: SAPAsset, size: CGSize) -> CGSize {
     //return CGSize(width: width, height: height)
 }
 
+private var _SAPhotoQueueTasks: Array<() -> Void>?
+private func _SAPhotoQueueTasksAdd(_ queue: DispatchQueue, task: @escaping () -> Void) {
+    // 合并任务, 减少线程唤醒次数
+    objc_sync_enter(SAPLibrary.self)
+    
+    if _SAPhotoQueueTasks == nil {
+        _SAPhotoQueueTasks = [task]
+        // 开启线程
+        queue.async {
+            objc_sync_enter(SAPLibrary.self)
+            let tasks = _SAPhotoQueueTasks
+            _SAPhotoQueueTasks = nil
+            objc_sync_exit(SAPLibrary.self)
+            
+            tasks?.forEach {
+                $0()
+            }
+        }
+    } else {
+        _SAPhotoQueueTasks?.append(task)
+    }
+    
+    objc_sync_exit(SAPLibrary.self)
+}
+
 
 public let SAPhotoMaximumSize = PHImageManagerMaximumSize
+
 

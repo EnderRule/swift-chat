@@ -120,7 +120,7 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         // 更新图片
         if let view = view as? UIImageView {
-            view.image = view.image?.withOrientation(orientation)
+//            view.image = view.image?.withOrientation(orientation)
         }
         _updateEdgeInsets()
         _showProgressView(animated: true)
