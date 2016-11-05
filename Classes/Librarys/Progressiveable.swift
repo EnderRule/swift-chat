@@ -16,9 +16,6 @@ import UIKit
     var content: Any? { get }
     var progress: Double { get }
     
-    func value(forKey key: String) -> Any?
-    func setValue(_ value: Any?, forKey key: String)
-    
     ///
     /// Registers the observer object to receive KVO notifications for progressive value
     ///

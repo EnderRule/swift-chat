@@ -8,6 +8,67 @@
 
 import UIKit
 
+class TIImage: NSObject, Progressiveable {
+    
+    dynamic var content: Any?  {
+        didSet {
+            didChangeProgressiveContent()
+        }
+    }
+    dynamic var progress: Double = 0 {
+        didSet {
+            didChangeProgressiveProgress()
+        }
+    }
+}
+class TIVideo: NSObject, Progressiveable {
+    
+    dynamic var content: Any?  {
+        didSet {
+            didChangeProgressiveContent()
+        }
+    }
+    dynamic var progress: Double = 0 {
+        didSet {
+            didChangeProgressiveProgress()
+        }
+    }
+}
+
+class TestVideo: NSObject, SAPBrowseable {
+    
+    var browseType: SAPBrowseableType {
+        return .Video
+    }
+    
+    var browseSize: CGSize { 
+        return CGSize(width: 1600, height: 1200)
+    }
+    var browseOrientation: UIImageOrientation  {
+        return .up
+    }
+    
+    var browseImage: Progressiveable? { 
+        let item = TIImage() 
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            item.content = UIImage(named: "t1_t.jpg")
+            item.progress = 0.15
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+                item.content = UIImage(named: "t1_g.jpg")
+                item.progress = 0.5
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                    item.content = UIImage(named: "t1.jpg")
+                    item.progress = 1
+                }
+            }
+        }
+        return item
+    }
+    var browseContent: Progressiveable? { 
+        return nil
+    }  // 这个参数只用于视频和音频
+}
+
 internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     override init(frame: CGRect) {
@@ -20,28 +81,51 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         _init()
     }
     
-    dynamic var thumb: UIImage?
-    dynamic var original: UIImage?
+    var contentView: UIView {
+        return _contentView
+    }
+    var containterView: SAPContainterView {
+        return _containterView
+    }
+    
+    private dynamic var _image: Any? {
+        set { return _contentView.image = newValue }
+        get { return _contentView.image }
+    }
+    private dynamic var _content: Any? {
+        set { return _contentView.content = newValue }
+        get { return _contentView.content }
+    }
+    
+    private dynamic var progress: Double {
+        set { return setProgress(newValue, animated: false) }
+        get { return _progress }
+    }
     
     dynamic var contents: SAPBrowseable? {
         willSet {
             guard contents !== newValue else {
                 return
             }
-            setProgressiveValue(newValue?.browseThumb, forKey: "thumb")
-            setProgressiveValue(newValue?.browseContent, forKey: "original")
+            setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
+            setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
+            
+            _containterView.contentSize = newValue?.browseSize ?? .zero
+            _containterView.zoom(to: bounds, with: .up, animated: false)
+            
+            _updateEdgeInsets()
         }
     }
     
     override func progressiveValue(_ progressiveValue: Progressiveable?, didChangeProgress value: Any?, context: String) {
-        _logger.trace()
+        guard context == #keyPath(SAPBrowseableDetailView._image) else {
+            return
+        }
+        _logger.trace(value)
+        
+        setProgress(value as? Double ?? 0, animated: true)
     }
     
-    
-    var progress: Double {
-        set { return setProgress(newValue, animated: false) }
-        get { return _progress }
-    }
     
     func setProgress(_ progress: Double, animated: Bool) {
         
@@ -73,7 +157,7 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        if let contentView = _contentView, _cacheBounds?.size != contentView.bounds.size {
+        if _cacheBounds?.size != _contentView.bounds.size {
             _updateEdgeInsets()
         }
     }
@@ -85,13 +169,11 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         
     }
     dynamic func doubleTapHandler(_ sender: UITapGestureRecognizer) {
-        guard let contentView = _contentView else {
-            return
-        }
+        
         if _containterView.zoomScale != _containterView.minimumZoomScale {
-            _containterView.setZoomScale(_containterView.minimumZoomScale, at: sender.location(in: contentView), animated: true)
+            _containterView.setZoomScale(_containterView.minimumZoomScale, at: sender.location(in: _contentView), animated: true)
         } else {
-            _containterView.setZoomScale(_containterView.maximumZoomScale, at: sender.location(in: contentView), animated: true)
+            _containterView.setZoomScale(_containterView.maximumZoomScale, at: sender.location(in: _contentView), animated: true)
         }
     }
     
@@ -122,8 +204,11 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         if let view = view as? UIImageView {
 //            view.image = view.image?.withOrientation(orientation)
         }
-        _updateEdgeInsets()
-        _showProgressView(animated: true)
+        if progress < 1 && 1 - progress > 0.000001 {
+            // 并没有结束
+            _updateEdgeInsets()
+            _showProgressView(animated: true)
+        }
         _canChangeProgressView = true
     }
     
@@ -187,23 +272,21 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     private func _updateEdgeInsets() {
-        guard let contentView = _contentView else {
-            return
-        }
+        
         let edg = UIEdgeInsetsMake(8, 8, 8, 8)
-        let nframe = UIEdgeInsetsInsetRect(contentView.frame, edg)
+        let nframe = UIEdgeInsetsInsetRect(_contentView.frame, edg)
         let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
         
         let width_2 = _progressView.frame.width / 2
         let height_2 = _progressView.frame.height / 2
         
-        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: contentView.superview)
+        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: _contentView.superview)
         
         pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
         pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
         
         _progressView.center = pt
-        _cacheBounds = contentView.bounds
+        _cacheBounds = _contentView.bounds
     }
     
     private func _init() {
@@ -211,9 +294,13 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         _tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
+        _contentView.isUserInteractionEnabled = false
+        _contentView.backgroundColor = .random
+        
         _containterView.frame = bounds
         _containterView.delegate = self
         _containterView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _containterView.addSubview(contentView)
         
         _containterView.addGestureRecognizer(_tapGestureRecognizer)
         _containterView.addGestureRecognizer(_doubleTapGestureRecognizer)
@@ -221,16 +308,16 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         addSubview(_containterView)
         
         
-        let view = UIImageView()
-        let image = UIImage(named: "t3.jpg")
-        
-        view.image = image
-        view.backgroundColor = .random
-        view.isUserInteractionEnabled = false
-        
-        _containterView.addSubview(view)
-        _containterView.contentSize = image?.size ?? CGSize(width: 1600, height: 1200)
-        _contentView = view
+//        let view = UIImageView()
+//        let image = UIImage(named: "t3.jpg")
+//        
+//        view.image = image
+//        view.backgroundColor = .random
+//        view.isUserInteractionEnabled = false
+//        
+//        _containterView.addSubview(view)
+//        _containterView.contentSize = image?.size ?? CGSize(width: 1600, height: 1200)
+//        _contentView = view
         
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
@@ -241,6 +328,8 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
 //        
 //        self.timer = t
 //        self.timer?.fire()
+        
+        self.reload()
     }
     func clock() {
         
@@ -251,6 +340,12 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         }
     }
     
+    @IBAction func reload() {
+        DispatchQueue.main.async {
+            self.contents = TestVideo()
+        }
+    }
+    
     var timer: Timer?
     
     private var _cacheBounds: CGRect?
@@ -258,7 +353,7 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     private var _contentInset: UIEdgeInsets = .zero
     
-    private var _contentView: UIView?
+    private var _contentView: SAPBrowseableContentView = SAPBrowseableContentView()
     
     private var _progress: Double = 1
     private var _progressView: SAPBrowseableProgressView = SAPBrowseableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
