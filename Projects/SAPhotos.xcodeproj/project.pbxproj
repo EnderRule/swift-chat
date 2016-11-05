@@ -81,7 +81,7 @@
 		0C0BB2281DC731B400B5CF4F /* SAPPreviewerImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D51DC731B400B5CF4F /* SAPPreviewerImageCell.swift */; };
 		0C0BB2291DC731B400B5CF4F /* SAPPreviewerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D61DC731B400B5CF4F /* SAPPreviewerLayout.swift */; };
 		0C0BB22A1DC731B400B5CF4F /* SAPPreviewerVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D71DC731B400B5CF4F /* SAPPreviewerVideoCell.swift */; };
-		0C0BB22B1DC731B400B5CF4F /* SAPProgressiveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D81DC731B400B5CF4F /* SAPProgressiveable.swift */; };
+		0C0BB22B1DC731B400B5CF4F /* Progressiveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D81DC731B400B5CF4F /* Progressiveable.swift */; };
 		0C0BB22C1DC731B400B5CF4F /* SAPProgressiveableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1D91DC731B400B5CF4F /* SAPProgressiveableImage.swift */; };
 		0C0BB22D1DC731B400B5CF4F /* SAPSelectionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1DA1DC731B400B5CF4F /* SAPSelectionable.swift */; };
 		0C0BB22E1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1DC1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift */; };
@@ -178,7 +178,7 @@
 		0C0BB1D51DC731B400B5CF4F /* SAPPreviewerImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPPreviewerImageCell.swift; sourceTree = "<group>"; };
 		0C0BB1D61DC731B400B5CF4F /* SAPPreviewerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPPreviewerLayout.swift; sourceTree = "<group>"; };
 		0C0BB1D71DC731B400B5CF4F /* SAPPreviewerVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPPreviewerVideoCell.swift; sourceTree = "<group>"; };
-		0C0BB1D81DC731B400B5CF4F /* SAPProgressiveable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPProgressiveable.swift; sourceTree = "<group>"; };
+		0C0BB1D81DC731B400B5CF4F /* Progressiveable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Progressiveable.swift; sourceTree = "<group>"; };
 		0C0BB1D91DC731B400B5CF4F /* SAPProgressiveableImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPProgressiveableImage.swift; sourceTree = "<group>"; };
 		0C0BB1DA1DC731B400B5CF4F /* SAPSelectionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPSelectionable.swift; sourceTree = "<group>"; };
 		0C0BB1DC1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Photos.swift"; sourceTree = "<group>"; };
@@ -286,7 +286,7 @@
 				0C0BB1D51DC731B400B5CF4F /* SAPPreviewerImageCell.swift */,
 				0C0BB1D61DC731B400B5CF4F /* SAPPreviewerLayout.swift */,
 				0C0BB1D71DC731B400B5CF4F /* SAPPreviewerVideoCell.swift */,
-				0C0BB1D81DC731B400B5CF4F /* SAPProgressiveable.swift */,
+				0C0BB1D81DC731B400B5CF4F /* Progressiveable.swift */,
 				0C0BB1D91DC731B400B5CF4F /* SAPProgressiveableImage.swift */,
 				0C0BB1DA1DC731B400B5CF4F /* SAPSelectionable.swift */,
 				0C5C6F881DCCCCC700B6707C /* SAPBrowseable.swift */,
@@ -500,7 +500,7 @@
 				0C0BB2161DC731B400B5CF4F /* SAPLibrary.swift in Sources */,
 				0C0BB2221DC731B400B5CF4F /* SAPPickerViewLayout.swift in Sources */,
 				0C0BB2181DC731B400B5CF4F /* SAPPickerAlbums.swift in Sources */,
-				0C0BB22B1DC731B400B5CF4F /* SAPProgressiveable.swift in Sources */,
+				0C0BB22B1DC731B400B5CF4F /* Progressiveable.swift in Sources */,
 				0C0BB22D1DC731B400B5CF4F /* SAPSelectionable.swift in Sources */,
 				0C0BB20F1DC731B400B5CF4F /* SAPBrowser.swift in Sources */,
 				0C0BB2251DC731B400B5CF4F /* SAPPreviewableView.swift in Sources */,

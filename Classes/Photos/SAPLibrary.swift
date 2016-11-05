@@ -40,7 +40,7 @@ public class SAPLibrary: NSObject {
         if let image = _allCaches[photo.identifier]?[name]?.object {
             return image
         }
-        let image = SAPProgressiveableImage()
+        let image = ProgressiveableImage()
         let options = PHImageRequestOptions()
         
         // 获取最接近的一张图片
@@ -88,7 +88,7 @@ public class SAPLibrary: NSObject {
         
         // 查找
         caches.forEach {
-            guard let img = $1.object as? SAPProgressiveableImage else {
+            guard let img = $1.object as? ProgressiveableImage else {
                 return
             }
             let os = image?.size ?? .zero

@@ -10,8 +10,4 @@ import UIKit
 
 internal class SAPBrowseableView: UIView {
 
-    var contents: SAPBrowseable?
-    
-    private var _browseThumb: SAPProgressiveable?
-    private var _browseContent: SAPProgressiveable?
 }

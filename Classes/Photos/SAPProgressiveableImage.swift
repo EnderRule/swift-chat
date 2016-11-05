@@ -1,5 +1,5 @@
 //
-//  SAPProgressiveableImage.swift
+//  ProgressiveableImage.swift
 //  SAC
 //
 //  Created by sagesse on 10/15/16.
@@ -11,7 +11,7 @@ import UIKit
 ///
 /// 支持渐进式更新的图片
 ///
-public class SAPProgressiveableImage: UIImage, SAPProgressiveable {
+public class ProgressiveableImage: UIImage, Progressiveable {
     
     /// 真正的内容
     public var content: Any? {
@@ -38,7 +38,7 @@ public class SAPProgressiveableImage: UIImage, SAPProgressiveable {
     ///
     /// - Parameter observer: 监听者, 这是weak
     ///
-    public func addObserver(_ observer: SAPProgressiveableObserver) {
+    public func addObserver(_ observer: ProgressiveableObserver) {
         _observers.add(observer)
     }
     ///
@@ -46,13 +46,13 @@ public class SAPProgressiveableImage: UIImage, SAPProgressiveable {
     ///
     /// - Parameter observer: 监听者
     ///
-    public func removeObserver(_ observer: SAPProgressiveableObserver) {
+    public func removeObserver(_ observer: ProgressiveableObserver) {
         _observers.remove(observer)
     }
     
     
-    private func _mutableCopy() -> SAPProgressiveableImage {
-        let image = SAPProgressiveableImage()
+    private func _mutableCopy() -> ProgressiveableImage {
+        let image = ProgressiveableImage()
         
         image._parent = self
         image._content = _content
@@ -103,13 +103,13 @@ public class SAPProgressiveableImage: UIImage, SAPProgressiveable {
         method_exchangeImplementations(m3, m4)
     }
     
-    private var _parent: SAPProgressiveableImage?  // 如果不强引用, 当parent释放后就获取不到通知了
+    private var _parent: ProgressiveableImage?  // 如果不强引用, 当parent释放后就获取不到通知了
     
     private var _orientation: UIImageOrientation = .up
     private var _content: UIImage?
     
-    private let _observers = NSHashTable<SAPProgressiveableObserver>.weakObjects()
-    private let _replicaes = NSHashTable<SAPProgressiveableImage>.weakObjects()
+    private let _observers = NSHashTable<ProgressiveableObserver>.weakObjects()
+    private let _replicaes = NSHashTable<ProgressiveableImage>.weakObjects()
 }
 
 ///
@@ -134,17 +134,17 @@ extension UIImage {
 ///
 /// 使UIImageView支持渐进式更新
 ///
-extension UIImageView: SAPProgressiveableObserver {
+extension UIImageView: ProgressiveableObserver {
  
     ///
     /// 内容发生改变
     ///
-    public func progressiveable(_ progressiveable: SAPProgressiveable, didChangeContent content: Any?) {
+    public func progressiveable(_ progressiveable: Progressiveable, didChangeContent content: Any?) {
         sap_setImage(content as? UIImage)
     }
     
     internal dynamic func sap_setImage(_ newValue: UIImage?) {
-        guard let image = newValue as? SAPProgressiveableImage else {
+        guard let image = newValue as? ProgressiveableImage else {
             sap_progressiveImage = nil
             sap_setImage(newValue)
             return
@@ -159,7 +159,7 @@ extension UIImageView: SAPProgressiveableObserver {
         return image
     }
     
-    internal dynamic var sap_progressiveImage: SAPProgressiveableImage? {
+    internal dynamic var sap_progressiveImage: ProgressiveableImage? {
         set {
             let oldValue = sap_progressiveImage
             guard oldValue !== newValue else {
@@ -172,7 +172,7 @@ extension UIImageView: SAPProgressiveableObserver {
             return objc_setAssociatedObject(self, &_UIImageViewProgressiveImage, newValue, .OBJC_ASSOCIATION_RETAIN) 
         }
         get { 
-            return objc_getAssociatedObject(self, &_UIImageViewProgressiveImage) as? SAPProgressiveableImage 
+            return objc_getAssociatedObject(self, &_UIImageViewProgressiveImage) as? ProgressiveableImage 
         }
     }
 }

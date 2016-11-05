@@ -8,9 +8,6 @@
 
 import UIKit
 
-class Test: NSObject, Progressiveable {
-}
-
 internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     override init(frame: CGRect) {
@@ -22,6 +19,24 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         super.init(coder: aDecoder)
         _init()
     }
+    
+    dynamic var thumb: UIImage?
+    dynamic var original: UIImage?
+    
+    dynamic var contents: SAPBrowseable? {
+        willSet {
+            guard contents !== newValue else {
+                return
+            }
+            setProgressiveValue(newValue?.browseThumb, forKey: "thumb")
+            setProgressiveValue(newValue?.browseContent, forKey: "original")
+        }
+    }
+    
+    override func progressiveValue(_ progressiveValue: Progressiveable?, didChangeProgress value: Any?, context: String) {
+        _logger.trace()
+    }
+    
     
     var progress: Double {
         set { return setProgress(newValue, animated: false) }
@@ -219,12 +234,6 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
-        let tx = Test()
-        view.setProgressiveValue(tx, forKey: "image")
-//        view.setProgressiveValue(tx, forKey: "image")
-//        view.setProgressiveValue(nil, forKey: "image")
-        
-//        
 //        //progress = 0.2
 //        let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
 //        

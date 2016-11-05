@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-internal class SAPPickerAlbumsStackView: UIView, SAPProgressiveableObserver {
+internal class SAPPickerAlbumsStackView: UIView, ProgressiveableObserver {
     
     var album: SAPAlbum? {
         didSet {
@@ -29,7 +29,7 @@ internal class SAPPickerAlbumsStackView: UIView, SAPProgressiveableObserver {
         }
     }
     
-    func progressiveable(_ progressiveable: SAPProgressiveable, didChangeContent content: Any?) {
+    func progressiveable(_ progressiveable: Progressiveable, didChangeContent content: Any?) {
         guard let index = _images.index(where: { $1 === progressiveable }) else {
             return
         }
@@ -116,7 +116,7 @@ internal class SAPPickerAlbumsStackView: UIView, SAPProgressiveableObserver {
             $0.element.isHidden = false
             $0.element.backgroundColor = UIColor.white.cgColor
             
-            _setImage(photo.image(with: size) as? SAPProgressiveableImage, at: $0.offset)
+            _setImage(photo.image(with: size) as? ProgressiveableImage, at: $0.offset)
         }
         
         if photos.isEmpty {
@@ -144,7 +144,7 @@ internal class SAPPickerAlbumsStackView: UIView, SAPProgressiveableObserver {
         }
     }
     
-    private func _setImage(_ newValue: SAPProgressiveableImage?, at index: Int) {
+    private func _setImage(_ newValue: ProgressiveableImage?, at index: Int) {
         
         let oldValue = _images[index] ?? nil
         guard oldValue != newValue else {
@@ -187,6 +187,6 @@ internal class SAPPickerAlbumsStackView: UIView, SAPProgressiveableObserver {
     private var _iconView: UIImageView?
     private var _badgeView: SAPBadgeView?
     
-    private lazy var _images: [Int: SAPProgressiveableImage?] = [:]
+    private lazy var _images: [Int: ProgressiveableImage?] = [:]
     private lazy var _imageLayers: [CALayer] = []
 }

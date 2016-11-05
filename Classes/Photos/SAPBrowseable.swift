@@ -16,6 +16,6 @@ import UIKit
     var browseSize: CGSize { get }
     var browseOrientation: UIImageOrientation  { get }
     
-    var browseThumb: SAPProgressiveable? { get }
-    var browseContent: SAPProgressiveable? { get }
+    var browseThumb: Progressiveable? { get }
+    var browseContent: Progressiveable? { get }
 }
