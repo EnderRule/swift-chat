@@ -108,10 +108,12 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
                 return
             }
             setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
-            setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
+            //setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
+            
+            _contentView.orientation = newValue?.browseOrientation ?? .up
             
             _containterView.contentSize = newValue?.browseSize ?? .zero
-            _containterView.zoom(to: bounds, with: .up, animated: false)
+            _containterView.zoom(to: bounds, with: _contentView.orientation, animated: false)
             
             _updateEdgeInsets()
         }
@@ -201,8 +203,8 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         // 更新图片
-        if let view = view as? UIImageView {
-//            view.image = view.image?.withOrientation(orientation)
+        if let view = view as? SAPBrowseableContentView {
+            view.orientation = orientation
         }
         if progress < 1 && 1 - progress > 0.000001 {
             // 并没有结束
@@ -295,7 +297,6 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
         _contentView.isUserInteractionEnabled = false
-        _contentView.backgroundColor = .random
         
         _containterView.frame = bounds
         _containterView.delegate = self
