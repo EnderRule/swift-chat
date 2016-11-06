@@ -108,7 +108,7 @@ public extension NSObject {
             guard let ob = $0.0 as? ProgressiveChangeObserverTarget else {
                 return false
             }
-            guard ob.observer !== observer && ob.context == context else {
+            guard ob.observer !== observer && ob.context != context else {
                 return true // is added
             }
             return false
@@ -129,7 +129,7 @@ public extension NSObject {
             guard ob.observer !== nil else {
                 return true // is release
             }
-            guard ob.observer !== observer && ob.context == context else {
+            guard ob.observer !== observer && ob.context != context else {
                 return true // is removed
             }
             return false

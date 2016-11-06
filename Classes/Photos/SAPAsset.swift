@@ -131,6 +131,29 @@ public class SAPAsset: NSObject {
     private var _identifier: String?
 }
 
+extension SAPAsset: SAPBrowseable {
+    
+    public var browseType: SAPBrowseableType {
+        return mediaType
+    }
+    
+    public var browseSize: CGSize {
+        return size
+    }
+    public var browseOrientation: UIImageOrientation  {
+        return .up
+    }
+    
+    public var browseImage: Progressiveable? {
+        return imageItem
+    }
+    // 这个参数只用于视频和音频
+    public var browseContent: Progressiveable? {
+        return playerItem
+    } 
+}
+
+
 public func SAPStringForDuration(_ duration: TimeInterval) -> String {
     let s = Int(duration) % 60
     let m = Int(duration / 60)

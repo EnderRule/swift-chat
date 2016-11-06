@@ -89,8 +89,8 @@ internal class SAPPreviewer: UIViewController {
         _contentView.allowsMultipleSelection = false
         _contentView.isPagingEnabled = true
         _contentView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Unknow")
-        _contentView.register(SAPPreviewerImageCell.self, forCellWithReuseIdentifier: "Image")
-        _contentView.register(SAPPreviewerVideoCell.self, forCellWithReuseIdentifier: "Video")
+        _contentView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Image")
+        _contentView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Video")
         _contentView.dataSource = self
         _contentView.delegate = self
         //_contentView.isDirectionalLockEnabled = true

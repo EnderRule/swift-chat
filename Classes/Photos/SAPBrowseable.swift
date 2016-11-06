@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Photos
 
 ///
 /// 可浏览协议
@@ -26,8 +26,4 @@ import UIKit
 ///
 /// 可浏览对象类型
 ///
-@objc public enum SAPBrowseableType: Int {
-    case image
-    case video
-    case audio
-}
+public typealias SAPBrowseableType = PHAssetMediaType

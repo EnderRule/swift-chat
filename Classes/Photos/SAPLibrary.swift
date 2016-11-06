@@ -34,7 +34,7 @@ public class SAPLibrary: NSObject {
     
     
     public func imageItem(with asset: SAPAsset, size: CGSize) -> SAPProgressiveItem? {
-        //_logger.trace()
+        _logger.trace("\(asset.identifier) - \(size)")
         
         let key = asset.identifier
         let name = "\(Int(size.width))x\(Int(size.height)).png"
@@ -45,15 +45,17 @@ public class SAPLibrary: NSObject {
         let item = SAPProgressiveItem(size: size)
         let options = PHImageRequestOptions()
         
-        // 获取最接近的一张图片
-        item.content = _cachedImage(with: asset, size: size)
+        item.progress = 1 // 默认是1, 只有在progressHandler回调的时候才会出现进度
+        item.content = _cachedImage(with: asset, size: size) // 获取最接近的一张图片
         
         //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
         options.deliveryMode = .opportunistic
         options.resizeMode = .fast
         options.isNetworkAccessAllowed = true
         options.progressHandler = { [weak item](progress, error, stop, info) in
-            item?.progress = progress
+            _SAPhotoQueueTasksAdd(.main) {
+                item?.progress = progress
+            }
         }
         // 创建缓冲池
         if _allCaches.index(forKey: asset.identifier) == nil {
@@ -61,26 +63,29 @@ public class SAPLibrary: NSObject {
         }
         _allCaches[key]?[name] = SAPWKObject(object: item)
         // 异步请求
-        _queue.async { [weak item] in
-            guard item != nil else {
-                return
-            }
+        _queue.async {
+            print("request", asset.identifier, size)
             self._requestImage(asset, size, .aspectFill, options) { (img, info) in
-                guard item != nil else {
-                    return
-                }
-                let os = (item?.content as? UIImage)?.size ?? .zero
-                let ns = img?.size ?? .zero
-                // 检查是否己经加载完成了
+                // 读取字典
                 let isError = (info?[PHImageErrorKey] as? NSError) != nil
                 let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
                 let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+                let isInClound = (info?[PHImageResultIsInCloudKey] as? Int) == 1
                 
+                let os = (item.content as? UIImage)?.size ?? .zero
+                let ns = img?.size ?? .zero
+                // 新加载的图片必须比当前的图片大
+                print("respond", asset.identifier, size, img)
+                guard ns.width >= os.width && ns.height >= os.height else {
+                    return
+                }
                 // 添加任务到主线程
-                _SAPhotoQueueTasksAdd(.main) {
+                _SAPhotoQueueTasksAdd(.main) { [weak item] in
                     guard item != nil else {
                         return
                     }
+                    let os = (item?.content as? UIImage)?.size ?? .zero
+                    let ns = img?.size ?? .zero
                     // 新加载的图片必须比当前的图片大
                     if ns.width >= os.width && ns.height >= os.height {
                         // 更新内容
@@ -90,6 +95,12 @@ public class SAPLibrary: NSObject {
                     if isError || isCancel || !isDegraded {
                         // 更新进度
                         item?.progress = 1
+                    } else if isInClound {
+                        // 图片还在在iClound上, 重置进度
+                        guard (item?.progress ?? 0) > 0.999999 else {
+                            return
+                        }
+                        item?.progress = 0
                     }
                 }
             }
@@ -101,8 +112,11 @@ public class SAPLibrary: NSObject {
         //_logger.trace()
         
         let item = SAPProgressiveItem(size: asset.size)
+        let options = PHVideoRequestOptions()
         
-        _requestPlayerItem(asset, nil) { (pitem, info) in
+        options.isNetworkAccessAllowed = true
+        
+        _requestPlayerItem(asset, options) { (pitem, info) in
             item.content = pitem
             item.progress = 1
         }

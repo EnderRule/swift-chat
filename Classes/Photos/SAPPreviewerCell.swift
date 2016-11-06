@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 internal protocol SAPPreviewerCellDelegate: NSObjectProtocol {
     
     func previewerCell(_ previewerCell: SAPPreviewerCell, didTap photo: SAPAsset)
@@ -31,8 +32,7 @@ internal class SAPPreviewerCell: UICollectionViewCell, SAPContainterViewDelegate
     
     var photo: SAPAsset? {
         willSet {
-            _containterView.contentSize = newValue?.size ?? .zero
-            _containterView.zoom(to: _containterView.bounds, with: _orientation, animated: false)
+            _contentView.contents = newValue
         }
     }
     
@@ -48,65 +48,23 @@ internal class SAPPreviewerCell: UICollectionViewCell, SAPContainterViewDelegate
         }
         _delegate?.previewerCell(self, didTap: photo)
     }
-    dynamic func doubleTapHandler(_ sender: UITapGestureRecognizer) {
-        guard let photo = photo else {
-            return
-        }
-        
-        if _containterView.zoomScale != _containterView.minimumZoomScale {
-            _containterView.setZoomScale(_containterView.minimumZoomScale, at: sender.location(in: contentView), animated: true)
-        } else {
-            _containterView.setZoomScale(_containterView.maximumZoomScale, at: sender.location(in: contentView), animated: true)
-        }
-        
-        _delegate?.previewerCell(self, didDoubleTap: photo)
-    }
-    
-    // MARK: - SAPContainterViewDelegate
-    
-    func viewForZooming(in containterView: SAPContainterView) -> UIView? {
-        return contentView
-    }
-    
-    func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
-        guard let photo = photo else {
-            return false
-        }
-        return _delegate?.previewerCell(self, shouldRotation: photo) ?? true
-    }
-    func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
-        guard let photo = photo else {
-            return
-        }
-        _orientation = orientation
-        _delegate?.previewerCell(self, didRotation: photo, orientation: orientation)
-    }
     
     private func _init() {
         
-        _tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
-        _doubleTapGestureRecognizer.numberOfTapsRequired = 2
+        _tapGestureRecognizer.require(toFail: _contentView.doubleTapGestureRecognizer)
         
-        _containterView.frame = bounds
-        _containterView.delegate = self
-        _containterView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        _containterView.addSubview(contentView)
-        _containterView.addGestureRecognizer(_tapGestureRecognizer)
-        _containterView.addGestureRecognizer(_doubleTapGestureRecognizer)
+        _contentView.frame = bounds
+        _contentView.addGestureRecognizer(_tapGestureRecognizer)
         
         super.contentView.removeFromSuperview()
-        super.addSubview(_containterView)
+        super.addSubview(_contentView)
     }
     
     private var _orientation: UIImageOrientation = .up
     
     private weak var _delegate: SAPPreviewerCellDelegate?
-    
-    private lazy var _contentView: UIView = UIView()
-    private lazy var _containterView: SAPContainterView = SAPContainterView()
-    
+    private lazy var _contentView: SAPBrowseableDetailView = SAPBrowseableDetailView()
     private lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
-    private lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
     
     override init(frame: CGRect) {
         super.init(frame: frame)

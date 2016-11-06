@@ -213,7 +213,7 @@ internal class SAPBrowseableDetailView: UIView {
     
     private func _init() {
         
-        _tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
+        //_tapGestureRecognizer.require(toFail: _doubleTapGestureRecognizer)
         _doubleTapGestureRecognizer.numberOfTapsRequired = 2
         
         _contentView.isUserInteractionEnabled = false
@@ -223,7 +223,7 @@ internal class SAPBrowseableDetailView: UIView {
         _containterView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         _containterView.addSubview(contentView)
         
-        _containterView.addGestureRecognizer(_tapGestureRecognizer)
+        //_containterView.addGestureRecognizer(_tapGestureRecognizer)
         _containterView.addGestureRecognizer(_doubleTapGestureRecognizer)
         
         addSubview(_containterView)
@@ -241,8 +241,6 @@ internal class SAPBrowseableDetailView: UIView {
 //        _contentView = view
         
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
-        
-        self.reload()
     }
     
     @IBAction func reload() {
@@ -252,11 +250,17 @@ internal class SAPBrowseableDetailView: UIView {
     }
     
     fileprivate dynamic var _image: Any? {
-        set { return _contentView.image = newValue }
+        set {
+            
+            _logger.trace(newValue)
+            
+            return _contentView.image = newValue
+        }
         get { return _contentView.image }
     }
     fileprivate dynamic var _content: AVPlayerItem? {
         set {
+            _logger.trace(newValue)
             
             if let item = newValue {
                 _player = SAMVideoPlayer(item: item)
@@ -274,6 +278,10 @@ internal class SAPBrowseableDetailView: UIView {
         get {
             return _playerItem
         }
+    }
+    
+    var doubleTapGestureRecognizer: UITapGestureRecognizer {
+        return _doubleTapGestureRecognizer
     }
     
     fileprivate var _player: SAMVideoPlayer?
@@ -301,7 +309,7 @@ internal class SAPBrowseableDetailView: UIView {
     fileprivate lazy var _progressView: SAPBrowseableProgressView = SAPBrowseableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
     fileprivate lazy var _containterView: SAPContainterView = SAPContainterView()
     
-    fileprivate lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
+    //fileprivate lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
     fileprivate lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
 }
 
