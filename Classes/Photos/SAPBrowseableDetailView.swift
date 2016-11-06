@@ -93,15 +93,7 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     private dynamic var _image: Any? {
-        set {
-            _contentView.image = newValue
-            // 更新背景色
-            if newValue == nil {
-                _contentView.backgroundColor = UIColor(white: 0.94, alpha: 1)
-            } else {
-                _contentView.backgroundColor = UIColor.clear
-            }
-        }
+        set { return _contentView.image = newValue }
         get { return _contentView.image }
     }
     private dynamic var _content: Any? {
@@ -140,8 +132,6 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         guard context == #keyPath(SAPBrowseableDetailView._image) else {
             return
         }
-        _logger.trace(value)
-        
         setProgress(value as? Double ?? 0, animated: true)
     }
     

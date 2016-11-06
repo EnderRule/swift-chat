@@ -21,22 +21,25 @@ internal class SAPBrowseableContentView: UIView {
     
     var image: Any? {
         set {
+            let oldValue = _imageView.image
             let newValue = newValue as? UIImage
-            guard newValue != _imageView.image else {
+            guard newValue != oldValue else {
                 return // no change
             }
+            // 更新图片和背景色
+            _imageView.image = newValue
+            _imageView.backgroundColor = _backgroundColor(with: newValue)
             // 如果是切换图片, 添加动画
             // 必须防止重叠动画
-            if !CATransaction.disableActions() && UIView.areAnimationsEnabled && layer.animationKeys()?.isEmpty ?? true {
-                let ani = CATransition()
+            if !CATransaction.disableActions() && UIView.areAnimationsEnabled /*&& layer.animationKeys()?.isEmpty ?? true*/ {
+                // 添加内容变更
+                let ani1 = CABasicAnimation(keyPath: "contents")
                 
-                ani.type = kCATransitionFade
-                ani.duration = 0.35
+                ani1.fromValue = oldValue?.cgImage ?? _image(with: newValue?.size ?? .zero)?.cgImage
+                ani1.toValue = newValue?.cgImage ?? _image(with: oldValue?.size ?? .zero)?.cgImage
                 
-                _imageView.layer.add(ani, forKey: "image")
+                _imageView.layer.add(ani1, forKey: "contents")
             }
-            // 更新图片
-            _imageView.image = newValue
         }
         get {
             return _imageView.image 
@@ -60,6 +63,32 @@ internal class SAPBrowseableContentView: UIView {
         }
     }
     
+    private func _backgroundColor(with image: UIImage?) -> UIColor {
+        guard image == nil else {
+            return UIColor.clear
+        }
+        return UIColor(white: 0.94, alpha: 1)
+    }
+    
+    private func _image(with size: CGSize) -> UIImage? {
+        guard size.width != 0 && size.height != 0 else {
+            return nil
+        }
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        let color = _backgroundColor(with: nil)
+        
+        UIGraphicsBeginImageContext(size)
+        
+        let context = UIGraphicsGetCurrentContext()
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext()
+        
+        return image
+    }
+    
     private func _angle(orientation: UIImageOrientation) -> CGFloat {
         switch orientation {
         case .up, .upMirrored:  return 0 * CGFloat(M_PI_2)
@@ -74,6 +103,7 @@ internal class SAPBrowseableContentView: UIView {
         _imageView.frame = bounds
         _imageView.contentMode = .scaleAspectFill
         _imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _imageView.backgroundColor = _backgroundColor(with: nil)
         
         addSubview(_imageView)
     }
