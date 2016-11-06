@@ -16,6 +16,11 @@ internal enum SAPBrowseableControlState: Int {
     case stoped
 }
 
+internal protocol SAPBrowseableControlViewDelegate: NSObjectProtocol {
+    
+    func controlView(_ controlView: SAPBrowseableControlView, didChange state: SAPBrowseableControlState)
+}
+
 internal class SAPBrowseableControlView: UIView {
    
     override init(frame: CGRect) {
@@ -27,6 +32,8 @@ internal class SAPBrowseableControlView: UIView {
         _init()
     }
     
+    weak var delegate: SAPBrowseableControlViewDelegate?
+    
     var state: SAPBrowseableControlState {
         set { return setState(newValue, animated: false) }
         get { return _state }
@@ -36,11 +43,18 @@ internal class SAPBrowseableControlView: UIView {
         _state = state
     }
     
+    func tapHandler(_ sender: Any) {
+        
+        state = .playing
+        delegate?.controlView(self, didChange: .playing)
+    }
+    
     private func _init() {
         
         _playButton.frame = bounds
         _playButton.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         _playButton.setImage(UIImage.sap_init(named: "photo_button_play"), for: .normal)
+        _playButton.addTarget(self, action: #selector(tapHandler(_:)), for: .touchUpInside)
         
         addSubview(_playButton)
     }

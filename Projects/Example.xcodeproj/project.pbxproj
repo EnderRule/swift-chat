@@ -27,7 +27,10 @@
 		0C3346BA1DC9C55200614AEA /* t2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0C3346B51DC9C55200614AEA /* t2.jpg */; };
 		0C3F7AEE1DC74FFE00461848 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7AED1DC74FFE00461848 /* ContactsViewController.swift */; };
 		0C7DC8071DC8E79A0040F58F /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8061DC8E79A0040F58F /* UIColor+Random.swift */; };
-		0CA16D6E1DCED9D200B4E75C /* t1_m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D6D1DCED9D200B4E75C /* t1_m.jpg */; };
+		0CA16D7C1DCF38BE00B4E75C /* m41.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D781DCF38BE00B4E75C /* m41.jpg */; };
+		0CA16D7D1DCF38BE00B4E75C /* m42.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D791DCF38BE00B4E75C /* m42.jpg */; };
+		0CA16D7E1DCF38BE00B4E75C /* m43.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D7A1DCF38BE00B4E75C /* m43.jpg */; };
+		0CA16D7F1DCF38BE00B4E75C /* m44.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D7B1DCF38BE00B4E75C /* m44.jpg */; };
 		0CCD07C41DC8F4CA00372008 /* TXPProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */; };
 		0CCD07C61DC8FAFB00372008 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCD07C51DC8FAFB00372008 /* Logger.swift */; };
 		0CE8D8DE1DCB0D0100BFFB2A /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */; };
@@ -71,7 +74,10 @@
 		0C3346B51DC9C55200614AEA /* t2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t2.jpg; sourceTree = "<group>"; };
 		0C3F7AED1DC74FFE00461848 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		0C7DC8061DC8E79A0040F58F /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Random.swift"; sourceTree = "<group>"; };
-		0CA16D6D1DCED9D200B4E75C /* t1_m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t1_m.jpg; sourceTree = "<group>"; };
+		0CA16D781DCF38BE00B4E75C /* m41.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = m41.jpg; sourceTree = "<group>"; };
+		0CA16D791DCF38BE00B4E75C /* m42.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = m42.jpg; sourceTree = "<group>"; };
+		0CA16D7A1DCF38BE00B4E75C /* m43.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = m43.jpg; sourceTree = "<group>"; };
+		0CA16D7B1DCF38BE00B4E75C /* m44.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = m44.jpg; sourceTree = "<group>"; };
 		0CCD07C31DC8F4CA00372008 /* TXPProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TXPProgressViewController.swift; sourceTree = "<group>"; };
 		0CCD07C51DC8FAFB00372008 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 		0CE8D8DD1DCB0D0100BFFB2A /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
@@ -114,9 +120,12 @@
 		0C001AAF1DC742C3004A5F08 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				0CA16D781DCF38BE00B4E75C /* m41.jpg */,
+				0CA16D791DCF38BE00B4E75C /* m42.jpg */,
+				0CA16D7A1DCF38BE00B4E75C /* m43.jpg */,
+				0CA16D7B1DCF38BE00B4E75C /* m44.jpg */,
 				0CE8D8E51DCB30CE00BFFB2A /* t3.jpg */,
 				0C3346B11DC9C55200614AEA /* t1_g.jpg */,
-				0CA16D6D1DCED9D200B4E75C /* t1_m.jpg */,
 				0C3346B21DC9C55200614AEA /* t1_t.jpg */,
 				0C3346B31DC9C55200614AEA /* t1.jpg */,
 				0C3346B41DC9C55200614AEA /* t2_t.jpg */,
@@ -221,11 +230,14 @@
 				0C001ABB1DC742C3004A5F08 /* LaunchScreen.storyboard in Resources */,
 				0C3346B71DC9C55200614AEA /* t1_t.jpg in Resources */,
 				0C001AB81DC742C3004A5F08 /* Assets.xcassets in Resources */,
+				0CA16D7C1DCF38BE00B4E75C /* m41.jpg in Resources */,
 				0C3346BA1DC9C55200614AEA /* t2.jpg in Resources */,
 				0C3346B61DC9C55200614AEA /* t1_g.jpg in Resources */,
 				0C3346B91DC9C55200614AEA /* t2_t.jpg in Resources */,
-				0CA16D6E1DCED9D200B4E75C /* t1_m.jpg in Resources */,
 				0C3346B81DC9C55200614AEA /* t1.jpg in Resources */,
+				0CA16D7F1DCF38BE00B4E75C /* m44.jpg in Resources */,
+				0CA16D7E1DCF38BE00B4E75C /* m43.jpg in Resources */,
+				0CA16D7D1DCF38BE00B4E75C /* m42.jpg in Resources */,
 				0C001AB61DC742C3004A5F08 /* Main.storyboard in Resources */,
 				0CE8D8E61DCB30CE00BFFB2A /* t3.jpg in Resources */,
 			);

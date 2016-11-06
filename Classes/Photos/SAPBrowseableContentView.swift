@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SAMedia
 
 internal class SAPBrowseableContentView: UIView {
     
@@ -46,7 +47,31 @@ internal class SAPBrowseableContentView: UIView {
             return _imageView.image 
         }
     }
-    var content: Any?
+    
+    var player: SAMVideoPlayer? {
+        set {
+            if let newValue = newValue {
+                
+                let view = _playerView ?? SAMVideoPlayerView(player: newValue)
+                
+                view.player = newValue
+                view.frame = bounds
+                view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                
+                addSubview(view)
+                
+                _playerView = view
+                
+            } else {
+                _playerView?.removeFromSuperview()
+                _playerView = nil
+            }
+        }
+        get {
+            return _playerView?.player
+        }
+        
+    }
     
     var orientation: UIImageOrientation = .up {
         willSet {
@@ -109,6 +134,8 @@ internal class SAPBrowseableContentView: UIView {
         addSubview(_imageView)
     }
     
-    private var _playerView: UIView?
+    private var _player: SAMPlayerProtocol?
+    private var _playerView: SAMVideoPlayerView?
+    
     private lazy var _imageView: UIImageView = UIImageView()
 }

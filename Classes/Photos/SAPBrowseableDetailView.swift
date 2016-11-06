@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SAMedia
+import AVFoundation
 
 class TIImage: NSObject, Progressiveable {
     
@@ -42,7 +44,8 @@ class TestVideo: NSObject, SAPBrowseable {
     }
     
     var browseSize: CGSize { 
-        return CGSize(width: 1600, height: 1200)
+        //return CGSize(width: 1600, height: 1200)
+        return CGSize(width: 1920, height: 1080)
     }
     var browseOrientation: UIImageOrientation  {
         return .up
@@ -50,27 +53,38 @@ class TestVideo: NSObject, SAPBrowseable {
     
     var browseImage: Progressiveable? { 
         let item = TIImage() 
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            item.content = UIImage(named: "t1_t.jpg")
-            item.progress = 0.15
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                item.content = UIImage(named: "t1_m.jpg")
-                item.progress = 0.45
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-                    item.content = UIImage(named: "t1_g.jpg")
-                    item.progress = 0.7
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                        item.content = UIImage(named: "t1.jpg")
-                        item.progress = 1
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            item.content = UIImage(named: "m41.jpg")
+            item.progress = 15679.0 / 268343.0
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+                item.content = UIImage(named: "m42.jpg")
+                item.progress = 64829.0 / 268343.0
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(15)) {
+                    item.content = UIImage(named: "m43.jpg")
+                    item.progress = 150869.0 / 268343.0
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(25)) {
+                        item.content = UIImage(named: "m44.jpg")
+                        item.progress = 1.0
                     }
                 }
             }
         }
         return item
     }
-    var browseContent: Progressiveable? { 
-        return nil
-    }  // 这个参数只用于视频和音频
+    // 这个参数只用于视频和音频
+    var browseContent: Progressiveable? {
+        let item = TIVideo()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            //let url = URL(string: "http://sagesse.me:1080/a.mp4")!
+            let url = URL(string: "http://192.168.90.254/a.mp4")!
+            
+            item.content = AVPlayerItem(url: url)
+            item.progress = 1
+        }
+        
+        return item
+    }  
 }
 
 internal class SAPBrowseableDetailView: UIView {
@@ -119,7 +133,7 @@ internal class SAPBrowseableDetailView: UIView {
         _updateProgressViewLayout()
         
         setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
-        //setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
+        setProgressiveValue(nil, forKey: #keyPath(SAPBrowseableDetailView._content)) // 清空播放
         
         if !animated {
             CATransaction.commit()
@@ -237,14 +251,33 @@ internal class SAPBrowseableDetailView: UIView {
         }
     }
     
-    private dynamic var _image: Any? {
+    fileprivate dynamic var _image: Any? {
         set { return _contentView.image = newValue }
         get { return _contentView.image }
     }
-    private dynamic var _content: Any? {
-        set { return _contentView.content = newValue }
-        get { return _contentView.content }
+    fileprivate dynamic var _content: AVPlayerItem? {
+        set {
+            
+            if let item = newValue {
+                _player = SAMVideoPlayer(item: item)
+                _player?.play()
+                
+                
+            } else {
+                _player = nil
+                _contentView.player = nil
+            }
+            
+            _playerItem =  newValue
+            _contentView.player = _player
+        }
+        get {
+            return _playerItem
+        }
     }
+    
+    fileprivate var _player: SAMVideoPlayer?
+    fileprivate var _playerItem: AVPlayerItem?
     
     fileprivate var _cacheBounds: CGRect?
     fileprivate var _cacheContentBounds: CGRect?
@@ -353,8 +386,10 @@ fileprivate extension SAPBrowseableDetailView {
         }
         let view = _controlView ?? SAPBrowseableControlView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
         
-        // is stop?
         view.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        view.delegate = self
+        
+        // 更新状态
         
         if view.superview != self {
             addSubview(view)
@@ -378,6 +413,15 @@ fileprivate extension SAPBrowseableDetailView {
         
         _progressView.center = pt
         _cacheContentBounds = _contentView.bounds
+    }
+}
+
+extension SAPBrowseableDetailView: SAPBrowseableControlViewDelegate {
+    
+    func controlView(_ controlView: SAPBrowseableControlView, didChange state: SAPBrowseableControlState) {
+        _logger.trace(state)
+        
+        setProgressiveValue(contents?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
     }
 }
 
