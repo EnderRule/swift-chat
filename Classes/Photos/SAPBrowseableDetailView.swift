@@ -53,12 +53,16 @@ class TestVideo: NSObject, SAPBrowseable {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             item.content = UIImage(named: "t1_t.jpg")
             item.progress = 0.15
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-                item.content = UIImage(named: "t1_g.jpg")
-                item.progress = 0.5
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-                    item.content = UIImage(named: "t1.jpg")
-                    item.progress = 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                item.content = UIImage(named: "t1_m.jpg")
+                item.progress = 0.45
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+                    item.content = UIImage(named: "t1_g.jpg")
+                    item.progress = 0.7
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+                        item.content = UIImage(named: "t1.jpg")
+                        item.progress = 1
+                    }
                 }
             }
         }
@@ -89,7 +93,15 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     }
     
     private dynamic var _image: Any? {
-        set { return _contentView.image = newValue }
+        set {
+            _contentView.image = newValue
+            // 更新背景色
+            if newValue == nil {
+                _contentView.backgroundColor = UIColor(white: 0.94, alpha: 1)
+            } else {
+                _contentView.backgroundColor = UIColor.clear
+            }
+        }
         get { return _contentView.image }
     }
     private dynamic var _content: Any? {
@@ -107,6 +119,9 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
             guard contents !== newValue else {
                 return
             }
+//            CATransaction.begin()
+//            CATransaction.setDisableActions(true)
+            
             setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
             //setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
             
@@ -116,6 +131,8 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
             _containterView.zoom(to: bounds, with: _contentView.orientation, animated: false)
             
             _updateEdgeInsets()
+            
+//            CATransaction.commit()
         }
     }
     
@@ -343,7 +360,9 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
     
     @IBAction func reload() {
         DispatchQueue.main.async {
-            self.contents = TestVideo()
+            UIView.performWithoutAnimation {
+                self.contents = TestVideo()
+            }
         }
     }
     

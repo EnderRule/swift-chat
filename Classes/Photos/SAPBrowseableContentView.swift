@@ -25,14 +25,18 @@ internal class SAPBrowseableContentView: UIView {
             guard newValue != _imageView.image else {
                 return // no change
             }
+            // 如果是切换图片, 添加动画
+            // 必须防止重叠动画
+            if !CATransaction.disableActions() && UIView.areAnimationsEnabled && layer.animationKeys()?.isEmpty ?? true {
+                let ani = CATransition()
+                
+                ani.type = kCATransitionFade
+                ani.duration = 0.35
+                
+                _imageView.layer.add(ani, forKey: "image")
+            }
+            // 更新图片
             _imageView.image = newValue
-            _updateBackgroundColor()
-//            // 添加动画
-//            let ani = CATransition()
-//            ani.type = kCATransitionFade
-//            ani.duration = 0.25
-//            _imageView.layer.add(ani, forKey: "image")
-            
         }
         get {
             return _imageView.image 
@@ -45,6 +49,8 @@ internal class SAPBrowseableContentView: UIView {
             guard newValue != orientation else {
                 return
             }
+            // 删除图片变更动画
+            //_imageView.layer.removeAnimation(forKey: "image")
             
             _imageView.transform = CGAffineTransform(rotationAngle: _angle(orientation: newValue))
             _imageView.frame = bounds
@@ -63,21 +69,11 @@ internal class SAPBrowseableContentView: UIView {
         }
     }
     
-    private func _updateBackgroundColor() {
-        if _imageView.image == nil {
-            _imageView.backgroundColor = UIColor(white: 0.94, alpha: 1)
-        } else {
-            _imageView.backgroundColor = UIColor.clear
-        }
-    }
-    
     private func _init() {
         
         _imageView.frame = bounds
         _imageView.contentMode = .scaleAspectFill
         _imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        _updateBackgroundColor()
         
         addSubview(_imageView)
     }
