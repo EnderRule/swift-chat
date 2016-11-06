@@ -38,7 +38,7 @@ class TIVideo: NSObject, Progressiveable {
 class TestVideo: NSObject, SAPBrowseable {
     
     var browseType: SAPBrowseableType {
-        return .Video
+        return .video
     }
     
     var browseSize: CGSize { 
@@ -73,7 +73,7 @@ class TestVideo: NSObject, SAPBrowseable {
     }  // 这个参数只用于视频和音频
 }
 
-internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
+internal class SAPBrowseableDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,39 +92,86 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         return _containterView
     }
     
-    private dynamic var _image: Any? {
-        set { return _contentView.image = newValue }
-        get { return _contentView.image }
+    open dynamic var contents: SAPBrowseable? {
+        set { return setContents(newValue, animated: false) }
+        get { return _contents }
     }
-    private dynamic var _content: Any? {
-        set { return _contentView.content = newValue }
-        get { return _contentView.content }
+    open dynamic func setContents(_ contents: SAPBrowseable?, animated: Bool) {
+        let oldValue = _contents
+        let newValue = contents
+        // value is changed?
+        guard newValue !== oldValue else {
+            return
+        }
+        if !animated {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+        }
+        // update values
+        _contents = contents
+        
+        _contentView.orientation = newValue?.browseOrientation ?? .up
+        
+        _containterView.contentSize = newValue?.browseSize ?? .zero
+        _containterView.zoom(to: bounds, with: _contentView.orientation, animated: false)
+        
+        _updateControlViewLayout()
+        _updateProgressViewLayout()
+        
+        setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
+        //setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
+        
+        if !animated {
+            CATransaction.commit()
+        }
     }
     
-    private dynamic var progress: Double {
+    open dynamic var progress: Double {
         set { return setProgress(newValue, animated: false) }
         get { return _progress }
     }
-    
-    dynamic var contents: SAPBrowseable? {
-        willSet {
-            guard contents !== newValue else {
+    open dynamic func setProgress(_ progress: Double, animated: Bool) {
+        let newValue = progress
+        let oldValue = _progress
+        // value is changed?
+        guard oldValue != newValue else {
+            return
+        }
+        // update value
+        _progress = newValue
+        _progressView.setProgress(newValue, animated: oldValue < newValue && animated)
+        
+        if newValue < 0.999999 {
+            // is less 1, show progress view
+            guard _canChangeProgressView else {
                 return
             }
-//            CATransaction.begin()
-//            CATransaction.setDisableActions(true)
-            
-            setProgressiveValue(newValue?.browseImage, forKey: #keyPath(SAPBrowseableDetailView._image))
-            //setProgressiveValue(newValue?.browseContent, forKey: #keyPath(SAPBrowseableDetailView._content))
-            
-            _contentView.orientation = newValue?.browseOrientation ?? .up
-            
-            _containterView.contentSize = newValue?.browseSize ?? .zero
-            _containterView.zoom(to: bounds, with: _contentView.orientation, animated: false)
-            
-            _updateEdgeInsets()
-            
-//            CATransaction.commit()
+            _updateProgressViewIsHidden(false, animated: animated)
+        } else {
+            // is gte 1, hide progress
+            guard animated else {
+                _updateProgressViewIsHidden(true, animated: animated)
+                return
+            }
+            // wait animation completion
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(250)) {
+                guard newValue == self._progress else {
+                    return
+                }
+                self._updateProgressViewIsHidden(true, animated: animated)
+            }
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if _cacheBounds?.size != bounds.size {
+            _cacheBounds = bounds
+            _updateControlViewLayout()
+        }
+        if _cacheContentBounds?.size != _contentView.bounds.size {
+            _updateProgressViewLayout()
         }
     }
     
@@ -133,42 +180,6 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
             return
         }
         setProgress(value as? Double ?? 0, animated: true)
-    }
-    
-    
-    func setProgress(_ progress: Double, animated: Bool) {
-        
-        _progressView.setProgress(progress, animated: _progress < progress && animated) 
-        _progress = progress
-        
-        if fabs(1 - progress) < 0.000001 {
-            // 隐藏进度条
-            guard animated else {
-                _hideProgressView(animated: animated)
-                return
-            }
-            // 等待动画完成
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(250)) {
-                guard progress == self._progress else {
-                    return
-                }
-                self._hideProgressView(animated: animated)
-            }
-        } else {
-            // 显示进度条
-            guard _canChangeProgressView else {
-                return
-            }
-            _showProgressView(animated: animated)
-        }
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        if _cacheBounds?.size != _contentView.bounds.size {
-            _updateEdgeInsets()
-        }
     }
     
     // MARK: - Events
@@ -184,118 +195,6 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         } else {
             _containterView.setZoomScale(_containterView.maximumZoomScale, at: sender.location(in: _contentView), animated: true)
         }
-    }
-    
-    
-    func viewForZooming(in containterView: SAPContainterView) -> UIView? {
-        return _contentView
-    }
-    
-    func containterViewDidScroll(_ containterView: SAPContainterView) {
-        if _canChangeProgressView {
-            _updateEdgeInsets()
-        }
-    }
-    func containterViewDidZoom(_ containterView: SAPContainterView) {
-        if _canChangeProgressView {
-            _updateEdgeInsets()
-        }
-    }
-    
-    func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
-        _canChangeProgressView = false
-        _hideProgressView(animated: false)
-        return true
-    }
-    
-    func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
-        // 更新图片
-        if let view = view as? SAPBrowseableContentView {
-            view.orientation = orientation
-        }
-        if progress < 1 && 1 - progress > 0.000001 {
-            // 并没有结束
-            _updateEdgeInsets()
-            _showProgressView(animated: true)
-        }
-        _canChangeProgressView = true
-    }
-    
-    private func _showProgressView(animated: Bool) {
-        guard _progressViewIsHidden else {
-            return
-        }
-        _progressViewIsHidden = false
-        
-        // prepare
-        let view = _progressView
-        view.alpha = 0
-        view.isHidden = false
-        addSubview(view)
-        
-        let animations: (Void) -> Void = {
-            view.alpha = 1
-        }
-        let completion: (Bool) -> Void = { _ in
-            guard !self._progressViewIsHidden else {
-                return
-            }
-            view.alpha = 1
-            view.isHidden = false
-        }
-        guard animated else {
-            animations()
-            completion(false)
-            return
-        }
-        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: animations, completion: completion)
-    }
-    private func _hideProgressView(animated: Bool) {
-        guard !_progressViewIsHidden else {
-            return
-        }
-        _progressViewIsHidden = true
-        
-        // prepare
-        let view = _progressView
-        view.alpha = 1
-        view.isHidden = false
-        
-        let animations: (Void) -> Void = {
-            view.alpha = 0
-        }
-        let completion: (Bool) -> Void = { _ in
-            guard self._progressViewIsHidden else {
-                return
-            }
-            view.alpha = 1
-            view.isHidden = true
-            view.removeFromSuperview()
-        }
-        guard animated else {
-            animations()
-            completion(false)
-            return
-        }
-        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: animations, completion: completion)
-    }
-    
-    private func _updateEdgeInsets() {
-        
-        let edg = UIEdgeInsetsMake(8, 8, 8, 8)
-        let nframe = UIEdgeInsetsInsetRect(_contentView.frame, edg)
-        let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
-        
-        let width_2 = _progressView.frame.width / 2
-        let height_2 = _progressView.frame.height / 2
-        
-        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: _contentView.superview)
-        
-        pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
-        pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
-        
-        _progressView.center = pt
-        _cacheBounds = _contentView.bounds
     }
     
     private func _init() {
@@ -329,50 +228,228 @@ internal class SAPBrowseableDetailView: UIView, SAPContainterViewDelegate {
         
         _contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
         
-//        //progress = 0.2
-//        let t = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(clock), userInfo: nil, repeats: true)
-//        
-//        RunLoop.current.add(t, forMode: .commonModes)
-//        
-//        self.timer = t
-//        self.timer?.fire()
-        
         self.reload()
-    }
-    func clock() {
-        
-        if self.progress > 1 || fabs(1 - self.progress) < 0.000001 {
-            self.setProgress(0, animated: true)
-        } else {
-            self.setProgress(progress + 0.25, animated: true)
-        }
     }
     
     @IBAction func reload() {
         DispatchQueue.main.async {
-            UIView.performWithoutAnimation {
-                self.contents = TestVideo()
-            }
+            self.setContents(TestVideo(), animated: false)
         }
     }
     
-    var timer: Timer?
+    private dynamic var _image: Any? {
+        set { return _contentView.image = newValue }
+        get { return _contentView.image }
+    }
+    private dynamic var _content: Any? {
+        set { return _contentView.content = newValue }
+        get { return _contentView.content }
+    }
     
-    private var _cacheBounds: CGRect?
-    private var _canChangeProgressView: Bool = true
+    fileprivate var _cacheBounds: CGRect?
+    fileprivate var _cacheContentBounds: CGRect?
     
-    private var _contentInset: UIEdgeInsets = .zero
+    fileprivate var _canChangeProgressView: Bool = true
     
-    private var _contentView: SAPBrowseableContentView = SAPBrowseableContentView()
+    fileprivate var _automaticallyAdjustsControlViewIsHidden: Bool = true
+    fileprivate var _automaticallyAdjustsProgressViewIsHidden: Bool = true
     
-    private var _progress: Double = 1
-    private var _progressView: SAPBrowseableProgressView = SAPBrowseableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
-    private var _progressViewIsHidden: Bool = true
+    fileprivate var _contents: SAPBrowseable?
+    fileprivate var _contentInset: UIEdgeInsets = .zero
     
-    private var _controlView: UIView?
+    fileprivate var _progress: Double = 1
+    fileprivate var _progressViewIsHidden: Bool = true
     
-    private lazy var _containterView: SAPContainterView = SAPContainterView()
+    fileprivate var _controlView: SAPBrowseableControlView?
+    fileprivate var _controlViewTask: String?
+    fileprivate var _controlViewIsHidden: Bool = false
     
-    private lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
-    private lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
+    fileprivate lazy var _contentView: SAPBrowseableContentView = SAPBrowseableContentView()
+    fileprivate lazy var _progressView: SAPBrowseableProgressView = SAPBrowseableProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    fileprivate lazy var _containterView: SAPContainterView = SAPContainterView()
+    
+    fileprivate lazy var _tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
+    fileprivate lazy var _doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
+}
+
+fileprivate extension SAPBrowseableDetailView {
+    
+    private func _transition(with view: UIView?, animated: Bool, animations: @escaping () -> Void, completion: ((Bool) -> Void)?){
+        guard let view = view, animated else {
+            animations()
+            completion?(false)
+            return
+        }
+        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: animations, completion: completion)
+    }
+    
+    fileprivate func _updateControlViewIsHidden(_ flag: Bool, animated: Bool, delay: TimeInterval) {
+        let task = UUID().uuidString
+        _controlViewTask = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(Int(delay * 1000))) {
+            guard task == self._controlViewTask else {
+                return // task is change
+            }
+            self._updateControlViewIsHidden(flag, animated: animated)
+        }
+    }
+    fileprivate func _updateControlViewIsHidden(_ flag: Bool, animated: Bool) {
+        guard _controlViewIsHidden != flag else {
+            return // no change
+        }
+        _controlViewIsHidden = flag
+        
+        let view = _controlView
+        
+        if let view = view, !flag {
+            addSubview(view)
+        }
+        
+        _transition(with: view, animated: animated, animations: {
+            // if is hidden alpha is 0 else alpha is 1
+            view?.alpha = flag ? 0 : 1
+            
+        }, completion: { _ in
+            // if hidden need remove view
+            guard self._controlViewIsHidden else {
+                return
+            }
+            view?.removeFromSuperview()
+        })
+    }
+    fileprivate func _updateProgressViewIsHidden(_ flag: Bool, animated: Bool) {
+        guard _progressViewIsHidden != flag else {
+            return // no change
+        }
+        _progressViewIsHidden = flag
+        
+        let view = _progressView
+        
+        if !flag {
+            addSubview(view)
+        }
+        
+        _transition(with: view, animated: animated, animations: {
+            // if is hidden alpha is 0 else alpha is 1
+            view.alpha = flag ? 0 : 1
+            
+        }, completion: { _ in
+            // if hidden need remove view
+            guard self._progressViewIsHidden else {
+                return
+            }
+            view.removeFromSuperview()
+        })
+    }
+    
+    fileprivate func _updateControlViewLayout() {
+        _logger.trace()
+        
+        guard let type = _contents?.browseType, type == .video || type == .audio else {
+            // clear view
+            _controlView?.removeFromSuperview()
+            _controlView = nil
+            return
+        }
+        let view = _controlView ?? SAPBrowseableControlView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+        
+        // is stop?
+        view.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        
+        if view.superview != self {
+            addSubview(view)
+        }
+        
+        _controlView = view
+    }
+    fileprivate func _updateProgressViewLayout() {
+        
+        let edg = UIEdgeInsetsMake(8, 8, 8, 8)
+        let nframe = UIEdgeInsetsInsetRect(_contentView.frame, edg)
+        let nbounds = UIEdgeInsetsInsetRect(self.bounds, _contentInset)
+        
+        let width_2 = _progressView.frame.width / 2
+        let height_2 = _progressView.frame.height / 2
+        
+        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: _contentView.superview)
+        
+        pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
+        pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
+        
+        _progressView.center = pt
+        _cacheContentBounds = _contentView.bounds
+    }
+}
+
+extension SAPBrowseableDetailView: SAPContainterViewDelegate {
+    
+    func viewForZooming(in containterView: SAPContainterView) -> UIView? {
+        return _contentView
+    }
+    
+    func containterViewDidScroll(_ containterView: SAPContainterView) {
+        if _canChangeProgressView {
+            _updateProgressViewLayout()
+        }
+    }
+    func containterViewDidZoom(_ containterView: SAPContainterView) {
+        if _canChangeProgressView {
+            _updateProgressViewLayout()
+        }
+    }
+    
+    func containterViewWillBeginDragging(_ containterView: SAPContainterView) {
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(true, animated: true)
+        }
+    }
+    func containterViewWillBeginZooming(_ containterView: SAPContainterView, with view: UIView?) {
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(true, animated: true)
+        }
+    }
+    func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
+        _canChangeProgressView = false
+        
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(true, animated: true)
+        }
+        if _automaticallyAdjustsProgressViewIsHidden {
+            _updateProgressViewIsHidden(true, animated: false)
+        }
+        
+        return true
+    }
+    
+    func containterViewDidEndDragging(_ containterView: SAPContainterView, willDecelerate decelerate: Bool) {
+        guard !decelerate else {
+            return
+        }
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(false, animated: true)
+        }
+    }
+    func containterViewDidEndDecelerating(_ containterView: SAPContainterView) {
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(false, animated: true)
+        }
+    }
+    func containterViewDidEndZooming(_ containterView: SAPContainterView, with view: UIView?, atScale scale: CGFloat) {
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(false, animated: true)
+        }
+    }
+    func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
+        _canChangeProgressView = true
+        _contentView.orientation = orientation
+        
+        if _automaticallyAdjustsControlViewIsHidden {
+            _updateControlViewIsHidden(false, animated: true)
+        }
+        if _automaticallyAdjustsProgressViewIsHidden && progress <= 0.999999 {
+            _updateProgressViewLayout()
+            _updateProgressViewIsHidden(false, animated: true)
+        }
+    }
+    
 }

@@ -37,6 +37,7 @@ internal class SAPBrowseableContentView: UIView {
                 
                 ani1.fromValue = oldValue?.cgImage ?? _image(with: newValue?.size ?? .zero)?.cgImage
                 ani1.toValue = newValue?.cgImage ?? _image(with: oldValue?.size ?? .zero)?.cgImage
+                ani1.duration = 0.35
                 
                 _imageView.layer.add(ani1, forKey: "contents")
             }

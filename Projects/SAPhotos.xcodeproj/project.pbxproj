@@ -96,6 +96,10 @@
 		0C7DC8031DC8E20B0040F58F /* SAPBrowseableDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8021DC8E20B0040F58F /* SAPBrowseableDetailView.swift */; };
 		0C7DC8051DC8E3910040F58F /* SAPBrowseableProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8041DC8E3910040F58F /* SAPBrowseableProgressView.swift */; };
 		0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */; };
+		0CA16D701DCEF7A500B4E75C /* SAPBrowseableControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA16D6F1DCEF7A500B4E75C /* SAPBrowseableControlView.swift */; };
+		0CA16D741DCF044F00B4E75C /* photo_button_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D711DCF044F00B4E75C /* photo_button_play.png */; };
+		0CA16D751DCF044F00B4E75C /* photo_button_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D721DCF044F00B4E75C /* photo_button_play@2x.png */; };
+		0CA16D761DCF044F00B4E75C /* photo_button_play@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D731DCF044F00B4E75C /* photo_button_play@3x.png */; };
 		0CC763D31DCDAE5000AB4396 /* Progressiveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC763D21DCDAE5000AB4396 /* Progressiveable.swift */; };
 		0CC763D51DCDBEF300AB4396 /* SAPProgressiveItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */; };
 		0CD571F61DCE288500C6E9D8 /* SAPBrowseableContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */; };
@@ -195,6 +199,10 @@
 		0C7DC8021DC8E20B0040F58F /* SAPBrowseableDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableDetailView.swift; sourceTree = "<group>"; };
 		0C7DC8041DC8E3910040F58F /* SAPBrowseableProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableProgressView.swift; sourceTree = "<group>"; };
 		0C7DC8081DC8E7FB0040F58F /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../../Projects/Example/UIColor+Random.swift"; sourceTree = "<group>"; };
+		0CA16D6F1DCEF7A500B4E75C /* SAPBrowseableControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableControlView.swift; sourceTree = "<group>"; };
+		0CA16D711DCF044F00B4E75C /* photo_button_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photo_button_play.png; sourceTree = "<group>"; };
+		0CA16D721DCF044F00B4E75C /* photo_button_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_button_play@2x.png"; sourceTree = "<group>"; };
+		0CA16D731DCF044F00B4E75C /* photo_button_play@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_button_play@3x.png"; sourceTree = "<group>"; };
 		0CC763D21DCDAE5000AB4396 /* Progressiveable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Progressiveable.swift; sourceTree = "<group>"; };
 		0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPProgressiveItem.swift; sourceTree = "<group>"; };
 		0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableContentView.swift; sourceTree = "<group>"; };
@@ -297,6 +305,7 @@
 				0C7DC8001DC8E1FC0040F58F /* SAPBrowseableView.swift */,
 				0C7DC8021DC8E20B0040F58F /* SAPBrowseableDetailView.swift */,
 				0C7DC8041DC8E3910040F58F /* SAPBrowseableProgressView.swift */,
+				0CA16D6F1DCEF7A500B4E75C /* SAPBrowseableControlView.swift */,
 				0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */,
 				0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */,
 			);
@@ -326,18 +335,21 @@
 				0C0BB1A11DC731B400B5CF4F /* photo_badge_use_wall_paper_e@2x.png */,
 				0C0BB1A21DC731B400B5CF4F /* photo_badge_use_wall_paper_f@3x.png */,
 				0C0BB1A31DC731B400B5CF4F /* photo_badge_use_wall_paper_g@2x.png */,
-				0C0BB1A41DC731B400B5CF4F /* photo_badge_video@2x.png */,
 				0C0BB1A51DC731B400B5CF4F /* photo_badge_video_small@2x.png */,
+				0C0BB1A41DC731B400B5CF4F /* photo_badge_video@2x.png */,
 				0C0BB1A61DC731B400B5CF4F /* photo_button_confirm_disabled@2x.png */,
 				0C0BB1A71DC731B400B5CF4F /* photo_button_confirm_nor@2x.png */,
 				0C0BB1A81DC731B400B5CF4F /* photo_button_confirm_press@2x.png */,
+				0CA16D711DCF044F00B4E75C /* photo_button_play.png */,
+				0CA16D721DCF044F00B4E75C /* photo_button_play@2x.png */,
+				0CA16D731DCF044F00B4E75C /* photo_button_play@3x.png */,
 				0C0BB1A91DC731B400B5CF4F /* photo_checkbox_normal@2x.png */,
 				0C0BB1AA1DC731B400B5CF4F /* photo_checkbox_selected@2x.png */,
-				0C0BB1AB1DC731B400B5CF4F /* photo_icon_empty_album@2x.png */,
-				0C0BB1AC1DC731B400B5CF4F /* photo_icon_empty_album@3x.png */,
 				0C0BB1AD1DC731B400B5CF4F /* photo_icon_empty_album_shared.png */,
 				0C0BB1AE1DC731B400B5CF4F /* photo_icon_empty_album_shared@2x.png */,
 				0C0BB1AF1DC731B400B5CF4F /* photo_icon_empty_album_shared@3x.png */,
+				0C0BB1AB1DC731B400B5CF4F /* photo_icon_empty_album@2x.png */,
+				0C0BB1AC1DC731B400B5CF4F /* photo_icon_empty_album@3x.png */,
 				0C0BB1B01DC731B400B5CF4F /* photo_icon_slalom@2x.png */,
 				0C0BB1B11DC731B400B5CF4F /* photo_icon_thumbnail_loading.png */,
 				0C0BB1B21DC731B400B5CF4F /* photo_icon_thumbnail_loading@2x.png */,
@@ -451,6 +463,7 @@
 				0C0BB1E71DC731B400B5CF4F /* photo_badge_lastImport@2x.png in Resources */,
 				0C0BB2071DC731B400B5CF4F /* photo_icon_Timelapse@2x.png in Resources */,
 				0C0BB2011DC731B400B5CF4F /* photo_icon_empty_album_shared@2x.png in Resources */,
+				0CA16D741DCF044F00B4E75C /* photo_button_play.png in Resources */,
 				0C0BB1F61DC731B400B5CF4F /* photo_badge_use_wall_paper_g@2x.png in Resources */,
 				0C0BB1E51DC731B400B5CF4F /* photo_badge_burst@2x.png in Resources */,
 				0C0BB1EE1DC731B400B5CF4F /* photo_badge_use_wall_paper_a@2x.png in Resources */,
@@ -478,6 +491,7 @@
 				0C0BB1FE1DC731B400B5CF4F /* photo_icon_empty_album@2x.png in Resources */,
 				0C0BB2081DC731B400B5CF4F /* photo_small_checkbox_normal@2x.png in Resources */,
 				0C0BB2061DC731B400B5CF4F /* photo_icon_thumbnail_loading@3x.png in Resources */,
+				0CA16D761DCF044F00B4E75C /* photo_button_play@3x.png in Resources */,
 				0C0BB1F51DC731B400B5CF4F /* photo_badge_use_wall_paper_f@3x.png in Resources */,
 				0C0BB1EB1DC731B400B5CF4F /* photo_badge_selfies@2x.png in Resources */,
 				0C0BB1F21DC731B400B5CF4F /* photo_badge_use_wall_paper_d.png in Resources */,
@@ -486,6 +500,7 @@
 				0C0BB1F01DC731B400B5CF4F /* photo_badge_use_wall_paper_b@2x.png in Resources */,
 				0C0BB1FA1DC731B400B5CF4F /* photo_button_confirm_nor@2x.png in Resources */,
 				0C0BB1F71DC731B400B5CF4F /* photo_badge_video@2x.png in Resources */,
+				0CA16D751DCF044F00B4E75C /* photo_button_play@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +556,7 @@
 				0C7DC8011DC8E1FC0040F58F /* SAPBrowseableView.swift in Sources */,
 				0C0BB2341DC731B400B5CF4F /* SAPWKObject.swift in Sources */,
 				0C0BB2231DC731B400B5CF4F /* SAPPreviewable.swift in Sources */,
+				0CA16D701DCEF7A500B4E75C /* SAPBrowseableControlView.swift in Sources */,
 				0C0BB2261DC731B400B5CF4F /* SAPPreviewer.swift in Sources */,
 				0C0BB22C1DC731B400B5CF4F /* SAPProgressiveableImage.swift in Sources */,
 				0C0BB2151DC731B400B5CF4F /* SAPErrorView.swift in Sources */,

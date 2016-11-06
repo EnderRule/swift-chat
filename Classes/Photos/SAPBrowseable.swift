@@ -27,7 +27,7 @@ import UIKit
 /// 可浏览对象类型
 ///
 @objc public enum SAPBrowseableType: Int {
-    case Image
-    case Video
-    case Audio
+    case image
+    case video
+    case audio
 }
