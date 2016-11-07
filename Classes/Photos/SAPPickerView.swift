@@ -459,10 +459,13 @@ extension SAPPickerView: PHPhotoLibraryChangeObserver {
             }
             return nil
         }
+        guard !inserts.isEmpty || !removes.isEmpty else {
+            return
+        }
         
         _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
-        _updatePhotosForChange(change.fetchResultAfterChanges, inserts, changes, removes)
+        _updatePhotosForChange(change.fetchResultAfterChanges, inserts, /*changes*/[], removes)
     }
 }
 

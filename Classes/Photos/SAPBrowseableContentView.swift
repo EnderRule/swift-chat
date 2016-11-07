@@ -28,25 +28,15 @@ internal class SAPBrowseableContentView: UIView {
                 return // no change
             }
             // 更新图片和背景色
-            _imageView.image = newValue
+            _imageView.setImage(newValue, animated: !CATransaction.disableActions() && UIView.areAnimationsEnabled)
             _imageView.backgroundColor = _backgroundColor(with: newValue)
-            // 如果是切换图片, 添加动画
-            // 必须防止重叠动画
-            if !CATransaction.disableActions() && UIView.areAnimationsEnabled /*&& layer.animationKeys()?.isEmpty ?? true*/ {
-                // 添加内容变更
-                let ani1 = CABasicAnimation(keyPath: "contents")
-                
-                ani1.fromValue = oldValue?.cgImage ?? _image(with: newValue?.size ?? .zero)?.cgImage
-                ani1.toValue = newValue?.cgImage ?? _image(with: oldValue?.size ?? .zero)?.cgImage
-                ani1.duration = 0.35
-                
-                _imageView.layer.add(ani1, forKey: "contents")
-            }
         }
         get {
             return _imageView.image 
         }
     }
+    
+    
     
     var player: SAMVideoPlayer? {
         set {
@@ -94,25 +84,6 @@ internal class SAPBrowseableContentView: UIView {
             return UIColor.clear
         }
         return UIColor(white: 0.94, alpha: 1)
-    }
-    
-    private func _image(with size: CGSize) -> UIImage? {
-        guard size.width != 0 && size.height != 0 else {
-            return nil
-        }
-        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        let color = _backgroundColor(with: nil)
-        
-        UIGraphicsBeginImageContext(size)
-        
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(color.cgColor)
-        context?.fill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        
-        UIGraphicsEndImageContext()
-        
-        return image
     }
     
     private func _angle(orientation: UIImageOrientation) -> CGFloat {

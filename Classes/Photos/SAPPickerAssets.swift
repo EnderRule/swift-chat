@@ -641,10 +641,13 @@ extension SAPPickerAssets: PHPhotoLibraryChangeObserver {
             }
             return nil
         }
+        guard !inserts.isEmpty || !removes.isEmpty else {
+            return
+        }
         
         _album?.clearCache()
         _photosResult = change.fetchResultAfterChanges
         
-        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+        _updateContentView(change.fetchResultAfterChanges, inserts, /*changes*/[], removes)
     }
 }

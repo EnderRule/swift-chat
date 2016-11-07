@@ -529,8 +529,6 @@ extension SAPPreviewer: PHPhotoLibraryChangeObserver {
             }
             return
         }
-        
-        
         let inserts = change.insertedIndexes?.map { idx -> IndexPath in
             return IndexPath(item: idx, section: 0)
         } ?? []
@@ -547,7 +545,11 @@ extension SAPPreviewer: PHPhotoLibraryChangeObserver {
             return nil
         }
         
+        guard !inserts.isEmpty || !removes.isEmpty else {
+            return
+        }
+        
         _photosResult = change.fetchResultAfterChanges
-        _updateContentView(change.fetchResultAfterChanges, inserts, changes, removes)
+        _updateContentView(change.fetchResultAfterChanges, inserts, /*changes*/[], removes)
     }
 }

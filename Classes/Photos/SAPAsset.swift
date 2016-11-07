@@ -91,7 +91,7 @@ public class SAPAsset: NSObject {
     }
     
     public var imageItem: SAPProgressiveItem? {
-        return SAPLibrary.shared.imageItem(with: self, size: SAPhotoMaximumSize)
+        return SAPLibrary.shared.imageItem(with: self, size: self.size)
     }
     public func imageItem(with size: CGSize) -> SAPProgressiveItem? {
         return SAPLibrary.shared.imageItem(with: self, size: size)

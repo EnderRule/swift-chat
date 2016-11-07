@@ -278,7 +278,7 @@ public class SAPLibrary: NSObject {
 extension SAPLibrary: PHPhotoLibraryChangeObserver {
     // This callback is invoked on an arbitrary serial queue. If you need this to be handled on a specific queue, you should redispatch appropriately
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
-        // ??
+        // TODO: 合并请求减少计算量
     }
 }
 
@@ -290,9 +290,9 @@ private func _SAPhotoResouceId(_ photo: SAPAsset, size: CGSize) -> UInt {
 }
 private func _SAPhotoResouceSize(_ photo: SAPAsset, size: CGSize) -> CGSize {
     let id = _SAPhotoResouceId(photo, size: size)
-    guard id != .max else {
-        return SAPhotoMaximumSize
-    }
+//    guard id != .max else {
+//        return SAPhotoMaximumSize
+//    }
 //    let ratio = CGFloat(photo.pixelWidth) / CGFloat(photo.pixelHeight)
 //    let width = CGFloat(id + 1) * 16
 //    let height = round(width / ratio)
