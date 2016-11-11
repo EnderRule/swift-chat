@@ -193,7 +193,7 @@ internal class SAPBrowseableDetailView: UIView {
         guard context == #keyPath(SAPBrowseableDetailView._image) else {
             return
         }
-        setProgress(value as? Double ?? 0, animated: true)
+        setProgress(value as? Double ?? 0, animated: !CATransaction.disableActions() && UIView.areAnimationsEnabled)
     }
     
     // MARK: - Events

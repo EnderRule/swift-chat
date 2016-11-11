@@ -99,12 +99,19 @@ internal class SAPBrowserView: UIView, SAPPreviewable {
     }
     var photo: SAPAsset? {
         willSet {
-            
-//            _imageView.image = newValue?.image?.withOrientation(_orientation)
-            _imageView.setProgressiveValue(newValue?.imageItem, forKey: "image")
-            
+          
             _containterView.contentSize = newValue?.size ?? .zero
             _containterView.zoom(to: _containterView.bounds, with: .up, animated: false)
+            
+            guard let newValue = newValue else {
+                _imageView.setProgressiveValue(nil, forKey: "image")
+                return
+            }
+            let options = SAPRequestOptions(size: newValue.size)
+            let task = SAPLibrary.shared.imageTask(with: newValue, options: options)
+            
+            _imageView.setProgressiveValue(task, forKey: "image")
+            
         }
     }
     

@@ -89,6 +89,7 @@
 		0C0BB2331DC731B400B5CF4F /* SAPToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */; };
 		0C0BB2341DC731B400B5CF4F /* SAPWKObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */; };
 		0C0BB2351DC731B400B5CF4F /* UIImage+Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */; };
+		0C1F856E1DD1C59A001D101A /* WKDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1F856D1DD1C59A001D101A /* WKDictionary.swift */; };
 		0C50DA3B1DD08F8400443E4C /* UIImageView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50DA3A1DD08F8400443E4C /* UIImageView+Animation.swift */; };
 		0C5C6F891DCCCCC700B6707C /* SAPBrowseable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5C6F881DCCCCC700B6707C /* SAPBrowseable.swift */; };
 		0C7DC8011DC8E1FC0040F58F /* SAPBrowseableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7DC8001DC8E1FC0040F58F /* SAPBrowseableView.swift */; };
@@ -191,6 +192,7 @@
 		0C0BB1E11DC731B400B5CF4F /* SAPToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPToolbar.swift; sourceTree = "<group>"; };
 		0C0BB1E21DC731B400B5CF4F /* SAPWKObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPWKObject.swift; sourceTree = "<group>"; };
 		0C0BB1E31DC731B400B5CF4F /* UIImage+Photos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Photos.swift"; sourceTree = "<group>"; };
+		0C1F856D1DD1C59A001D101A /* WKDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKDictionary.swift; sourceTree = "<group>"; };
 		0C50DA3A1DD08F8400443E4C /* UIImageView+Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Animation.swift"; sourceTree = "<group>"; };
 		0C5C6F881DCCCCC700B6707C /* SAPBrowseable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseable.swift; sourceTree = "<group>"; };
 		0C7DC8001DC8E1FC0040F58F /* SAPBrowseableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableView.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 		0CC763D11DCDAE5000AB4396 /* Librarys */ = {
 			isa = PBXGroup;
 			children = (
+				0C1F856D1DD1C59A001D101A /* WKDictionary.swift */,
 				0CC763D21DCDAE5000AB4396 /* Progressiveable.swift */,
 			);
 			name = Librarys;
@@ -537,6 +540,7 @@
 				0C0BB21E1DC731B400B5CF4F /* SAPPickerAssetsLayout.swift in Sources */,
 				0CC763D51DCDBEF300AB4396 /* SAPProgressiveItem.swift in Sources */,
 				0C0BB20D1DC731B400B5CF4F /* SAPBadge.swift in Sources */,
+				0C1F856E1DD1C59A001D101A /* WKDictionary.swift in Sources */,
 				0C0BB20A1DC731B400B5CF4F /* SAPAlbum.swift in Sources */,
 				0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */,
 				0C0BB22F1DC731B400B5CF4F /* SAPButtonBarItem.swift in Sources */,

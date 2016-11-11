@@ -15,6 +15,8 @@ extension UIImageView {
         let newValue = image
         let oldValue = self.image
         
+        self.image = newValue
+        
         guard newValue !== oldValue && animated else {
             return
         }

@@ -16,6 +16,33 @@ public enum SAPhotoStatus {
     case notError
 }
 
+
+public class SAPRequestOptions: NSObject {
+    
+    init(size: CGSize, contentMode: PHImageContentMode = .default) {
+        self.targetSize = size
+        self.targetContentMode = contentMode
+        super.init()
+    }
+    
+    var targetSize: CGSize
+    var targetContentMode: PHImageContentMode
+    
+    var version: PHImageRequestOptionsVersion = .current // version
+    var deliveryMode: PHImageRequestOptionsDeliveryMode = .opportunistic // delivery mode. Defaults to PHImageRequestOptionsDeliveryModeOpportunistic
+    
+    var resizeMode: PHImageRequestOptionsResizeMode = .none // resize mode. Does not apply when size is PHImageManagerMaximumSize. Defaults to PHImageRequestOptionsResizeModeNone (or no resize)
+    
+    var normalizedCropRect: CGRect = .zero // specify crop rectangle in unit coordinates of the original image, such as a face. Defaults to CGRectZero (not applicable)
+     
+    var isNetworkAccessAllowed: Bool = false // if necessary will download the image from iCloud (client can monitor or cancel using progressHandler). Defaults to NO (see start/stopCachingImagesForAssets)
+    var isSynchronous: Bool = false // return only a single result, blocking until available (or failure). Defaults to NO
+    
+    var progressHandler: PHAssetImageProgressHandler? // provide caller a way to be told how much progress has been made prior to delivering the data when it comes from iCloud. Defaults to nil, shall be set by caller
+    var resultHandler: ((UIImage?, [AnyHashable : Any]?) -> Void)?
+}
+
+
 public class SAPLibrary: NSObject {
    
     
@@ -64,23 +91,23 @@ public class SAPLibrary: NSObject {
         _allCaches[key]?[name] = SAPWKObject(object: item)
         // 异步请求
         _queue.async {
-            print("request", asset.identifier, size)
-            self._requestImage(asset, size, .aspectFill, options) { (img, info) in
+            print(asset.identifier, "request image with", size)
+            item.requestId = self._requestImage(asset, size, .aspectFill, options) {  [weak item](img, info) in
                 // 读取字典
                 let isError = (info?[PHImageErrorKey] as? NSError) != nil
                 let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
                 let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
                 let isInClound = (info?[PHImageResultIsInCloudKey] as? Int) == 1
                 
-                let os = (item.content as? UIImage)?.size ?? .zero
+                let os = (item?.content as? UIImage)?.size ?? .zero
                 let ns = img?.size ?? .zero
                 // 新加载的图片必须比当前的图片大
-                print("respond", asset.identifier, size, img)
+                print(asset.identifier, " respond image ",  size, img, info)
                 guard ns.width >= os.width && ns.height >= os.height else {
                     return
                 }
                 // 添加任务到主线程
-                _SAPhotoQueueTasksAdd(.main) { [weak item] in
+                _SAPhotoQueueTasksAdd(.main) {
                     guard item != nil else {
                         return
                     }
@@ -95,6 +122,7 @@ public class SAPLibrary: NSObject {
                     if isError || isCancel || !isDegraded {
                         // 更新进度
                         item?.progress = 1
+                        item?.requestId = PHInvalidImageRequestID
                     } else if isInClound {
                         // 图片还在在iClound上, 重置进度
                         guard (item?.progress ?? 0) > 0.999999 else {
@@ -216,10 +244,147 @@ public class SAPLibrary: NSObject {
 //        im.requestImageData(for: photo.asset, options: options, resultHandler: resultHandler)
 //    }
     
-    private func _requestImage(_ photo: SAPAsset, _ size: CGSize, _ contentMode: PHImageContentMode, _ options: PHImageRequestOptions?, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
+    open func cancelImageRequest(_ requestId: PHImageRequestID) {
         let im = PHCachingImageManager.default()
-        im.requestImage(for: photo.asset, targetSize: size, contentMode: contentMode, options: options, resultHandler: resultHandler)
+        im.cancelImageRequest(requestId)
     }
+    
+    private func _requestImage(_ photo: SAPAsset, _ size: CGSize, _ contentMode: PHImageContentMode, _ options: PHImageRequestOptions?, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
+        
+        // asset + contentMode + targetSize = format
+        
+//        let requestTotal = size.width * size.height
+//        let thumbnilTotal = _SAPhotoMinimumThumbnailSize.width * _SAPhotoMinimumThumbnailSize.height
+//        
+//        // 只处理opportunistic模式
+//        guard options?.deliveryMode == .opportunistic && requestTotal > thumbnilTotal else {
+//            return
+//        }
+        
+        // 请求图片=>所请求的图片大于缩略图=>查找缩略图(内存)=>所请求的图片大于缩略图的2倍=>延迟n秒后请求缩略图=>合并结果
+        // PS1: 如果在这期间获取到了原图, 取消缩略图请求
+        // PS2: n=加载己缓存的图片耗时*2
+        
+        let im = PHCachingImageManager.default()
+        
+//        if requestTotal > thumbnilTotal {
+//            let options = PHImageRequestOptions()
+//            
+//            options.deliveryMode = .opportunistic
+//            options.resizeMode = .fast
+//            options.isNetworkAccessAllowed = true
+//            
+//            //startCachingImages(for: [photo], targetSize: _SAPhotoMinimumThumbnailSize, contentMode: .aspectFill, options: options)
+//        }
+        //PHImageResultDeliveredImageFormatKey
+        
+        return im.requestImage(for: photo.asset, targetSize: size, contentMode: contentMode, options: options, resultHandler: resultHandler)
+    }
+    
+    public func imageTask(with asset: SAPAsset, options: SAPRequestOptions) -> SAPProgressiveItem? {
+        return _requestImageItem(with: asset, options: options)
+    }
+    
+    
+    private func _requestImageItem(with asset: SAPAsset, options: SAPRequestOptions) -> SAPProgressiveItem? {
+        let format = _SAPhotoFormat(asset.asset, options.targetSize)
+        _logger.trace("\(format)|\(asset.identifier) => \(options.targetSize)")
+        // 检查有没有创建, 如果有直接返回
+        if let item = _cacheImageItem(with: asset, format: format) {
+            _logger.trace("\(format)|\(asset.identifier) hit cache")
+            return item
+        }
+        // 没找到需要创建
+        let im = PHCachingImageManager.default()
+        let opt = PHImageRequestOptions()
+        let item = _makeImageItem(with: asset, format: format)
+        
+        item.progress = 1
+        
+        opt.deliveryMode = options.deliveryMode
+        opt.resizeMode = options.resizeMode
+        opt.version = options.version
+        opt.normalizedCropRect = options.normalizedCropRect
+        opt.isNetworkAccessAllowed = options.isNetworkAccessAllowed
+        opt.isSynchronous = options.isSynchronous
+        opt.progressHandler = { [weak item](progress, error, stop, info) in
+            item?.progress = progress
+            options.progressHandler?(progress, error, stop, info)
+        }
+        // 查找一个比较接近的图片
+        item.thumb = _cacheImageItem(with: asset, target: options.targetSize)
+        // 如果没有找到接近的图片检查是否需要加载缩略图
+        // 请求图片=>所请求的图片大于缩略图=>查找缩略图(内存)=>所请求的图片大于缩略图的2倍=>延迟n秒后请求缩略图=>合并结果
+        // PS1: 如果在这期间获取到了原图, 取消缩略图请求
+        // PS2: n=加载己缓存的图片耗时*2
+        let mts = _SAPhotoMinimumThumbnailSize
+        if item.thumb == nil && options.targetSize.width * options.targetSize.height > mts.width * mts.height {
+//            let n: TimeInterval = 0.5
+//            _loadQueue.asyncAfter(deadline: .now() + .milliseconds(Int(n * 1000))) { [weak item] in
+//                if item != nil && item?.thumb == nil && item?.content == nil {
+//                    return
+//                }
+//                let opt2 = SAPRequestOptions(size: _SAPhotoMinimumThumbnailSize)
+//                
+//                item?.thumb = self._requestImageItem(with: asset, options: opt2)
+//            }
+        }
+        // 请求这个图片
+        _logger.trace("\(format)|\(asset.identifier) request new image")
+        _loadQueue.async {
+            item.requestId = im.requestImage(for: asset.asset, targetSize: options.targetSize, contentMode: options.targetContentMode, options: opt) { [weak item]img, info in
+                // 读取字典
+                let isError = (info?[PHImageErrorKey] as? NSError) != nil
+                let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
+                let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+                let isInClound = (info?[PHImageResultIsInCloudKey] as? Int) == 1
+                
+                if item != nil {
+                    self._cacheImageItem(with: asset, format: format, image: img)
+                }
+                
+                options.resultHandler?(img, info)
+            }
+        }
+        return item
+    }
+    
+    @discardableResult
+    func _makeImageItem(with asset: SAPAsset, format: Int) -> SAPProgressiveItem {
+        if _allImageItems[asset.identifier] == nil {
+            _allImageItems[asset.identifier] = [:]
+        }
+        if let item = _allImageItems[asset.identifier]?[format] {
+            return item
+        }
+        let item = SAPProgressiveItem(size: asset.size)
+        _allImageItems[asset.identifier]?[format] = item
+        return item
+    }
+    
+    func _cacheImageItem(with asset: SAPAsset, format: Int, image: UIImage?, progress: Double = 1) {
+        _makeImageItem(with: asset, format: format)
+        _allImageItems[asset.identifier]?.forEach { 
+            guard $0 >= format else {
+                return
+            }
+            $1.content = image
+            guard $0 == format else {
+                return
+            }
+            $1.progress = progress
+        }
+    }
+    func _cacheImageItem(with asset: SAPAsset, format: Int) -> SAPProgressiveItem? {
+        return _allImageItems[asset.identifier]?[format]
+    }
+    func _cacheImageItem(with asset: SAPAsset, target size: CGSize) -> SAPProgressiveItem? {
+        return nil
+    }
+    
+    private lazy var _allImageItems: Dictionary<String, WKDictionary<Int, SAPProgressiveItem>> = [:]
+    private lazy var _loadQueue: DispatchQueue = DispatchQueue(label: "SAPhotoImageLoadQueue")
+    
     
     private func _requestPlayerItem(_ photo: SAPAsset, _ options: PHVideoRequestOptions?, resultHandler: @escaping (AVPlayerItem?, [AnyHashable : Any]?) -> Void) {
         let im = PHCachingImageManager.default()
@@ -331,6 +496,22 @@ private func _SAPhotoQueueTasksAdd(_ queue: DispatchQueue, task: @escaping () ->
 }
 
 
+private func _SAPhotoFormat(_ asset: PHAsset, _ targetSize: CGSize, _ contentMode: PHImageContentMode = .default) -> Int {
+    guard targetSize.width != 0 && targetSize.height != 0 && asset.pixelWidth != 0 && asset.pixelHeight != 0 else {
+        return 0
+    }
+    
+    let w = CGFloat(asset.pixelWidth) 
+    let h = CGFloat(asset.pixelHeight)
+    
+    let tmf: (CGFloat, CGFloat) -> CGFloat = (contentMode == .aspectFit) ? max : min
+    let scale: CGFloat = tmf(targetSize.width / w, targetSize.height / h)
+    
+    return Int(w * scale)
+}
+
+
 public let SAPhotoMaximumSize = PHImageManagerMaximumSize
 
+private let _SAPhotoMinimumThumbnailSize = CGSize(width: 240, height: 240)
 
