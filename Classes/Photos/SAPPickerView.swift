@@ -157,6 +157,7 @@ import Photos
     fileprivate lazy var _selectedPhotoSets: Set<SAPAsset> = []
     
     fileprivate lazy var _tipsLabel: UILabel = UILabel()
+    fileprivate var _changeTaskId: String?
     
     fileprivate lazy var _contentViewLayout: SAPPickerViewLayout = SAPPickerViewLayout()
     fileprivate lazy var _contentView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self._contentViewLayout)
@@ -427,7 +428,12 @@ extension SAPPickerView: PHPhotoLibraryChangeObserver {
     
     // 图片发生改变
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        let task = UUID().uuidString
+        self._changeTaskId = task
         DispatchQueue.main.async {
+            guard self._changeTaskId == task else {
+                return
+            }
             self._photoLibraryDidChangeOnMainThread(changeInstance)
         }
     }

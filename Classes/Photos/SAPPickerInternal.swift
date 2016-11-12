@@ -152,6 +152,8 @@ internal class SAPPickerInternal: UINavigationController {
     lazy var originItem: SAPButtonBarItem = SAPButtonBarItem(title: "原图", type: .original, target: self, action: #selector(originHandler(_:)))
     lazy var sendItem: SAPButtonBarItem = SAPButtonBarItem(title: "发送", type: .send, target: self, action: #selector(confirmHandler(_:)))
     
+    fileprivate var _changeTaskId: String?
+    
     fileprivate weak var _rootViewController: SAPPickerAlbums?
     
     fileprivate lazy var _selectedPhotos: Array<SAPAsset> = []
@@ -345,7 +347,12 @@ extension SAPPickerInternal {
 extension SAPPickerInternal: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
+        let task = UUID().uuidString
+        self._changeTaskId = task
         DispatchQueue.main.async {
+            guard self._changeTaskId == task else  {
+                return // task is change
+            }
             // 清除无效的item
             self._selectedPhotos.forEach {
                 self._updateSelectionForRemove($0)

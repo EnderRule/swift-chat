@@ -100,6 +100,10 @@
 		0CA16D741DCF044F00B4E75C /* photo_button_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D711DCF044F00B4E75C /* photo_button_play.png */; };
 		0CA16D751DCF044F00B4E75C /* photo_button_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D721DCF044F00B4E75C /* photo_button_play@2x.png */; };
 		0CA16D761DCF044F00B4E75C /* photo_button_play@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CA16D731DCF044F00B4E75C /* photo_button_play@3x.png */; };
+		0CB126141DD5936B00A6FF54 /* SAPImageSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB126131DD5936B00A6FF54 /* SAPImageSessionTask.swift */; };
+		0CB126161DD59E3300A6FF54 /* SAPImageSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB126151DD59E3300A6FF54 /* SAPImageSession.swift */; };
+		0CB126181DD5BE8200A6FF54 /* SAPImageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB126171DD5BE8200A6FF54 /* SAPImageRequest.swift */; };
+		0CB1261A1DD5C79200A6FF54 /* SAPImageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB126191DD5C79200A6FF54 /* SAPImageResponse.swift */; };
 		0CC763D31DCDAE5000AB4396 /* Progressiveable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC763D21DCDAE5000AB4396 /* Progressiveable.swift */; };
 		0CC763D51DCDBEF300AB4396 /* SAPProgressiveItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */; };
 		0CD571F61DCE288500C6E9D8 /* SAPBrowseableContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */; };
@@ -203,6 +207,10 @@
 		0CA16D711DCF044F00B4E75C /* photo_button_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photo_button_play.png; sourceTree = "<group>"; };
 		0CA16D721DCF044F00B4E75C /* photo_button_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_button_play@2x.png"; sourceTree = "<group>"; };
 		0CA16D731DCF044F00B4E75C /* photo_button_play@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo_button_play@3x.png"; sourceTree = "<group>"; };
+		0CB126131DD5936B00A6FF54 /* SAPImageSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPImageSessionTask.swift; sourceTree = "<group>"; };
+		0CB126151DD59E3300A6FF54 /* SAPImageSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPImageSession.swift; sourceTree = "<group>"; };
+		0CB126171DD5BE8200A6FF54 /* SAPImageRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPImageRequest.swift; sourceTree = "<group>"; };
+		0CB126191DD5C79200A6FF54 /* SAPImageResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPImageResponse.swift; sourceTree = "<group>"; };
 		0CC763D21DCDAE5000AB4396 /* Progressiveable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Progressiveable.swift; sourceTree = "<group>"; };
 		0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPProgressiveItem.swift; sourceTree = "<group>"; };
 		0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAPBrowseableContentView.swift; sourceTree = "<group>"; };
@@ -306,6 +314,10 @@
 				0CA16D6F1DCEF7A500B4E75C /* SAPBrowseableControlView.swift */,
 				0CD571F51DCE288500C6E9D8 /* SAPBrowseableContentView.swift */,
 				0CC763D41DCDBEF300AB4396 /* SAPProgressiveItem.swift */,
+				0CB126171DD5BE8200A6FF54 /* SAPImageRequest.swift */,
+				0CB126191DD5C79200A6FF54 /* SAPImageResponse.swift */,
+				0CB126151DD59E3300A6FF54 /* SAPImageSession.swift */,
+				0CB126131DD5936B00A6FF54 /* SAPImageSessionTask.swift */,
 			);
 			name = Photos;
 			path = ../Classes/Photos;
@@ -535,6 +547,7 @@
 				0C0BB20F1DC731B400B5CF4F /* SAPBrowser.swift in Sources */,
 				0C0BB2251DC731B400B5CF4F /* SAPPreviewableView.swift in Sources */,
 				0C0BB2191DC731B400B5CF4F /* SAPPickerAlbumsCell.swift in Sources */,
+				0CB126141DD5936B00A6FF54 /* SAPImageSessionTask.swift in Sources */,
 				0C0BB2311DC731B400B5CF4F /* SAPImageView.swift in Sources */,
 				0C0BB22E1DC731B400B5CF4F /* NSLayoutConstraint+Photos.swift in Sources */,
 				0C0BB21E1DC731B400B5CF4F /* SAPPickerAssetsLayout.swift in Sources */,
@@ -545,13 +558,16 @@
 				0C7DC8091DC8E7FB0040F58F /* UIColor+Random.swift in Sources */,
 				0C0BB22F1DC731B400B5CF4F /* SAPButtonBarItem.swift in Sources */,
 				0C0BB2321DC731B400B5CF4F /* SAPNavigationBar.swift in Sources */,
+				0CB126161DD59E3300A6FF54 /* SAPImageSession.swift in Sources */,
 				0C0BB2291DC731B400B5CF4F /* SAPPreviewerLayout.swift in Sources */,
+				0CB1261A1DD5C79200A6FF54 /* SAPImageResponse.swift in Sources */,
 				0C7DC8051DC8E3910040F58F /* SAPBrowseableProgressView.swift in Sources */,
 				0C5C6F891DCCCCC700B6707C /* SAPBrowseable.swift in Sources */,
 				0C0BB2131DC731B400B5CF4F /* SAPBrowserView.swift in Sources */,
 				0C0BB17C1DC72F2D00B5CF4F /* Logger.swift in Sources */,
 				0C0BB2301DC731B400B5CF4F /* SAPContainterView.swift in Sources */,
 				0C0BB2141DC731B400B5CF4F /* SAPEditor.swift in Sources */,
+				0CB126181DD5BE8200A6FF54 /* SAPImageRequest.swift in Sources */,
 				0C50DA3B1DD08F8400443E4C /* UIImageView+Animation.swift in Sources */,
 				0C7DC8011DC8E1FC0040F58F /* SAPBrowseableView.swift in Sources */,
 				0C0BB2341DC731B400B5CF4F /* SAPWKObject.swift in Sources */,

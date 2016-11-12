@@ -90,12 +90,16 @@ public class SAPAsset: NSObject {
         }
     }
     
-    public var imageItem: SAPProgressiveItem? {
+    public func imageTask(with options: SAPRequestOptions) -> SAPProgressiveItem? {
+        return SAPLibrary.shared.imageTask(with: self, options: options)
+    }
+    
+    public var imageItem: Progressiveable? {
 //        let options = SAPRequestOptions(size: size)
 //        return SAPLibrary.shared.requestImageItem(with: self, options: options)
         return SAPLibrary.shared.imageItem(with: self, size: self.size)
     }
-    public func imageItem(with size: CGSize) -> SAPProgressiveItem? {
+    public func imageItem(with size: CGSize) -> Progressiveable? {
         return SAPLibrary.shared.imageItem(with: self, size: size)
     }
     

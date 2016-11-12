@@ -60,81 +60,87 @@ public class SAPLibrary: NSObject {
     }
     
     
-    public func imageItem(with asset: SAPAsset, size: CGSize) -> SAPProgressiveItem? {
-        _logger.trace("\(asset.identifier) - \(size)")
+    public func imageItem(with asset: SAPAsset, size: CGSize) -> Progressiveable? {
+        let request = SAPImageRequest(asset: asset.asset, size: size)
         
-        let key = asset.identifier
-        let name = "\(Int(size.width))x\(Int(size.height)).png"
-        // 读取缓存
-        if let item = _allCaches[key]?[name]?.object {
-            return item
-        }
-        let item = SAPProgressiveItem(size: size)
-        let options = PHImageRequestOptions()
+        request.isNetworkAccessAllowed = true
         
-        item.progress = 1 // 默认是1, 只有在progressHandler回调的时候才会出现进度
-        item.content = _cachedImage(with: asset, size: size) // 获取最接近的一张图片
-        
-        //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
-        options.deliveryMode = .opportunistic
-        options.resizeMode = .fast
-        options.isNetworkAccessAllowed = true
-        options.progressHandler = { [weak item](progress, error, stop, info) in
-            _SAPhotoQueueTasksAdd(.main) {
-                item?.progress = progress
-            }
-        }
-        // 创建缓冲池
-        if _allCaches.index(forKey: asset.identifier) == nil {
-            _allCaches[key] = [:]
-        }
-        _allCaches[key]?[name] = SAPWKObject(object: item)
-        // 异步请求
-        _queue.async {
-            print(asset.identifier, "request image with", size)
-            item.requestId = self._requestImage(asset, size, .aspectFill, options) {  [weak item](img, info) in
-                // 读取字典
-                let isError = (info?[PHImageErrorKey] as? NSError) != nil
-                let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
-                let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
-                let isInClound = (info?[PHImageResultIsInCloudKey] as? Int) == 1
-                
-                let os = (item?.content as? UIImage)?.size ?? .zero
-                let ns = img?.size ?? .zero
-                // 新加载的图片必须比当前的图片大
-                print(asset.identifier, " respond image ",  size, img, info)
-                guard ns.width >= os.width && ns.height >= os.height else {
-                    return
-                }
-                // 添加任务到主线程
-                _SAPhotoQueueTasksAdd(.main) {
-                    guard item != nil else {
-                        return
-                    }
-                    let os = (item?.content as? UIImage)?.size ?? .zero
-                    let ns = img?.size ?? .zero
-                    // 新加载的图片必须比当前的图片大
-                    if ns.width >= os.width && ns.height >= os.height {
-                        // 更新内容
-                        item?.content = img
-                    }
-                    // 检查是否己经载完成
-                    if isError || isCancel || !isDegraded {
-                        // 更新进度
-                        item?.progress = 1
-                        item?.requestId = PHInvalidImageRequestID
-                    } else if isInClound {
-                        // 图片还在在iClound上, 重置进度
-                        guard (item?.progress ?? 0) > 0.999999 else {
-                            return
-                        }
-                        item?.progress = 0
-                    }
-                }
-            }
-        }
-        
-        return item
+        return _session.imageTask(with: request)
+//        _logger.trace("\(asset.identifier) - \(size)")
+//        
+//        let key = asset.identifier
+//        let name = "\(Int(size.width))x\(Int(size.height)).png"
+//        // 读取缓存
+//        if let item = _allCaches[key]?[name]?.object {
+//            return item
+//        }
+//        let item = SAPProgressiveItem(size: size)
+//        let options = PHImageRequestOptions()
+//        
+//        item.progress = 1 // 默认是1, 只有在progressHandler回调的时候才会出现进度
+//        item.content = _cachedImage(with: asset, size: size) // 获取最接近的一张图片
+//        
+//        //options.deliveryMode = .highQualityFormat //.fastFormat//opportunistic
+//        options.deliveryMode = .opportunistic
+//        options.resizeMode = .fast
+//        options.isNetworkAccessAllowed = true
+//        options.progressHandler = { [weak item](progress, error, stop, info) in
+//            print(asset.identifier, "update progress", info, error)
+//            _SAPhotoQueueTasksAdd(.main) {
+//                item?.progress = progress
+//            }
+//        }
+//        // 创建缓冲池
+//        if _allCaches.index(forKey: asset.identifier) == nil {
+//            _allCaches[key] = [:]
+//        }
+//        _allCaches[key]?[name] = SAPWKObject(object: item)
+//        // 异步请求
+//        _queue.async {
+//            print(asset.identifier, "request image with", size)
+//            item.requestId = self._requestImage(asset, size, .aspectFill, options) {  [weak item](img, info) in
+//                // 读取字典
+//                let isError = (info?[PHImageErrorKey] as? NSError) != nil
+//                let isCancel = (info?[PHImageCancelledKey] as? Int) != nil
+//                let isDegraded = (info?[PHImageResultIsDegradedKey] as? Int) == 1
+//                let isInClound = (info?[PHImageResultIsInCloudKey] as? Int) == 1
+//                
+//                let os = (item?.content as? UIImage)?.size ?? .zero
+//                let ns = img?.size ?? .zero
+//                // 新加载的图片必须比当前的图片大
+//                print(asset.identifier, " respond image ",  size, img, info)
+//                guard ns.width >= os.width && ns.height >= os.height else {
+//                    return
+//                }
+//                // 添加任务到主线程
+//                _SAPhotoQueueTasksAdd(.main) {
+//                    guard item != nil else {
+//                        return
+//                    }
+//                    let os = (item?.content as? UIImage)?.size ?? .zero
+//                    let ns = img?.size ?? .zero
+//                    // 新加载的图片必须比当前的图片大
+//                    if ns.width >= os.width && ns.height >= os.height {
+//                        // 更新内容
+//                        item?.content = img
+//                    }
+//                    // 检查是否己经载完成
+//                    if isError || isCancel || !isDegraded {
+//                        // 更新进度
+//                        item?.progress = 1
+//                        item?.requestId = PHInvalidImageRequestID
+//                    } else if isInClound {
+//                        // 图片还在在iClound上, 重置进度
+//                        guard (item?.progress ?? 0) > 0.999999 else {
+//                            return
+//                        }
+//                        item?.progress = 0
+//                    }
+//                }
+//            }
+//        }
+//        
+//        return item
     }
     public func playerItem(with asset: SAPAsset) -> SAPProgressiveItem? {
         //_logger.trace()
@@ -433,6 +439,9 @@ public class SAPLibrary: NSObject {
         PHPhotoLibrary.shared().register(lib)
         return lib
     }()
+    
+    
+    private lazy var _session: SAPImageSession = SAPImageSession()
     
     private var _needsClearCaches: Bool = false
     
