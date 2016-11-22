@@ -19,14 +19,24 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         _commonInit()
     }
     
-    weak var delegate: BrowseDelegate?
-    weak var dataSource: BrowseDataSource?
+    weak var delegate: BrowseDelegate? {
+        willSet {
+            indicatorView.delegate = delegate
+        }
+    }
+    weak var dataSource: BrowseDataSource? {
+        willSet {
+            indicatorView.dataSource = newValue
+        }
+    }
     
     lazy var isInteractiving: Bool = false
     lazy var lastContentOffset: CGPoint = .zero
     
     lazy var extraContentInset = UIEdgeInsetsMake(0, -20, 0, -20)
     lazy var interactiveDismissGestureRecognizer = UIPanGestureRecognizer()
+    
+    lazy var indicatorView: BrowseIndicatorView = BrowseIndicatorView()
     
     lazy var collectionViewLayout: BrowseDetailViewLayout = BrowseDetailViewLayout()
     lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.collectionViewLayout)
@@ -154,17 +164,19 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         }
     }
     
-    fileprivate weak var _test: UIImageView?
     fileprivate var _currentIndex: Int = 0 {
         didSet {
-            let asset = dataSource?.browser(self, assetForItemAt: IndexPath(item: _currentIndex, section: 0))
-            
-            _test?.image = asset?.browseImage
+//            let asset = dataSource?.browser(self, assetForItemAt: IndexPath(item: _currentIndex, section: 0))
+//            
+//            _test?.image = asset?.browseImage
         }
     }
     
     fileprivate func _commonInit() {
+      
+        //UIActivityIndicatorView
         
+       
         automaticallyAdjustsScrollViewInsets = false
         
         interactiveDismissGestureRecognizer.delegate = self
@@ -192,21 +204,15 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
 //        collectionView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Image")
 //        collectionView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Video")
         
-        let view = UIImageView(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
-        view.image = UIImage(named: "cl_1")
-        view.clipsToBounds = true
-        view.contentMode = .scaleAspectFill
-        _test = view
-        
         toolbarItems = [
-            BrowseCustomBarItem(size: CGSize(width: 0, height: 44), view: view),
-            UIBarButtonItem(title: "Test", style: .plain, target: nil, action: nil),
-            UIBarButtonItem(title: "Test", style: .plain, target: nil, action: nil),
+            BrowseCustomBarItem(height: indicatorView.height, view: indicatorView),
+            
+            UIBarButtonItem(barButtonSystemItem: .action, target: nil, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil)
         ]
     //public convenience init(title: String?, style: UIBarButtonItemStyle, target: Any?, action: Selector?)
     }
-    
-    
 }
 
 extension BrowseDetailViewController: BrowseDetailViewDelegate, UINavigationBarDelegate {

@@ -28,11 +28,11 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        _init()
+        _commonInit()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        _init()
+        _commonInit()
     }
     
     var asset: Browseable? {
@@ -74,7 +74,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
     }
     
-    private func _init() {
+    private func _commonInit() {
         
         doubleTapGestureRecognizer.numberOfTapsRequired = 2
         

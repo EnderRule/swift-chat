@@ -9,16 +9,16 @@
 import UIKit
 
 class BrowseCustomBarItem: UIBarButtonItem {
-    init(size: CGSize, view: UIView) {
+    init(height: CGFloat, view: UIView) {
         super.init()
-        self.size = size
+        self.height = height
         self.customView = view
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var size: CGSize = .zero
+    var height: CGFloat = 0
 }
 class BrowseToolbarLineContext: NSObject {
     
@@ -68,7 +68,7 @@ class BrowseToolbar: UIToolbar {
             
             if let item = $0.first as? BrowseCustomBarItem {
                 context.view = item.customView
-                context.height = item.size.height
+                context.height = item.height
             } else {
                 context.view = dequeueReusableToolbar(with: IndexPath(item: index, section: 0))
                 context.height = minimuxHeight
@@ -104,10 +104,17 @@ class BrowseToolbar: UIToolbar {
             }
             toolbar.setItems($0.items, animated: animated)
         }
+        invaildLines?.forEach {
+            guard let toolbar = $0.view as? UIToolbar else {
+                return
+            }
+            toolbar.setItems(nil, animated: animated)
+        }
         // 更新布局
+        self.setNeedsLayout()
         self.layoutIfNeeded()
         self.layoutSubviewsWithLines(oldLines, in: self.frame.height)
-        self.layoutSubviewsWithLines(newLines, in: self.frame.height)
+        self.layoutSubviewsWithLines(newLines, in: max(self.frame.height, minimuxHeight))
         
         let block: () -> Void = {
             // 更新frame
@@ -116,6 +123,7 @@ class BrowseToolbar: UIToolbar {
             nframe.size.height = height 
             self.frame = nframe 
             // 更新subviews
+            self.setNeedsLayout()
             self.layoutIfNeeded()
             self.layoutSubviewsWithLines(oldLines, in: nframe.height)
             self.layoutSubviewsWithLines(newLines, in: nframe.height)
@@ -142,7 +150,7 @@ class BrowseToolbar: UIToolbar {
             return
         }
         // 执行
-        UIView.animate(withDuration: 0.35, animations: block, completion: completion)
+        UIView.animate(withDuration: 0.25, animations: block, completion: completion)
     }
     
     override func layoutSubviews() {
@@ -162,6 +170,7 @@ class BrowseToolbar: UIToolbar {
                 nframe.size.width = frame.width
                 nframe.size.height = h2
                 view.frame = nframe
+                view.layoutIfNeeded()
             }
             y -= h1
         }

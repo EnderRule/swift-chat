@@ -300,17 +300,17 @@ import UIKit
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        _init()
+        _commonInit()
     }
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        _init()
+        _commonInit()
     }
 }
 
 fileprivate extension BrowseContainterView {
     
-    fileprivate func _init() {
+    fileprivate func _commonInit() {
         
         clipsToBounds = true
         

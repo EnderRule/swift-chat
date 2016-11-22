@@ -16,25 +16,25 @@ class LocalImageAsset: NSObject, Browseable {
         
         super.init()
             
-        let index = count % 12
-        count = index + 1
-        browseImage = UIImage(named: "cl_\(index + 1).jpg")
+//        let index = count % 12
+//        count = index + 1
+//        browseImage = UIImage(named: "cl_\(index + 1).jpg")
     }
     
 //    lazy var browseContentSize: CGSize = CGSize(width: 160, height: 120)
     
-//    lazy var browseContentSize: CGSize = CGSize(width: 1600, height: 1200)
-//    lazy var browseImage: UIImage? = nil//UIImage(named: "t1.jpg")
+    lazy var browseContentSize: CGSize = CGSize(width: 1600, height: 1200)
+    lazy var browseImage: UIImage? = UIImage(named: "t1.jpg")
     
     //lazy var browseContentSize: CGSize = CGSize(width: 1080, height: 1920)
     //lazy var browseImage: UIImage? = UIImage(named: "m44.jpg")
     
-    var browseImage: UIImage? 
-    var browseContentSize: CGSize {
-        return browseImage?.size ?? .zero
-    }
+//    var browseImage: UIImage? 
+//    var browseContentSize: CGSize {
+//        return browseImage?.size ?? .zero
+//    }
     
-    lazy var backgroundColor: UIColor? = UIColor(white: 0.9, alpha: 1)
+    lazy var backgroundColor: UIColor? = .random
 }
 //class RemoteImageAsset: NSObject, Browseable {
 //}

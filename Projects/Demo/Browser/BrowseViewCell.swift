@@ -12,11 +12,11 @@ class BrowseViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        _init()
+        _commonInit()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        _init()
+        _commonInit()
     }
     
     lazy var previewView: UIImageView = UIImageView()
@@ -31,7 +31,7 @@ class BrowseViewCell: UICollectionViewCell {
         }
     }
     
-    private func _init() {
+    private func _commonInit() {
         
         previewView.contentMode = .scaleAspectFill
         previewView.frame = contentView.bounds
