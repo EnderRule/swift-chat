@@ -48,21 +48,20 @@ class BrowseViewController: UIViewController, BrowseContextTransitioning {
         guard let cell = collectionView.cellForItem(at: indexPath) as? BrowseViewCell else {
             return nil
         }
+        let edg = collectionView.contentInset
         let frame = cell.convert(cell.bounds, to: view)
         let height = view.frame.height - topLayoutGuide.length - bottomLayoutGuide.length 
+      
+        let y1 = -edg.top + frame.minY
+        let y2 = -edg.top + frame.maxY
         
-        // 重置位置(如果需要的话)
-        if frame.minY < 0 {
-            // 上部越界, 重置到minY
-            var pt = collectionView.contentOffset
-            pt.y += frame.minY
-            collectionView.contentOffset = pt
-            
-        } else if frame.maxY > height {
-            // 下部越界, 重置到maxY
-            var pt = collectionView.contentOffset 
-            pt.y += frame.maxY - height
-            collectionView.contentOffset = pt
+        // reset content offset if needed
+        if y2 > height {
+            // bottom over boundary, reset to y2(bottom)
+            collectionView.contentOffset.y += y2 - height
+        } else if y1 < 0 {
+            // top over boundary, rest to y1(top)
+            collectionView.contentOffset.y += y1
         }
         
         return cell.previewView
@@ -121,9 +120,12 @@ class BrowseViewController: UIViewController, BrowseContextTransitioning {
     }
     
     lazy var _assets:[Browseable] = {
-        return (0 ..< 1400).map{ _ in
+        return (0 ..< 140).map{ _ in
             return LocalImageAsset()
         }
+//        return (0 ..< 1400).map{ _ in
+//            return LocalImageAsset()
+//        }
     }()
     
     fileprivate var _browseAnimator: BrowseAnimator?

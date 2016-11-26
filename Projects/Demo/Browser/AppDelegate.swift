@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }
             
-            
             let l1 = UIView()
             let l2 = UIView()
             

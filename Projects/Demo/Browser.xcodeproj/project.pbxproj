@@ -22,10 +22,11 @@
 		0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */; };
 		0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */; };
 		0C25D1C01DD9BF7C007877A0 /* BrowseAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */; };
+		0C599FCA1DE52DD20076984A /* BrowseIndicatorViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C599FC91DE52DD20076984A /* BrowseIndicatorViewLayout.swift */; };
 		0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */; };
 		0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */; };
 		0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */; };
-		0CD1E2991DE2D399006832D0 /* BrowseToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2981DE2D399006832D0 /* BrowseToolbar.swift */; };
+		0CD1E2991DE2D399006832D0 /* BrowseExtendedToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */; };
 		0CD1E29F1DE432BA006832D0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E29E1DE432BA006832D0 /* Logger.swift */; };
 		0CD1E2A11DE432C5006832D0 /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */; };
 		0CD1E2A31DE4464E006832D0 /* BrowseIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */; };
@@ -54,10 +55,11 @@
 		0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailView.swift; sourceTree = "<group>"; };
 		0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewController.swift; sourceTree = "<group>"; };
 		0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimator.swift; sourceTree = "<group>"; };
+		0C599FC91DE52DD20076984A /* BrowseIndicatorViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseIndicatorViewLayout.swift; sourceTree = "<group>"; };
 		0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimatedTransition.swift; sourceTree = "<group>"; };
 		0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseInteractiveTransition.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Pop.swift"; sourceTree = "<group>"; wrapsLines = 0; };
-		0CD1E2981DE2D399006832D0 /* BrowseToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseToolbar.swift; sourceTree = "<group>"; };
+		0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseExtendedToolbar.swift; sourceTree = "<group>"; };
 		0CD1E29E1DE432BA006832D0 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 		0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../Example/UIColor+Random.swift"; sourceTree = "<group>"; };
 		0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseIndicatorView.swift; sourceTree = "<group>"; };
@@ -105,9 +107,10 @@
 				0C25D1931DD8341C007877A0 /* Assets.xcassets */,
 				0C25D1951DD8341C007877A0 /* LaunchScreen.storyboard */,
 				0C25D1981DD8341C007877A0 /* Info.plist */,
-				0CD1E2981DE2D399006832D0 /* BrowseToolbar.swift */,
+				0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */,
 				0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */,
 				0CD1E2A41DE44D0B006832D0 /* BrowseIndicatorViewCell.swift */,
+				0C599FC91DE52DD20076984A /* BrowseIndicatorViewLayout.swift */,
 				0CEF2C8D1DDAE08F0045BB09 /* BrowseContainterView.swift */,
 				0C25D1AB1DD957D7007877A0 /* BrowseView.swift */,
 				0C25D1B11DD988D6007877A0 /* BrowseViewCell.swift */,
@@ -218,6 +221,7 @@
 				0C25D1A11DD83650007877A0 /* Browseable.swift in Sources */,
 				0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */,
 				0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */,
+				0C599FCA1DE52DD20076984A /* BrowseIndicatorViewLayout.swift in Sources */,
 				0CDBBFDA1DDD79BA000F694C /* BrowseDetailViewDelegate.swift in Sources */,
 				0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */,
 				0CEF2C8E1DDAE08F0045BB09 /* BrowseContainterView.swift in Sources */,
@@ -225,7 +229,7 @@
 				0C25D1B21DD988D6007877A0 /* BrowseViewCell.swift in Sources */,
 				0C25D1AC1DD957D7007877A0 /* BrowseView.swift in Sources */,
 				0CEF2C951DDB0DC30045BB09 /* BrowseDetailViewCell.swift in Sources */,
-				0CD1E2991DE2D399006832D0 /* BrowseToolbar.swift in Sources */,
+				0CD1E2991DE2D399006832D0 /* BrowseExtendedToolbar.swift in Sources */,
 				0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */,
 				0C25D1AA1DD957CA007877A0 /* BrowseViewController.swift in Sources */,
 			);

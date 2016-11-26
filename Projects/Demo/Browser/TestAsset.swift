@@ -24,12 +24,12 @@ class LocalImageAsset: NSObject, Browseable {
 //    lazy var browseContentSize: CGSize = CGSize(width: 160, height: 120)
     
     lazy var browseContentSize: CGSize = CGSize(width: 1600, height: 1200)
-    lazy var browseImage: UIImage? = UIImage(named: "t1.jpg")
+//    lazy var browseImage: UIImage? = UIImage(named: "t1.jpg")
     
     //lazy var browseContentSize: CGSize = CGSize(width: 1080, height: 1920)
     //lazy var browseImage: UIImage? = UIImage(named: "m44.jpg")
     
-//    var browseImage: UIImage? 
+    var browseImage: UIImage? 
 //    var browseContentSize: CGSize {
 //        return browseImage?.size ?? .zero
 //    }

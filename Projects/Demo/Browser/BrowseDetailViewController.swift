@@ -21,7 +21,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     
     weak var delegate: BrowseDelegate? {
         willSet {
-            indicatorView.delegate = delegate
+//            indicatorView.delegate = delegate
         }
     }
     weak var dataSource: BrowseDataSource? {
@@ -65,9 +65,14 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         if let cell = collectionView.cellForItem(at: indexPath) as? BrowseDetailViewCell {
             return cell.detailView
         }
+        // update indicator
+        indicatorView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 40)
+        indicatorView.layoutIfNeeded()
+        // update content
         collectionView.frame = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         collectionView.layoutIfNeeded()
+        
         _currentIndex = indexPath.item
         if let cell = collectionView.cellForItem(at: indexPath) as? BrowseDetailViewCell {
             return cell.detailView
@@ -90,9 +95,13 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
+        let nframe = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
+        guard collectionView.frame != nframe else {
+            return
+        }
         let cell = collectionView.visibleCells.first
         let indexPath = collectionView.indexPathsForVisibleItems.first
-        collectionView.frame = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
+        collectionView.frame = nframe
         if let indexPath = indexPath, let cell = cell {
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
             collectionView.layoutIfNeeded()
@@ -205,7 +214,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
 //        collectionView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Video")
         
         toolbarItems = [
-            BrowseCustomBarItem(height: indicatorView.height, view: indicatorView),
+            BrowseCustomBarItem(height: 40, view: indicatorView),
             
             UIBarButtonItem(barButtonSystemItem: .action, target: nil, action: nil),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -279,8 +288,14 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
 extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let index = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
+        let value = scrollView.contentOffset.x / scrollView.frame.width
+        
+        let index = Int(round(value))
         _currentIndex = index
+        
+//        if scrollView.isDragging {
+            indicatorView.updateIndex(with: Double(value))
+//        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

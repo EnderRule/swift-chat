@@ -179,6 +179,7 @@ class BrowseDismissInteractiveTransition: NSObject, UIViewControllerInteractiveT
             self.transitionView?.center = self.fromContentViewCenter
             
             self.transition?.view(forKey: .to)?.removeFromSuperview()
+            
             self.transition?.view(forKey: .from)?.isHidden = false
             self.transition?.view(forKey: .from)?.layoutIfNeeded()
             

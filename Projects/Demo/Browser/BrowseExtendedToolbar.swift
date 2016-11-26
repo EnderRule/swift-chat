@@ -1,5 +1,5 @@
 //
-//  BrowseToolbar.swift
+//  BrowseExtendedToolbar.swift
 //  Browser
 //
 //  Created by sagesse on 11/21/16.
@@ -20,7 +20,7 @@ class BrowseCustomBarItem: UIBarButtonItem {
     
     var height: CGFloat = 0
 }
-class BrowseToolbarLineContext: NSObject {
+class BrowseExtendedToolbarLineContext: NSObject {
     
     var height: CGFloat = 0
     var minimuxHeight: CGFloat = 0
@@ -29,7 +29,7 @@ class BrowseToolbarLineContext: NSObject {
     var items: [UIBarButtonItem]?
 }
 
-class BrowseToolbar: UIToolbar {
+class BrowseExtendedToolbar: UIToolbar {
     
     override var items: [UIBarButtonItem]? {
         set { return setItems(newValue, animated: false) }
@@ -59,9 +59,9 @@ class BrowseToolbar: UIToolbar {
         let minimuxHeight: CGFloat = super.sizeThatFits(.zero).height
         
         // 生成行所需的数据
-        let oldLines: [BrowseToolbarLineContext]? = _lines
-        let newLines: [BrowseToolbarLineContext]? = lines?.map { 
-            let context = BrowseToolbarLineContext()
+        let oldLines: [BrowseExtendedToolbarLineContext]? = _lines
+        let newLines: [BrowseExtendedToolbarLineContext]? = lines?.map { 
+            let context = BrowseExtendedToolbarLineContext()
             
             context.items = $0
             context.minimuxHeight = minimuxHeight
@@ -82,7 +82,7 @@ class BrowseToolbar: UIToolbar {
             height = minimuxHeight
         }
         // 生成无效的数据
-        let invaildLines: [BrowseToolbarLineContext]? = oldLines?.filter { o in
+        let invaildLines: [BrowseExtendedToolbarLineContext]? = oldLines?.filter { o in
             // 如果找到说明正在使用, 不能删除
             let f = newLines?.contains { n in
                 n.view == o.view
@@ -158,7 +158,7 @@ class BrowseToolbar: UIToolbar {
         layoutSubviewsWithLines(_lines, in: frame.height)
     }
     
-    func layoutSubviewsWithLines(_ lines: [BrowseToolbarLineContext]?, in offset: CGFloat) {
+    func layoutSubviewsWithLines(_ lines: [BrowseExtendedToolbarLineContext]?, in offset: CGFloat) {
         var y = offset
         lines?.reversed().forEach {
             let h1 = $0.height
@@ -191,7 +191,7 @@ class BrowseToolbar: UIToolbar {
     
     
     private var _items: [UIBarButtonItem]?
-    private var _lines: [BrowseToolbarLineContext]?
+    private var _lines: [BrowseExtendedToolbarLineContext]?
     
     private lazy var _toolbars: [UIToolbar] = []
 }
