@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
+class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, BrowseIndicatorViewDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -188,6 +188,8 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
        
         automaticallyAdjustsScrollViewInsets = false
         
+        indicatorView.delegate = self
+        
         interactiveDismissGestureRecognizer.delegate = self
         interactiveDismissGestureRecognizer.maximumNumberOfTouches = 1
         interactiveDismissGestureRecognizer.addTarget(self, action: #selector(dismissHandler(_:)))
@@ -286,6 +288,15 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
 }
 
 extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    
+    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
+        logger.trace(indexPath)
+        
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+    }
+    func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath) {
+        logger.trace(indexPath)
+    }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let value = scrollView.contentOffset.x / scrollView.frame.width

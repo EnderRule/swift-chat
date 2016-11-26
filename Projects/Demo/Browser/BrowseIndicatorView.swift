@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol BrowseIndicatorViewDelegate: class {
+    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath)
+    func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath)
+}
+
 class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     
     override init(frame: CGRect) {
@@ -19,7 +24,7 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         _commonInit()
     }
     
-    weak var delegate: BrowseDelegate?
+    weak var delegate: BrowseIndicatorViewDelegate?
     weak var dataSource: BrowseDataSource?
     
     lazy var scrollView: BrowseIndicatorScrollView = BrowseIndicatorScrollView()
@@ -112,11 +117,16 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     }
     
     func updateIndex(with value: Double) {
+        _logger.trace(value)
         
         let pre = modf(value).1
         
         let fromIndex = Int(floor(value))
         let toIndex = Int(ceil(value))
+        
+        if fromIndex == toIndex && fromIndex == active {
+            return
+        }
         
 //        logger.trace("\(fromIndex) => \(toIndex) => \(pre)")
         
@@ -183,6 +193,13 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         let newValue = index
         
         active = newValue
+        
+        if let oldValue = oldValue {
+            delegate?.indicator(self, didDeselectItemAt: IndexPath(item: oldValue, section: 0))
+        }
+        if let newValue = newValue {
+            delegate?.indicator(self, didSelectItemAt: IndexPath(item: newValue, section: 0))
+        }
         
         var xOffset: CGFloat = 0
         
