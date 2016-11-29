@@ -18,4 +18,10 @@ class BrowseTilingViewLayoutAttributes: NSObject {
     var indexPath: IndexPath
     
     var frame: CGRect = .zero
+    
+    var fromFrame: CGRect = .zero
+    
+    override var description: String {
+        return "<\(super.description), \(indexPath)>"
+    }
 }

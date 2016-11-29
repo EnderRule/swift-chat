@@ -203,7 +203,26 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
             return IndexPath(item: $0, section: 0)
         }
         
-        scrollView.reloadItems(at: indexPaths, animated: true)
+        let ew = estimatedItemSize.width
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.scrollView.reloadItems(at: indexPaths)
+            self.scrollView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
+                guard let attr = self.scrollView.layoutAttributesForItem(at: indexPath) else {
+                    return 0
+                }
+                if indexPath.item == newValue {
+                    return attr.frame.midX - self.scrollView.contentInset.left - ew / 2
+                } 
+                if indexPath.item == oldValue && newValue == nil {
+                    return attr.frame.midX - self.scrollView.contentInset.left - ew / 2 
+                }
+                return offset
+            }
+        }, completion: { b in
+            self.logger.debug("\(b)")
+        })
+        
 //        
 //        if let oldValue = oldValue {
 //            delegate?.indicator(self, didDeselectItemAt: IndexPath(item: oldValue, section: 0))
