@@ -27,7 +27,7 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     weak var delegate: BrowseIndicatorViewDelegate?
     weak var dataSource: BrowseDataSource?
     
-    lazy var scrollView: BrowseIndicatorScrollView = BrowseIndicatorScrollView()
+    lazy var scrollView: BrowseTilingView = BrowseTilingView()
     
 //    var height: CGFloat = 40
 //    var contentInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
@@ -69,6 +69,10 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     private func _commonInit() {
         //backgroundColor = .random
         
+        scrollView.tilingDelegate = self
+        scrollView.tilingDataSource = self
+        scrollView.register(UIImageView.self, forCellWithReuseIdentifier: "Asset")
+        
         scrollView.delegate = self
 //        collectionView.dataSource = self
         scrollView.scrollsToTop = false
@@ -80,18 +84,18 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
         scrollView.addGestureRecognizer(tap)
         
-        var x: CGFloat = 0
-        let width = estimatedItemSize.width
-        let height = estimatedItemSize.height
-        for _ in 0 ..< 140 {
-            let view = UIImageView()
-            view.backgroundColor = .random
-            view.frame = CGRect(x: x, y: 0, width: width, height: height)
-            x += view.frame.width
-            cells.append(view)
-            scrollView.addSubview(view)
-        }
-        scrollView.contentSize = CGSize(width: x, height: height)
+//        var x: CGFloat = 0
+//        let width = estimatedItemSize.width
+//        let height = estimatedItemSize.height
+//        for _ in 0 ..< 140 {
+//            let view = UIImageView()
+//            view.backgroundColor = .random
+//            view.frame = CGRect(x: x, y: 0, width: width, height: height)
+//            x += view.frame.width
+//            cells.append(view)
+//            scrollView.addSubview(view)
+//        }
+//        scrollView.contentSize = CGSize(width: x, height: height)
         
         addSubview(scrollView)
     }
@@ -104,7 +108,8 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     func tapHandler(_ sender: UITapGestureRecognizer) {
         let x = sender.location(in: scrollView).x
         let idx = Int(x / estimatedItemSize.width)
-        guard idx >= 0 && idx < cells.count else {
+        
+        guard idx >= 0 && idx < scrollView.numberOfItems(inSection: 0) else {
             return
         }
         updateIndex(idx)
@@ -117,74 +122,74 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     }
     
     func updateIndex(with value: Double) {
-        _logger.trace(value)
-        
-        let pre = modf(value).1
-        
-        let fromIndex = Int(floor(value))
-        let toIndex = Int(ceil(value))
-        
-        if fromIndex == toIndex && fromIndex == active {
-            return
-        }
-        
-//        logger.trace("\(fromIndex) => \(toIndex) => \(pre)")
-        
-        if fromIndex < 0 || toIndex >= cells.count {
-            return
-        }
-        
-        active = fromIndex
-        
-        let view1 = cells[fromIndex]
-        let view2 = cells[toIndex]
-        
-        let nw1: CGFloat = 120
-        let ow1: CGFloat = estimatedItemSize.width
-        let nw2: CGFloat = 120
-        let ow2: CGFloat = estimatedItemSize.width
-        
-        let w1 = ow1 + (nw1 - ow1) * CGFloat(1 - pre)
-        let w2 = ow2 + (nw2 - ow2) * CGFloat(pre)
-        
-//        view1.frame.size.width = w1
-//        view2.frame.size.width = w2
-        
-        var xOffset: CGFloat = 0
-        
-        for idx in fromIndex ..< cells.count {
-            let view = cells[idx]
-            if idx == fromIndex {
-                let nw = w1
-                let ow = view.frame.width
-                var frame = view.frame
-                frame.origin.x += xOffset
-                frame.size.width = nw
-                view.frame = frame
-                xOffset += nw - ow
-            } else if idx == toIndex {
-                let nw = w2
-                let ow = view.frame.width
-                var frame = view.frame
-                frame.origin.x += xOffset
-                frame.size.width = nw
-                view.frame = frame
-                xOffset += nw - ow
-            } else {
-                var pt = view.center
-                pt.x += xOffset
-                view.center = pt
-            }
-        }
-        
-        let x1 = view1.frame.midX * CGFloat(1 - pre)
-        let x2 = view2.frame.midX * CGFloat(pre)
-//        let x2 = (w2 - ow2) / 2
-        
-        let offset = x1 + x2 - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
-        
-        scrollView.contentSize.width += xOffset
-        scrollView.contentOffset.x = offset
+////        _logger.trace(value)
+//        
+//        let pre = modf(value).1
+//        
+//        let fromIndex = Int(floor(value))
+//        let toIndex = Int(ceil(value))
+//        
+//        if fromIndex == toIndex && fromIndex == active {
+//            return
+//        }
+//        
+////        logger.trace("\(fromIndex) => \(toIndex) => \(pre)")
+//        
+//        if fromIndex < 0 || toIndex >= cells.count {
+//            return
+//        }
+//        
+//        active = fromIndex
+//        
+//        let view1 = cells[fromIndex]
+//        let view2 = cells[toIndex]
+//        
+//        let nw1: CGFloat = 120
+//        let ow1: CGFloat = estimatedItemSize.width
+//        let nw2: CGFloat = 120
+//        let ow2: CGFloat = estimatedItemSize.width
+//        
+//        let w1 = ow1 + (nw1 - ow1) * CGFloat(1 - pre)
+//        let w2 = ow2 + (nw2 - ow2) * CGFloat(pre)
+//        
+////        view1.frame.size.width = w1
+////        view2.frame.size.width = w2
+//        
+//        var xOffset: CGFloat = 0
+//        
+//        for idx in fromIndex ..< cells.count {
+//            let view = cells[idx]
+//            if idx == fromIndex {
+//                let nw = w1
+//                let ow = view.frame.width
+//                var frame = view.frame
+//                frame.origin.x += xOffset
+//                frame.size.width = nw
+//                view.frame = frame
+//                xOffset += nw - ow
+//            } else if idx == toIndex {
+//                let nw = w2
+//                let ow = view.frame.width
+//                var frame = view.frame
+//                frame.origin.x += xOffset
+//                frame.size.width = nw
+//                view.frame = frame
+//                xOffset += nw - ow
+//            } else {
+//                var pt = view.center
+//                pt.x += xOffset
+//                view.center = pt
+//            }
+//        }
+//        
+//        let x1 = view1.frame.midX * CGFloat(1 - pre)
+//        let x2 = view2.frame.midX * CGFloat(pre)
+////        let x2 = (w2 - ow2) / 2
+//        
+//        let offset = x1 + x2 - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
+//        
+//        scrollView.contentSize.width += xOffset
+//        scrollView.contentOffset.x = offset
     }
     func updateIndex(_ index: Int?) {
         logger.trace(index)
@@ -194,77 +199,83 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         
         active = newValue
         
-        if let oldValue = oldValue {
-            delegate?.indicator(self, didDeselectItemAt: IndexPath(item: oldValue, section: 0))
-        }
-        if let newValue = newValue {
-            delegate?.indicator(self, didSelectItemAt: IndexPath(item: newValue, section: 0))
+        let indexPaths = Set([oldValue, newValue].flatMap({ $0 })).sorted().map { 
+            return IndexPath(item: $0, section: 0)
         }
         
-        var xOffset: CGFloat = 0
+        scrollView.reloadItems(at: indexPaths, animated: true)
+//        
+//        if let oldValue = oldValue {
+//            delegate?.indicator(self, didDeselectItemAt: IndexPath(item: oldValue, section: 0))
+//        }
+//        if let newValue = newValue {
+//            delegate?.indicator(self, didSelectItemAt: IndexPath(item: newValue, section: 0))
+//        }
+//        
+//        var xOffset: CGFloat = 0
+//        
+//        var newOffset: CGFloat?
+//        var oldOffset: CGFloat?
+//        
+//        let count = cells.count
         
-        var newOffset: CGFloat?
-        var oldOffset: CGFloat?
-        
-        let count = cells.count
-        
-//        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
-        UIView.animate(withDuration: 0.2, animations: {
-            for idx in ([newValue, oldValue].flatMap({ $0 }).sorted().first ?? count) ..< count {
-                let cell = self.cells[idx]
-                if idx == newValue {
-                    // 显示
-                    let nw: CGFloat = 120
-                    let ow: CGFloat = cell.frame.width
-                    
-                    var nframe = cell.frame
-                    
-                    nframe.origin.x += xOffset
-                    nframe.size.width = nw
-                    
-                    cell.frame = nframe
-                    
-                    xOffset += nw - ow
-                    newOffset = nframe.midX - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
-                    
-                } else if idx == oldValue {
-                    // 隐藏
-                    let nw: CGFloat = self.estimatedItemSize.width
-                    let ow: CGFloat = cell.frame.width
-                    
-                    var nframe = cell.frame
-                    
-                    nframe.origin.x += xOffset
-                    nframe.size.width = nw
-                    
-                    cell.frame = nframe
-                    
-                    xOffset += nw - ow
-                    oldOffset = nframe.midX - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
-                    
-                } else {
-                    // 移动
-                    var point = cell.center
-                    
-                    point.x += xOffset
-                    
-                    cell.center = point
-                }
-            }
-            
-            if let offset = newOffset ?? oldOffset {
-                self.scrollView.contentOffset = CGPoint(x: offset, y: 0)
-            }
-        }, completion: { finished in
-//            print(finished)
-//            guard finished else {
-//                return
+////        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
+//        UIView.animate(withDuration: 0.2, animations: {
+//            for idx in ([newValue, oldValue].flatMap({ $0 }).sorted().first ?? count) ..< count {
+//                let cell = self.cells[idx]
+//                if idx == newValue {
+//                    // 显示
+//                    let nw: CGFloat = 120
+//                    let ow: CGFloat = cell.frame.width
+//                    
+//                    var nframe = cell.frame
+//                    
+//                    nframe.origin.x += xOffset
+//                    nframe.size.width = nw
+//                    
+//                    cell.frame = nframe
+//                    
+//                    xOffset += nw - ow
+//                    newOffset = nframe.midX - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
+//                    
+//                } else if idx == oldValue {
+//                    // 隐藏
+//                    let nw: CGFloat = self.estimatedItemSize.width
+//                    let ow: CGFloat = cell.frame.width
+//                    
+//                    var nframe = cell.frame
+//                    
+//                    nframe.origin.x += xOffset
+//                    nframe.size.width = nw
+//                    
+//                    cell.frame = nframe
+//                    
+//                    xOffset += nw - ow
+//                    oldOffset = nframe.midX - (self.scrollView.contentInset.left + self.estimatedItemSize.width / 2)
+//                    
+//                } else {
+//                    // 移动
+//                    var point = cell.center
+//                    
+//                    point.x += xOffset
+//                    
+//                    cell.center = point
+//                }
 //            }
-        })
-        
-        self.scrollView.contentSize.width += xOffset
-        
-        logger.debug(self.scrollView.contentSize)
+//            
+//            if let offset = newOffset ?? oldOffset {
+//                self.scrollView.contentOffset = CGPoint(x: offset, y: 0)
+//            }
+//        }, completion: { finished in
+////            print(finished)
+////            guard finished else {
+////                return
+////            }
+//        })
+//        
+//        self.scrollView.contentSize.width += xOffset
+//        
+//        logger.debug(self.scrollView.contentSize)
     }
     
 //    
@@ -337,9 +348,28 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
 //    //lazy var _opened: Set<IndexPath> = []
 //    
 //    var animatedEndTime: CFTimeInterval = 0
-//}
-//
-//extension BrowseIndicatorView: UICollectionViewDataSource, BrowseIndicatorViewDelegateLayout {
+}
+
+extension BrowseIndicatorView: BrowseTilingViewDataSource, BrowseTilingViewDelegate {
+    
+    func numberOfSections(in tilingView: BrowseTilingView) -> Int {
+        return dataSource?.numberOfSections(in: self) ?? 1
+    }
+    
+    func tilingView(_ tilingView: BrowseTilingView, numberOfItemsInSection section: Int) -> Int {
+        return dataSource?.browser(self, numberOfItemsInSection: section) ?? 0
+    }
+    func tilingView(_ tilingView: BrowseTilingView, cellForItemAt indexPath: IndexPath) -> BrowseTilingViewCell {
+        return tilingView.dequeueReusableCell(withReuseIdentifier: "Asset", for: indexPath)
+    }
+    
+    func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.item == active {
+            return CGSize(width: 120, height: estimatedItemSize.height)
+        }
+        return estimatedItemSize
+    }
+}
 //    
 //    func updateIndexPath(_ indexPath: IndexPath?) {
 ////        let oldValue = collectionViewLayout.activatedIndexPath
@@ -427,48 +457,5 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
 //            updateIndexPath(nil)
 //        }
 //    }
-}
+//}
 
-class BrowseIndicatorScrollView: UIScrollView {
-    
-    // 从begin到end这段时间内, 如果显示index到count的任何元素, 都需要添加位移动画, 动画时长为end-begin
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        _logger.trace(contentOffset)
-        
-        _updateLayoutVisibleRectIfNeeded()
-        _updateLayoutIfNeeded()
-        //_updateLayoutCoordinateSystemIfNeeded()
-        //_updateScrollViewPropertiesIfNeeded()
-        //_updateTileControllersIfNeeded()
-        //_updateTileControllersVisibleRectIfNeeded()
-        //_updateReferencedDataSourcesIfNeeded()
-        //_updateReferencedCoordinateSystemsIfNeeded()
-        //_runPostLayoutBlocks()
-    }
-    
-    func _updateLayoutVisibleRectIfNeeded() {
-        //_needsUpdateLayoutVisibleRect
-        //_setNeedsUpdateLayoutVisibleRect:
-    }
-    func _updateLayoutIfNeeded() {
-        //_needsUpdateLayout
-        //_setNeedsUpdateLayout:
-        
-        //_pendingLayout
-        //_setPendingLayout:
-        //_setLayout:
-        //setTilingView:
-        
-        //_OBJC_IVAR_$_PUTilingView._tileTransitionDelegateFlags
-        
-        //tileTransitionDelegate
-        //tilingView:dataSourceConverterForTransitionFromLayout:toLayout:
-        
-        //objc_cls_ref_PUTilingDataSourceConverter
-        //_transferTileControllersToDataSource:usingDataSourceConverter:
-    }
-    
-}
