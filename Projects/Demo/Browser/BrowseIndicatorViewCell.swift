@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseIndicatorViewCell: UICollectionViewCell {
+class BrowseIndicatorViewCell: BrowseTilingViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -19,27 +19,34 @@ class BrowseIndicatorViewCell: UICollectionViewCell {
         _commonInit()
     }
     
-    
     var asset: Browseable? {
         willSet {
             imageView.image = newValue?.browseImage
             imageView.backgroundColor = newValue?.backgroundColor
         }
     }
-    override var contentView: UIView {
-        return imageView
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if let size = asset?.browseContentSize {
+            let scale = bounds.height / size.height
+            let width = size.width * scale
+            let height = bounds.height
+            
+            imageView.frame = CGRect(x: (bounds.width - width) / 2, y: (bounds.height - height) / 2, width: width, height: height)
+        }
     }
     
     private func _commonInit() {
         
-        imageView.frame = bounds
-        imageView.contentMode = .scaleAspectFill
-        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //imageView.frame = bounds
+        //imageView.contentMode = .scaleAspectFill
+        //imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         clipsToBounds = true
         
-        super.addSubview(imageView)
-        super.contentView.removeFromSuperview()
+        addSubview(imageView)
     }
     
     lazy var imageView: UIImageView = UIImageView()

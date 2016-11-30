@@ -30,6 +30,9 @@ class BrowseTilingViewLayout: NSObject {
         var width: CGFloat = 0
         var height: CGFloat = 0
         
+        let sp: CGFloat = 1
+        
+        _tilingViewLayoutElementMaps = [:]
         _tilingViewLayoutElements = (0 ..< tilingView.numberOfSections).reduce(([])) { attrs, section  in
             return attrs + (0 ..< tilingView.numberOfItems(inSection: section)).map({ item in
                 let attr = BrowseTilingViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
@@ -39,13 +42,16 @@ class BrowseTilingViewLayout: NSObject {
                 attr.frame = nframe
                 attr.fromFrame = nframe
                 
-                width = nframe.maxX
+                width = nframe.maxX + sp
                 height = max(height, nframe.height)
+                
+                // 建立map
+                _tilingViewLayoutElementMaps?[attr.indexPath] = attr
                 
                 return attr
             })
         }
-        _tilingViewContentSize = CGSize(width: width, height: height)
+        _tilingViewContentSize = CGSize(width: max(width - sp, 0), height: height)
     }
     
     func sizeForItem(at indexPath: IndexPath) -> CGSize {
@@ -75,14 +81,11 @@ class BrowseTilingViewLayout: NSObject {
             
             return offset + nframe.width - frame.width
         }
-        logger.debug("offset: \(offset)")
+        _tilingViewContentSize.width += offset ?? 0
     }
         
     func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
-        guard let index = _tilingViewLayoutElements?.index(where: { $0.indexPath == indexPath }) else {
-            return nil
-        }
-        return _tilingViewLayoutElements?[index]
+        return _tilingViewLayoutElementMaps?[indexPath]
     }
     func layoutAttributesForElements(in rect: CGRect) -> [BrowseTilingViewLayoutAttributes]? {
         _logger.trace(rect)
@@ -93,4 +96,5 @@ class BrowseTilingViewLayout: NSObject {
     
     var _tilingViewContentSize: CGSize = .zero
     var _tilingViewLayoutElements: [BrowseTilingViewLayoutAttributes]?
+    var _tilingViewLayoutElementMaps: [IndexPath: BrowseTilingViewLayoutAttributes]?
 }

@@ -19,20 +19,25 @@ import UIKit
 
 @objc protocol BrowseTilingViewDelegate {
     
-//    optional public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool
-//    optional public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath)
-//    optional public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath)
-//    optional public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool
-//    optional public func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool // called when the user taps on an already-selected item in multi-select mode
-//    optional public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-//    optional public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath)
-//    optional public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
-//    optional public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
+    @objc optional func tilingView(_ tilingView: BrowseTilingView, shouldSelectItemAt indexPath: IndexPath) -> Bool
+    @objc optional func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath)
+    
+    @objc optional func tilingView(_ tilingView: BrowseTilingView, willDisplay cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath)
+    @objc optional func tilingView(_ tilingView: BrowseTilingView, didEndDisplaying cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath)
     
     @objc optional func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
 }
 
 @objc class BrowseTilingView: UIScrollView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        _commonInit()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _commonInit()
+    }
     
     weak var tilingDelegate: BrowseTilingViewDelegate?
     weak var tilingDataSource: BrowseTilingViewDataSource?
@@ -44,16 +49,19 @@ import UIKit
         return tilingDataSource?.tilingView(self, numberOfItemsInSection: section) ?? 0
     }
     
-    func register(_ cellClass: AnyClass?, forCellWithReuseIdentifier identifier: String) {
+    func register(_ cellClass: BrowseTilingViewCell.Type?, forCellWithReuseIdentifier identifier: String) {
+        _registedCellClass[identifier] = cellClass
     }
     
     func dequeueReusableCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> BrowseTilingViewCell {
         if let cell = _reusableDequeues[identifier]?.pop(for: indexPath) {
             return cell
         }
-        let cell = BrowseTilingViewCell()
+        guard let cls = _registedCellClass[identifier] else {
+            fatalError("not register cell")
+        }
+        let cell = cls.init()
         cell.reuseIdentifier = identifier
-        cell.backgroundColor = .random
         return cell
     }
     
@@ -64,6 +72,8 @@ import UIKit
         _needsUpdateLayoutVisibleRect = true // 重新计算
         
         _layout.invalidateLayout(at: indexPaths)
+        // 更新大小
+        contentSize = _layout.tilingViewContentSize
         
         _animationDuration = 0
         _animationBeginTime = CACurrentMediaTime()
@@ -267,9 +277,15 @@ import UIKit
                 return
             }
             _visableCells.removeValue(forKey: indexPath)
+            // 隐藏通知
+            tilingDelegate?.tilingView?(self, didEndDisplaying: cell, forItemAt: indexPath)
             // 配置Cell
             cell.isHidden = true
+            
             cell.layer.removeAllAnimations()
+            cell.subviews.forEach { 
+                $0.layer.removeAllAnimations()
+            }
             
             guard let identifier = cell.reuseIdentifier else {
                 cell.removeFromSuperview()
@@ -296,6 +312,9 @@ import UIKit
             cell.isHidden = false
             
             addSubview(cell)
+            
+            // 显示通知
+            tilingDelegate?.tilingView?(self, willDisplay: cell, forItemAt: indexPath)
         }
     }
     private func _updateLayoutIfNeeded() {
@@ -308,38 +327,46 @@ import UIKit
             guard let cell = _visableCells[attr.indexPath] else {
                 return
             }
-            if UIView.areAnimationsEnabled {
+            let hasCustomAnimation = { Void -> Bool in
+                guard attr.fromFrame != attr.frame else { 
+                    return false // 并没有变更操作
+                }
+                guard _animationDuration != 0 else {
+                    return false // 并没有正在执行中的动画
+                }
+                guard CACurrentMediaTime() < _animationBeginTime + _animationDuration else {
+                    return false // 并没有正在执行中的动画
+                }
+                guard cell.layer.animationKeys() == nil else {
+                    return false // 动画己经执行过了
+                }
+                return true
+            }()
+            if UIView.areAnimationsEnabled || hasCustomAnimation {
                 UIView.performWithoutAnimation {
                     cell.frame = attr.fromFrame
+                    cell.layoutIfNeeded()
                 }
             }
-            cell.frame = attr.frame
-            
-            // 检查是否存在变更, 如果没有变更则不需要动画
-            guard attr.fromFrame != attr.frame else {
+            guard hasCustomAnimation else {
+                cell.frame = attr.frame
+                cell.layoutIfNeeded()
                 return
-            }
-            // 检查是否需要更新动画
-            guard _animationDuration != 0 && CACurrentMediaTime() < _animationBeginTime + _animationDuration && cell.layer.animationKeys() == nil else {
-                return
-            }
-            UIView.performWithoutAnimation {
-                cell.frame = attr.fromFrame
             }
             UIView.animate(withDuration: _animationDuration, animations: {
-                // 新值
                 cell.frame = attr.frame
+                cell.layoutIfNeeded()
             })
-            
             // 修改动画启动时间和持续时间(用于连接己显示的动画)
             cell.layer.animationKeys()?.forEach { key in
-                guard let ani = cell.layer.animation(forKey: key)?.mutableCopy() as? CABasicAnimation else {
+                let layer = cell.layer
+                guard let ani = layer.animation(forKey: key)?.mutableCopy() as? CABasicAnimation else {
                     return
                 }
                 ani.beginTime = _animationBeginTime
                 ani.duration = _animationDuration
                 // 恢复动画
-                cell.layer.add(ani, forKey: key)
+                layer.add(ani, forKey: key)
             }
         }
     }
@@ -350,6 +377,25 @@ import UIKit
         }
         // 如果正在执行动画, 额外添加可见区域
         return attr.frame.union(attr.fromFrame)
+    }
+    
+    private dynamic func _tapHandler(_ sender: UITapGestureRecognizer) {
+        let location = sender.location(in: self)
+        guard let attr = _visableLayoutElements?.filter({ $0.frame.contains(location) }).first else {
+            return
+        }
+        guard tilingDelegate?.tilingView?(self, shouldSelectItemAt: attr.indexPath) ?? true else {
+            return
+        }
+        tilingDelegate?.tilingView?(self, didSelectItemAt: attr.indexPath)
+    }
+    
+    private func _commonInit() {
+        
+        _lazyTapGestureRecognizer.delaysTouchesEnded = true
+        _lazyTapGestureRecognizer.addTarget(self, action: #selector(_tapHandler(_:)))
+        
+        addGestureRecognizer(_lazyTapGestureRecognizer)
     }
     
     private var _animationBeginTime: CFTimeInterval = 0
@@ -371,6 +417,9 @@ import UIKit
     
     private lazy var _visableCells: [IndexPath: BrowseTilingViewCell] = [:]
     private lazy var _reusableDequeues: [String: BrowseTilingViewReusableDequeue] = [:]
+    private lazy var _registedCellClass: [String: BrowseTilingViewCell.Type] = [:]
+    
+    private lazy var _lazyTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
 }
 
 @objc class BrowseTilingViewReusableDequeue: NSObject {

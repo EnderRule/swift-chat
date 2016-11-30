@@ -71,7 +71,7 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         
         scrollView.tilingDelegate = self
         scrollView.tilingDataSource = self
-        scrollView.register(UIImageView.self, forCellWithReuseIdentifier: "Asset")
+        scrollView.register(BrowseIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
         
         scrollView.delegate = self
 //        collectionView.dataSource = self
@@ -80,9 +80,6 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         scrollView.alwaysBounceHorizontal = true
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
-        scrollView.addGestureRecognizer(tap)
         
 //        var x: CGFloat = 0
 //        let width = estimatedItemSize.width
@@ -102,18 +99,9 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
     
     lazy var cells:[UIView] = []
     
-    var active: Int?
+    var active: Int? = 0
     var inactive: Int?
     
-    func tapHandler(_ sender: UITapGestureRecognizer) {
-        let x = sender.location(in: scrollView).x
-        let idx = Int(x / estimatedItemSize.width)
-        
-        guard idx >= 0 && idx < scrollView.numberOfItems(inSection: 0) else {
-            return
-        }
-        updateIndex(idx)
-    }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if active != nil {
@@ -205,7 +193,7 @@ class BrowseIndicatorView: UIView, UIScrollViewDelegate {
         
         let ew = estimatedItemSize.width
         
-        UIView.animate(withDuration: 0.25, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.scrollView.reloadItems(at: indexPaths)
             self.scrollView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
                 guard let attr = self.scrollView.layoutAttributesForItem(at: indexPath) else {
@@ -382,99 +370,29 @@ extension BrowseIndicatorView: BrowseTilingViewDataSource, BrowseTilingViewDeleg
         return tilingView.dequeueReusableCell(withReuseIdentifier: "Asset", for: indexPath)
     }
     
+    func tilingView(_ tilingView: BrowseTilingView, willDisplay cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? BrowseIndicatorViewCell else {
+            return
+        }
+        cell.asset = dataSource?.browser(self, assetForItemAt: indexPath)
+    }
+    
+    
     func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.item == active {
-            return CGSize(width: 120, height: estimatedItemSize.height)
+            guard let asset = dataSource?.browser(self, assetForItemAt: indexPath) else {
+                return estimatedItemSize
+            }
+            let height = estimatedItemSize.height
+            let width = asset.browseContentSize.width * (height / asset.browseContentSize.height)
+            return CGSize(width: width + 20, height: height)
         }
         return estimatedItemSize
     }
+    
+    func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath) {
+        logger.debug(indexPath)
+        
+        updateIndex(indexPath.item)
+    }
 }
-//    
-//    func updateIndexPath(_ indexPath: IndexPath?) {
-////        let oldValue = collectionViewLayout.activatedIndexPath
-////        let oldValueSize = collectionViewLayout.activatedSize
-////        
-//        collectionViewLayout.invalidateLayout(with: indexPath)
-//        
-////        let newValue = collectionViewLayout.activatedIndexPath
-////        let newValueSize = collectionViewLayout.activatedSize
-//        
-//        //animatedEndTime = CACurrentMediaTime() + 1
-//    }
-//    
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        if collectionViewLayout.activatedIndexPath != nil {
-//            updateIndexPath(nil)
-//            //collectionViewLayout.invalidateLayout(with: nil)
-//        }
-//    }
-////    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-////        let w = scrollView.frame.height / 2
-////        let x = scrollView.contentInset.left + targetContentOffset[0].x 
-////        
-////        guard x > 0 && x < scrollView.contentSize.width else {
-////            return
-////        }
-////        targetContentOffset[0].x = x - x.remainder(dividingBy: w) - scrollView.contentInset.left
-////    }
-//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        guard !decelerate else {
-//            return
-//        }
-//        scrollViewDidEndDecelerating(scrollView)
-//    }
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        let w = estimatedItemSize.width
-//        let x = max(min(scrollView.contentInset.left + scrollView.contentOffset.x + w / 2, scrollView.contentSize.width - 1), 0)
-//        guard let idx = collectionView.indexPathForItem(at: CGPoint(x: x, y: 0)) else {
-//            return 
-//        }
-////        updateIndexPath(idx)
-//    }
-//    
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return dataSource?.numberOfSections(in: self) ?? 0
-//    }
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return dataSource?.browser(self, numberOfItemsInSection: section) ?? 0
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-////        if let cell = collectionView.cellForItem(at: indexPath) {
-////            return cell
-////        }
-//        logger.trace(indexPath)
-//        return collectionView.dequeueReusableCell(withReuseIdentifier: "Asset", for: indexPath)
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        _logger.trace(indexPath)
-//        
-//        guard let cell = cell as? BrowseIndicatorViewCell else {
-//            return
-//        }
-//        cell.asset = dataSource?.browser(self, assetForItemAt: indexPath)
-//    }
-//    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        _logger.trace(indexPath)
-//    }
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-////        guard let asset = dataSource?.browser(self, assetForItemAt: indexPath) else {
-////            return .zero
-////        }
-////        let h = self.estimatedItemSize.height
-////        let s = h / asset.browseContentSize.height 
-//        return CGSize(width: 120, height: self.estimatedItemSize.height)
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        if collectionViewLayout.activatedIndexPath != indexPath {
-//            //collectionViewLayout.invalidateLayout(with: indexPath)
-//            updateIndexPath(indexPath)
-//        } else {
-//            //collectionViewLayout.invalidateLayout(with: nil)
-//            updateIndexPath(nil)
-//        }
-//    }
-//}
-
