@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol BrowseContextTransitioning {
+public protocol BrowseContextTransitioning: class {
     
     var browseIndexPath: IndexPath? { get }
     var browseInteractiveDismissGestureRecognizer: UIGestureRecognizer? { get }
@@ -23,24 +23,24 @@ public protocol BrowseContextTransitioning {
 public class BrowseAnimator: NSObject, UINavigationControllerDelegate, UIViewControllerTransitioningDelegate {
     
     public init(from: BrowseContextTransitioning, to: BrowseContextTransitioning) {
+        super.init()
         self.from = from
         self.to = to
-        super.init()
     }
     
-    public let from: BrowseContextTransitioning
-    public let to: BrowseContextTransitioning
+    public weak var from: BrowseContextTransitioning?
+    public weak var to: BrowseContextTransitioning?
     
     // MARK: UIViewControllerTransitioningDelegate
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let indexPath = from.browseIndexPath {
+        if let from = from, let to = to, let indexPath = from.browseIndexPath {
             return BrowseShowAnimatedTransition(for: indexPath, from: from, to: to)
         }
         return nil
     }
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let indexPath = to.browseIndexPath {
+        if let from = from, let to = to, let indexPath = to.browseIndexPath {
             return BrowseDismissAnimatedTransition(for: indexPath, from: to, to: from)
         }
         return nil
@@ -59,10 +59,10 @@ public class BrowseAnimator: NSObject, UINavigationControllerDelegate, UIViewCon
     // MARK: UINavigationControllerDelegate
     
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if operation == .push, let indexPath = from.browseIndexPath {
+        if operation == .push, let from = from, let to = to, let indexPath = from.browseIndexPath {
             return BrowseShowAnimatedTransition(for: indexPath, from: from, to: to)
         }
-        if operation == .pop, let indexPath = to.browseIndexPath {
+        if operation == .pop, let from = from, let to = to, let indexPath = to.browseIndexPath {
             return BrowseDismissAnimatedTransition(for: indexPath, from: to, to: from)
         }
         return nil
@@ -77,7 +77,7 @@ public class BrowseAnimator: NSObject, UINavigationControllerDelegate, UIViewCon
     // MARK: Ivar
     
     private var _isInteracting: Bool {
-        guard let state = to.browseInteractiveDismissGestureRecognizer?.state else {
+        guard let state = to?.browseInteractiveDismissGestureRecognizer?.state else {
             return false
         }
         guard state == .began || state == .changed else {
