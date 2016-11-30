@@ -66,7 +66,7 @@ import UIKit
         _layout.invalidateLayout(at: indexPaths)
         
         _animationDuration = 0
-        _animationBeginTime = 0
+        _animationBeginTime = CACurrentMediaTime()
         _animationIsStarted = true
         
         UIView.animate(withDuration: 0.25, animations: {
@@ -77,13 +77,11 @@ import UIKit
         }, completion: { f in
             
             self._animationIsStarted = false
-//            self._needsUpdateLayoutVisibleRect = true
-//            self._updateLayout()
+            self._needsUpdateLayoutVisibleRect = true
+            self._updateLayout()
         })
         
         // 收集动画信息
-        _animationBeginTime = CACurrentMediaTime()
-        _animationBeginDate = Date()
         _animationDuration = _visableCells.reduce(0) { dur, ele in
             let layer = ele.value.layer
             let tmp = layer.animationKeys()?.flatMap({ layer.animation(forKey: $0)?.duration }).max()
@@ -139,6 +137,9 @@ import UIKit
     }
     private func _updateLayoutVisibleRectIfNeeded() {
         // 更新可见区域
+        
+        // 获取当前显示区域(如果正在执行动画将包含在其中)
+        let rect = layer.bounds.union(layer.presentation()?.bounds ?? layer.bounds)
         //
         // |    |>       visable       <|    |
         // | x1 | first | ...... | last | x2 |
@@ -148,13 +149,11 @@ import UIKit
         // if x1 > firstRect.maxX, first cell or more is over boundary
         // if x2 < lastRect.minX, last cell or more is over boundary
         if !_needsUpdateLayoutVisibleRect {
-            let x1 = max(contentOffset.x, 0)
-            let x2 = min(contentOffset.x + bounds.width, contentSize.width)
+            let x1 = max(rect.minX, 0)
+            let x2 = min(rect.maxX, contentSize.width)
             let visible = _visibleLayoutRect
             let lastRect = _visableLayoutElements?.last?.frame ?? .zero
             let firstRect = _visableLayoutElements?.first?.frame ?? .zero
-            
-//            logger.debug("|\(x1)-\(x2)| => \(visible)")
             
             if x1 < visible.minX || x2 > visible.maxX || x1 > firstRect.maxX || x2 < lastRect.minX {
                 _needsUpdateLayoutVisibleRect = true
@@ -184,7 +183,6 @@ import UIKit
                 }
             }
             
-            let rect = CGRect(origin: contentOffset, size: bounds.size)
             let count = _visableLayoutElements?.count ?? 0
             // 设置保留大小
             var newVisableElements: [BrowseTilingViewLayoutAttributes] = []
@@ -207,8 +205,8 @@ import UIKit
                 newVisableElements.insert(attr, at: 0)
                 insertIndexPaths.insert(attr.indexPath, at: 0)
                 // 计算可见区域
-                x1 = min(x1, frame.minX)
-                x2 = max(x2, frame.maxX)
+                x1 = min(x1, attr.frame.minX)
+                x2 = max(x2, attr.frame.maxX)
             }
             for index in (0 ..< count) {
                 guard let attr = _visableLayoutElements?[index] else {
@@ -223,8 +221,8 @@ import UIKit
                 // TODO: 检查这个元素是否需要更新
                 newVisableElements.append(attr)
                 // 计算可见区域
-                x1 = min(x1, frame.minX)
-                x2 = max(x2, frame.maxX)
+                x1 = min(x1, attr.frame.minX)
+                x2 = max(x2, attr.frame.maxX)
             }
             for index in (end ..< elements.count) {
                 // 检查是否可以添加
@@ -240,8 +238,8 @@ import UIKit
                 newVisableElements.append(attr)
                 insertIndexPaths.append(attr.indexPath)
                 // 计算可见区域
-                x1 = min(x1, frame.minX)
-                x2 = max(x2, frame.maxX)
+                x1 = min(x1, attr.frame.minX)
+                x2 = max(x2, attr.frame.maxX)
             }
            
             _visibleLayoutRect = CGRect(x: x1, y: 0, width: x2 - x1, height: bounds.height)
@@ -255,6 +253,7 @@ import UIKit
             _visibleLayoutRect = .zero
             _visableLayoutElements = nil
         }
+        
         // 更新可见cell
         _updateLayoutVisibleCellIfNeeded(insertIndexPaths, removeIndexPaths, [])
         _needsUpdateLayout = true
@@ -270,6 +269,7 @@ import UIKit
             _visableCells.removeValue(forKey: indexPath)
             // 配置Cell
             cell.isHidden = true
+            cell.layer.removeAllAnimations()
             
             guard let identifier = cell.reuseIdentifier else {
                 cell.removeFromSuperview()
@@ -294,7 +294,6 @@ import UIKit
             _visableCells[indexPath] = cell
             // 配置Cell
             cell.isHidden = false
-            cell.layer.removeAllAnimations()
             
             addSubview(cell)
         }
@@ -309,6 +308,11 @@ import UIKit
             guard let cell = _visableCells[attr.indexPath] else {
                 return
             }
+            if UIView.areAnimationsEnabled {
+                UIView.performWithoutAnimation {
+                    cell.frame = attr.fromFrame
+                }
+            }
             cell.frame = attr.frame
             
             // 检查是否存在变更, 如果没有变更则不需要动画
@@ -316,19 +320,18 @@ import UIKit
                 return
             }
             // 检查是否需要更新动画
-            guard CACurrentMediaTime() < _animationBeginTime + _animationDuration && cell.layer.animationKeys() == nil else {
+            guard _animationDuration != 0 && CACurrentMediaTime() < _animationBeginTime + _animationDuration && cell.layer.animationKeys() == nil else {
                 return
             }
             UIView.performWithoutAnimation {
-                // 旧值
                 cell.frame = attr.fromFrame
             }
-            UIView.animate(withDuration: 0.25, animations: {
+            UIView.animate(withDuration: _animationDuration, animations: {
                 // 新值
                 cell.frame = attr.frame
             })
             
-            // 修改动画开启时间和持续时间(用于连接己显示的动画)
+            // 修改动画启动时间和持续时间(用于连接己显示的动画)
             cell.layer.animationKeys()?.forEach { key in
                 guard let ani = cell.layer.animation(forKey: key)?.mutableCopy() as? CABasicAnimation else {
                     return
@@ -349,7 +352,6 @@ import UIKit
         return attr.frame.union(attr.fromFrame)
     }
     
-    private var _animationBeginDate: Date = Date()
     private var _animationBeginTime: CFTimeInterval = 0
     private var _animationDuration: CFTimeInterval = 0
     
