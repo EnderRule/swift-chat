@@ -106,7 +106,11 @@ import UIKit
         _logger.trace()
     }
     
-    // 从begin到end这段时间内, 如果显示index到count的任何元素, 都需要添加位移动画, 动画时长为end-begin
+    func indexPathForItem(at point: CGPoint) -> IndexPath? {
+        return _visableLayoutElements?.first(where: { 
+            $0.frame.tiling_contains(point)
+        })?.indexPath ?? _layout.indexPathForItem(at: point)
+    }
     
     func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
         return _layout.layoutAttributesForItem(at: indexPath)
@@ -123,14 +127,6 @@ import UIKit
         _updateLayoutIfNeeded()
     }
     private func _updateLayoutVaildRectIfNeeded() {
-        // 检查布局是否己经准备好
-        if !_layoutIsPrepared {
-            _layout.prepare()
-            _layoutIsPrepared = true
-            
-            // 更新内容大小
-            contentSize = _layout.tilingViewContentSize
-        }
         // 检查有效区域
         let vaildRect = UIEdgeInsetsInsetRect(_vaildLayoutRect, UIEdgeInsetsMake(0, 0, 0, _vaildLayoutRect.width / 2))
         if !vaildRect.contains(contentOffset) {
@@ -412,8 +408,15 @@ import UIKit
     private var _visibleLayoutRect: CGRect = .zero
     private var _visableLayoutElements: [BrowseTilingViewLayoutAttributes]?
     
-    private lazy var _layout: BrowseTilingViewLayout = BrowseTilingViewLayout(tilingView: self)
     private lazy var _layoutIsPrepared: Bool = false
+    private lazy var _layout: BrowseTilingViewLayout = {
+        let layout = BrowseTilingViewLayout(tilingView: self)
+        
+        layout.prepare()
+        self.contentSize = layout.tilingViewContentSize
+        
+        return layout
+    }()
     
     private lazy var _visableCells: [IndexPath: BrowseTilingViewCell] = [:]
     private lazy var _reusableDequeues: [String: BrowseTilingViewReusableDequeue] = [:]
@@ -440,8 +443,8 @@ import UIKit
 internal extension CGRect {
     
     internal func tiling_contains(_ point: CGPoint) -> Bool {
-        return (minX >= point.x && point.x <= maxX) 
-            && (minY >= point.y && point.y <= maxY)
+        return (minX <= point.x && point.x <= maxX) 
+            && (minY <= point.y && point.y <= maxY)
     }
     internal func tiling_contains(_ rect2: CGRect) -> Bool {
         return ((minX <= rect2.minX && rect2.minX <= maxX) || (minX <= rect2.maxX && rect2.maxX <= maxX))

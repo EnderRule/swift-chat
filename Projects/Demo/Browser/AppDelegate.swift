@@ -17,28 +17,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        DispatchQueue.main.async {
-            guard let window = self.window else {
-                return
-            }
-            
-            let l1 = UIView()
-            let l2 = UIView()
-            
-            l1.frame = CGRect(x: 0, y: 0, width: 0.5, height: window.frame.height)
-            l2.frame = CGRect(x: 0, y: 0, width: window.frame.width, height: 0.5)
-            l1.center = CGPoint(x: window.frame.width / 2, y: window.frame.height / 2)
-            l2.center = CGPoint(x: window.frame.width / 2, y: window.frame.height / 2)
-            l1.autoresizingMask = [.flexibleHeight, .flexibleLeftMargin, .flexibleRightMargin]
-            l2.autoresizingMask = [.flexibleWidth, .flexibleTopMargin, .flexibleBottomMargin]
-            l1.backgroundColor = .red
-            l2.backgroundColor = .red
-            l1.isUserInteractionEnabled = false
-            l2.isUserInteractionEnabled = false
-            
-            window.addSubview(l1)
-            window.addSubview(l2)
-        }
+//        DispatchQueue.main.async {
+//            guard let window = self.window else {
+//                return
+//            }
+//            
+//            let l1 = UIView()
+//            let l2 = UIView()
+//            
+//            l1.frame = CGRect(x: 0, y: 0, width: 0.5, height: window.frame.height)
+//            l2.frame = CGRect(x: 0, y: 0, width: window.frame.width, height: 0.5)
+//            l1.center = CGPoint(x: window.frame.width / 2, y: window.frame.height / 2)
+//            l2.center = CGPoint(x: window.frame.width / 2, y: window.frame.height / 2)
+//            l1.autoresizingMask = [.flexibleHeight, .flexibleLeftMargin, .flexibleRightMargin]
+//            l2.autoresizingMask = [.flexibleWidth, .flexibleTopMargin, .flexibleBottomMargin]
+//            l1.backgroundColor = .red
+//            l2.backgroundColor = .red
+//            l1.isUserInteractionEnabled = false
+//            l2.isUserInteractionEnabled = false
+//            
+//            window.addSubview(l1)
+//            window.addSubview(l2)
+//        }
         
         return true
     }

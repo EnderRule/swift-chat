@@ -27,10 +27,9 @@ class BrowseTilingViewLayout: NSObject {
         }
         logger.trace()
         
+        let sp: CGFloat = 1
         var width: CGFloat = 0
         var height: CGFloat = 0
-        
-        let sp: CGFloat = 1
         
         _tilingViewLayoutElementMaps = [:]
         _tilingViewLayoutElements = (0 ..< tilingView.numberOfSections).reduce(([])) { attrs, section  in
@@ -84,6 +83,11 @@ class BrowseTilingViewLayout: NSObject {
         _tilingViewContentSize.width += offset ?? 0
     }
         
+    func indexPathForItem(at point: CGPoint) -> IndexPath? {
+        return _tilingViewLayoutElements?.first(where: { 
+            $0.frame.tiling_contains(point)
+        })?.indexPath
+    }
     func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
         return _tilingViewLayoutElementMaps?[indexPath]
     }

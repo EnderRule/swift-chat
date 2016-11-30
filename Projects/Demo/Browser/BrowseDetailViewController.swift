@@ -66,6 +66,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
             return cell.detailView
         }
         // update indicator
+        indicatorView.indexPath = indexPath
         indicatorView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 40)
         indicatorView.layoutIfNeeded()
         // update content
