@@ -65,8 +65,10 @@ import UIKit
         return cell
     }
     
+    // TODO: 插入和删除
+    
     func reloadItems(at indexPaths: [IndexPath]) {
-        _logger.trace(indexPaths)
+        //_logger.trace(indexPaths)
         
         _needsUpdateLayout = true // 重新更新
         _needsUpdateLayoutVisibleRect = true // 重新计算
@@ -220,7 +222,7 @@ import UIKit
                 }
                 // 检查这个元素是否己经被移除了
                 var frame = _visableRect(with: attr)
-                // 如果可以的话直接获取屏幕上的cell的frame
+                // 如果可以的话直接获取屏幕的frame
                 if let layer = _visableCells[attr.indexPath]?.layer {
                     // 试图包含动画区域
                     frame = layer.frame.union(layer.presentation()?.frame ?? layer.frame)

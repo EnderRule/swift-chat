@@ -293,10 +293,10 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
     func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
         logger.trace(indexPath)
         
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-    }
-    func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath) {
-        logger.trace(indexPath)
+        // 可能会产生动画 
+        UIView.performWithoutAnimation {
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        }
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {

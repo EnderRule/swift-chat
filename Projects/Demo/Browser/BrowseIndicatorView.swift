@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol BrowseIndicatorViewDelegate: class {
-    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath)
-    func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath)
+@objc protocol BrowseIndicatorViewDelegate: class {
+    @objc optional func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath)
+    @objc optional func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath)
 }
 
-class BrowseIndicatorView: UIView {
+@objc class BrowseIndicatorView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -96,7 +96,7 @@ class BrowseIndicatorView: UIView {
     
     
     func updateIndex(with value: Double) {
-        _logger.trace(value)
+        //_logger.trace(value)
         
 //        let pre = modf(value).1
 //        
@@ -202,17 +202,15 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         // up
         _currentItem = newValue
         
-        DispatchQueue.main.async {
-            if let indexPath = oldValue?.indexPath {
-                self.delegate?.indicator(self, didDeselectItemAt: indexPath)
-            }
-            if let indexPath = newValue?.indexPath {
-                self.delegate?.indicator(self, didSelectItemAt: indexPath)
-            }
+        if let indexPath = oldValue?.indexPath {
+            self.delegate?.indicator?(self, didDeselectItemAt: indexPath)
+        }
+        if let indexPath = newValue?.indexPath {
+            self.delegate?.indicator?(self, didSelectItemAt: indexPath)
         }
     }
     private func _updateCurrentIndexPath(_ indexPath: IndexPath?) {
-        logger.trace("\(indexPath)")
+        //logger.trace("\(indexPath)")
         
         let oldValue = _currentIndexPath 
         let newValue = indexPath
@@ -240,9 +238,6 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
                 }
                 return offset
             }
-            
-        }, completion: { b in
-            self.logger.debug("\(b)")
         })
     }
     

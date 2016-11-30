@@ -16,13 +16,13 @@ class LocalImageAsset: NSObject, Browseable {
         
         super.init()
             
-//        let index = count % 12
-//        count = index + 1
-//        browseImage = UIImage(named: "cl_\(index + 1).jpg")
-//        browseContentSize = browseImage?.size ?? .zero
+        let index = count % 12
+        count = index + 1
+        browseImage = UIImage(named: "cl_\(index + 1).jpg")
+        browseContentSize = browseImage?.size ?? .zero
         
-        browseContentSize = CGSize(width: 1600, height: 1200)
-        browseImage = UIImage(named: "t1.jpg")
+//        browseContentSize = CGSize(width: 1600, height: 1200)
+//        browseImage = UIImage(named: "t1.jpg")
     }
     
 //    lazy var browseContentSize: CGSize = CGSize(width: 160, height: 120)
