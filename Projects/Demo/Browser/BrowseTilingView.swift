@@ -219,7 +219,12 @@ import UIKit
                     continue
                 }
                 // 检查这个元素是否己经被移除了
-                let frame = _visableRect(with: attr)
+                var frame = _visableRect(with: attr)
+                // 如果可以的话直接获取屏幕上的cell的frame
+                if let layer = _visableCells[attr.indexPath]?.layer {
+                    // 试图包含动画区域
+                    frame = layer.frame.union(layer.presentation()?.frame ?? layer.frame)
+                }
                 guard rect.tiling_contains(frame) else {
                     removeIndexPaths.append(attr.indexPath)
                     continue
