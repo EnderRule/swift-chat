@@ -27,94 +27,126 @@ import UIKit
     weak var delegate: BrowseIndicatorViewDelegate?
     weak var dataSource: BrowseDataSource?
     
-//    var height: CGFloat = 40
-//    var contentInset: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
-//    
-//    
-    var estimatedItemSize: CGSize = CGSize(width: 20, height: 40)
-//        return collectionViewLayout.estimatedItemSize
-//    }
-    
-    var _cacheBounds: CGRect?
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        guard _cacheBounds != bounds else {
-            return
+    var indexPath: IndexPath? {
+        set { 
+            // 设置为选中状态
+            _currentIndexPath = newValue 
+            
+            if let indexPath = newValue, let attr = _tilingView.layoutAttributesForItem(at: indexPath) {
+                _currentItem = attr
+                // 更新offset
+                _tilingView.contentOffset.x = attr.frame.midX - _tilingView.contentInset.left - estimatedItemSize.width / 2
+            }
         }
-        _cacheBounds = bounds
-        
-        let offset = _tilingView.contentOffset.x + _tilingView.contentInset.left
-        
-        _tilingView.frame = bounds
-        _tilingView.contentInset.left = bounds.width / 2 - estimatedItemSize.width / 2
-        _tilingView.contentInset.right = bounds.width / 2 - estimatedItemSize.width / 2
-        
-        _tilingView.contentOffset.x = offset - _tilingView.contentInset.left
-        
-        _tilingView.layoutIfNeeded()
-        
-//        var nframe = bounds
-//        
-//        nframe.origin.x = 0
-//        nframe.origin.y = contentInset.top + bounds.height - estimatedItemSize.height 
-//        nframe.size.width = bounds.width
-//        nframe.size.height = estimatedItemSize.height
+        get { return _currentIndexPath }
     }
     
-    private func _commonInit() {
-        //backgroundColor = .random
+    var estimatedItemSize: CGSize = CGSize(width: 20, height: 40)
+    
+    func updateIndexPath(_ indexPath: IndexPath?, animated: Bool) {
         
-        _tilingView.delegate = self
-        _tilingView.tilingDelegate = self
-        _tilingView.tilingDataSource = self
-//        collectionView.dataSource = self
-        _tilingView.scrollsToTop = false
-        _tilingView.alwaysBounceVertical = false
-        _tilingView.alwaysBounceHorizontal = true
-        _tilingView.showsVerticalScrollIndicator = false
-        _tilingView.showsHorizontalScrollIndicator = false
+        let oldValue = _currentIndexPath 
+        let newValue = indexPath
         
-        _tilingView.register(BrowseIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
+        guard newValue != oldValue else {
+            return // no change
+        }
+        _currentIndexPath = newValue
         
-//        var x: CGFloat = 0
-//        let width = estimatedItemSize.width
-//        let height = estimatedItemSize.height
-//        for _ in 0 ..< 140 {
-//            let view = UIImageView()
-//            view.backgroundColor = .random
-//            view.frame = CGRect(x: x, y: 0, width: width, height: height)
-//            x += view.frame.width
-//            cells.append(view)
-//            _tilingView.addSubview(view)
-//        }
-//        _tilingView.contentSize = CGSize(width: x, height: height)
+        let size = estimatedItemSize
+        let indexPaths = Set([oldValue, newValue].flatMap({ $0 })).sorted()
         
-        addSubview(_tilingView)
+        UIView.animate(withDuration: 0.25, animations: {
+            
+            self._tilingView.reloadItems(at: indexPaths)
+            self._tilingView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
+                guard let attr = self._tilingView.layoutAttributesForItem(at: indexPath) else {
+                    return 0
+                }
+                if indexPath == newValue {
+                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2
+                } 
+                if indexPath == oldValue && newValue == nil {
+                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2 
+                }
+                return offset
+            }
+        })
     }
     
     
-    func updateIndex(with value: Double) {
-        //_logger.trace(value)
+    func updateIndexPath(from indexPath1: IndexPath?, to indexPath2: IndexPath?, percent: CGFloat) {
+        _logger.debug("\(indexPath1) => \(indexPath2) => \(percent)")
         
-//        let pre = modf(value).1
+        _interactivingFromIndexPath = indexPath1
+        _interactivingToIndexPath = indexPath2
+        
+        guard let indexPath1 = indexPath1, let indexPath2 = indexPath2 else {
+            return // ...
+        }
+        _currentIndexPath = indexPath1
+        
+        let newFromSize = _sizeForItem(indexPath1)
+        let oldFromSize = estimatedItemSize
+        
+        let newToSize = _sizeForItem(indexPath2)
+        let oldToSize = estimatedItemSize
+        
+        let toHiehgt = newToSize.height
+        let toWidth = oldToSize.width + (newToSize.width - oldToSize.width) * (0 + percent)
+//        var toItem: BrowseTilingViewLayoutAttributes?
+        
+        let fromHeight = newFromSize.height
+        let fromWidth = oldFromSize.width + (newFromSize.width - oldFromSize.width) * (1 - percent)
+//        var fromItem: BrowseTilingViewLayoutAttributes?
+        
+        _tilingView.reloadItems(at: [indexPath1, indexPath2]) { attr in
+            if attr.indexPath == indexPath1 {
+                return CGSize(width: fromWidth, height: fromHeight)
+            }
+            if attr.indexPath == indexPath2 {
+                return CGSize(width: toWidth, height: toHiehgt)
+            }
+            return estimatedItemSize
+        }
+        _tilingView.contentOffset.x = 0
+        
+        guard let f1 = _tilingView.layoutAttributesForItem(at: indexPath1),
+            let f2 = _tilingView.layoutAttributesForItem(at: indexPath2) else {
+                return
+        }
+        
+        let x1 = f1.frame.midX * (1 - percent)
+        let x2 = f2.frame.midX * (0 + percent)
+        let offset = x1 + x2 - (_tilingView.contentInset.left + estimatedItemSize.width / 2)
+        
+        _tilingView.contentOffset.x = offset
+//        let x1 = view1.frame.midX * CGFloat(1 - pre)
+//        let x2 = view2.frame.midX * CGFloat(pre)
+////        let x2 = (w2 - ow2) / 2
 //        
-//        let fromIndex = Int(floor(value))
-//        let toIndex = Int(ceil(value))
-//        
-//        if fromIndex == toIndex && fromIndex == active {
-//            return
+//        let offset = x1 + x2 - (self._tilingView.contentInset.left + self.estimatedItemSize.width / 2)
+        
+//            self._tilingView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
+//                guard let attr = self._tilingView.layoutAttributesForItem(at: indexPath) else {
+//                    return 0
+//                }
+//                if indexPath == newValue {
+//                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2
+//                } 
+//                if indexPath == oldValue && newValue == nil {
+//                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2 
+//                }
+//                return offset
+//            }
+        
+        
+        
+//        let offset = _tilingView.indexPathsForVisibleItems.reduce(0) { offset, indexPath -> CGFloat in 
+//            //_tilingView.
+//            return offset
 //        }
-//        
-////        logger.trace("\(fromIndex) => \(toIndex) => \(pre)")
-//        
-//        if fromIndex < 0 || toIndex >= cells.count {
-//            return
-//        }
-//        
-//        active = fromIndex
-//        
+        
 //        let view1 = cells[fromIndex]
 //        let view2 = cells[toIndex]
 //        
@@ -159,35 +191,79 @@ import UIKit
 //        let x1 = view1.frame.midX * CGFloat(1 - pre)
 //        let x2 = view2.frame.midX * CGFloat(pre)
 ////        let x2 = (w2 - ow2) / 2
-//        
 //        let offset = x1 + x2 - (self._tilingView.contentInset.left + self.estimatedItemSize.width / 2)
 //        
 //        _tilingView.contentSize.width += xOffset
 //        _tilingView.contentOffset.x = offset
     }
-    var indexPath: IndexPath? {
-        set { 
-            // 设置为选中状态
-            _currentIndexPath = newValue 
-            
-            if let indexPath = newValue, let attr = _tilingView.layoutAttributesForItem(at: indexPath) {
-                _currentItem = attr
-                // 更新offset
-                _tilingView.contentOffset.x = attr.frame.midX - _tilingView.contentInset.left - estimatedItemSize.width / 2
-            }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard _cacheBounds != bounds else {
+            return
         }
-        get { return _currentIndexPath }
+        _cacheBounds = bounds
+        
+        let offset = _tilingView.contentOffset.x + _tilingView.contentInset.left
+        
+        _tilingView.frame = bounds
+        _tilingView.contentInset.left = bounds.width / 2 - estimatedItemSize.width / 2
+        _tilingView.contentInset.right = bounds.width / 2 - estimatedItemSize.width / 2
+        
+        _tilingView.contentOffset.x = offset - _tilingView.contentInset.left
+        
+        _tilingView.layoutIfNeeded()
+        
+//        var nframe = bounds
+//        
+//        nframe.origin.x = 0
+//        nframe.origin.y = contentInset.top + bounds.height - estimatedItemSize.height 
+//        nframe.size.width = bounds.width
+//        nframe.size.height = estimatedItemSize.height
     }
     
-    var _currentItem: BrowseTilingViewLayoutAttributes? // 当前显示的
-    var _currentIndexPath: IndexPath? // 当前选择的
+    fileprivate func _sizeForItem(_ indexPath: IndexPath) -> CGSize {
+        guard let asset = dataSource?.browser(self, assetForItemAt: indexPath) else {
+            return estimatedItemSize
+        }
+        let size = asset.browseContentSize
+        let height = estimatedItemSize.height
+        let width = size.width * (height / size.height)
+        return CGSize(width: width + 20, height: height)
+    }
     
-    lazy var _tilingView: BrowseTilingView = BrowseTilingView()
+    fileprivate func _commonInit() {
+        //backgroundColor = .random
+        
+        _tilingView.delegate = self
+        _tilingView.tilingDelegate = self
+        _tilingView.tilingDataSource = self
+        _tilingView.scrollsToTop = false
+        _tilingView.alwaysBounceVertical = false
+        _tilingView.alwaysBounceHorizontal = true
+        _tilingView.showsVerticalScrollIndicator = false
+        _tilingView.showsHorizontalScrollIndicator = false
+        
+        _tilingView.register(BrowseIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
+        
+        addSubview(_tilingView)
+    }
+    
+    fileprivate var _cacheBounds: CGRect?
+    
+    fileprivate var _currentItem: BrowseTilingViewLayoutAttributes? // 当前显示的
+    fileprivate var _currentIndexPath: IndexPath? // 当前选择的
+    
+    fileprivate var _interactivingToIndexPath: IndexPath?
+    fileprivate var _interactivingFromIndexPath: IndexPath?
+    
+    fileprivate lazy var _tilingView: BrowseTilingView = BrowseTilingView()
 }
 
 extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource, BrowseTilingViewDelegate {
     
-    private func _updateCurrentItem(_ offset: CGPoint) {
+    fileprivate func _updateCurrentItem(_ offset: CGPoint) {
         // 检查是否存在变更
         let x = offset.x + _tilingView.bounds.width / 2
         if let item = _currentItem, item.frame.minX <= x && x <= item.frame.maxX {
@@ -209,53 +285,25 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
             self.delegate?.indicator?(self, didSelectItemAt: indexPath)
         }
     }
-    private func _updateCurrentIndexPath(_ indexPath: IndexPath?) {
-        //logger.trace("\(indexPath)")
-        
-        let oldValue = _currentIndexPath 
-        let newValue = indexPath
-        
-        guard newValue != oldValue else {
-            return // no change
-        }
-        _currentIndexPath = newValue
-        
-        let size = estimatedItemSize
-        let indexPaths = Set([oldValue, newValue].flatMap({ $0 })).sorted()
-        
-        UIView.animate(withDuration: 0.25, animations: {
-            
-            self._tilingView.reloadItems(at: indexPaths)
-            self._tilingView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
-                guard let attr = self._tilingView.layoutAttributesForItem(at: indexPath) else {
-                    return 0
-                }
-                if indexPath == newValue {
-                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2
-                } 
-                if indexPath == oldValue && newValue == nil {
-                    return attr.frame.midX - self._tilingView.contentInset.left - size.width / 2 
-                }
-                return offset
-            }
-        })
-    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        _updateCurrentItem(scrollView.contentOffset)
+//        guard _interactivingToIndexPath == nil && _interactivingFromIndexPath == nil else {
+//            return
+//        }
+//        _updateCurrentItem(scrollView.contentOffset)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 拖动的时候清除当前激活的焦点
-        if _currentIndexPath != nil {
-            _updateCurrentIndexPath(nil) 
+        if indexPath != nil {
+            updateIndexPath(nil, animated: true) 
         }
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard !decelerate else {
             return
         }
-        _updateCurrentIndexPath(_currentItem?.indexPath)
+//        updateIndexPath(_currentItem?.indexPath, animated: true)
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.scrollViewDidEndDragging(scrollView, willDecelerate: false)
@@ -280,17 +328,13 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
     }
     
     func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let estimated = estimatedItemSize
-        if _currentIndexPath == indexPath, let asset = dataSource?.browser(self, assetForItemAt: indexPath) {
-            let size = asset.browseContentSize
-            let height = estimated.height
-            let width = size.width * (height / size.height)
-            return CGSize(width: width + 20, height: height)
+        guard _currentIndexPath == indexPath else {
+            return estimatedItemSize
         }
-        return estimated
+        return _sizeForItem(indexPath)
     }
     
     func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath) {
-        _updateCurrentIndexPath(indexPath)
+        updateIndexPath(indexPath, animated: true)
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, BrowseIndicatorViewDelegate {
+class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -29,9 +29,6 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
             indicatorView.dataSource = newValue
         }
     }
-    
-    lazy var isInteractiving: Bool = false
-    lazy var lastContentOffset: CGPoint = .zero
     
     lazy var extraContentInset = UIEdgeInsetsMake(0, -20, 0, -20)
     lazy var interactiveDismissGestureRecognizer = UIPanGestureRecognizer()
@@ -65,16 +62,17 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
         if let cell = collectionView.cellForItem(at: indexPath) as? BrowseDetailViewCell {
             return cell.detailView
         }
-        // update indicator
-        indicatorView.indexPath = indexPath
-        indicatorView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 40)
-        indicatorView.layoutIfNeeded()
-        // update content
-        collectionView.frame = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        collectionView.layoutIfNeeded()
-        
-        _currentIndex = indexPath.item
+        _performWithoutContentOffsetChangeForIndicator {
+            _currentIndexPath = indexPath
+            // update indicator
+            indicatorView.indexPath = indexPath
+            indicatorView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 40)
+            indicatorView.layoutIfNeeded()
+            // update content
+            collectionView.frame = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            collectionView.layoutIfNeeded()
+        }
         if let cell = collectionView.cellForItem(at: indexPath) as? BrowseDetailViewCell {
             return cell.detailView
         }
@@ -104,9 +102,11 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
         let indexPath = collectionView.indexPathsForVisibleItems.first
         collectionView.frame = nframe
         if let indexPath = indexPath, let cell = cell {
-            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-            collectionView.layoutIfNeeded()
-            collectionView.bringSubview(toFront: cell)
+            _performWithoutContentOffsetChangeForIndicator {
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+                collectionView.layoutIfNeeded()
+                collectionView.bringSubview(toFront: cell)
+            }
         }
     }
     
@@ -124,7 +124,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
     
     func dismissHandler(_ sender: UIPanGestureRecognizer) {
         
-        if !isInteractiving {
+        if !_isInteractiving {
             let velocity = sender.velocity(in: view)
             guard velocity.y > 0 && fabs(velocity.x / velocity.y) < 1.5 else {
                 return
@@ -145,11 +145,11 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
             let x = min(max(offset.x, frame.minX), max(frame.width, size.width) - size.width)
             let y = min(max(offset.y, frame.minY), max(frame.height, size.height) - size.height)
             
-            isInteractiving = true
-            lastContentOffset = CGPoint(x: x, y: y)
+            _isInteractiving = true
+            _lastContentOffset = CGPoint(x: x, y: y)
             
             DispatchQueue.main.async {
-                cell.containterView.setContentOffset(self.lastContentOffset, animated: false)
+                cell.containterView.setContentOffset(self._lastContentOffset, animated: false)
                 
                 guard let nav = self.navigationController else {
                     self.dismiss(animated: true, completion: nil)
@@ -163,24 +163,36 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning, 
                 return
             }
             // 关闭
-            isInteractiving = false
+            _isInteractiving = false
             
             guard let cell = collectionView.visibleCells.last as? BrowseDetailViewCell else {
                 return 
             }
             DispatchQueue.main.async {
-                cell.containterView.setContentOffset(self.lastContentOffset, animated: false)
+                cell.containterView.setContentOffset(self._lastContentOffset, animated: false)
             }
         }
     }
     
-    fileprivate var _currentIndex: Int = 0 {
-        didSet {
-//            let asset = dataSource?.browser(self, assetForItemAt: IndexPath(item: _currentIndex, section: 0))
-//            
-//            _test?.image = asset?.browseImage
-        }
+    func _performWithoutContentOffsetChangeForIndicator(_ actionsWithoutAnimation: () -> Void) {
+        _ignoreContentOffsetChangeForIndicator = true
+        actionsWithoutAnimation()
+        _ignoreContentOffsetChangeForIndicator = false
     }
+    
+    fileprivate var _isInteractiving: Bool = false
+    fileprivate var _lastContentOffset: CGPoint = .zero
+    
+    fileprivate var _ignoreContentOffsetChangeForIndicator: Bool = false
+    
+    fileprivate var _currentItem: UICollectionViewLayoutAttributes?
+    fileprivate var _currentIndexPath: IndexPath?
+    
+    // 插入删除的时候必须清除
+    fileprivate var _interactivingFromIndex: Int?
+    fileprivate var _interactivingFromIndexPath: IndexPath?
+    fileprivate var _interactivingToIndex: Int?
+    fileprivate var _interactivingToIndexPath: IndexPath?
     
     fileprivate func _commonInit() {
       
@@ -273,7 +285,7 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if interactiveDismissGestureRecognizer == gestureRecognizer  {
             // 如果己经开始交互, 那就是是独占模式
-            guard !isInteractiving else {
+            guard !_isInteractiving else {
                 return false
             }
             guard let panGestureRecognizer = otherGestureRecognizer as? UIPanGestureRecognizer else {
@@ -288,26 +300,67 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
     }
 }
 
+extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
+    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
+        guard !_isInteractiving else {
+            return // 正在交互
+        }
+        UIView.performWithoutAnimation {
+            _performWithoutContentOffsetChangeForIndicator {
+                // 可能会产生动画 
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            }
+        }
+    }
+}
+
 extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
-    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
-        logger.trace(indexPath)
-        
-        // 可能会产生动画 
-        UIView.performWithoutAnimation {
-            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+    private func _updateCurrentItem(_ offset: CGPoint) {
+        // 检查是否存在变更
+        let x = offset.x + collectionView.bounds.width / 2
+        if let item = _currentItem, item.frame.minX <= x && x < item.frame.maxX {
+            return // hit cache
         }
+        guard let indexPath = collectionView.indexPathForItem(at: CGPoint(x: x, y: 0)) else {
+            return // not found, use old
+        }
+        //let oldValue = _currentItem
+        let newValue = collectionView.layoutAttributesForItem(at: indexPath)
+        // up
+        _currentItem = newValue
+        _currentIndexPath = newValue?.indexPath
+    }
+    private func _updateCurrentIndexForIndicator(_ offset: CGPoint) {
+        guard !_ignoreContentOffsetChangeForIndicator else {
+            return
+        }
+        let value = offset.x / collectionView.bounds.width
+        let percent = modf(value + 1).1
+        
+        let fromIndex = Int(floor(value))
+        var fromIndexPath = _interactivingFromIndexPath
+        
+        let toIndex = Int(ceil(value))
+        var toIndexPath = _interactivingToIndexPath
+        
+        if _interactivingFromIndex != fromIndex {
+            fromIndexPath = collectionView.indexPathForItem(at: CGPoint(x: (CGFloat(fromIndex) + 0.5) * collectionView.bounds.width , y: 0))
+            _interactivingToIndex = fromIndex
+            _interactivingToIndexPath = fromIndexPath
+        }
+        if _interactivingToIndex != toIndex {
+            toIndexPath = collectionView.indexPathForItem(at: CGPoint(x: (CGFloat(toIndex) + 0.5) * collectionView.bounds.width , y: 0))
+            _interactivingToIndex = toIndex
+            _interactivingToIndexPath = toIndexPath
+        }
+        // 使用百分比更新index
+        indicatorView.updateIndexPath(from: fromIndexPath, to: toIndexPath, percent: percent)
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let value = scrollView.contentOffset.x / scrollView.frame.width
-        
-        let index = Int(round(value))
-        _currentIndex = index
-        
-//        if scrollView.isDragging {
-            indicatorView.updateIndex(with: Double(value))
-//        }
+        _updateCurrentItem(scrollView.contentOffset)
+        _updateCurrentIndexForIndicator(scrollView.contentOffset)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

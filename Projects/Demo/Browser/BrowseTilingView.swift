@@ -42,6 +42,10 @@ import UIKit
     weak var tilingDelegate: BrowseTilingViewDelegate?
     weak var tilingDataSource: BrowseTilingViewDataSource?
     
+    var layout: BrowseTilingViewLayout {
+        return _layout
+    }
+    
     var numberOfSections: Int {
         return tilingDataSource?.numberOfSections?(in: self) ?? 1
     }
@@ -100,6 +104,17 @@ import UIKit
             return max(dur, tmp ?? 0)
         }
     }
+    func reloadItems(at indexPaths: [IndexPath], _ sizeForItemWithHandler: (BrowseTilingViewLayoutAttributes) -> CGSize) {
+        
+        _needsUpdateLayout = true // 重新更新
+        _needsUpdateLayoutVisibleRect = true // 重新计算
+        
+        _layout.invalidateLayout(at: indexPaths, sizeForItemWithHandler)
+        // 更新大小
+        contentSize = _layout.tilingViewContentSize
+            
+        _updateLayout()
+    }
     
     func animation(willStart identifier: String, context: Any) {
         _logger.trace()
@@ -108,10 +123,24 @@ import UIKit
         _logger.trace()
     }
     
+    var indexPathsForVisibleItems: [IndexPath] { 
+        return _visableCells.flatMap {
+            return $0.key
+        }
+    }
     func indexPathForItem(at point: CGPoint) -> IndexPath? {
         return _visableLayoutElements?.first(where: { 
             $0.frame.tiling_contains(point)
         })?.indexPath ?? _layout.indexPathForItem(at: point)
+    }
+    
+    var visibleCells: [BrowseTilingViewCell] { 
+        return _visableCells.flatMap {
+            return $0.value
+        }
+    }
+    func cellForItem(at indexPath: IndexPath) -> BrowseTilingViewCell? {
+        return _visableCells[indexPath]
     }
     
     func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
@@ -137,10 +166,7 @@ import UIKit
             let rect = CGRect(x: offsetX, y: 0, width: width * 2, height: width)
             // 更新当前布局, 假定一定是有序的
             _vaildLayoutRect = rect
-            _vaildLayoutElements = _layout.layoutAttributesForElements(in: rect)?.filter { 
-                // 只使用有效区域内的元素
-                return rect.tiling_contains($0.frame)
-            }
+            _vaildLayoutElements = _layout.layoutAttributesForElements(in: rect)
         }
     }
     private func _updateLayoutVisibleRectIfNeeded() {

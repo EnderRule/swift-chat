@@ -24,4 +24,6 @@ class BrowseTilingViewLayoutAttributes: NSObject {
     override var description: String {
         return "<\(super.description), \(indexPath)>"
     }
+    
+    var version: Int = 0
 }
