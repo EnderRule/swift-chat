@@ -369,7 +369,7 @@ import UIKit
                 }
                 return true
             }()
-            print("animation at \(attr.indexPath): \(cell.frame)(\(cell.layer.presentation()?.frame)), \(attr.fromFrame) to \(attr.frame)")
+            //print("animation at \(attr.indexPath): \(cell.frame)(\(cell.layer.presentation()?.frame)), \(attr.fromFrame) to \(attr.frame)")
             if (UIView.areAnimationsEnabled || hasCustomAnimation) {
                 UIView.performWithoutAnimation {
                     cell.frame = attr.fromFrame
