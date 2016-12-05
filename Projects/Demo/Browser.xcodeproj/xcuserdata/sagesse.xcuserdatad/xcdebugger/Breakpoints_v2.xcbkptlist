@@ -29,5 +29,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Browser/BrowseTilingView.swift"
+            timestampString = "502620664.575908"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "373"
+            endingLineNumber = "373"
+            landmarkName = "_updateLayoutIfNeeded()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Browser.BrowseTilingView.((_updateLayoutIfNeeded in _C20446A5BF9C8757F1A0DF02EB638A41) () -&gt; ()).(closure #1)"
+                  moduleName = "Browser"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sagesse/Projects/swift-chat/Projects/Demo/Browser/BrowseTilingView.swift"
+                  timestampString = "502620066.046189"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "377"
+                  endingLineNumber = "377"
+                  offsetFromSymbolStart = "1844">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Browser.BrowseTilingView.((_updateLayoutIfNeeded in _C20446A5BF9C8757F1A0DF02EB638A41) () -&gt; ()).(closure #1)"
+                  moduleName = "Browser"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sagesse/Projects/swift-chat/Projects/Demo/Browser/BrowseTilingView.swift"
+                  timestampString = "502620066.047849"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "377"
+                  endingLineNumber = "377"
+                  offsetFromSymbolStart = "1964">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

@@ -57,7 +57,7 @@ import UIKit
         let size = estimatedItemSize
         let indexPaths = Set([oldValue, newValue].flatMap({ $0 })).sorted()
         
-        UIView.animate(withDuration: 1.25, animations: {
+        UIView.animate(withDuration: 0.25, animations: {
             
             self._tilingView.reloadItems(at: indexPaths)
             self._tilingView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in

@@ -292,6 +292,8 @@ import UIKit
     }
     private func _updateLayoutVisibleCellIfNeeded(_ ins: [IndexPath], _ rms: [IndexPath], _ rds: [IndexPath]) {
         // 更新可见单元格
+        //print("IN: \(ins)")
+        //print("RM: \(rms)")
         
         // 删除(先删除)
         rms.forEach { indexPath in
@@ -349,11 +351,11 @@ import UIKit
             guard let cell = _visableCells[attr.indexPath] else {
                 return
             }
-            guard cell.frame != attr.frame else {
+            guard !cell.frame.tiling_equal(attr.frame) else {
                 return
             }
             let hasCustomAnimation = { Void -> Bool in
-                guard attr.fromFrame != attr.frame else { 
+                guard !attr.fromFrame.tiling_equal(attr.frame) else {
                     return false // 并没有变更操作
                 }
                 guard _animationDuration != 0 else {
@@ -367,7 +369,8 @@ import UIKit
                 }
                 return true
             }()
-            if UIView.areAnimationsEnabled || hasCustomAnimation {
+            print("animation at \(attr.indexPath): \(cell.frame)(\(cell.layer.presentation()?.frame)), \(attr.fromFrame) to \(attr.frame)")
+            if (UIView.areAnimationsEnabled || hasCustomAnimation) {
                 UIView.performWithoutAnimation {
                     cell.frame = attr.fromFrame
                     cell.layoutIfNeeded()
@@ -478,6 +481,14 @@ internal extension CGRect {
     internal func tiling_contains(_ rect2: CGRect) -> Bool {
         return ((minX <= rect2.minX && rect2.minX <= maxX) || (minX <= rect2.maxX && rect2.maxX <= maxX))
             && ((minY <= rect2.minY && rect2.minY <= maxY) || (minY <= rect2.maxY && rect2.maxY <= maxY))
+    }
+    
+    // 避免误差
+    internal func tiling_equal(_ rect: CGRect) -> Bool {
+        return (fabs(minX - rect.minX) < 0.000001)
+            && (fabs(minY - rect.minY) < 0.000001)
+            && (fabs(width - rect.width) < 0.000001)
+            && (fabs(height - rect.height) < 0.000001)
     }
 }
 
