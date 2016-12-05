@@ -98,11 +98,11 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         guard collectionView.frame != nframe else {
             return
         }
-        let cell = collectionView.visibleCells.first
-        let indexPath = collectionView.indexPathsForVisibleItems.first
-        collectionView.frame = nframe
-        if let indexPath = indexPath, let cell = cell {
-            _performWithoutContentOffsetChangeForIndicator {
+        _performWithoutContentOffsetChangeForIndicator {
+            let cell = collectionView.visibleCells.first
+            let indexPath = collectionView.indexPathsForVisibleItems.first
+            collectionView.frame = nframe
+            if let indexPath = indexPath, let cell = cell {
                 collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
                 collectionView.layoutIfNeeded()
                 collectionView.bringSubview(toFront: cell)
@@ -302,9 +302,11 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
 
 extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
     func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
-        guard !_isInteractiving else {
-            return // 正在交互
-        }
+        _logger.debug(indexPath)
+        
+//        guard !_isInteractiving else {
+//            return // 正在交互
+//        }
         UIView.performWithoutAnimation {
             _performWithoutContentOffsetChangeForIndicator {
                 // 可能会产生动画 
@@ -332,9 +334,6 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         _currentIndexPath = newValue?.indexPath
     }
     private func _updateCurrentIndexForIndicator(_ offset: CGPoint) {
-        guard !_ignoreContentOffsetChangeForIndicator else {
-            return
-        }
         let value = offset.x / collectionView.bounds.width
         let percent = modf(value + 1).1
         
@@ -359,6 +358,9 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !_ignoreContentOffsetChangeForIndicator else {
+            return
+        }
         _updateCurrentItem(scrollView.contentOffset)
         _updateCurrentIndexForIndicator(scrollView.contentOffset)
     }

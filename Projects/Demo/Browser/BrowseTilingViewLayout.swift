@@ -16,7 +16,7 @@ class BrowseTilingViewLayoutPage: NSObject {
         super.init()
     }
     
-    var version: Int = 0
+    var index: Int = 0
     
     var begin: Int 
     var end: Int 
@@ -92,6 +92,7 @@ class BrowseTilingViewLayout: NSObject {
                 if index == count || frame.maxX >= pageX + pageWidth {
                     let page = BrowseTilingViewLayoutPage(begin: pageStart, end: index)
                     
+                    page.index = pages.count
                     page.visableRect = attributes.frame.union(elements[pageStart].frame)
                     page.vaildRect = CGRect(x: pageX, y: 0, width: pageWidth, height: pageHeight)
                     pages.append(page)
@@ -130,6 +131,15 @@ class BrowseTilingViewLayout: NSObject {
         if reloadElements.isEmpty {
             return // reloadElements is empty(all remove), no change
         }
+        // update version
+        _version += 1
+        // show rect
+        let showedWidth: CGFloat = max(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+        var showedRect: CGRect = CGRect(x: 0, y: 0, width: showedWidth * 2, height: showedWidth)
+        var showedIndexs: [Int] = []
+        if let contentOffset = tilingView?.contentOffset {
+            showedRect.origin.x = floor(contentOffset.x / showedWidth) * showedWidth
+        }
         // update all visable rect for page
         var offset: CGFloat = 0
         var reloadIndex: Int = 0
@@ -141,7 +151,10 @@ class BrowseTilingViewLayout: NSObject {
             page.visableRect = page.visableRect.offsetBy(dx: offset, dy: 0)
             if offset != 0 {
                 page.isVailded = true
-                page.version += 1
+            }
+            // 检查正在显示的page
+            if page.vaildRect.intersects(showedRect) {
+                showedIndexs.append(index)
             }
             // 检查是否需要更新区域内的元素
             guard reloadIndex < reloadCount else {
@@ -171,13 +184,15 @@ class BrowseTilingViewLayout: NSObject {
                 
                 attributes.fromFrame = attributes.frame
                 attributes.frame = frame
-                attributes.version = page.version
+                attributes.version = _version
                 
                 offset += attributes.frame.width - attributes.fromFrame.width
             })
-            // update page now
-            _updatePage(page)
         }
+        for index in showedIndexs {
+            _updatePage(_tilingViewLayoutPages[index])
+        }
+        
         // update content size
         _tilingViewContentSize.width += offset
     }
@@ -223,7 +238,7 @@ class BrowseTilingViewLayout: NSObject {
                 break // 己经超出的话忽略(性能优化)
             }
         }
-        //logger.debug("\(rect) - [\(begin) ..< \(end)]")
+        logger.debug("\(rect) => \(begin) ..< \(end)")
         guard begin < end else {
             return nil
         }
@@ -231,61 +246,85 @@ class BrowseTilingViewLayout: NSObject {
     }
     
     private func _updatePage(_ page: BrowseTilingViewLayoutPage) {
-        _logger.debug(page)
+        //_logger.debug(page.index)
         
         let count = _tilingViewLayoutElements.count
         
-        var minX = page.visableRect.minX
-        var maxX = page.visableRect.minX
-        
+        var x1 = page.visableRect.minX
         var begin = min(page.begin, max(count - 1, 0))
-        var end = min(page.end, count)
-        // 更新偏移
-        for index in begin ..< end {
-            let attributes = _tilingViewLayoutElements[index]
-            var frame = attributes.frame
-            
-            frame.origin.x = maxX
-            
-            if attributes.version != page.version {
-                attributes.version = page.version
-                attributes.fromFrame = attributes.frame
-                attributes.frame = frame
-            }
-            
-            maxX = frame.maxX + minimumInteritemSpacing
-        }
-        // 更新索引
         
-        // 左移
-        var index = begin - 1
-        while index >= 0 {
-            let attributes = _tilingViewLayoutElements[index]
-            var frame = attributes.frame
-            frame.origin.x = minX - frame.width - minimumInteritemSpacing
-            if attributes.version != page.version {
-                attributes.version = page.version
-                attributes.fromFrame = attributes.frame
-                attributes.frame = frame
+        // begin << n
+        while begin > 0 && begin < count {
+            let attr = _tilingViewLayoutElements[begin - 1]
+            let tx1 = x1 - attr.frame.width - minimumInteritemSpacing
+           
+            // 往左边查找第一个不符合条件的元素
+            // vaildRect.minX < tx1 <= page.vaildRect.maxX
+            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else  {
+                break
             }
-            guard frame.minX > page.vaildRect.minX else {
-                break // 己经超出了
-            }
-            minX = frame.minX
-            index -= 1
+            begin -= 1
+            x1 = tx1
         }
-        // 右移
-        while index < count {
-            let attributes = _tilingViewLayoutElements[index + 1]
+        // begin >> n
+        while begin < count {
+            let attr = _tilingViewLayoutElements[begin] 
+            let tx2 = x1 + attr.frame.width + minimumInteritemSpacing
             
+            // 往右边查找第一个符合条件的元素
+            // vaildRect.minX <= x1 <= page.vaildRect.maxX
+            if page.vaildRect.minX <= x1 && x1 <= page.vaildRect.maxX  {
+                break // found
+            }
+            if page.vaildRect.maxX <= x1 {
+                break // is over boundary
+            }
+            begin += 1
+            x1 = tx2
+        }
+        // end >> n
+        var x2 = x1
+        var end = begin
+        while end < count {
+            let attr = _tilingViewLayoutElements[end]
+            let tx1 = x2
+            let tx2 = x2 + attr.frame.width + minimumInteritemSpacing
+            
+            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else {
+                break // x1 over boundary
+            }
+            guard page.vaildRect.minX <= tx2 else {
+                break // x2 over boundary
+            }
+            
+            if attr.version != _version {
+                var frame = attr.frame
+                
+                frame.origin.x = tx1
+                
+                attr.version = _version
+                attr.fromFrame = attr.frame
+                attr.frame = frame
+            }
+            
+            end += 1
+            x2 = tx2
         }
         
+        page.begin = begin
+        page.end = end
+        
+        page.visableRect.origin.x = x1
+        page.visableRect.size.width = x2 - x1
+        
+        page.isVailded = false
     }
-
+    
     weak var tilingView: BrowseTilingView?
     
     private var _tilingViewContentSize: CGSize = .zero
     
+    private var _version: Int = 0
     private lazy var _tilingViewLayoutPages: [BrowseTilingViewLayoutPage] = []
     private lazy var _tilingViewLayoutElements: [BrowseTilingViewLayoutAttributes] = []
     private lazy var _tilingViewLayoutElementMaps: [IndexPath: BrowseTilingViewLayoutAttributes] = [:]

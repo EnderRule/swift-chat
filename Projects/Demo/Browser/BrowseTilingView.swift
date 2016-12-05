@@ -116,13 +116,6 @@ import UIKit
         _updateLayout()
     }
     
-    func animation(willStart identifier: String, context: Any) {
-        _logger.trace()
-    }
-    func animation(didStop identifier: String, finished: Bool, context: Any) {
-        _logger.trace()
-    }
-    
     var indexPathsForVisibleItems: [IndexPath] { 
         return _visableCells.flatMap {
             return $0.key
@@ -354,6 +347,9 @@ import UIKit
         
         _visableLayoutElements?.forEach { attr in
             guard let cell = _visableCells[attr.indexPath] else {
+                return
+            }
+            guard cell.frame != attr.frame else {
                 return
             }
             let hasCustomAnimation = { Void -> Bool in

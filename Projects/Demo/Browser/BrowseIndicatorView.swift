@@ -44,6 +44,7 @@ import UIKit
     var estimatedItemSize: CGSize = CGSize(width: 20, height: 40)
     
     func updateIndexPath(_ indexPath: IndexPath?, animated: Bool) {
+        logger.debug("\(indexPath)")
         
         let oldValue = _currentIndexPath 
         let newValue = indexPath
@@ -56,7 +57,7 @@ import UIKit
         let size = estimatedItemSize
         let indexPaths = Set([oldValue, newValue].flatMap({ $0 })).sorted()
         
-        UIView.animate(withDuration: 0.25, animations: {
+        UIView.animate(withDuration: 1.25, animations: {
             
             self._tilingView.reloadItems(at: indexPaths)
             self._tilingView.contentOffset.x = indexPaths.reduce(0) { offset, indexPath -> CGFloat in
@@ -78,13 +79,26 @@ import UIKit
     func updateIndexPath(from indexPath1: IndexPath?, to indexPath2: IndexPath?, percent: CGFloat) {
         _logger.debug("\(indexPath1) => \(indexPath2) => \(percent)")
         
-        _interactivingFromIndexPath = indexPath1
-        _interactivingToIndexPath = indexPath2
+        let ofidx = _interactivingFromIndexPath
+        let otidx = _interactivingToIndexPath
+        let ocidx = _currentIndexPath
+        
+        let nfidx = indexPath1
+        let ntidx = indexPath2
+        
+        _interactivingFromIndexPath = nfidx
+        _interactivingToIndexPath = ntidx
+        
+        if percent == 0 {
+            _interactivingToIndexPath = nil
+            _interactivingFromIndexPath = nil
+        }
         
         guard let indexPath1 = indexPath1, let indexPath2 = indexPath2 else {
             return // ...
         }
         _currentIndexPath = indexPath1
+        
         
         let newFromSize = _sizeForItem(indexPath1)
         let oldFromSize = estimatedItemSize
@@ -100,7 +114,9 @@ import UIKit
         let fromWidth = oldFromSize.width + (newFromSize.width - oldFromSize.width) * (1 - percent)
 //        var fromItem: BrowseTilingViewLayoutAttributes?
         
-        _tilingView.reloadItems(at: [indexPath1, indexPath2]) { attr in
+        let indexPaths = Array(Set([ofidx, otidx, ocidx, nfidx, ntidx].flatMap({ $0 })))
+        
+        _tilingView.reloadItems(at: indexPaths) { attr in
             if attr.indexPath == indexPath1 {
                 return CGSize(width: fromWidth, height: fromHeight)
             }
@@ -287,10 +303,10 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard _interactivingToIndexPath == nil && _interactivingFromIndexPath == nil else {
-//            return
-//        }
-//        _updateCurrentItem(scrollView.contentOffset)
+        guard _interactivingToIndexPath == nil && _interactivingFromIndexPath == nil else {
+            return
+        }
+        _updateCurrentItem(scrollView.contentOffset)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -303,7 +319,7 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         guard !decelerate else {
             return
         }
-//        updateIndexPath(_currentItem?.indexPath, animated: true)
+        updateIndexPath(_currentItem?.indexPath, animated: true)
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.scrollViewDidEndDragging(scrollView, willDecelerate: false)
@@ -324,7 +340,9 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         guard let cell = cell as? BrowseIndicatorViewCell else {
             return
         }
-        cell.asset = dataSource?.browser(self, assetForItemAt: indexPath)
+        UIView.performWithoutAnimation {
+            cell.asset = dataSource?.browser(self, assetForItemAt: indexPath)
+        }
     }
     
     func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -335,6 +353,8 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
     }
     
     func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath) {
+        logger.debug(indexPath)
+        
         updateIndexPath(indexPath, animated: true)
     }
 }
