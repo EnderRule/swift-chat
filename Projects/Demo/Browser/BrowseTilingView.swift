@@ -109,6 +109,9 @@ import UIKit
         _needsUpdateLayout = true // 重新更新
         _needsUpdateLayoutVisibleRect = true // 重新计算
         
+        //如果
+        //_needsUpdateLayoutVaildRect = true
+        
         _layout.invalidateLayout(at: indexPaths, sizeForItemWithHandler)
         
         // 更新大小
@@ -154,14 +157,20 @@ import UIKit
     private func _updateLayoutVaildRectIfNeeded() {
         // 检查有效区域
         let vaildRect = UIEdgeInsetsInsetRect(_vaildLayoutRect, UIEdgeInsetsMake(0, 0, 0, _vaildLayoutRect.width / 2))
-        if !vaildRect.contains(contentOffset) {
-            let width = max(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
-            let offsetX = floor(contentOffset.x / width) * width
-            let rect = CGRect(x: offsetX, y: 0, width: width * 2, height: width)
-            // 更新当前布局, 假定一定是有序的
-            _vaildLayoutRect = rect
-            _vaildLayoutElements = _layout.layoutAttributesForElements(in: rect)
+        if !_needsUpdateLayoutVaildRect && !vaildRect.contains(contentOffset) {
+            _needsUpdateLayoutVaildRect = true
         }
+        guard _needsUpdateLayoutVaildRect else {
+            return
+        }
+        _needsUpdateLayoutVaildRect = false
+        
+        let width = max(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
+        let offsetX = floor(contentOffset.x / width) * width
+        let rect = CGRect(x: offsetX, y: 0, width: width * 2, height: width)
+        // 更新当前布局, 假定一定是有序的
+        _vaildLayoutRect = rect
+        _vaildLayoutElements = _layout.layoutAttributesForElements(in: rect)
     }
     private func _updateLayoutVisibleRectIfNeeded() {
         // 更新可见区域
@@ -433,6 +442,7 @@ import UIKit
     private var _animationIsStarted: Bool = false
     
     private var _needsUpdateLayout: Bool = true
+    private var _needsUpdateLayoutVaildRect: Bool = true
     private var _needsUpdateLayoutVisibleRect: Bool = true
     
     private var _vaildLayoutRect: CGRect = .zero

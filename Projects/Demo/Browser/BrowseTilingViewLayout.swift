@@ -103,6 +103,7 @@ class BrowseTilingViewLayout: NSObject {
                 }
             }
         }
+        
         // 保存数据
         _tilingViewLayoutPages = pages
         _tilingViewLayoutElements = elements
@@ -247,71 +248,90 @@ class BrowseTilingViewLayout: NSObject {
     private func _updatePage(_ page: BrowseTilingViewLayoutPage) {
         //_logger.debug(page.index)
         
-        let count = _tilingViewLayoutElements.count
-        
-        var x1 = page.visableRect.minX
-        var begin = min(page.begin, max(count - 1, 0))
-        
-        // begin << n
-        while begin > 0 && begin < count {
-            let attr = _tilingViewLayoutElements[begin - 1]
-            let tx1 = x1 - attr.frame.width - minimumInteritemSpacing
-           
-            // 往左边查找第一个不符合条件的元素
-            // vaildRect.minX < tx1 <= page.vaildRect.maxX
-            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else  {
-                break
-            }
-            begin -= 1
-            x1 = tx1
-        }
-        // begin >> n
-        while begin < count {
-            let attr = _tilingViewLayoutElements[begin] 
-            let tx2 = x1 + attr.frame.width + minimumInteritemSpacing
-            
-            // 往右边查找第一个符合条件的元素
-            // vaildRect.minX <= x1 <= page.vaildRect.maxX
-            if page.vaildRect.minX <= x1 && x1 <= page.vaildRect.maxX  {
-                break // found
-            }
-            if page.vaildRect.maxX <= x1 {
-                break // is over boundary
-            }
-            begin += 1
-            x1 = tx2
-        }
-        // end >> n
+        let x1 = page.visableRect.minX
         var x2 = x1
-        var end = begin
-        while end < count {
-            let attr = _tilingViewLayoutElements[end]
-            let tx1 = x2
+        for index in page.begin ..< page.end {
+            let attr = _tilingViewLayoutElements[index]
             let tx2 = x2 + attr.frame.width + minimumInteritemSpacing
-            
-            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else {
-                break // x1 over boundary
-            }
-            guard page.vaildRect.minX <= tx2 else {
-                break // x2 over boundary
-            }
             
             if attr.version != _version {
                 var frame = attr.frame
                 
-                frame.origin.x = tx1
+                frame.origin.x = x2
                 
                 attr.version = _version
                 attr.fromFrame = attr.frame
                 attr.frame = frame
             }
             
-            end += 1
             x2 = tx2
         }
         
-        page.begin = begin
-        page.end = end
+//        let count = _tilingViewLayoutElements.count
+//        
+//        var x1 = page.visableRect.minX
+//        var begin = min(page.begin, max(count - 1, 0))
+//        
+//        // begin << n
+//        while begin > 0 && begin <= count {
+//            let attr = _tilingViewLayoutElements[begin - 1]
+//            let tx1 = x1 - attr.frame.width - minimumInteritemSpacing
+//           
+//            // 往左边查找第一个不符合条件的元素
+//            // vaildRect.minX < tx1 <= page.vaildRect.maxX
+//            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else  {
+//                break
+//            }
+//            begin -= 1
+//            x1 = tx1
+//        }
+//        // begin >> n
+//        while begin < count {
+//            let attr = _tilingViewLayoutElements[begin] 
+//            let tx2 = x1 + attr.frame.width + minimumInteritemSpacing
+//            
+//            // 往右边查找第一个符合条件的元素
+//            // vaildRect.minX <= x1 <= page.vaildRect.maxX
+//            if page.vaildRect.minX <= x1 && x1 <= page.vaildRect.maxX  {
+//                break // found
+//            }
+//            if page.vaildRect.maxX <= x1 {
+//                break // is over boundary
+//            }
+//            begin += 1
+//            x1 = tx2
+//        }
+//        // end >> n
+//        var x2 = x1
+//        var end = begin
+//        while end < count {
+//            let attr = _tilingViewLayoutElements[end]
+//            let tx1 = x2
+//            let tx2 = x2 + attr.frame.width + minimumInteritemSpacing
+//            
+//            guard page.vaildRect.minX <= tx1 && tx1 <= page.vaildRect.maxX else {
+//                break // x1 over boundary
+//            }
+//            guard page.vaildRect.minX <= tx2 else {
+//                break // x2 over boundary
+//            }
+//            
+//            if attr.version != _version {
+//                var frame = attr.frame
+//                
+//                frame.origin.x = tx1
+//                
+//                attr.version = _version
+//                attr.fromFrame = attr.frame
+//                attr.frame = frame
+//            }
+//            
+//            end += 1
+//            x2 = tx2
+//        }
+//        
+//        page.begin = begin
+//        page.end = end
         
         page.visableRect.origin.x = x1
         page.visableRect.size.width = x2 - x1

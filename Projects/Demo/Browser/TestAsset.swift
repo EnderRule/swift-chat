@@ -13,7 +13,6 @@ var count = 0
 class LocalImageAsset: NSObject, Browseable {
     
     override init() {
-        
         super.init()
             
 //        let index = count % 12
