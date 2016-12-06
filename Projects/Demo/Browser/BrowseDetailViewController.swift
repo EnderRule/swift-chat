@@ -251,7 +251,6 @@ extension BrowseDetailViewController: BrowseDetailViewDelegate, UINavigationBarD
         return true
     }
     
-    
     func browseDetailView(_ browseDetailView: Any, _ containterView: BrowseContainterView, shouldBeginRotationing view: UIView?) -> Bool {
         collectionView.isScrollEnabled = false
         return true
@@ -302,9 +301,22 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
 }
 
 extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
+    
+    func indicatorWillBeginDragging(_ indicator: BrowseIndicatorView) {
+        logger.trace()
+        
+//        collectionView.isScrollEnabled = false
+//        interactiveDismissGestureRecognizer.isEnabled = false
+    }
+    func indicatorDidEndDragging(_ indicator: BrowseIndicatorView) {
+        logger.trace()
+        
+//        collectionView.isScrollEnabled = true
+//        interactiveDismissGestureRecognizer.isEnabled = true
+    }
+    
     func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
         _logger.debug(indexPath)
-        
 //        guard !_isInteractiving else {
 //            return // 正在交互
 //        }
@@ -364,6 +376,18 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         }
         _updateCurrentItem(scrollView.contentOffset)
         _updateCurrentIndexForIndicator(scrollView.contentOffset)
+    }
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        indicatorView.beginInteractiveMovement()
+    }
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard !decelerate else {
+            return
+        }
+        indicatorView.endInteractiveMovement()
+    }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        indicatorView.endInteractiveMovement()
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
