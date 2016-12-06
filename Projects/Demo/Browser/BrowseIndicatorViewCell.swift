@@ -23,6 +23,8 @@ class BrowseIndicatorViewCell: BrowseTilingViewCell {
         willSet {
             imageView.image = newValue?.browseImage
             imageView.backgroundColor = newValue?.backgroundColor
+            
+            //backgroundColor = newValue?.backgroundColor?.withAlphaComponent(0.8)
         }
     }
     

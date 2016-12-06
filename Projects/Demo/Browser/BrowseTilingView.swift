@@ -110,6 +110,7 @@ import UIKit
         _needsUpdateLayoutVisibleRect = true // 重新计算
         
         _layout.invalidateLayout(at: indexPaths, sizeForItemWithHandler)
+        
         // 更新大小
         contentSize = _layout.tilingViewContentSize
             

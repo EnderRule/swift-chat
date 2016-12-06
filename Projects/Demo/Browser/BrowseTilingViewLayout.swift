@@ -186,13 +186,12 @@ class BrowseTilingViewLayout: NSObject {
                 attributes.frame = frame
                 attributes.version = _version
                 
-                offset += attributes.frame.width - attributes.fromFrame.width
+                offset += frame.width - attributes.fromFrame.width
             })
         }
         for index in showedIndexs {
             _updatePage(_tilingViewLayoutPages[index])
         }
-        
         // update content size
         _tilingViewContentSize.width += offset
     }

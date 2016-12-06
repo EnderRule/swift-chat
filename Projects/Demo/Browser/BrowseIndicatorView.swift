@@ -77,66 +77,119 @@ import UIKit
     
     
     func updateIndexPath(from indexPath1: IndexPath?, to indexPath2: IndexPath?, percent: CGFloat) {
-        _logger.debug("\(indexPath1) => \(indexPath2) => \(percent)")
+//        _logger.debug("\(indexPath1) => \(indexPath2) => \(percent)")
         
+        let ocidx = _currentIndexPath
         let ofidx = _interactivingFromIndexPath
         let otidx = _interactivingToIndexPath
-        let ocidx = _currentIndexPath
-        
         let nfidx = indexPath1
         let ntidx = indexPath2
         
         _interactivingFromIndexPath = nfidx
         _interactivingToIndexPath = ntidx
+        _currentIndexPath = ntidx ?? nfidx
         
         if percent == 0 {
             _interactivingToIndexPath = nil
             _interactivingFromIndexPath = nil
         }
         
-        guard let indexPath1 = indexPath1, let indexPath2 = indexPath2 else {
-            return // ...
+        let ds = estimatedItemSize // default size
+        let cil = _tilingView.contentInset.left + ds.width / 2 // content inset left
+        
+        let nfs = _sizeForItem(nfidx) ?? ds // new from size
+        let nts = _sizeForItem(ntidx) ?? ds // new to size
+        
+        var fw = ds.width + (nfs.width - ds.width) * (1 - percent) // display from width
+        var tw = ds.width + (nts.width - ds.width) * (0 + percent) // display to width
+        
+        // if left over boundary, can't change width
+        if nfidx == nil {
+            tw = nts.width 
         }
-        _currentIndexPath = indexPath1
+        // if right over boundary, can't change width
+        if ntidx == nil {
+            fw = nfs.width 
+        }
         
+        let ops = Set([ofidx, otidx, nfidx, ntidx, ocidx].flatMap({ $0 })).sorted()
         
-        let newFromSize = _sizeForItem(indexPath1)
-        let oldFromSize = estimatedItemSize
+        //logger.debug("\(nfidx) - \(ntidx): \(fw) => \(tw) | \(percent)")
         
-        let newToSize = _sizeForItem(indexPath2)
-        let oldToSize = estimatedItemSize
-        
-        let toHiehgt = newToSize.height
-        let toWidth = oldToSize.width + (newToSize.width - oldToSize.width) * (0 + percent)
-//        var toItem: BrowseTilingViewLayoutAttributes?
-        
-        let fromHeight = newFromSize.height
-        let fromWidth = oldFromSize.width + (newFromSize.width - oldFromSize.width) * (1 - percent)
-//        var fromItem: BrowseTilingViewLayoutAttributes?
-        
-        let indexPaths = Array(Set([ofidx, otidx, ocidx, nfidx, ntidx].flatMap({ $0 })))
-        
-        _tilingView.reloadItems(at: indexPaths) { attr in
-            if attr.indexPath == indexPath1 {
-                return CGSize(width: fromWidth, height: fromHeight)
+        _tilingView.reloadItems(at: ops) { attr in
+            if attr.indexPath == nfidx {
+                return CGSize(width: fw, height: ds.height)
             }
-            if attr.indexPath == indexPath2 {
-                return CGSize(width: toWidth, height: toHiehgt)
+            if attr.indexPath == ntidx {
+                return CGSize(width: tw, height: ds.height)
             }
-            return estimatedItemSize
+            return ds
         }
-        _tilingView.contentOffset.x = 0
+        _tilingView.contentOffset.x = { origin -> CGFloat in
+            // is left over boundary?
+            if let tidx = ntidx, let ta = _tilingView.layoutAttributesForItem(at: tidx), nfidx == nil {
+                return ta.frame.midX - ds.width * (1 - percent)
+            }
+            // is right over boundary?
+            if let fidx = nfidx, let fa = _tilingView.layoutAttributesForItem(at: fidx), ntidx == nil {
+                return fa.frame.midX + ds.width * (0 + percent)
+            }
+            // is center?
+            guard let fidx = nfidx, let tidx = ntidx else {
+                return origin
+            }
+            // can found?
+            guard let fa = _tilingView.layoutAttributesForItem(at: fidx),
+                let ta = _tilingView.layoutAttributesForItem(at: tidx) else {
+                return origin
+            }
+            let x1 = fa.frame.midX * (1 - percent)
+            let x2 = ta.frame.midX * (0 + percent)
+            
+            return x1 + x2 
+            
+        }(_tilingView.contentOffset.x + cil) - cil
         
-        guard let f1 = _tilingView.layoutAttributesForItem(at: indexPath1),
-            let f2 = _tilingView.layoutAttributesForItem(at: indexPath2) else {
-                return
-        }
         
-        let x1 = f1.frame.midX * (1 - percent)
-        let x2 = f2.frame.midX * (0 + percent)
-        let offset = x1 + x2 - (_tilingView.contentInset.left + estimatedItemSize.width / 2)
+        // v2
+//        let newFromSize = _sizeForItem(indexPath1)
+//        let oldFromSize = estimatedItemSize
+//        
+//        let newToSize = _sizeForItem(indexPath2)
+//        let oldToSize = estimatedItemSize
+//        
+//        let toHiehgt = newToSize.height
+//        let toWidth = oldToSize.width + (newToSize.width - oldToSize.width) * (0 + percent)
+////        var toItem: BrowseTilingViewLayoutAttributes?
+//        
+//        let fromHeight = newFromSize.height
+//        let fromWidth = oldFromSize.width + (newFromSize.width - oldFromSize.width) * (1 - percent)
+////        var fromItem: BrowseTilingViewLayoutAttributes?
+//        
+//        
+//        _tilingView.reloadItems(at: indexPaths) { attr in
+//            if attr.indexPath == indexPath1 {
+//                return CGSize(width: fromWidth, height: fromHeight)
+//            }
+//            if attr.indexPath == indexPath2 {
+//                return CGSize(width: toWidth, height: toHiehgt)
+//            }
+//            return estimatedItemSize
+//        }
+//        _tilingView.contentOffset.x = 0
+//        
+//        guard let f1 = _tilingView.layoutAttributesForItem(at: indexPath1),
+//            let f2 = _tilingView.layoutAttributesForItem(at: indexPath2) else {
+//                return
+//        }
+//        
+//        let x1 = f1.frame.midX * (1 - percent)
+//        let x2 = f2.frame.midX * (0 + percent)
+//        let offset = x1 + x2 - (_tilingView.contentInset.left + estimatedItemSize.width / 2)
+//        
+//        _tilingView.contentOffset.x = offset
         
-        _tilingView.contentOffset.x = offset
+        // v1
 //        let x1 = view1.frame.midX * CGFloat(1 - pre)
 //        let x2 = view2.frame.midX * CGFloat(pre)
 ////        let x2 = (w2 - ow2) / 2
@@ -239,6 +292,12 @@ import UIKit
 //        nframe.size.height = estimatedItemSize.height
     }
     
+    fileprivate func _sizeForItem(_ indexPath: IndexPath?) -> CGSize? {
+        guard let indexPath = indexPath else {
+            return nil
+        }
+        return _sizeForItem(indexPath)
+    }
     fileprivate func _sizeForItem(_ indexPath: IndexPath) -> CGSize {
         guard let asset = dataSource?.browser(self, assetForItemAt: indexPath) else {
             return estimatedItemSize
@@ -354,7 +413,6 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
     
     func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath) {
         logger.debug(indexPath)
-        
         updateIndexPath(indexPath, animated: true)
     }
 }

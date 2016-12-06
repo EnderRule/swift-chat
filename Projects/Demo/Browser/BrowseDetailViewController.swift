@@ -219,6 +219,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isPagingEnabled = true
+        collectionView.alwaysBounceHorizontal = true
         collectionView.scrollsToTop = false
         collectionView.allowsSelection = false
         collectionView.allowsMultipleSelection = false

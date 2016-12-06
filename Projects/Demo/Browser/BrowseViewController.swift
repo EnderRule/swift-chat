@@ -102,6 +102,7 @@ class BrowseViewController: UIViewController, BrowseContextTransitioning {
         collectionView.frame = view.bounds
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .white
+        collectionView.alwaysBounceVertical = true
         
         collectionView.delegate = self
         collectionView.dataSource = self

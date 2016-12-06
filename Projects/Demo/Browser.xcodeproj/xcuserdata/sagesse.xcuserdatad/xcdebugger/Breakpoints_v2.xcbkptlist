@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Browser/BrowseDetailViewController.swift"
-            timestampString = "502601035.493214"
+            timestampString = "502685334.756414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
+            startingLineNumber = "306"
+            endingLineNumber = "306"
             landmarkName = "indicator(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>

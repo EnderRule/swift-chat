@@ -21,7 +21,8 @@ public class Browser: BrowseDataSource, BrowseDelegate {
     }
     
     lazy var _assets:[Browseable] = {
-        return (0 ..< 2800).map{ _ in
+        // 25-28和55有bug
+        return (0 ..< 28000).map{ _ in
             return LocalImageAsset()
         }
     }()
