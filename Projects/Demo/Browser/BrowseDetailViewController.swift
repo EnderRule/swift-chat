@@ -62,7 +62,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         if let cell = collectionView.cellForItem(at: indexPath) as? BrowseDetailViewCell {
             return cell.detailView
         }
-        _performWithoutContentOffsetChangeForIndicator {
+        _performWithoutContentOffsetChange {
             _currentIndexPath = indexPath
             // update indicator
             indicatorView.indexPath = indexPath
@@ -98,7 +98,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         guard collectionView.frame != nframe else {
             return
         }
-        _performWithoutContentOffsetChangeForIndicator {
+        _performWithoutContentOffsetChange {
             let cell = collectionView.visibleCells.first
             let indexPath = collectionView.indexPathsForVisibleItems.first
             collectionView.frame = nframe
@@ -174,16 +174,16 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
         }
     }
     
-    func _performWithoutContentOffsetChangeForIndicator(_ actionsWithoutAnimation: () -> Void) {
-        _ignoreContentOffsetChangeForIndicator = true
+    func _performWithoutContentOffsetChange(_ actionsWithoutAnimation: () -> Void) {
+        _ignoreContentOffsetChange = true
         actionsWithoutAnimation()
-        _ignoreContentOffsetChangeForIndicator = false
+        _ignoreContentOffsetChange = false
     }
     
     fileprivate var _isInteractiving: Bool = false
     fileprivate var _lastContentOffset: CGPoint = .zero
     
-    fileprivate var _ignoreContentOffsetChangeForIndicator: Bool = false
+    fileprivate var _ignoreContentOffsetChange: Bool = false
     
     fileprivate var _currentItem: UICollectionViewLayoutAttributes?
     fileprivate var _currentIndexPath: IndexPath?
@@ -316,12 +316,12 @@ extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
     }
     
     func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
-        _logger.debug(indexPath)
+//        _logger.debug(indexPath)
 //        guard !_isInteractiving else {
 //            return // 正在交互
 //        }
         UIView.performWithoutAnimation {
-            _performWithoutContentOffsetChangeForIndicator {
+            _performWithoutContentOffsetChange {
                 // 可能会产生动画 
                 collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
             }
@@ -371,7 +371,7 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !_ignoreContentOffsetChangeForIndicator else {
+        guard !_ignoreContentOffsetChange else {
             return
         }
         _updateCurrentItem(scrollView.contentOffset)

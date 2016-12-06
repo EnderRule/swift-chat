@@ -54,6 +54,9 @@ import UIKit
         _isInteractiving = true
     }
     func endInteractiveMovement() {
+//        _performWithoutContentOffsetChange {
+//            _updateCurrentItem(_tilingView.contentOffset)
+//        }
         guard _isInteractiving else {
             return
         }
@@ -100,10 +103,27 @@ import UIKit
     
     
     func updateIndexPath(from indexPath1: IndexPath?, to indexPath2: IndexPath?, percent: CGFloat) {
+        
+        let ds = estimatedItemSize // default size
+        let cil = _tilingView.contentInset.left + ds.width / 2 // content inset left
+        
         guard _isInteractiving else {
+            // 交互己经中断了, 如果可以的话提供index跟随
+            guard let nfidx = indexPath1, let ntidx = indexPath2, _tilingView.isDragging else {
+                return
+            }
+            guard let fa = _tilingView.layoutAttributesForItem(at: nfidx), let ta = _tilingView.layoutAttributesForItem(at: ntidx) else {
+                return
+            }
+            _performWithoutContentOffsetChange {
+                let x1 = fa.frame.midX * (1 - percent)
+                let x2 = ta.frame.midX * (0 + percent)
+                
+                _tilingView.contentOffset.x = x1 + x2 - cil
+                _updateCurrentItem(_tilingView.contentOffset)
+            }
             return //
         }
-        
 //        _logger.debug("\(indexPath1) => \(indexPath2) => \(percent)")
         
         let ocidx = _currentIndexPath
@@ -115,9 +135,6 @@ import UIKit
         _interactivingFromIndexPath = nfidx
         _interactivingToIndexPath = ntidx
         _currentIndexPath = ntidx ?? nfidx
-        
-        let ds = estimatedItemSize // default size
-        let cil = _tilingView.contentInset.left + ds.width / 2 // content inset left
         
         let nfs = _sizeForItem(nfidx) ?? ds // new from size
         let nts = _sizeForItem(ntidx) ?? ds // new to size
@@ -134,43 +151,46 @@ import UIKit
             fw = nfs.width 
         }
         
-        let ops = Set([ofidx, otidx, nfidx, ntidx, ocidx].flatMap({ $0 })).sorted()
-        
         //logger.debug("\(nfidx) - \(ntidx): \(fw) => \(tw) | \(percent)")
         
-        _tilingView.reloadItems(at: ops) { attr in
-            if attr.indexPath == nfidx {
-                return CGSize(width: fw, height: ds.height)
+        _performWithoutContentOffsetChange {
+            // 生成需要变更的元素
+            let ops = Set([ofidx, otidx, nfidx, ntidx, ocidx].flatMap({ $0 })).sorted()
+            
+            _tilingView.reloadItems(at: ops) { attr in
+                if attr.indexPath == nfidx {
+                    return CGSize(width: fw, height: ds.height)
+                }
+                if attr.indexPath == ntidx {
+                    return CGSize(width: tw, height: ds.height)
+                }
+                return ds
             }
-            if attr.indexPath == ntidx {
-                return CGSize(width: tw, height: ds.height)
-            }
-            return ds
+            _tilingView.contentOffset.x = { origin -> CGFloat in
+                // is left over boundary?
+                if let tidx = ntidx, let ta = _tilingView.layoutAttributesForItem(at: tidx), nfidx == nil {
+                    return ta.frame.midX - ds.width * (1 - percent)
+                }
+                // is right over boundary?
+                if let fidx = nfidx, let fa = _tilingView.layoutAttributesForItem(at: fidx), ntidx == nil {
+                    return fa.frame.midX + ds.width * (0 + percent)
+                }
+                // is center?
+                guard let fidx = nfidx, let tidx = ntidx else {
+                    return origin
+                }
+                // can found?
+                guard let fa = _tilingView.layoutAttributesForItem(at: fidx),
+                    let ta = _tilingView.layoutAttributesForItem(at: tidx) else {
+                        return origin
+                }
+                let x1 = fa.frame.midX * (1 - percent)
+                let x2 = ta.frame.midX * (0 + percent)
+                
+                return x1 + x2
+                
+            }(_tilingView.contentOffset.x + cil) - cil
         }
-        _tilingView.contentOffset.x = { origin -> CGFloat in
-            // is left over boundary?
-            if let tidx = ntidx, let ta = _tilingView.layoutAttributesForItem(at: tidx), nfidx == nil {
-                return ta.frame.midX - ds.width * (1 - percent)
-            }
-            // is right over boundary?
-            if let fidx = nfidx, let fa = _tilingView.layoutAttributesForItem(at: fidx), ntidx == nil {
-                return fa.frame.midX + ds.width * (0 + percent)
-            }
-            // is center?
-            guard let fidx = nfidx, let tidx = ntidx else {
-                return origin
-            }
-            // can found?
-            guard let fa = _tilingView.layoutAttributesForItem(at: fidx),
-                let ta = _tilingView.layoutAttributesForItem(at: tidx) else {
-                return origin
-            }
-            let x1 = fa.frame.midX * (1 - percent)
-            let x2 = ta.frame.midX * (0 + percent)
-            
-            return x1 + x2 
-            
-        }(_tilingView.contentOffset.x + cil) - cil
     }
     
     override func layoutSubviews() {
@@ -197,6 +217,12 @@ import UIKit
 //        nframe.origin.y = contentInset.top + bounds.height - estimatedItemSize.height 
 //        nframe.size.width = bounds.width
 //        nframe.size.height = estimatedItemSize.height
+    }
+    
+    fileprivate func _performWithoutContentOffsetChange(_ actionsWithoutAnimation: () -> Void) {
+        _ignoreContentOffsetChange = true
+        actionsWithoutAnimation()
+        _ignoreContentOffsetChange = false
     }
     
     fileprivate func _sizeForItem(_ indexPath: IndexPath?) -> CGSize? {
@@ -233,7 +259,9 @@ import UIKit
     }
     
     fileprivate var _cacheBounds: CGRect?
+    
     fileprivate var _isInteractiving: Bool = false
+    fileprivate var _ignoreContentOffsetChange: Bool = false
     
     fileprivate var _currentItem: BrowseTilingViewLayoutAttributes? // 当前显示的
     fileprivate var _currentIndexPath: IndexPath? // 当前选择的
@@ -261,6 +289,10 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         // up
         _currentItem = newValue
         
+        guard !_ignoreContentOffsetChange else {
+            return // 不通知
+        }
+        
         if let indexPath = oldValue?.indexPath {
             self.delegate?.indicator?(self, didDeselectItemAt: indexPath)
         }
@@ -270,7 +302,7 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !_isInteractiving else {
+        guard !_ignoreContentOffsetChange else {
             return
         }
         _updateCurrentItem(scrollView.contentOffset)
