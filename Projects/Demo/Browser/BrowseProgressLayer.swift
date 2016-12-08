@@ -12,15 +12,15 @@ open class BrowseProgressLayer: CAShapeLayer {
     
     public override init() {
         super.init()
-        _commonInit()
+        commonInit()
     }
     public override init(layer: Any) {
         super.init(layer: layer)
-        _commonInit()
+        commonInit()
     }
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        _commonInit()
+        commonInit()
     }
     
     /// progress
@@ -28,13 +28,11 @@ open class BrowseProgressLayer: CAShapeLayer {
     
     open override func display() {
         super.display()
-        // progress is change? try update path.
-        _updatePathIfNeeded(with: _currentProgress)
+        updatePathIfNeeded(with: _currentProgress)
     }
     open override func layoutSublayers() {
         super.layoutSublayers()
-        // bounds is change? try update path.
-        _updatePathIfNeeded(with: _currentProgress)
+        updatePathIfNeeded(with: _currentProgress)
     }
     
     open override func action(forKey key: String) -> CAAction? {
@@ -55,7 +53,7 @@ open class BrowseProgressLayer: CAShapeLayer {
         return super.needsDisplay(forKey: key)
     }
     
-    private func _updatePathIfNeeded(with progress: Double) {
+    private func updatePathIfNeeded(with progress: Double) {
         // nned update?
         guard _cacheProgress != progress || _cacheBounds != bounds else {
             return // no change
@@ -91,7 +89,7 @@ open class BrowseProgressLayer: CAShapeLayer {
         
         path = op.cgPath
     }
-    private func _commonInit() {
+    private func commonInit() {
         
         lineCap = kCALineCapRound
         lineJoin = kCALineJoinRound
