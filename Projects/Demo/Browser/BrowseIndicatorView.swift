@@ -45,7 +45,7 @@ import UIKit
         get { return _currentIndexPath }
     }
     
-    var estimatedItemSize: CGSize = CGSize(width: 20, height: 40)
+    var estimatedItemSize: CGSize = CGSize(width: 19, height: 38)
     
     func beginInteractiveMovement() {
         guard !_tilingView.isDragging else {
@@ -203,20 +203,21 @@ import UIKit
         
         let offset = _tilingView.contentOffset.x + _tilingView.contentInset.left
         
-        _tilingView.frame = bounds
+        
+        var nframe = bounds
+        
+        nframe.origin.x = 0
+        nframe.origin.y = -1 + bounds.height - estimatedItemSize.height
+        nframe.size.width = bounds.width
+        nframe.size.height = estimatedItemSize.height
+        
+        _tilingView.frame = nframe
         _tilingView.contentInset.left = bounds.width / 2 - estimatedItemSize.width / 2
         _tilingView.contentInset.right = bounds.width / 2 - estimatedItemSize.width / 2
         
         _tilingView.contentOffset.x = offset - _tilingView.contentInset.left
         
         _tilingView.layoutIfNeeded()
-        
-//        var nframe = bounds
-//        
-//        nframe.origin.x = 0
-//        nframe.origin.y = contentInset.top + bounds.height - estimatedItemSize.height 
-//        nframe.size.width = bounds.width
-//        nframe.size.height = estimatedItemSize.height
     }
     
     fileprivate func _performWithoutContentOffsetChange(_ actionsWithoutAnimation: () -> Void) {
@@ -256,6 +257,7 @@ import UIKit
         _tilingView.register(BrowseIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
         
         addSubview(_tilingView)
+        clipsToBounds = true
     }
     
     fileprivate var _cacheBounds: CGRect?

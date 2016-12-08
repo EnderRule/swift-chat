@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11760" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ghq-4e-xjI">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2sn-UF-eS6">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11755"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -44,14 +42,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="2tC-OD-LJY">
-                                <rect key="frame" x="54" y="34" width="266" height="31"/>
+                                <frame key="frameInset" minX="54" minY="34" width="266" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="x2:" destination="k0D-XX-Dpp" eventType="valueChanged" id="C5c-iS-FPq"/>
                                 </connections>
                             </slider>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Yd-f1-oEz" customClass="BrowseView" customModule="Browser" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="146" width="375" height="375"/>
+                                <frame key="frameInset" minX="0.0%" minY="50.00%" width="375" height="375"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -67,6 +65,54 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ma0-pG-RzW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="972" y="724.58770614692662"/>
+        </scene>
+        <!--Test Layer View Controller-->
+        <scene sceneID="Cz2-5S-HLc">
+            <objects>
+                <viewController storyboardIdentifier="X3" id="2sn-UF-eS6" customClass="TestLayerViewController" customModule="Browser" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dOH-Z4-xPZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="rEC-FJ-rSv"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aHh-tv-fpZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KSA-pN-sIT">
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <state key="normal" title="-"/>
+                                <connections>
+                                    <action selector="b1:" destination="2sn-UF-eS6" eventType="touchUpInside" id="Ggk-2G-7gp"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T9L-ap-9jg">
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <state key="normal" title="+"/>
+                                <connections>
+                                    <action selector="b2:" destination="2sn-UF-eS6" eventType="touchUpInside" id="cNa-3e-zwb"/>
+                                </connections>
+                            </button>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="eW5-A0-8gJ">
+                                <connections>
+                                    <action selector="progressDidChange:" destination="2sn-UF-eS6" eventType="valueChanged" id="5oO-qS-Lfp"/>
+                                </connections>
+                            </slider>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="KSA-pN-sIT" firstAttribute="centerX" secondItem="aHh-tv-fpZ" secondAttribute="centerX" multiplier="2/3" id="2FB-so-yeU"/>
+                            <constraint firstItem="rEC-FJ-rSv" firstAttribute="top" secondItem="KSA-pN-sIT" secondAttribute="bottom" constant="64" id="3fD-I5-Yjl"/>
+                            <constraint firstItem="rEC-FJ-rSv" firstAttribute="top" secondItem="T9L-ap-9jg" secondAttribute="bottom" constant="64" id="6sk-9g-Hdw"/>
+                            <constraint firstAttribute="trailing" secondItem="eW5-A0-8gJ" secondAttribute="trailing" constant="20" id="FyI-oq-v6u"/>
+                            <constraint firstItem="KSA-pN-sIT" firstAttribute="top" secondItem="eW5-A0-8gJ" secondAttribute="bottom" constant="48" id="ZxR-uU-p1P"/>
+                            <constraint firstItem="eW5-A0-8gJ" firstAttribute="leading" secondItem="aHh-tv-fpZ" secondAttribute="leading" constant="20" id="emT-20-YFI"/>
+                            <constraint firstItem="T9L-ap-9jg" firstAttribute="centerX" secondItem="aHh-tv-fpZ" secondAttribute="centerX" multiplier="4/3" id="v1v-Eb-LbW"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y3T-w1-y0Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="972" y="1380"/>
         </scene>
         <!--Item-->
         <scene sceneID="s9a-KE-DGc">
