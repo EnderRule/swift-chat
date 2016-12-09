@@ -17,6 +17,7 @@ class TestLayerViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
+        mlayer.radius = 100
         mlayer.frame = CGRect(x: 40, y: 40, width: 240, height: 240)
         
         view.layer.addSublayer(mlayer)
@@ -36,6 +37,9 @@ class TestLayerViewController: UIViewController {
     
     @IBAction func progressDidChange(_ sender: UISlider) {
         mlayer.progress = Double(sender.value)
+    }
+    @IBAction func radiusDidChange(_ sender: UISlider) {
+        mlayer.radius = CGFloat(sender.value)
     }
 
     /*

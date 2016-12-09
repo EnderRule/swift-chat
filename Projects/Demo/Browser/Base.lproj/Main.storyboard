@@ -97,16 +97,24 @@
                                     <action selector="progressDidChange:" destination="2sn-UF-eS6" eventType="valueChanged" id="5oO-qS-Lfp"/>
                                 </connections>
                             </slider>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="100" minValue="0.0" maxValue="120" translatesAutoresizingMaskIntoConstraints="NO" id="ZZy-fx-Uve">
+                                <connections>
+                                    <action selector="radiusDidChange:" destination="2sn-UF-eS6" eventType="valueChanged" id="DKm-X3-HEg"/>
+                                </connections>
+                            </slider>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.87058823529411766" green="0.87058823529411766" blue="0.87058823529411766" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="ZZy-fx-Uve" firstAttribute="top" secondItem="eW5-A0-8gJ" secondAttribute="bottom" constant="24" id="1m7-hZ-Fy1"/>
                             <constraint firstItem="KSA-pN-sIT" firstAttribute="centerX" secondItem="aHh-tv-fpZ" secondAttribute="centerX" multiplier="2/3" id="2FB-so-yeU"/>
                             <constraint firstItem="rEC-FJ-rSv" firstAttribute="top" secondItem="KSA-pN-sIT" secondAttribute="bottom" constant="64" id="3fD-I5-Yjl"/>
                             <constraint firstItem="rEC-FJ-rSv" firstAttribute="top" secondItem="T9L-ap-9jg" secondAttribute="bottom" constant="64" id="6sk-9g-Hdw"/>
                             <constraint firstAttribute="trailing" secondItem="eW5-A0-8gJ" secondAttribute="trailing" constant="20" id="FyI-oq-v6u"/>
-                            <constraint firstItem="KSA-pN-sIT" firstAttribute="top" secondItem="eW5-A0-8gJ" secondAttribute="bottom" constant="48" id="ZxR-uU-p1P"/>
+                            <constraint firstItem="T9L-ap-9jg" firstAttribute="top" secondItem="ZZy-fx-Uve" secondAttribute="bottom" constant="24" id="IAk-3v-6Jr"/>
                             <constraint firstItem="eW5-A0-8gJ" firstAttribute="leading" secondItem="aHh-tv-fpZ" secondAttribute="leading" constant="20" id="emT-20-YFI"/>
+                            <constraint firstAttribute="trailing" secondItem="ZZy-fx-Uve" secondAttribute="trailing" constant="20" id="gG0-ix-E9G"/>
                             <constraint firstItem="T9L-ap-9jg" firstAttribute="centerX" secondItem="aHh-tv-fpZ" secondAttribute="centerX" multiplier="4/3" id="v1v-Eb-LbW"/>
+                            <constraint firstItem="ZZy-fx-Uve" firstAttribute="leading" secondItem="aHh-tv-fpZ" secondAttribute="leading" constant="20" id="vOJ-pM-j2I"/>
                         </constraints>
                     </view>
                 </viewController>

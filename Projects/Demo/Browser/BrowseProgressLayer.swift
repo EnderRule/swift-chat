@@ -23,45 +23,58 @@ open class BrowseProgressLayer: CAShapeLayer {
         commonInit()
     }
     
-    /// progress
+    @NSManaged open var radius: CGFloat
     @NSManaged open var progress: Double
     
     open override func display() {
         super.display()
-        updatePathIfNeeded(with: _currentProgress)
+        updatePathIfNeeded(with: _currentProgress, radius: _currentRadius)
     }
     open override func layoutSublayers() {
         super.layoutSublayers()
-        updatePathIfNeeded(with: _currentProgress)
+        updatePathIfNeeded(with: _currentProgress, radius: _currentRadius)
     }
     
     open override func action(forKey key: String) -> CAAction? {
-        if key == "progress" {
+        switch key {
+        case "radius":
             let animation = CABasicAnimation(keyPath: key)
-            
-            //animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-            animation.fromValue = _currentProgress
-            
+            animation.fromValue = _currentRadius
             return animation
+            
+        case "progress":
+            let animation = CABasicAnimation(keyPath: key)
+            animation.fromValue = _currentProgress
+            return animation
+            
+        default:
+            return super.action(forKey: key)
         }
-        return super.action(forKey: key)
     }
     open override class func needsDisplay(forKey key: String) -> Bool {
-        if key == "progress" {
+        switch key {
+        case "radius":
             return true
+            
+        case "progress":
+            return true
+            
+        default:
+            return super.needsDisplay(forKey: key)
         }
-        return super.needsDisplay(forKey: key)
     }
     
-    private func updatePathIfNeeded(with progress: Double) {
+    private func updatePathIfNeeded(with progress: Double, radius: CGFloat) {
         // nned update?
-        guard _cacheProgress != progress || _cacheBounds != bounds else {
+        guard _cacheProgress != progress || _cacheBounds != bounds || _cacheRadius != radius else {
             return // no change
         }
+        _cacheRadius = radius
         _cacheProgress = progress
         _cacheBounds = bounds
         
-        let edg = UIEdgeInsetsMake(20, 20, 20, 20)
+        let it = (bounds.width / 2) - radius
+        let edg = UIEdgeInsetsMake(it, it, it, it)
         
         let rect1 = bounds
         let rect2 = UIEdgeInsetsInsetRect(rect1, edg)
@@ -93,17 +106,23 @@ open class BrowseProgressLayer: CAShapeLayer {
         
         lineCap = kCALineCapRound
         lineJoin = kCALineJoinRound
-        lineWidth = 2
+        lineWidth = 1
         
         fillRule = kCAFillRuleEvenOdd
-        
-        strokeColor = UIColor.gray.cgColor
         fillColor = UIColor.white.cgColor
+        
+        strokeStart = 0
+        strokeEnd = 1
+        strokeColor = UIColor.lightGray.cgColor
     }
     
-    private var _cacheBounds: CGRect = .zero
+    private var _cacheRadius: CGFloat = 0
     private var _cacheProgress: Double = -1
+    private var _cacheBounds: CGRect = .zero
     
+    private var _currentRadius: CGFloat {
+        return (presentation() as BrowseProgressLayer?)?.radius ?? radius
+    }
     private var _currentProgress: Double {
         return (presentation() as BrowseProgressLayer?)?.progress ?? progress
     }
