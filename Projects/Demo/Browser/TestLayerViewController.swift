@@ -10,21 +10,20 @@ import UIKit
 
 class TestLayerViewController: UIViewController {
     
-    let mlayer = BrowseProgressLayer()
-    let mlayer2 = BrowseProgressLayer()
+    let mpv = BrowseProgressView()
+    let mpv2 = BrowseProgressView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         
-        mlayer.radius = 100
-        mlayer.frame = CGRect(x: 40, y: 40, width: 240, height: 240)
-        mlayer2.frame = CGRect(x: mlayer.frame.maxX, y: mlayer.frame.maxY - 48, width: 48, height: 48)
-        mlayer2.radius = 20
         
-        view.layer.addSublayer(mlayer)
-        view.layer.addSublayer(mlayer2)
+        mpv.frame = CGRect(x: 40, y: 40, width: 240, height: 240)
+        mpv2.frame = CGRect(x: mpv.frame.maxX, y: mpv.frame.maxY - 24, width: 24, height: 24)
+        
+        view.addSubview(mpv)
+        view.addSubview(mpv2)
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,31 +32,56 @@ class TestLayerViewController: UIViewController {
     }
     
     @IBAction func b1(_ sender: AnyObject) {
-        mlayer.progress -= 0.25
-        mlayer2.progress = mlayer.progress
+        updateProgress(min(max(mpv.progress - 0.35, 0), 1))
     }
     @IBAction func b2(_ sender: AnyObject) {
-        mlayer.progress += 0.25
-        mlayer2.progress = mlayer.progress
+        updateProgress(min(max(mpv.progress + 0.35, 0), 1))
     }
     
     @IBAction func progressDidChange(_ sender: UISlider) {
-        mlayer.progress = Double(sender.value)
-        mlayer2.progress = mlayer.progress
+//        mlayer.progress = Double(sender.value)
+//        mlayer2.progress = mlayer.progress
     }
     @IBAction func radiusDidChange(_ sender: UISlider) {
-        mlayer.radius = CGFloat(sender.value)
+//        mlayer.radius = CGFloat(sender.value)
         //mlayer2.radius = mlayer.radius
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func updateProgress(_ progress: Double) {
+        
+        let oldValue = self.mpv.progress
+        let newValue = progress
+        
+        let target = false
+        
+        // show if need
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
+            guard newValue != oldValue || !target else {
+                return
+            }
+            self.mpv.alpha = 1
+        }, completion: { isFinish in
+            var delay: TimeInterval = 0.3
+            // set if need
+            if newValue == oldValue {
+                delay = 0
+            }
+            self.mpv.setProgress(newValue, animated: true)
+            self.mpv2.setProgress(newValue, animated: true)
+            // hidden if need
+            UIView.animate(withDuration: 0.25, delay: delay, options: .curveLinear, animations: {
+                guard self.mpv.progress > 0.999999 || target else {
+                    return
+                }
+                self.mpv.alpha = 0
+            }, completion: { isFinish in
+                guard isFinish, self.mpv.progress > 0.999999 || target else {
+                    return
+                }
+                self.mpv.setProgress(0, animated: false)
+                self.mpv2.setProgress(0, animated: false)
+            })
+        })
+        
     }
-    */
-
 }

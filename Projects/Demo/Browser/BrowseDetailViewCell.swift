@@ -173,6 +173,9 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         // 是否需要延迟
         
+        // show(animation) => progress(animation)
+        // progress(animation) => hide(animation)
+        
         guard _progressIsHidden != hidden else {
             return
         }
@@ -181,7 +184,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         _progressIsHidden = hidden
         _updateProgressLayoutIfNeeded()
-        
         
         
         CATransaction.begin()

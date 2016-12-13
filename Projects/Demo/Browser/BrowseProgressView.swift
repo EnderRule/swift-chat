@@ -64,7 +64,7 @@ open class BrowseProgressLayer: CAShapeLayer {
         }
     }
     
-    private func updatePathIfNeeded(with progress: Double, radius: CGFloat) {
+    open func updatePathIfNeeded(with progress: Double, radius: CGFloat) {
         // nned update?
         guard _cacheProgress != progress || _cacheBounds != bounds || _cacheRadius != radius else {
             return // no change
@@ -146,15 +146,14 @@ open class BrowseProgressView: UIView {
     }
     
     open func setProgress(_ progress: Double, animated: Bool) {
-        CATransaction.begin()
-        
-        if !animated {
-            CATransaction.setDisableActions(true)
+        guard !animated else {
+            _layer.progress = progress
+            return
         }
-        
+        let ani = CABasicAnimation(keyPath: "progress")
+        ani.toValue = progress
         _layer.progress = progress
-        
-        CATransaction.commit()
+        _layer.add(ani, forKey: "progress")
     }
     
      open override func layoutSubviews() {
