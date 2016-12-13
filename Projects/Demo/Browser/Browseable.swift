@@ -17,6 +17,12 @@ public enum KeyValueStatus : Int {
     case cancelled
 }
 
+//var isPlayable: Bool { get }
+//var isExportable: Bool { get }
+//var isReadable: Bool { get }
+//var isComposable: Bool { get }
+
+
 public protocol Browseable: class {
     
     var backgroundColor: UIColor? { get }

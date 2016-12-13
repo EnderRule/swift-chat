@@ -94,6 +94,8 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
+        _updateVisableCellContentInsetIfNeeded()
+        
         let nframe = UIEdgeInsetsInsetRect(view.bounds, extraContentInset)
         guard collectionView.frame != nframe else {
             return
@@ -187,6 +189,8 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     
     fileprivate var _currentItem: UICollectionViewLayoutAttributes?
     fileprivate var _currentIndexPath: IndexPath?
+    
+    fileprivate var _currentContentInset: UIEdgeInsets = .zero
     
     // 插入删除的时候必须清除
     fileprivate var _interactivingFromIndex: Int?
@@ -331,7 +335,7 @@ extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
 
 extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
-    private func _updateCurrentItem(_ offset: CGPoint) {
+    fileprivate func _updateCurrentItem(_ offset: CGPoint) {
         // 检查是否存在变更
         let x = offset.x + collectionView.bounds.width / 2
         if let item = _currentItem, item.frame.minX <= x && x < item.frame.maxX {
@@ -346,7 +350,7 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         _currentItem = newValue
         _currentIndexPath = newValue?.indexPath
     }
-    private func _updateCurrentIndexForIndicator(_ offset: CGPoint) {
+    fileprivate func _updateCurrentIndexForIndicator(_ offset: CGPoint) {
         let value = offset.x / collectionView.bounds.width
         let percent = modf(value + 1).1
         
@@ -368,6 +372,20 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         }
         // 使用百分比更新index
         indicatorView.updateIndexPath(from: fromIndexPath, to: toIndexPath, percent: percent)
+    }
+    fileprivate func _updateVisableCellContentInsetIfNeeded() {
+        let top = topLayoutGuide.length
+        let bottom = (navigationController?.toolbar?.sizeThatFits(.zero).height ?? 0) + indicatorView.frame.height
+        
+        guard _currentContentInset.top != top || _currentContentInset.bottom != bottom else {
+            return // no change
+        }
+        _currentContentInset.top = top
+        _currentContentInset.bottom = bottom
+        
+        collectionView.visibleCells.forEach { 
+            ($0 as? BrowseDetailViewCell)?.contentInset =  _currentContentInset
+        }
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -404,8 +422,18 @@ extension BrowseDetailViewController: UICollectionViewDelegateFlowLayout, UIColl
         guard let cell = cell as? BrowseDetailViewCell else {
             return
         }
-        cell.asset = dataSource?.browser(self, assetForItemAt: indexPath)
+        // 更新属性
+        cell.apply(dataSource?.browser(self, assetForItemAt: indexPath))
+        
         cell.delegate = self
+        cell.contentInset = _currentContentInset
+    }
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? BrowseDetailViewCell else {
+            return
+        }
+        // 清除属性
+        cell.apply(nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

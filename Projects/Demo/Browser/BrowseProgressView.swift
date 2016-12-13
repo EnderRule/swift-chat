@@ -1,8 +1,8 @@
 //
-//  BrowseProgressLayer.swift
+//  BrowseProgressView.swift
 //  Browser
 //
-//  Created by sagesse on 07/12/2016.
+//  Created by sagesse on 12/9/16.
 //  Copyright © 2016 sagesse. All rights reserved.
 //
 
@@ -128,4 +128,62 @@ open class BrowseProgressLayer: CAShapeLayer {
     }
 }
 
+
+open class BrowseProgressView: UIView {
+   
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        _commonInit()
+    }
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        _commonInit()
+    }
+    
+    open var progress: Double {
+        set { return setProgress(newValue, animated: false) }
+        get { return _layer.progress }
+    }
+    
+    open func setProgress(_ progress: Double, animated: Bool) {
+        CATransaction.begin()
+        
+        if !animated {
+            CATransaction.setDisableActions(true)
+        }
+        
+        _layer.progress = progress
+        
+        CATransaction.commit()
+    }
+    
+     open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        
+        _layer.radius = bounds.width / 2 - 3
+        
+        CATransaction.commit()
+    }
+    
+    open override class var layerClass: AnyClass { 
+        return BrowseProgressLayer.self
+    }
+    
+    private func _commonInit() {
+        
+        backgroundColor = .clear
+//        _layer.backgroundColor = UIColor.clear.cgColor
+//        _layer.fillColor = UIColor.clear.cgColor
+//        _layer.strokeColor = UIColor.lightGray.cgColor
+        
+        _layer.lineWidth = 1 / UIScreen.main.scale
+    }
+    
+    private var _layer: BrowseProgressLayer {
+        return layer as! BrowseProgressLayer
+    }
+}
 

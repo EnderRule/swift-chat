@@ -21,7 +21,9 @@ class LocalImageAsset: NSObject, Browseable {
 //        browseContentSize = browseImage?.size ?? .zero
         
         browseContentSize = CGSize(width: 1600, height: 1200)
-//        browseImage = UIImage(named: "t1.jpg")
+        //browseImage = UIImage(named: "t1.jpg")
+        
+        backgroundColor = UIColor(white: 0.94, alpha: 1)
     }
     
 //    lazy var browseContentSize: CGSize = CGSize(width: 160, height: 120)
@@ -37,7 +39,7 @@ class LocalImageAsset: NSObject, Browseable {
 //        return browseImage?.size ?? .zero
 //    }
     
-    lazy var backgroundColor: UIColor? = .random
+    var backgroundColor: UIColor? = .random
 }
 //class RemoteImageAsset: NSObject, Browseable {
 //}

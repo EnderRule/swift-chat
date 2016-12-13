@@ -92,6 +92,7 @@ class BrowseExtendedToolbar: UIToolbar {
         
         // 更新
         _lines = newLines
+        _height = height
         // 添加视图&更新
         newLines?.forEach { 
             guard let view = $0.view else {
@@ -143,6 +144,7 @@ class BrowseExtendedToolbar: UIToolbar {
                 $0.view?.removeFromSuperview()
             }
         }
+        self.invalidateIntrinsicContentSize()
         // 检查是否需要执行动画
         guard animated else {
             block()
@@ -192,6 +194,8 @@ class BrowseExtendedToolbar: UIToolbar {
     
     private var _items: [UIBarButtonItem]?
     private var _lines: [BrowseExtendedToolbarLineContext]?
+    
+    private var _height: CGFloat = 0
     
     private lazy var _toolbars: [UIToolbar] = []
 }
