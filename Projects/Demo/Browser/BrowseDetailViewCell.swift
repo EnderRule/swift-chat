@@ -149,6 +149,18 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //})
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard _cachedBounds != bounds else {
+            return
+        }
+        _cachedBounds = bounds
+        _updateIconLayoutIfNeeded()
+        _updateProgressLayoutIfNeeded()
+    }
+    
+    private var _cachedBounds: CGRect?
+    
     fileprivate var _containterInset: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
     
     fileprivate var _asset: Browseable?
