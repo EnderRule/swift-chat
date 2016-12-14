@@ -135,8 +135,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.zoom(to: bounds, with: orientation, animated: false)
         //containterView.setZoomScale(containterView.maximumZoomScale, animated: false)
         
-        // 最后再更新进度信息
-        _updateIcon(0, animated: false)
+        // 最后再更新UI信息
+        _updateIcon(0)
         _updateProgress(0.25, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
@@ -202,7 +202,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
     }
     
-    fileprivate func _updateIcon(_ icon: Any, animated: Bool) {
+    fileprivate func _updateIcon(_ icon: Any) {
         
         let view = _iconView
         if view.superview != self {
