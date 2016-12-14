@@ -64,6 +64,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             guard contentInset != oldValue else {
                 return
             }
+            _updateIconLayoutIfNeeded()
             _updateProgressLayoutIfNeeded()
         }
     }
@@ -84,7 +85,13 @@ class BrowseDetailViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        // 重置
+        _progressOfHidden = true
+        _progressOfLock = nil
         _progressView.progress = 0
+        _progressView.removeFromSuperview()
+        _progressView.alpha = 0
+        _progress = 0
     }
     
     func apply(_ asset: Browseable?) {
@@ -129,7 +136,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //containterView.setZoomScale(containterView.maximumZoomScale, animated: false)
         
         // 最后再更新进度信息
-        _updateProgress(0.15, animated: false)
+        _updateIcon(0, animated: false)
+        _updateProgress(0.25, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
         //    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
@@ -141,12 +149,31 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //})
     }
     
+    fileprivate var _containterInset: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+    
     fileprivate var _asset: Browseable?
     
     fileprivate var _progress: Double = 0
     fileprivate var _progressOfLock: Double?
     fileprivate var _progressOfHidden: Bool = true
     
+    fileprivate lazy var _iconView: UIButton = {
+        let view = UIButton(type: .system)
+        
+        view.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
+        view.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        view.tintColor = UIColor.black.withAlphaComponent(0.6)
+        view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 0)
+        
+        view.setTitle("HDR", for: .normal)
+        view.setImage(UIImage(named: "test"), for: .normal)
+        
+        view.layer.cornerRadius = 3
+        view.layer.masksToBounds = true
+        
+        return view
+    }()
     fileprivate lazy var _progressView: BrowseProgressView = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
     
     fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
@@ -161,6 +188,15 @@ class BrowseDetailViewCell: UICollectionViewCell {
             _progressOfLock = nil
             _updateProgress(progress, force: false, animated: animated)
         }
+    }
+    
+    fileprivate func _updateIcon(_ icon: Any, animated: Bool) {
+        
+        let view = _iconView
+        if view.superview != self {
+            addSubview(view)
+        }
+        _updateIconLayoutIfNeeded()
     }
     fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
         guard _progressOfLock == nil else {
@@ -228,13 +264,25 @@ class BrowseDetailViewCell: UICollectionViewCell {
             })
         })
     }
+    
+    fileprivate func _updateIconLayoutIfNeeded() {
+        
+        let edg = _containterInset
+        let nbounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
+       
+        var nframe = _iconView.frame
+        nframe.origin.x = nbounds.minX + edg.left
+        nframe.origin.y = nbounds.minY + edg.top
+        nframe.size.height = 27
+        _iconView.frame = nframe
+    }
     fileprivate func _updateProgressLayoutIfNeeded() {
         guard !_progressOfHidden else {
             return
         }
         //logger.debug(containterView.contentSize)
         
-        let edg = UIEdgeInsetsMake(8, 8, 8, 8)
+        let edg = _containterInset
         let nframe = UIEdgeInsetsInsetRect(detailView.frame, edg)
         let nbounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
         
