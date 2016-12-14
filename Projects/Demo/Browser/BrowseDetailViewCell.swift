@@ -130,15 +130,15 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         // 最后再更新进度信息
         _updateProgress(0.15, animated: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            self._updateProgress(0.35, animated: true)
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-                self._updateProgress(0.65, animated: true)
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                    self._updateProgress(1.00, animated: true)
-                })
-            })
-        })
+        //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+        //    self._updateProgress(0.35, animated: true)
+        //    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+        //        self._updateProgress(0.65, animated: true)
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
+        //            self._updateProgress(1.00, animated: true)
+        //        })
+        //    })
+        //})
     }
     
     fileprivate var _asset: Browseable?
