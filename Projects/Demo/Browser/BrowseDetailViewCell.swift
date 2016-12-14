@@ -128,20 +128,14 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.zoom(to: bounds, with: orientation, animated: false)
         //containterView.setZoomScale(containterView.maximumZoomScale, animated: false)
         
-        _progress = 0.25
-        
         // 最后再更新进度信息
-        _updateProgress(false, progress: _progress, animated: false)
-        
+        _updateProgress(0.15, animated: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
-            self._progress = 0.35
-            self._updateProgress(false, progress: self._progress, animated: true)
+            self._updateProgress(0.35, animated: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-                self._progress = 0.65
-                self._updateProgress(false, progress: self._progress, animated: true)
+                self._updateProgress(0.65, animated: true)
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                    self._progress = 1
-                    self._updateProgress(false, progress: self._progress, animated: true)
+                    self._updateProgress(1.00, animated: true)
                 })
             })
         })
@@ -149,68 +143,96 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     fileprivate var _asset: Browseable?
     
-    fileprivate lazy var _progress: Double = 0.25
-    fileprivate lazy var _progressView: BrowseProgressView = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
-    fileprivate lazy var _progressIsHidden: Bool = true
+    fileprivate var _progress: Double = 0
+    fileprivate var _progressOfLock: Double?
+    fileprivate var _progressOfHidden: Bool = true
     
-    fileprivate func _updateProgress(_ proposedHidden: Bool, animated: Bool) {
-        _updateProgress(proposedHidden, progress: _progress, animated: animated)
-    }
-    fileprivate func _updateProgress(_ proposedHidden: Bool, progress: Double, animated: Bool) {
-        let view = _progressView
-        let full = progress > 0.999999 // progress >= 1.0(±0.000001)
-        let hidden = proposedHidden 
-        
-        // progress is change && required show
-        
-        _progress = progress
-        
-        // required show & progress is full & animation enable = dely
-        
-        if !hidden {
-            _progressView.setProgress(progress, animated: animated)
-            _updateProgressLayoutIfNeeded()
+    fileprivate lazy var _progressView: BrowseProgressView = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    
+    fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
+        if lock {
+            // 锁定
+            let progress = _progress
+            _updateProgress(progress, force: true, animated: animated)
+            _progressOfLock = progress
+        } else {
+            // 解锁, 并尝试恢复
+            let progress = _progressOfLock ?? _progress
+            _progressOfLock = nil
+            _updateProgress(progress, force: false, animated: animated)
         }
-        // 是否需要延迟
-        
-        // show(animation) => progress(animation)
-        // progress(animation) => hide(animation)
-        
-        guard _progressIsHidden != hidden else {
+    }
+    fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
+        guard _progressOfLock == nil else {
+            // is lock
+            _progressOfLock = progress
             return
         }
-        if !hidden {
+        let full = progress > 0.999999 // progress >= 1.0(±0.000001)
+        let view = _progressView
+        
+        let oldProgress = _progress
+        let oldHidden = _progressOfHidden
+        let newProgress = progress
+        let newHidden = (force ?? full) || full
+        
+        guard newProgress != oldProgress || newHidden != oldHidden else {
+            return // no change
+        }
+        _progress = newProgress
+        _progressOfHidden = newHidden
+        
+        if (newProgress != view.progress || !newHidden) && view.superview == nil {
             addSubview(view)
         }
-        _progressIsHidden = hidden
         _updateProgressLayoutIfNeeded()
         
-        
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0.25)
-        CATransaction.setCompletionBlock { 
-            // if hidden need remove view
-            guard self._progressIsHidden else {
-                return
+        guard animated else {
+            view.setProgress(newProgress, animated: false)
+            if newHidden {
+                view.alpha = 0
+                view.removeFromSuperview()
+            } else {
+                view.alpha = 1
             }
-            view.removeFromSuperview()
-        }
-        
-        // need animation?
-        if !animated {
-            CATransaction.setDisableActions(true)
-        }
-        
-        // if is hidden alpha is 0 else alpha is 1
-        view.alpha = hidden ? 0 : 1
-        
-        CATransaction.commit()
-    }
-    fileprivate func _updateProgressLayoutIfNeeded() {
-        guard !_progressIsHidden else {
             return
         }
-        logger.debug(containterView.contentSize)
+        
+        // show if need
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear, animations: {
+            guard newProgress != oldProgress || !newHidden else {
+                return
+            }
+            view.alpha = 1
+        }, completion: { isFinish in
+            var delay: TimeInterval = 0.35
+            // set if need
+            if newProgress == oldProgress {
+                delay = 0
+            }
+            view.setProgress(newProgress, animated: true)
+            // hidden if need
+            UIView.animate(withDuration: 0.25, delay: delay, options: .curveLinear, animations: {
+                guard view.progress > 0.999999 || newHidden else {
+                    return
+                }
+                view.alpha = 0
+            }, completion: { isFinish in
+                guard isFinish else {
+                    return
+                }
+                guard view.progress > 0.999999 || self._progressOfHidden else {
+                    return
+                }
+                view.removeFromSuperview()
+            })
+        })
+    }
+    fileprivate func _updateProgressLayoutIfNeeded() {
+        guard !_progressOfHidden else {
+            return
+        }
+        //logger.debug(containterView.contentSize)
         
         let edg = UIEdgeInsetsMake(8, 8, 8, 8)
         let nframe = UIEdgeInsetsInsetRect(detailView.frame, edg)
@@ -321,7 +343,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
 //        }
         
         
-        _updateProgress(true, animated: true)
+        _updateProgressLock(true, animated: false)
         
         return true//delegate?.browseDetailView?(self, containterView, shouldBeginRotationing: view) ?? true
     }
@@ -337,6 +359,6 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
 //        }
         
         
-        _updateProgress(false, animated: true)
+        _updateProgressLock(false, animated: true)
     }
 }

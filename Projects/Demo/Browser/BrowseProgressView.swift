@@ -146,13 +146,12 @@ open class BrowseProgressView: UIView {
     }
     
     open func setProgress(_ progress: Double, animated: Bool) {
+        _layer.progress = progress
         guard !animated else {
-            _layer.progress = progress
             return
         }
         let ani = CABasicAnimation(keyPath: "progress")
         ani.toValue = progress
-        _layer.progress = progress
         _layer.add(ani, forKey: "progress")
     }
     
