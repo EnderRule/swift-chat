@@ -167,7 +167,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 0)
         
         view.setTitle("HDR", for: .normal)
-        view.setImage(UIImage(named: "test"), for: .normal)
+        view.setImage(UIImage(named: "icon_hdr"), for: .normal)
         
         view.layer.cornerRadius = 3
         view.layer.masksToBounds = true
