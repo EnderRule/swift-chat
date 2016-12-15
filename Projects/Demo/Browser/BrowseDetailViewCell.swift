@@ -137,6 +137,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         // 最后再更新UI信息
         _updateIcon(0)
+        _updatexxx()
         _updateProgress(0.25, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
@@ -156,6 +157,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         _cachedBounds = bounds
         _updateIconLayoutIfNeeded()
+        _updateCenterLayoutIfNeeded()
         _updateProgressLayoutIfNeeded()
     }
     
@@ -173,10 +175,12 @@ class BrowseDetailViewCell: UICollectionViewCell {
         let view = UIButton(type: .system)
         
         view.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
-        view.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
+        view.isUserInteractionEnabled = false
         view.tintColor = UIColor.black.withAlphaComponent(0.6)
-        view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, 0)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        
+        view.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         
         view.setTitle("HDR", for: .normal)
         view.setImage(UIImage(named: "icon_hdr"), for: .normal)
@@ -186,8 +190,31 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         return view
     }()
-    fileprivate lazy var _progressView: BrowseProgressView = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    fileprivate lazy var _progressView: BrowseProgressView = {
+        let view = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+        
+        view.radius = (view.bounds.width / 2) - 3
+        view.isUserInteractionEnabled = false
+        
+        return view
+    }()
+    fileprivate lazy var _consoleView: BrowseVisualEffectButton = {
+        let view = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+        
+        view.setImage(UIImage(named: "photo_button_play"), for: .normal)
+        view.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
+        
+        return view
+    }()
     
+    
+    fileprivate func _updateConsoleLock(_ lock: Bool, animated: Bool) {
+        logger.debug(lock)
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self._consoleView.alpha = lock ? 0 : 1
+        })
+    }
     fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
         if lock {
             // 锁定
@@ -210,6 +237,15 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         _updateIconLayoutIfNeeded()
     }
+    
+    fileprivate func _updatexxx() {
+        let view = _consoleView
+        if view.superview != self {
+            addSubview(view)
+        }
+        _updateCenterLayoutIfNeeded()
+    }
+    
     fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
         guard _progressOfLock == nil else {
             // is lock
@@ -288,6 +324,11 @@ class BrowseDetailViewCell: UICollectionViewCell {
         nframe.size.height = 27
         _iconView.frame = nframe
     }
+    fileprivate func _updateCenterLayoutIfNeeded() {
+        
+        _consoleView.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        
+    }
     fileprivate func _updateProgressLayoutIfNeeded() {
         guard !_progressOfHidden else {
             return
@@ -335,77 +376,43 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
     func containterViewDidScroll(_ containterView: BrowseContainterView) {
         _updateProgressLayoutIfNeeded()
     }
+    
     func containterViewDidZoom(_ containterView: BrowseContainterView) {
         _updateProgressLayoutIfNeeded()
     }
     
-//    
-//    func containterViewWillBeginDragging(_ containterView: SAPContainterView) {
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(true, animated: true)
-//        }
-//    }
-//    func containterViewWillBeginZooming(_ containterView: SAPContainterView, with view: UIView?) {
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(true, animated: true)
-//        }
-//    }
-//    func containterViewShouldBeginRotationing(_ containterView: SAPContainterView, with view: UIView?) -> Bool {
-//        _canChangeProgressView = false
-//        
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(true, animated: true)
-//        }
-//        if _automaticallyAdjustsProgressViewIsHidden {
-//            _updateProgressViewIsHidden(true, animated: false)
-//        }
-//        
-//        return true
-//    }
-//    
-//    func containterViewDidEndDragging(_ containterView: SAPContainterView, willDecelerate decelerate: Bool) {
-//        guard !decelerate else {
-//            return
-//        }
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(false, animated: true)
-//        }
-//    }
-//    func containterViewDidEndDecelerating(_ containterView: SAPContainterView) {
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(false, animated: true)
-//        }
-//    }
-//    func containterViewDidEndZooming(_ containterView: SAPContainterView, with view: UIView?, atScale scale: CGFloat) {
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(false, animated: true)
-//        }
-//    }
-//    func containterViewDidEndRotationing(_ containterView: SAPContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
-//        _canChangeProgressView = true
-//        _contentView.orientation = orientation
-//        
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(false, animated: true)
-//        }
-//        if _automaticallyAdjustsProgressViewIsHidden && progress <= 0.999999 {
-//            _updateProgressViewLayout()
-//            _updateProgressViewIsHidden(false, animated: true)
-//        }
-//    }
+    func containterViewWillBeginDragging(_ containterView: BrowseContainterView) {
+        _updateConsoleLock(true, animated: true)
+    }
+    
+    func containterViewWillBeginZooming(_ containterView: BrowseContainterView, with view: UIView?) {
+        _updateConsoleLock(true, animated: true)
+    }
     
     func containterViewShouldBeginRotationing(_ containterView: BrowseContainterView, with view: UIView?) -> Bool {
+        guard delegate?.browseDetailView?(self, containterView, shouldBeginRotationing: view) ?? true else {
+            return false
+        }
         
-        _canChangeProgressView = false
-        
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(true, animated: true)
-//        }
-        
-        
+        _updateConsoleLock(true, animated: true)
         _updateProgressLock(true, animated: false)
         
-        return true//delegate?.browseDetailView?(self, containterView, shouldBeginRotationing: view) ?? true
+        return true
+    }
+    
+    func containterViewDidEndDragging(_ containterView: BrowseContainterView, willDecelerate decelerate: Bool) {
+        guard !decelerate else {
+            return
+        }
+        _updateConsoleLock(false, animated: true)
+    }
+    
+    func containterViewDidEndDecelerating(_ containterView: BrowseContainterView) {
+        _updateConsoleLock(false, animated: true)
+    }
+    
+    func containterViewDidEndZooming(_ containterView: BrowseContainterView, with view: UIView?, atScale scale: CGFloat) {
+        _updateConsoleLock(false, animated: true)
     }
     
     func containterViewDidEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
@@ -418,7 +425,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
 //            _updateControlViewIsHidden(false, animated: true)
 //        }
         
-        
+        _updateConsoleLock(false, animated: true)
         _updateProgressLock(false, animated: true)
     }
 }

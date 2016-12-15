@@ -140,6 +140,12 @@ open class BrowseProgressView: UIView {
         _commonInit()
     }
     
+    open var radius: CGFloat = 3 {
+        didSet {
+            _layer.radius = radius
+        }
+    }
+    
     open var progress: Double {
         set { return setProgress(newValue, animated: false) }
         get { return _layer.progress }
@@ -155,17 +161,6 @@ open class BrowseProgressView: UIView {
         _layer.add(ani, forKey: "progress")
     }
     
-     open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        
-        _layer.radius = bounds.width / 2 - 3
-        
-        CATransaction.commit()
-    }
-    
     open override class var layerClass: AnyClass { 
         return BrowseProgressLayer.self
     }
@@ -178,6 +173,7 @@ open class BrowseProgressView: UIView {
 //        _layer.strokeColor = UIColor.lightGray.cgColor
         
         _layer.lineWidth = 1 / UIScreen.main.scale
+        _layer.radius = 3
     }
     
     private var _layer: BrowseProgressLayer {

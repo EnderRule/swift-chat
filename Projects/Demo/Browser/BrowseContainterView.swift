@@ -184,6 +184,8 @@ import UIKit
         }
         
         UIView.animate(withDuration: 0.35, animations: { [_scrollView] in
+            UIView.setAnimationBeginsFromCurrentState(true)
+            
             _scrollView.zoomScale = scale
             _scrollView.contentOffset = CGPoint(x: x, y: y)
         })

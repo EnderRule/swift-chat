@@ -27,6 +27,7 @@
 		0C4695CD1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CC1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift */; };
 		0C5B43181DFAECB600D893EB /* BrowseProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5B43171DFAECB600D893EB /* BrowseProgressView.swift */; };
 		0C6741E81DF7BBF700282310 /* TestLayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */; };
+		0C769D121E026C0B003F7737 /* BrowseVisualEffectButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C769D111E026C0B003F7737 /* BrowseVisualEffectButton.swift */; };
 		0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */; };
 		0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */; };
 		0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */; };
@@ -65,6 +66,7 @@
 		0C4695CC1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTilingViewLayoutAttributes.swift; sourceTree = "<group>"; };
 		0C5B43171DFAECB600D893EB /* BrowseProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseProgressView.swift; sourceTree = "<group>"; };
 		0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestLayerViewController.swift; sourceTree = "<group>"; };
+		0C769D111E026C0B003F7737 /* BrowseVisualEffectButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVisualEffectButton.swift; sourceTree = "<group>"; };
 		0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimatedTransition.swift; sourceTree = "<group>"; };
 		0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseInteractiveTransition.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Pop.swift"; sourceTree = "<group>"; wrapsLines = 0; };
@@ -118,6 +120,7 @@
 				0C25D1951DD8341C007877A0 /* LaunchScreen.storyboard */,
 				0C25D1981DD8341C007877A0 /* Info.plist */,
 				0C5B43171DFAECB600D893EB /* BrowseProgressView.swift */,
+				0C769D111E026C0B003F7737 /* BrowseVisualEffectButton.swift */,
 				0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */,
 				0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */,
 				0CD1E2A41DE44D0B006832D0 /* BrowseIndicatorViewCell.swift */,
@@ -239,6 +242,7 @@
 				0CD1E2A11DE432C5006832D0 /* UIColor+Random.swift in Sources */,
 				0C25D1A11DD83650007877A0 /* Browseable.swift in Sources */,
 				0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */,
+				0C769D121E026C0B003F7737 /* BrowseVisualEffectButton.swift in Sources */,
 				0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */,
 				0CC9C9C11DED28060097BB5E /* BrowseTilingViewCell.swift in Sources */,
 				0CDBBFDA1DDD79BA000F694C /* BrowseDetailViewDelegate.swift in Sources */,
