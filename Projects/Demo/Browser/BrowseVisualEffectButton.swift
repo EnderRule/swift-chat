@@ -48,6 +48,12 @@ class BrowseVisualEffectButton: UIControl {
         _commonInit()
     }
     
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        // 禁止其他的所有手势(独占模式)
+        return false
+    }
+    
     func _updateState() {
         let image = _allImages[state.rawValue] ?? nil
         
