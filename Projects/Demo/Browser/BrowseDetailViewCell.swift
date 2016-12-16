@@ -81,6 +81,10 @@ class BrowseDetailViewCell: UICollectionViewCell {
             }
         }
     }
+    dynamic func playHandler(_ sender: Any) {
+        logger.debug()
+        
+    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -198,12 +202,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         return view
     }()
-    fileprivate lazy var _consoleView: BrowseVisualEffectButton = {
-        let view = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
-        
-        view.setImage(UIImage(named: "photo_button_play"), for: .normal)
-        view.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
-        
+    fileprivate lazy var _consoleView: BrowseVideoConsoleView = {
+        let view = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
         return view
     }()
     

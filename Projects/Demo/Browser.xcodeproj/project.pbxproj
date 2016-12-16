@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C1001DB1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */; };
 		0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D18C1DD8341C007877A0 /* AppDelegate.swift */; };
 		0C25D1921DD8341C007877A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C25D1901DD8341C007877A0 /* Main.storyboard */; };
 		0C25D1941DD8341C007877A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C25D1931DD8341C007877A0 /* Assets.xcassets */; };
@@ -44,6 +45,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVideoConsoleView.swift; sourceTree = "<group>"; };
 		0C25D1891DD8341C007877A0 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C25D18C1DD8341C007877A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0C25D1911DD8341C007877A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				0C25D1951DD8341C007877A0 /* LaunchScreen.storyboard */,
 				0C25D1981DD8341C007877A0 /* Info.plist */,
 				0C5B43171DFAECB600D893EB /* BrowseProgressView.swift */,
+				0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */,
 				0C769D111E026C0B003F7737 /* BrowseVisualEffectButton.swift */,
 				0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */,
 				0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */,
@@ -239,6 +242,7 @@
 				0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */,
 				0C4695CD1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift in Sources */,
 				0CEF2C901DDAE47A0045BB09 /* BrowseDetailViewLayout.swift in Sources */,
+				0C1001DB1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift in Sources */,
 				0CD1E2A11DE432C5006832D0 /* UIColor+Random.swift in Sources */,
 				0C25D1A11DD83650007877A0 /* Browseable.swift in Sources */,
 				0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */,
