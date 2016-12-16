@@ -152,6 +152,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //        })
         //    })
         //})
+        
+        _consoleView.stop()
     }
     
     override func layoutSubviews() {

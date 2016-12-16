@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol BrowseVideoConsoleViewDelegate: class {
-    
-}
-
 class BrowseVideoConsoleView: UIView {
     
     override init(frame: CGRect) {
@@ -23,12 +19,29 @@ class BrowseVideoConsoleView: UIView {
         _commonInit()
     }
     
-    
     func play() {
+        
+        indicatorView.removeFromSuperview()
+        operatorView.removeFromSuperview()
     }
     func wait() {
+        
+        operatorView.removeFromSuperview()
+        
+        indicatorView.frame = bounds
+        indicatorView.startAnimating()
+        
+        addSubview(indicatorView)
     }
     func stop() {
+        
+        indicatorView.stopAnimating()
+        indicatorView.removeFromSuperview()
+        
+        operatorView.setImage(UIImage(named: "photo_button_play"), for: .normal)
+        operatorView.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
+        
+        addSubview(operatorView)
     }
     
 //        let view = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
@@ -36,27 +49,24 @@ class BrowseVideoConsoleView: UIView {
 //        view.setImage(UIImage(named: "photo_button_play"), for: .normal)
 //        view.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
 //        
-//        view.addTarget(self, action: #selector(playHandler(_:)), for: .touchUpInside)
+    
+    func playHandler(_ sender: Any) {
+        wait()
+    }
     
     private func _commonInit() {
         
-        let view = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+        operatorView.frame = bounds
+        operatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        operatorView.addTarget(self, action: #selector(playHandler(_:)), for: .touchUpInside)
         
-        view.setImage(UIImage(named: "photo_button_play"), for: .normal)
-        view.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
-        
-        addSubview(view)
-        
-//        indicatorView.frame = bounds
-//        indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        
-//        indicatorView.startAnimating()
-//        
-//        addSubview(indicatorView)
+        indicatorView.frame = bounds
+        indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     //var playView: UIView?
     //var stopView: UIView?
     
-    var indicatorView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    lazy var indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    lazy var operatorView = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
 }
