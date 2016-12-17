@@ -15,13 +15,13 @@ class LocalImageAsset: NSObject, Browseable {
     override init() {
         super.init()
             
-        let index = count % 12
-        count = index + 1
-        browseImage = UIImage(named: "cl_\(index + 1).jpg")
-        browseContentSize = browseImage?.size ?? .zero
+//        let index = count % 12
+//        count = index + 1
+//        browseImage = UIImage(named: "cl_\(index + 1).jpg")
+//        browseContentSize = browseImage?.size ?? .zero
         
-//        browseContentSize = CGSize(width: 1600, height: 1200)
-//        browseImage = UIImage(named: "t1.jpg")
+        browseContentSize = CGSize(width: 1600, height: 1200)
+        browseImage = UIImage(named: "t1.jpg")
         
         backgroundColor = UIColor(white: 0.94, alpha: 1)
     }
