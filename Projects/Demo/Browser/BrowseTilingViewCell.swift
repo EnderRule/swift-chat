@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseTilingViewCell: UIView {
+@objc class BrowseTilingViewCell: UIView {
     
     var reuseIdentifier: String? 
     

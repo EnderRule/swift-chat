@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseTilingViewLayoutAttributes: NSObject {
+@objc class BrowseTilingViewLayoutAttributes: NSObject {
     
     init(forCellWith indexPath: IndexPath) {
         self.indexPath = indexPath

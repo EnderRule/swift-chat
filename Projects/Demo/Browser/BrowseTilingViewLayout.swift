@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseTilingViewLayoutPage: NSObject {
+@objc class BrowseTilingViewLayoutPage: NSObject {
     
     init(begin: Int, end: Int) {
         self.begin = begin
@@ -27,7 +27,7 @@ class BrowseTilingViewLayoutPage: NSObject {
     var isVailded: Bool = false
 }
 
-class BrowseTilingViewLayout: NSObject {
+@objc class BrowseTilingViewLayout: NSObject {
     
     init(tilingView: BrowseTilingView) {
         super.init()

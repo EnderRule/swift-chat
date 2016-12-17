@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc protocol BrowseIndicatorViewDelegate: class {
+@objc public protocol BrowseIndicatorViewDelegate: class {
     
     @objc optional func indicatorWillBeginDragging(_ indicator: BrowseIndicatorView)
     @objc optional func indicatorDidEndDragging(_ indicator: BrowseIndicatorView)
@@ -17,21 +17,21 @@ import UIKit
     @objc optional func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath)
 }
 
-@objc class BrowseIndicatorView: UIView {
+@objc open class BrowseIndicatorView: UIView {
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         _commonInit()
     }
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         _commonInit()
     }
     
-    weak var delegate: BrowseIndicatorViewDelegate?
-    weak var dataSource: BrowseDataSource?
+    open weak var delegate: BrowseIndicatorViewDelegate?
+    open weak var dataSource: BrowseDataSource?
     
-    var indexPath: IndexPath? {
+    open var indexPath: IndexPath? {
         set { 
             // 设置为选中状态
             _currentIndexPath = newValue 
@@ -45,25 +45,22 @@ import UIKit
         get { return _currentIndexPath }
     }
     
-    var estimatedItemSize: CGSize = CGSize(width: 19, height: 38)
+    open var estimatedItemSize: CGSize = CGSize(width: 19, height: 38)
     
-    func beginInteractiveMovement() {
+    open func beginInteractiveMovement() {
         guard !_tilingView.isDragging else {
             return
         }
         _isInteractiving = true
     }
-    func endInteractiveMovement() {
-//        _performWithoutContentOffsetChange {
-//            _updateCurrentItem(_tilingView.contentOffset)
-//        }
+    open func endInteractiveMovement() {
         guard _isInteractiving else {
             return
         }
         _isInteractiving = false
     }
     
-    func updateIndexPath(_ indexPath: IndexPath?, animated: Bool) {
+    open func updateIndexPath(_ indexPath: IndexPath?, animated: Bool) {
         logger.debug("\(indexPath)")
         
         let oldValue = _currentIndexPath 
@@ -193,7 +190,7 @@ import UIKit
         }
     }
     
-    override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         guard _cacheBounds != bounds else {
@@ -303,14 +300,14 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         }
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard !_ignoreContentOffsetChange else {
             return
         }
         _updateCurrentItem(scrollView.contentOffset)
     }
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 拖动的时候清除当前激活的焦点
         if indexPath != nil {
             updateIndexPath(nil, animated: true) 
@@ -318,7 +315,7 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         _isInteractiving = false
         delegate?.indicatorWillBeginDragging?(self)
     }
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard !decelerate else {
             return
         }
@@ -326,7 +323,7 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         // ..
         delegate?.indicatorDidEndDragging?(self)
     }
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.scrollViewDidEndDragging(scrollView, willDecelerate: false)
     }
     

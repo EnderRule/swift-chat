@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseExtendedToolbar: UIToolbar {
+open class BrowseExtendedToolbar: UIToolbar {
     // 每一行
     private class LineContext: NSObject {
         
@@ -19,12 +19,12 @@ class BrowseExtendedToolbar: UIToolbar {
         var items: [UIBarButtonItem]?
     }
     
-    override var items: [UIBarButtonItem]? {
+    open override var items: [UIBarButtonItem]? {
         set { return setItems(newValue, animated: false) }
         get { return _items }
     }
     
-    override func setItems(_ items: [UIBarButtonItem]?, animated: Bool) {
+    open override func setItems(_ items: [UIBarButtonItem]?, animated: Bool) {
         _items = items
         let lines = items?.reduce([], { result, item -> [[UIBarButtonItem]] in
             if item is BrowseExtendedBarItem {
@@ -80,7 +80,6 @@ class BrowseExtendedToolbar: UIToolbar {
         
         // 更新
         _lines = newLines
-        _height = height
         // 添加视图&更新
         newLines?.forEach { 
             guard let view = $0.view else {
@@ -143,7 +142,7 @@ class BrowseExtendedToolbar: UIToolbar {
         UIView.animate(withDuration: 0.25, animations: block, completion: completion)
     }
     
-    override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         _layoutSubviewsWithLines(_lines, in: frame.height)
     }
@@ -179,11 +178,8 @@ class BrowseExtendedToolbar: UIToolbar {
         return toolbar
     }
     
-    
     private var _items: [UIBarButtonItem]?
     private var _lines: [LineContext]?
-    
-    private var _height: CGFloat = 0
     
     private lazy var _toolbars: [UIToolbar] = []
 }
