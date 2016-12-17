@@ -21,7 +21,7 @@ class LocalImageAsset: NSObject, Browseable {
         //browseContentSize = browseImage?.size ?? .zero
         
         browseContentSize = CGSize(width: 1600, height: 1200)
-        browseImage = UIImage(named: "t1.jpg")
+        //browseImage = UIImage(named: "t1.jpg")
         
         backgroundColor = UIColor(white: 0.94, alpha: 1)
     }

@@ -234,7 +234,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
 //        collectionView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Video")
         
         toolbarItems = [
-            BrowseCustomBarItem(height: 40, view: indicatorView),
+            BrowseExtendedBarItem(height: 40, view: indicatorView),
             
             UIBarButtonItem(barButtonSystemItem: .action, target: nil, action: nil),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),

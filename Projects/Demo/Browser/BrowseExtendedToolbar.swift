@@ -8,28 +8,16 @@
 
 import UIKit
 
-class BrowseCustomBarItem: UIBarButtonItem {
-    init(height: CGFloat, view: UIView) {
-        super.init()
-        self.height = height
-        self.customView = view
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    var height: CGFloat = 0
-}
-class BrowseExtendedToolbarLineContext: NSObject {
-    
-    var height: CGFloat = 0
-    var minimuxHeight: CGFloat = 0
-    
-    var view: UIView?
-    var items: [UIBarButtonItem]?
-}
-
 class BrowseExtendedToolbar: UIToolbar {
+    // 每一行
+    private class LineContext: NSObject {
+        
+        var height: CGFloat = 0
+        var minimuxHeight: CGFloat = 0
+        
+        var view: UIView?
+        var items: [UIBarButtonItem]?
+    }
     
     override var items: [UIBarButtonItem]? {
         set { return setItems(newValue, animated: false) }
@@ -39,38 +27,38 @@ class BrowseExtendedToolbar: UIToolbar {
     override func setItems(_ items: [UIBarButtonItem]?, animated: Bool) {
         _items = items
         let lines = items?.reduce([], { result, item -> [[UIBarButtonItem]] in
-            if item is BrowseCustomBarItem {
+            if item is BrowseExtendedBarItem {
                 return result + [[item]]
             }
-            if result.last?.last is BrowseCustomBarItem || result.isEmpty {
+            if result.last?.last is BrowseExtendedBarItem || result.isEmpty {
                 return result + [[item]]
             }
             var tmp = result
             tmp[tmp.count - 1] += [item]
             return tmp
         })
-        setLines(lines, animated: animated)
+        _setLines(lines, animated: animated)
     }
     
-    func setLines(_ lines: [[UIBarButtonItem]]?, animated: Bool) {
+    private func _setLines(_ lines: [[UIBarButtonItem]]?, animated: Bool) {
         
         var index: Int = 0
         var height: CGFloat = 0
         let minimuxHeight: CGFloat = super.sizeThatFits(.zero).height
         
         // 生成行所需的数据
-        let oldLines: [BrowseExtendedToolbarLineContext]? = _lines
-        let newLines: [BrowseExtendedToolbarLineContext]? = lines?.map { 
-            let context = BrowseExtendedToolbarLineContext()
+        let oldLines: [LineContext]? = _lines
+        let newLines: [LineContext]? = lines?.map { 
+            let context = LineContext()
             
             context.items = $0
             context.minimuxHeight = minimuxHeight
             
-            if let item = $0.first as? BrowseCustomBarItem {
+            if let item = $0.first as? BrowseExtendedBarItem {
                 context.view = item.customView
                 context.height = item.height
             } else {
-                context.view = dequeueReusableToolbar(with: IndexPath(item: index, section: 0))
+                context.view = _dequeueReusableToolbar(with: IndexPath(item: index, section: 0))
                 context.height = minimuxHeight
                 index += 1
             }
@@ -82,7 +70,7 @@ class BrowseExtendedToolbar: UIToolbar {
             height = minimuxHeight
         }
         // 生成无效的数据
-        let invaildLines: [BrowseExtendedToolbarLineContext]? = oldLines?.filter { o in
+        let invaildLines: [LineContext]? = oldLines?.filter { o in
             // 如果找到说明正在使用, 不能删除
             let f = newLines?.contains { n in
                 n.view == o.view
@@ -114,8 +102,8 @@ class BrowseExtendedToolbar: UIToolbar {
         // 更新布局
         self.setNeedsLayout()
         self.layoutIfNeeded()
-        self.layoutSubviewsWithLines(oldLines, in: self.frame.height)
-        self.layoutSubviewsWithLines(newLines, in: max(self.frame.height, minimuxHeight))
+        self._layoutSubviewsWithLines(oldLines, in: self.frame.height)
+        self._layoutSubviewsWithLines(newLines, in: max(self.frame.height, minimuxHeight))
         
         let block: () -> Void = {
             // 更新frame
@@ -126,8 +114,8 @@ class BrowseExtendedToolbar: UIToolbar {
             // 更新subviews
             self.setNeedsLayout()
             self.layoutIfNeeded()
-            self.layoutSubviewsWithLines(oldLines, in: nframe.height)
-            self.layoutSubviewsWithLines(newLines, in: nframe.height)
+            self._layoutSubviewsWithLines(oldLines, in: nframe.height)
+            self._layoutSubviewsWithLines(newLines, in: nframe.height)
             // 清除无效subviews
             invaildLines?.forEach {
                 $0.view?.alpha = 0
@@ -157,10 +145,10 @@ class BrowseExtendedToolbar: UIToolbar {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        layoutSubviewsWithLines(_lines, in: frame.height)
+        _layoutSubviewsWithLines(_lines, in: frame.height)
     }
     
-    func layoutSubviewsWithLines(_ lines: [BrowseExtendedToolbarLineContext]?, in offset: CGFloat) {
+    private func _layoutSubviewsWithLines(_ lines: [LineContext]?, in offset: CGFloat) {
         var y = offset
         lines?.reversed().forEach {
             let h1 = $0.height
@@ -178,7 +166,7 @@ class BrowseExtendedToolbar: UIToolbar {
         }
     }
     
-    func dequeueReusableToolbar(with indexPath: IndexPath) -> UIToolbar {
+    private func _dequeueReusableToolbar(with indexPath: IndexPath) -> UIToolbar {
         if indexPath.item < _toolbars.count {
             return _toolbars[indexPath.item]
         }
@@ -193,7 +181,7 @@ class BrowseExtendedToolbar: UIToolbar {
     
     
     private var _items: [UIBarButtonItem]?
-    private var _lines: [BrowseExtendedToolbarLineContext]?
+    private var _lines: [LineContext]?
     
     private var _height: CGFloat = 0
     

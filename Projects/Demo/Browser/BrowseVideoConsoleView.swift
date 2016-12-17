@@ -8,6 +8,16 @@
 
 import UIKit
 
+
+@objc protocol BrowseVideoConsoleViewDelegate {
+    
+    @objc optional func videoConsoleView(shouldPlay videoConsoleView: BrowseVideoConsoleView) -> Bool
+    @objc optional func videoConsoleView(didPlay videoConsoleView: BrowseVideoConsoleView)
+    
+    @objc optional func videoConsoleView(shouldStop videoConsoleView: BrowseVideoConsoleView) -> Bool
+    @objc optional func videoConsoleView(didStop videoConsoleView: BrowseVideoConsoleView)
+}
+
 class BrowseVideoConsoleView: UIView {
     
     override init(frame: CGRect) {
@@ -19,54 +29,78 @@ class BrowseVideoConsoleView: UIView {
         _commonInit()
     }
     
+    weak var delegate: BrowseVideoConsoleViewDelegate?
+    
+    private(set) var isPlaying: Bool = false
+    private(set) var isWaiting: Bool = false
+    
     func play() {
         
-        indicatorView.removeFromSuperview()
-        operatorView.removeFromSuperview()
+        isPlaying = true
+        isWaiting = false
+        
+        _indicatorView.removeFromSuperview()
+        _operatorView.removeFromSuperview()
     }
     func wait() {
         
-        operatorView.removeFromSuperview()
+        isPlaying = false
+        isWaiting = true
         
-        indicatorView.frame = bounds
-        indicatorView.startAnimating()
+        _operatorView.removeFromSuperview()
         
-        addSubview(indicatorView)
+        _indicatorView.frame = bounds
+        _indicatorView.startAnimating()
+        
+        addSubview(_indicatorView)
     }
     func stop() {
         
-        indicatorView.stopAnimating()
-        indicatorView.removeFromSuperview()
+        isPlaying = false
+        isWaiting = false
         
-        operatorView.setImage(UIImage(named: "photo_button_play"), for: .normal)
-        operatorView.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
+        _indicatorView.stopAnimating()
+        _indicatorView.removeFromSuperview()
         
-        addSubview(operatorView)
+        addSubview(_operatorView)
     }
     
-//        let view = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
-//        
-//        view.setImage(UIImage(named: "photo_button_play"), for: .normal)
-//        view.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
-//        
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard _operatorView.superview == self else {
+            return false
+        }
+        return super.point(inside: point, with: event)
+    }
     
-    func playHandler(_ sender: Any) {
-        wait()
+    func operatorHandler(_ sender: Any) {
+        if isPlaying || isWaiting {
+            // stop
+            guard delegate?.videoConsoleView?(shouldStop: self) ?? true else {
+                return
+            }
+            delegate?.videoConsoleView?(didStop: self)
+        } else {
+            // play
+            guard delegate?.videoConsoleView?(shouldPlay: self) ?? true else {
+                return
+            }
+            delegate?.videoConsoleView?(didPlay: self)
+        }
     }
     
     private func _commonInit() {
         
-        operatorView.frame = bounds
-        operatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        operatorView.addTarget(self, action: #selector(playHandler(_:)), for: .touchUpInside)
+        _operatorView.frame = bounds
+        _operatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _operatorView.addTarget(self, action: #selector(operatorHandler(_:)), for: .touchUpInside)
         
-        indicatorView.frame = bounds
-        indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        _operatorView.setImage(UIImage(named: "photo_button_play"), for: .normal)
+        _operatorView.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
+        
+        _indicatorView.frame = bounds
+        _indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
-    //var playView: UIView?
-    //var stopView: UIView?
-    
-    lazy var indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-    lazy var operatorView = BrowseVisualEffectButton(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+    private lazy var _indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    private lazy var _operatorView = BrowseVideoConsoleButton(frame: .zero)
 }

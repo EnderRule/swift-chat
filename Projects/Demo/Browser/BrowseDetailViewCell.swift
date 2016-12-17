@@ -196,8 +196,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         return view
     }()
-    fileprivate lazy var _progressView: BrowseProgressView = {
-        let view = BrowseProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    fileprivate lazy var _progressView: BrowseOverlayProgressView = {
+        let view = BrowseOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
         
         view.radius = (view.bounds.width / 2) - 3
         view.isUserInteractionEnabled = false
@@ -365,7 +365,22 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.addSubview(detailView)
         containterView.addGestureRecognizer(doubleTapGestureRecognizer)
         
+        _consoleView.delegate = self
+        
         super.addSubview(containterView)
+    }
+}
+
+extension BrowseDetailViewCell: BrowseVideoConsoleViewDelegate {
+    
+    func videoConsoleView(didPlay videoConsoleView: BrowseVideoConsoleView) {
+        videoConsoleView.wait()
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10), execute: {
+            videoConsoleView.play()
+        })
+    }
+    func videoConsoleView(didStop videoConsoleView: BrowseVideoConsoleView) {
+        videoConsoleView.stop()
     }
 }
 

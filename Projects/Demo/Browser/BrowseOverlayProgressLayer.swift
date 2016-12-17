@@ -1,14 +1,14 @@
 //
-//  BrowseProgressView.swift
+//  BrowseOverlayProgressLayer.swift
 //  Browser
 //
-//  Created by sagesse on 12/9/16.
+//  Created by sagesse on 12/17/16.
 //  Copyright © 2016 sagesse. All rights reserved.
 //
 
 import UIKit
 
-open class BrowseProgressLayer: CAShapeLayer {
+open class BrowseOverlayProgressLayer: CAShapeLayer {
     
     public override init() {
         super.init()
@@ -121,63 +121,10 @@ open class BrowseProgressLayer: CAShapeLayer {
     private var _cacheBounds: CGRect = .zero
     
     private var _currentRadius: CGFloat {
-        return (presentation() as BrowseProgressLayer?)?.radius ?? radius
+        return (presentation() as BrowseOverlayProgressLayer?)?.radius ?? radius
     }
     private var _currentProgress: Double {
-        return (presentation() as BrowseProgressLayer?)?.progress ?? progress
-    }
-}
-
-
-open class BrowseProgressView: UIView {
-   
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        _commonInit()
-    }
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        _commonInit()
-    }
-    
-    open var radius: CGFloat = 3 {
-        didSet {
-            _layer.radius = radius
-        }
-    }
-    
-    open var progress: Double {
-        set { return setProgress(newValue, animated: false) }
-        get { return _layer.progress }
-    }
-    
-    open func setProgress(_ progress: Double, animated: Bool) {
-        _layer.progress = progress
-        guard !animated else {
-            return
-        }
-        let ani = CABasicAnimation(keyPath: "progress")
-        ani.toValue = progress
-        _layer.add(ani, forKey: "progress")
-    }
-    
-    open override class var layerClass: AnyClass { 
-        return BrowseProgressLayer.self
-    }
-    
-    private func _commonInit() {
-        
-        backgroundColor = .clear
-//        _layer.backgroundColor = UIColor.clear.cgColor
-//        _layer.fillColor = UIColor.clear.cgColor
-//        _layer.strokeColor = UIColor.lightGray.cgColor
-        
-        _layer.lineWidth = 1 / UIScreen.main.scale
-        _layer.radius = 3
-    }
-    
-    private var _layer: BrowseProgressLayer {
-        return layer as! BrowseProgressLayer
+        return (presentation() as BrowseOverlayProgressLayer?)?.progress ?? progress
     }
 }
 

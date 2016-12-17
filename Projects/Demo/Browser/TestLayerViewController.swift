@@ -10,8 +10,8 @@ import UIKit
 
 class TestLayerViewController: UIViewController {
     
-    let mpv = BrowseProgressView()
-    let mpv2 = BrowseProgressView()
+    let mpv = BrowseOverlayProgressView()
+    let mpv2 = BrowseOverlayProgressView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
