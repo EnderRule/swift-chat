@@ -318,11 +318,11 @@ class BrowseDetailViewCell: UICollectionViewCell {
     fileprivate func _updateIconLayoutIfNeeded() {
         
         let edg = _containterInset
-        let nbounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
+        let bounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
        
         var nframe = _iconView.frame
-        nframe.origin.x = nbounds.minX + edg.left
-        nframe.origin.y = nbounds.minY + edg.top
+        nframe.origin.x = bounds.minX + edg.left
+        nframe.origin.y = bounds.minY + edg.top
         nframe.size.height = 27
         _iconView.frame = nframe
     }
@@ -338,18 +338,14 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //logger.debug(containterView.contentSize)
         
         let edg = _containterInset
-        let nframe = UIEdgeInsetsInsetRect(detailView.frame, edg)
-        let nbounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
+        let size = _progressView.frame.size
+        let frame = convert(detailView.frame, from: detailView.superview)
+        let bounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
         
-        let width_2 = _progressView.frame.width / 2
-        let height_2 = _progressView.frame.height / 2
+        let x2 = min(max(frame.maxX, min(max(frame.minX, 0) + frame.width, bounds.maxX)), bounds.maxX)
+        let y2 = min(max(frame.maxY, min(max(frame.minY, 0) + frame.height, bounds.maxY)), bounds.maxY)
         
-        var pt = convert(CGPoint(x: nframe.maxX - width_2, y: nframe.maxY - height_2), from: detailView.superview)
-        
-        pt.x = max(min(pt.x, nbounds.maxX - width_2 - edg.right), nbounds.minX + edg.left + width_2)
-        pt.y = max(min(pt.y, nbounds.maxY - height_2 - edg.bottom), nbounds.minY + edg.top + height_2)
-        
-        _progressView.center = pt
+        _progressView.center = CGPoint(x: x2 - size.width / 2 - edg.right, y: y2 - size.height / 2 - edg.bottom)
     }
     
     
