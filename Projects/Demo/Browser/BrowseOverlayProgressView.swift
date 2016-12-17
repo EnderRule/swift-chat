@@ -23,6 +23,9 @@ open class BrowseOverlayProgressView: UIView {
     open var radius: CGFloat = 3 {
         didSet {
             _layer.radius = radius
+            let ani = CABasicAnimation(keyPath: "radius")
+            ani.toValue = radius 
+            _layer.add(ani, forKey: "radius")
         }
     }
     
