@@ -342,8 +342,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         let frame = convert(detailView.frame, from: detailView.superview)
         let bounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
         
-        let x2 = min(max(frame.maxX, min(max(frame.minX, 0) + frame.width, bounds.maxX)), bounds.maxX)
-        let y2 = min(max(frame.maxY, min(max(frame.minY, 0) + frame.height, bounds.maxY)), bounds.maxY)
+        let y2 = min(frame.maxY, bounds.maxY)
+        let x2 = min(max(frame.maxX, min(max(frame.minX, bounds.minX) + frame.width, bounds.maxX)), bounds.maxX)
         
         _progressView.center = CGPoint(x: x2 - size.width / 2 - edg.right, y: y2 - size.height / 2 - edg.bottom)
     }
