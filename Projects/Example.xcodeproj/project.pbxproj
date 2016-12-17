@@ -550,6 +550,7 @@
 				0CB126251DD5CBF200A6FF54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

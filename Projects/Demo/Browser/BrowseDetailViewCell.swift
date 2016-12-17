@@ -45,7 +45,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
     lazy var containterView: BrowseContainterView = BrowseContainterView()
     lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
     
-    
     weak var delegate: BrowseDetailViewDelegate?
     
     fileprivate var _canChangeProgressView: Bool = true
@@ -177,41 +176,15 @@ class BrowseDetailViewCell: UICollectionViewCell {
     fileprivate var _progressOfLock: Double?
     fileprivate var _progressOfHidden: Bool = true
     
-    fileprivate lazy var _iconView: UIButton = {
-        let view = UIButton(type: .system)
-        
-        view.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
-        view.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
-        view.isUserInteractionEnabled = false
-        view.tintColor = UIColor.black.withAlphaComponent(0.6)
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.25)
-        
-        view.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        
-        view.setTitle("HDR", for: .normal)
-        view.setImage(UIImage(named: "icon_hdr"), for: .normal)
-        
-        view.layer.cornerRadius = 3
-        view.layer.masksToBounds = true
-        
-        return view
-    }()
-    fileprivate lazy var _progressView: BrowseOverlayProgressView = {
-        let view = BrowseOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
-        
-        view.radius = (view.bounds.width / 2) - 3
-        view.isUserInteractionEnabled = false
-        
-        return view
-    }()
-    fileprivate lazy var _consoleView: BrowseVideoConsoleView = {
-        let view = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
-        return view
-    }()
+    fileprivate var _stateOfLock: Bool = false
     
-    
-    fileprivate func _updateConsoleLock(_ lock: Bool, animated: Bool) {
-        logger.debug(lock)
+    fileprivate func _updateStateLock(_ lock: Bool, animated: Bool) {
+        guard _stateOfLock != lock && !_progressOfHidden else {
+            return
+        }
+        _logger.debug("\(lock)")
+        
+        _stateOfLock = lock
         
         UIView.animate(withDuration: 0.25, animations: {
             self._consoleView.alpha = lock ? 0 : 1
@@ -247,6 +220,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         _updateCenterLayoutIfNeeded()
     }
+    
     
     fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
         guard _progressOfLock == nil else {
@@ -329,7 +303,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
     fileprivate func _updateCenterLayoutIfNeeded() {
         
         _consoleView.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        
     }
     fileprivate func _updateProgressLayoutIfNeeded() {
         guard !_progressOfHidden else {
@@ -361,10 +334,29 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.addSubview(detailView)
         containterView.addGestureRecognizer(doubleTapGestureRecognizer)
         
+        _iconView.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
+        _iconView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        _iconView.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
+        _iconView.isUserInteractionEnabled = false
+        _iconView.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        _iconView.tintColor = UIColor.black.withAlphaComponent(0.6)
+        _iconView.layer.cornerRadius = 3
+        _iconView.layer.masksToBounds = true
+        
+        _iconView.setTitle("HDR", for: .normal)
+        _iconView.setImage(UIImage(named: "icon_hdr"), for: .normal)
+        
         _consoleView.delegate = self
+        
+        _progressView.radius = (_progressView.bounds.width / 2) - 3
+        _progressView.isUserInteractionEnabled = false
         
         super.addSubview(containterView)
     }
+    
+    fileprivate lazy var _iconView = UIButton(type: .system)
+    fileprivate lazy var _consoleView = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+    fileprivate lazy var _progressView = BrowseOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
 }
 
 extension BrowseDetailViewCell: BrowseVideoConsoleViewDelegate {
@@ -395,11 +387,11 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
     }
     
     func containterViewWillBeginDragging(_ containterView: BrowseContainterView) {
-        _updateConsoleLock(true, animated: true)
+        _updateStateLock(true, animated: true)
     }
     
     func containterViewWillBeginZooming(_ containterView: BrowseContainterView, with view: UIView?) {
-        _updateConsoleLock(true, animated: true)
+        _updateStateLock(true, animated: true)
     }
     
     func containterViewShouldBeginRotationing(_ containterView: BrowseContainterView, with view: UIView?) -> Bool {
@@ -407,7 +399,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
             return false
         }
         
-        _updateConsoleLock(true, animated: true)
+        _updateStateLock(true, animated: true)
         _updateProgressLock(true, animated: false)
         
         return true
@@ -417,15 +409,15 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
         guard !decelerate else {
             return
         }
-        _updateConsoleLock(false, animated: true)
+        _updateStateLock(false, animated: true)
     }
     
     func containterViewDidEndDecelerating(_ containterView: BrowseContainterView) {
-        _updateConsoleLock(false, animated: true)
+        _updateStateLock(false, animated: true)
     }
     
     func containterViewDidEndZooming(_ containterView: BrowseContainterView, with view: UIView?, atScale scale: CGFloat) {
-        _updateConsoleLock(false, animated: true)
+        _updateStateLock(false, animated: true)
     }
     
     func containterViewDidEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
@@ -438,7 +430,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
 //            _updateControlViewIsHidden(false, animated: true)
 //        }
         
-        _updateConsoleLock(false, animated: true)
         _updateProgressLock(false, animated: true)
+        _updateStateLock(false, animated: true)
     }
 }

@@ -22,6 +22,20 @@ public enum KeyValueStatus : Int {
 //var isReadable: Bool { get }
 //var isComposable: Bool { get }
 
+public enum BrowseableMediaType: Int {
+    case image
+    case video
+}
+public enum BrowseableMediaSubType: Int {
+   
+    case hdr
+    case png
+    case jpeg
+    case gif
+    
+    case shortVideo
+    case video
+}
 
 public protocol Browseable: class {
     
