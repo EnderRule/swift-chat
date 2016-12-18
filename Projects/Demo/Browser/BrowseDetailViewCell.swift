@@ -182,13 +182,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         guard _stateOfLock != lock && !_progressOfHidden else {
             return
         }
-        _logger.debug("\(lock)")
-        
         _stateOfLock = lock
-        
-        UIView.animate(withDuration: 0.25, animations: {
-            self._consoleView.alpha = lock ? 0 : 1
-        })
+        _consoleView.updateFocus(!lock, animated: animated)
     }
     fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
         if lock {

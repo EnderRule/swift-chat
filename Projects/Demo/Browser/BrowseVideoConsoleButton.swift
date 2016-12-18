@@ -38,7 +38,6 @@ class BrowseVideoConsoleButton: UIControl {
         }
     }
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         _commonInit()
@@ -79,6 +78,7 @@ class BrowseVideoConsoleButton: UIControl {
         _foregroundView.isUserInteractionEnabled = false
         _foregroundView.backgroundColor = UIColor(white: 1, alpha: 0.9)
         
+        _effect = _backgroundView.effect
         _backgroundView.frame = bounds
         _backgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         _backgroundView.isUserInteractionEnabled = false
@@ -87,6 +87,7 @@ class BrowseVideoConsoleButton: UIControl {
         addSubview(_imageView)
     }
     
+    private var _effect: UIVisualEffect?
     private lazy var _allImages: [UInt: UIImage?] = [:]
     
     private lazy var _imageView = UIImageView(frame: .zero)

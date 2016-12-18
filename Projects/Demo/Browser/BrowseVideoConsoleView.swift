@@ -19,6 +19,11 @@ import UIKit
 }
 
 class BrowseVideoConsoleView: UIView {
+    enum State {
+        case none
+        case playing
+        case waiting
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,38 +36,23 @@ class BrowseVideoConsoleView: UIView {
     
     weak var delegate: BrowseVideoConsoleViewDelegate?
     
-    private(set) var isPlaying: Bool = false
-    private(set) var isWaiting: Bool = false
-    
     func play() {
-        
-        isPlaying = true
-        isWaiting = false
-        
-        _indicatorView.removeFromSuperview()
-        _operatorView.removeFromSuperview()
+        _updateState(.playing, animated: true)
     }
     func wait() {
-        
-        isPlaying = false
-        isWaiting = true
-        
-        _operatorView.removeFromSuperview()
-        
-        _indicatorView.frame = bounds
-        _indicatorView.startAnimating()
-        
-        addSubview(_indicatorView)
+        _updateState(.waiting, animated: true)
     }
     func stop() {
-        
-        isPlaying = false
-        isWaiting = false
-        
-        _indicatorView.stopAnimating()
-        _indicatorView.removeFromSuperview()
-        
-        addSubview(_operatorView)
+        _updateState(.none, animated: true)
+    }
+    
+    func updateFocus(_ focus: Bool, animated: Bool) {
+        guard _state == .none else {
+            return
+        }
+        UIView.animate(withDuration: 0.25, animations: {
+            self._operatorView.alpha = focus ? 1 : 0
+        })
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
@@ -73,7 +63,7 @@ class BrowseVideoConsoleView: UIView {
     }
     
     func operatorHandler(_ sender: Any) {
-        if isPlaying || isWaiting {
+        if _state != .none {
             // stop
             guard delegate?.videoConsoleView?(shouldStop: self) ?? true else {
                 return
@@ -85,6 +75,83 @@ class BrowseVideoConsoleView: UIView {
                 return
             }
             delegate?.videoConsoleView?(didPlay: self)
+        }
+    }
+    
+    private func _updateState(_ state: State, animated: Bool) {
+        _state = state
+        
+        switch state {
+        case .none:
+            if _operatorView.superview != self {
+                _operatorView.alpha = 0
+                _operatorView.frame = bounds
+                addSubview(_operatorView)
+            }
+            if !animated {
+                _indicatorView.isHidden = false
+                _indicatorView.stopAnimating()
+                _indicatorView.removeFromSuperview()
+                return
+            }
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self._operatorView.alpha = 1
+                
+            }, completion: { isFinished in
+                
+                self._indicatorView.isHidden = false
+                self._indicatorView.stopAnimating()
+                self._indicatorView.removeFromSuperview()
+            })
+        
+        case .waiting:
+            if _indicatorView.superview != self {
+                _indicatorView.isHidden = true
+                _indicatorView.frame = bounds
+                addSubview(_indicatorView)
+            }
+            if !animated {
+                _operatorView.alpha = 1
+                _operatorView.removeFromSuperview() 
+                _indicatorView.isHidden = false
+                _indicatorView.startAnimating()
+                return
+            }
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self._operatorView.alpha = 0
+                
+            }, completion: { isFinished in
+                
+                self._operatorView.alpha = 1
+                self._operatorView.removeFromSuperview() 
+                self._indicatorView.isHidden = false
+                self._indicatorView.startAnimating()
+            })
+        
+        case .playing:
+            if !animated {
+                _indicatorView.alpha = 1
+                _indicatorView.stopAnimating()
+                _indicatorView.removeFromSuperview()
+                _operatorView.alpha = 1
+                _operatorView.removeFromSuperview()
+                return
+            }
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self._indicatorView.alpha = 0
+                self._operatorView.alpha = 0
+                
+            }, completion: { isFinished in
+                
+                self._indicatorView.alpha = 1
+                self._indicatorView.stopAnimating()
+                self._indicatorView.removeFromSuperview()
+                self._operatorView.alpha = 1
+                self._operatorView.removeFromSuperview()
+            })
         }
     }
     
@@ -100,6 +167,8 @@ class BrowseVideoConsoleView: UIView {
         _indicatorView.frame = bounds
         _indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
+    
+    private var _state: State = .none
     
     private lazy var _indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
     private lazy var _operatorView = BrowseVideoConsoleButton(frame: .zero)
