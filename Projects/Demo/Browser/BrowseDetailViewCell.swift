@@ -153,10 +153,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
         _updateProgressLayoutIfNeeded()
     }
     
-    private var _cachedBounds: CGRect?
-    
-    fileprivate var _containterInset: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
-    
     fileprivate var _asset: Browseable?
     
     // MARK: Value
@@ -381,6 +377,10 @@ class BrowseDetailViewCell: UICollectionViewCell {
     }
     
     // MARK: Ivar
+    
+    private var _cachedBounds: CGRect?
+    
+    private var _containterInset: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
     
     private var _type: BrowseAssetType = .unknow
     private var _subtype: BrowseAssetSubtype = .unknow

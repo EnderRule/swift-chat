@@ -25,9 +25,9 @@ class LocalImageAsset: NSObject, Browseable {
         
         backgroundColor = UIColor(white: 0.94, alpha: 1)
         
-        //browseType = .image
+        browseType = .image
         browseSubtype = .hdr
-        browseType = .video
+        //browseType = .video
         //browseSubtype = .unknow
     }
     

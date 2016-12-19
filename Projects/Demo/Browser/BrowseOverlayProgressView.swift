@@ -19,14 +19,6 @@ open class BrowseOverlayProgressView: UIControl {
         _commonInit()
     }
     
-    open var radius: CGFloat = 3 {
-        didSet {
-            _layer.radius = radius
-            let ani = CABasicAnimation(keyPath: "radius")
-            ani.toValue = radius 
-            _layer.add(ani, forKey: "radius")
-        }
-    }
     open var fillColor: UIColor? {
         willSet {
             _layer.fillColor = newValue?.cgColor
@@ -38,11 +30,24 @@ open class BrowseOverlayProgressView: UIControl {
         }
     }
     
+    open var radius: CGFloat {
+        set { return setRaidus(newValue, animated: false) }
+        get { return _layer.radius }
+    }
     open var progress: Double {
         set { return setProgress(newValue, animated: false) }
         get { return _layer.progress }
     }
     
+    open func setRaidus(_ radius: CGFloat, animated: Bool) {
+        _layer.radius = radius
+        guard !animated else {
+            return
+        }
+        let ani = CABasicAnimation(keyPath: "radius")
+        ani.toValue = radius
+        _layer.add(ani, forKey: "radius")
+    }
     open func setProgress(_ progress: Double, animated: Bool) {
         _layer.progress = progress
         guard !animated else {
