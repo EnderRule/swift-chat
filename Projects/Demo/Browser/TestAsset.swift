@@ -21,9 +21,14 @@ class LocalImageAsset: NSObject, Browseable {
 //        browseContentSize = browseImage?.size ?? .zero
         
         browseContentSize = CGSize(width: 1600, height: 1200)
-//        browseImage = UIImage(named: "t1.jpg")
+        browseImage = UIImage(named: "t1.jpg")
         
         backgroundColor = UIColor(white: 0.94, alpha: 1)
+        
+        browseType = .image
+        browseSubtype = .hdr
+        //browseType = .video
+        //browseSubtype = .unknow
     }
     
 //    lazy var browseContentSize: CGSize = CGSize(width: 160, height: 120)
@@ -32,6 +37,9 @@ class LocalImageAsset: NSObject, Browseable {
     
     //lazy var browseContentSize: CGSize = CGSize(width: 1080, height: 1920)
     //lazy var browseImage: UIImage? = UIImage(named: "m44.jpg")
+    
+    var browseType: BrowseAssetType = .unknow
+    var browseSubtype: BrowseAssetSubtype = .unknow
     
     var browseImage: UIImage? 
     var browseContentSize: CGSize = .zero

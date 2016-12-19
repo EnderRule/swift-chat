@@ -41,18 +41,11 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     var orientation: UIImageOrientation = .up
     
+    weak var delegate: BrowseDetailViewDelegate?
+    
     lazy var detailView: UIImageView = UIImageView()
     lazy var containterView: BrowseContainterView = BrowseContainterView()
     lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
-    
-    weak var delegate: BrowseDetailViewDelegate?
-    
-    fileprivate var _canChangeProgressView: Bool = true
-    
-    fileprivate var _automaticallyAdjustsControlViewIsHidden: Bool = true
-    fileprivate var _automaticallyAdjustsProgressViewIsHidden: Bool = true
-    
-    fileprivate var _progressViewIsHidden: Bool = true
     
     override var contentView: UIView {
         return containterView
@@ -138,10 +131,10 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.zoom(to: bounds, with: orientation, animated: false)
         //containterView.setZoomScale(containterView.maximumZoomScale, animated: false)
         
-        // 最后再更新UI信息
-        _updateIcon(0)
-        _updatexxx()
-        _updateProgress(-1, force: false, animated: false)
+        _updateType(newValue.browseType, animated: false)
+        _updateSubtype(newValue.browseSubtype, animated: false)
+        
+        _updateProgress(0.25, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
         //    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
@@ -151,8 +144,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
         //        })
         //    })
         //})
-        
-        _consoleView.stop()
     }
     
     override func layoutSubviews() {
@@ -162,7 +153,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         }
         _cachedBounds = bounds
         _updateIconLayoutIfNeeded()
-        _updateCenterLayoutIfNeeded()
+        _updateConsoleLayoutIfNeeded()
         _updateProgressLayoutIfNeeded()
     }
     
@@ -172,52 +163,71 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     fileprivate var _asset: Browseable?
     
-    fileprivate var _progress: Double = 0
-    fileprivate var _progressOfLock: Double?
-    fileprivate var _progressOfHidden: Bool = true
+    // MARK: Value
     
-    fileprivate var _stateOfLock: Bool = false
-    
-    fileprivate func _updateStateLock(_ lock: Bool, animated: Bool) {
-        guard _stateOfLock != lock && !_progressOfHidden else {
+    private func _updateType(_ type: BrowseAssetType, animated: Bool) {
+        guard _type != type else {
+            _consoleView.stop()
+            _consoleView.updateFocus(true, animated: animated)
             return
         }
-        _stateOfLock = lock
-        _consoleView.updateFocus(!lock, animated: animated)
-    }
-    fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
-        if lock {
-            // 锁定
-            let progress = _progress
-            _updateProgress(progress, force: true, animated: animated)
-            _progressOfLock = progress
+        _type = type
+       
+        if type == .video {
+            if _consoleView.superview != self {
+                addSubview(_consoleView)
+            }
+            _consoleView.stop()
+            _consoleView.updateFocus(true, animated: animated)
         } else {
-            // 解锁, 并尝试恢复
-            let progress = _progressOfLock ?? _progress
-            _progressOfLock = nil
-            _updateProgress(progress, force: false, animated: animated)
+            if _consoleView.superview != nil {
+                _consoleView.removeFromSuperview()
+            }
+            _consoleView.stop()
+            _consoleView.updateFocus(false, animated: animated)
         }
     }
-    
-    fileprivate func _updateIcon(_ icon: Any) {
+    private func _updateSubtype(_ subtype: BrowseAssetSubtype, animated: Bool) {
+        guard _subtype != subtype else {
+            return // no change
+        }
+        _subtype = subtype
         
-        let view = _iconView
-        if view.superview != self {
-            addSubview(view)
+        if subtype != .unknow {
+            if _iconView.superview != self {
+                _iconView.alpha = 0
+                addSubview(_iconView)
+            }
+            // 更新icon和布局
+            _updateIconLayoutIfNeeded()
+            
+            guard _iconView.alpha < 1 else {
+                return
+            }
+            UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
+                self._iconView.alpha = 1
+            })
+        } else {
+            // 更新icon和布局
+            _updateIconLayoutIfNeeded()
+            
+            guard _iconView.superview != nil else {
+                return
+            }
+            UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
+
+                self._iconView.alpha = 0
+
+            }, completion: { isFinished in
+                guard isFinished else {
+                    return
+                }
+                self._iconView.alpha = 1
+                self._iconView.removeFromSuperview()
+            })
         }
-        _updateIconLayoutIfNeeded()
     }
-    
-    fileprivate func _updatexxx() {
-        let view = _consoleView
-        if view.superview != self {
-            addSubview(view)
-        }
-        _updateCenterLayoutIfNeeded()
-    }
-    
-    
-    fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
+    private func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
         guard _progressOfLock == nil else {
             // is lock
             _progressOfLock = progress
@@ -284,8 +294,33 @@ class BrowseDetailViewCell: UICollectionViewCell {
         })
     }
     
+    // MARK: Layout & Auto Lock
+    
+    fileprivate func _updateConsoleLock(_ lock: Bool, animated: Bool) {
+        guard _consoleOfLock != lock && !_progressOfHidden else {
+            return
+        }
+        _consoleOfLock = lock
+        _consoleView.updateFocus(!lock, animated: animated)
+    }
+    fileprivate func _updateProgressLock(_ lock: Bool, animated: Bool) {
+        if lock {
+            // 锁定
+            let progress = _progress
+            _updateProgress(progress, force: true, animated: animated)
+            _progressOfLock = progress
+        } else {
+            // 解锁, 并尝试恢复
+            let progress = _progressOfLock ?? _progress
+            _progressOfLock = nil
+            _updateProgress(progress, force: false, animated: animated)
+        }
+    }
+    
     fileprivate func _updateIconLayoutIfNeeded() {
-        
+        guard _iconView.superview != nil else {
+            return
+        }
         let edg = _containterInset
         let bounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
        
@@ -295,8 +330,10 @@ class BrowseDetailViewCell: UICollectionViewCell {
         nframe.size.height = 27
         _iconView.frame = nframe
     }
-    fileprivate func _updateCenterLayoutIfNeeded() {
-        
+    fileprivate func _updateConsoleLayoutIfNeeded() {
+        guard _consoleView.superview != nil else {
+            return
+        }
         _consoleView.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
     }
     fileprivate func _updateProgressLayoutIfNeeded() {
@@ -316,6 +353,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         _progressView.center = CGPoint(x: x2 - size.width / 2 - edg.right, y: y2 - size.height / 2 - edg.bottom)
     }
     
+    // MARK: Init
     
     private func _commonInit() {
         
@@ -348,6 +386,17 @@ class BrowseDetailViewCell: UICollectionViewCell {
         
         super.addSubview(containterView)
     }
+    
+    // MARK: Ivar
+    
+    private var _type: BrowseAssetType = .unknow
+    private var _subtype: BrowseAssetSubtype = .unknow
+    
+    private var _consoleOfLock: Bool = false
+    
+    private var _progress: Double = 0
+    private var _progressOfLock: Double?
+    private var _progressOfHidden: Bool = true
     
     fileprivate lazy var _iconView = UIButton(type: .system)
     fileprivate lazy var _consoleView = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
@@ -382,11 +431,11 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
     }
     
     func containterViewWillBeginDragging(_ containterView: BrowseContainterView) {
-        _updateStateLock(true, animated: true)
+        _updateConsoleLock(true, animated: true)
     }
     
     func containterViewWillBeginZooming(_ containterView: BrowseContainterView, with view: UIView?) {
-        _updateStateLock(true, animated: true)
+        _updateConsoleLock(true, animated: true)
     }
     
     func containterViewShouldBeginRotationing(_ containterView: BrowseContainterView, with view: UIView?) -> Bool {
@@ -394,7 +443,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
             return false
         }
         
-        _updateStateLock(true, animated: true)
+        _updateConsoleLock(true, animated: true)
         _updateProgressLock(true, animated: false)
         
         return true
@@ -404,15 +453,15 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
         guard !decelerate else {
             return
         }
-        _updateStateLock(false, animated: true)
+        _updateConsoleLock(false, animated: true)
     }
     
     func containterViewDidEndDecelerating(_ containterView: BrowseContainterView) {
-        _updateStateLock(false, animated: true)
+        _updateConsoleLock(false, animated: true)
     }
     
     func containterViewDidEndZooming(_ containterView: BrowseContainterView, with view: UIView?, atScale scale: CGFloat) {
-        _updateStateLock(false, animated: true)
+        _updateConsoleLock(false, animated: true)
     }
     
     func containterViewDidEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
@@ -421,11 +470,7 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
         
         delegate?.browseDetailView?(self, containterView, didEndRotationing: view, atOrientation: orientation)
         
-//        if _automaticallyAdjustsControlViewIsHidden {
-//            _updateControlViewIsHidden(false, animated: true)
-//        }
-        
         _updateProgressLock(false, animated: true)
-        _updateStateLock(false, animated: true)
+        _updateConsoleLock(false, animated: true)
     }
 }

@@ -67,9 +67,6 @@ open class BrowseOverlayProgressView: UIView {
 //        _layer.fillColor = UIColor.clear.cgColor
 //        _layer.strokeColor = UIColor.lightGray.cgColor
         
-        
-        //CTFontCreatePathForGlyph
-        
         _layer.lineWidth = 1 / UIScreen.main.scale
         _layer.radius = 3
     }
