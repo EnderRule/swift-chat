@@ -18,9 +18,10 @@ class TestLayerViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
-        
         mpv.frame = CGRect(x: 40, y: 40, width: 240, height: 240)
-        mpv2.frame = CGRect(x: mpv.frame.maxX, y: mpv.frame.maxY - 24, width: 24, height: 24)
+        mpv.radius = 100
+        mpv2.frame = CGRect(x: mpv.frame.maxX, y: mpv.frame.maxY - 22, width: 22, height: 22)
+        mpv2.radius = mpv2.frame.width / 2 - 3
         
         view.addSubview(mpv)
         view.addSubview(mpv2)

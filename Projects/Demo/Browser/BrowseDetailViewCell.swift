@@ -141,7 +141,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         // 最后再更新UI信息
         _updateIcon(0)
         _updatexxx()
-        _updateProgress(0.25, force: false, animated: false)
+        _updateProgress(0, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
         //    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
