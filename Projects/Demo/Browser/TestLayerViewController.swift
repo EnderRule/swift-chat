@@ -33,19 +33,19 @@ class TestLayerViewController: UIViewController {
     }
     
     @IBAction func b1(_ sender: AnyObject) {
-        updateProgress(min(max(mpv.progress - 0.35, 0), 1))
+        updateProgress(min(max(mpv.progress - 0.35, -1), 1))
     }
     @IBAction func b2(_ sender: AnyObject) {
-        updateProgress(min(max(mpv.progress + 0.35, 0), 1))
+        updateProgress(min(max(mpv.progress + 0.35, -1), 1))
     }
     
     @IBAction func progressDidChange(_ sender: UISlider) {
-//        mlayer.progress = Double(sender.value)
-//        mlayer2.progress = mlayer.progress
+        mpv.progress = Double(sender.value)
+        mpv2.progress = mpv.progress
     }
     @IBAction func radiusDidChange(_ sender: UISlider) {
-//        mlayer.radius = CGFloat(sender.value)
-        //mlayer2.radius = mlayer.radius
+        mpv.radius = CGFloat(sender.value)
+        //mpv2.radius = mlayer.radius
     }
 
     func updateProgress(_ progress: Double) {

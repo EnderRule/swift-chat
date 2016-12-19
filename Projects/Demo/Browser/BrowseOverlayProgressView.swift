@@ -26,10 +26,6 @@ open class BrowseOverlayProgressView: UIView {
             let ani = CABasicAnimation(keyPath: "radius")
             ani.toValue = radius 
             _layer.add(ani, forKey: "radius")
-            
-            //_label.font = _label.font?.withSize(radius * 2)
-            //_label.bounds = CGRect(x: 0, y: 0, width: radius * 2, height: radius * 2)
-            //_label.center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
         }
     }
     
@@ -50,9 +46,13 @@ open class BrowseOverlayProgressView: UIView {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
-        
-        
-        
+    }
+    
+    open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard progress < -0.000001 else {
+            return super.point(inside: point, with: event)
+        }
+        return true
     }
     
     open override class var layerClass: AnyClass { 
@@ -72,22 +72,8 @@ open class BrowseOverlayProgressView: UIView {
         
         _layer.lineWidth = 1 / UIScreen.main.scale
         _layer.radius = 3
-        
-       // _label.text = "!"
-       // _label.font = UIFont(name: "Georgia", size: _layer.radius * 2)
-       // _label.textColor = UIColor.white
-       // _label.textAlignment = .center
-       // _label.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
-       // 
-       // _label.shadowColor = UIColor.random
-       // _label.shadowOffset = CGSize(width: 0, height: 0)
-//@prop//erty(nullable, nonatomic,strong) UIColor            *shadowColor;     // default is nil (no shadow)
-//@prop//erty(nonatomic)        CGSize             shadowOffset;    // default is CGSizeMake(0, -1) -- a top shadow
-       // 
-       // addSubview(_label)
     }
     
-    //private lazy var _label: UILabel = UILabel()
     private lazy var _layer: BrowseOverlayProgressLayer = {
         return self.layer as! BrowseOverlayProgressLayer
     }()

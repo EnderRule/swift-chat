@@ -83,9 +83,9 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
         let op = UIBezierPath(roundedRect: rect1, cornerRadius: rect1.width / 2)
         
         guard progress > 0.000001 else {
-            // is <= 0, add round
+            // progress is == 0, is empty
             op.append(.init(roundedRect: rect2, cornerRadius: rect2.width / 2))
-            // if progress < 0, is error, show error icon
+            // progress is < 0, is error, show error icon
             if progress < -0.000001 {
                 let mp = UIBezierPath(cgPath: iconForError())
                 let x = (rect1.width - mp.bounds.width) / 2
@@ -97,7 +97,7 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
             return
         }
         guard progress < 0.999999 else {
-            // is >= 1
+            // progress is >= 1, is full
             path = op.cgPath
             return
         }
