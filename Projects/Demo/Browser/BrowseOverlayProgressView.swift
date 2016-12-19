@@ -8,8 +8,7 @@
 
 import UIKit
 
-
-open class BrowseOverlayProgressView: UIView {
+open class BrowseOverlayProgressView: UIControl {
    
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,6 +25,16 @@ open class BrowseOverlayProgressView: UIView {
             let ani = CABasicAnimation(keyPath: "radius")
             ani.toValue = radius 
             _layer.add(ani, forKey: "radius")
+        }
+    }
+    open var fillColor: UIColor? {
+        willSet {
+            _layer.fillColor = newValue?.cgColor
+        }
+    }
+    open var strokeColor: UIColor? {
+        willSet {
+            _layer.strokeColor = newValue?.cgColor
         }
     }
     
@@ -50,7 +59,7 @@ open class BrowseOverlayProgressView: UIView {
     
     open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         guard progress < -0.000001 else {
-            return super.point(inside: point, with: event)
+            return false
         }
         return true
     }
@@ -63,12 +72,11 @@ open class BrowseOverlayProgressView: UIView {
         
         backgroundColor = .clear
         
-//        _layer.backgroundColor = UIColor.clear.cgColor
-//        _layer.fillColor = UIColor.clear.cgColor
-//        _layer.strokeColor = UIColor.lightGray.cgColor
-        
-        _layer.lineWidth = 1 / UIScreen.main.scale
         _layer.radius = 3
+        _layer.lineWidth = 1 / UIScreen.main.scale
+        
+        _layer.fillColor = fillColor?.cgColor
+        _layer.strokeColor = strokeColor?.cgColor
     }
     
     private lazy var _layer: BrowseOverlayProgressLayer = {

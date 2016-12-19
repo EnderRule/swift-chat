@@ -73,10 +73,6 @@ class BrowseDetailViewCell: UICollectionViewCell {
             }
         }
     }
-    dynamic func playHandler(_ sender: Any) {
-        logger.debug()
-        
-    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -172,8 +168,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             return
         }
         _type = type
-       
-        if type == .video {
+        if _type == .video {
             if _consoleView.superview != self {
                 addSubview(_consoleView)
             }
@@ -192,38 +187,35 @@ class BrowseDetailViewCell: UICollectionViewCell {
             return // no change
         }
         _subtype = subtype
-        
-        if subtype != .unknow {
-            if _iconView.superview != self {
-                _iconView.alpha = 0
-                addSubview(_iconView)
+        if _subtype != .unknow {
+            if _typeView.superview != self {
+                _typeView.alpha = 0
+                addSubview(_typeView)
             }
             // 更新icon和布局
             _updateIconLayoutIfNeeded()
-            
-            guard _iconView.alpha < 1 else {
+            guard _typeView.alpha < 1 else {
                 return
             }
             UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
-                self._iconView.alpha = 1
+                self._typeView.alpha = 1
             })
         } else {
             // 更新icon和布局
             _updateIconLayoutIfNeeded()
-            
-            guard _iconView.superview != nil else {
+            guard _typeView.superview != nil else {
                 return
             }
             UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
 
-                self._iconView.alpha = 0
+                self._typeView.alpha = 0
 
             }, completion: { isFinished in
                 guard isFinished else {
                     return
                 }
-                self._iconView.alpha = 1
-                self._iconView.removeFromSuperview()
+                self._typeView.alpha = 1
+                self._typeView.removeFromSuperview()
             })
         }
     }
@@ -318,17 +310,17 @@ class BrowseDetailViewCell: UICollectionViewCell {
     }
     
     fileprivate func _updateIconLayoutIfNeeded() {
-        guard _iconView.superview != nil else {
+        guard _typeView.superview != nil else {
             return
         }
         let edg = _containterInset
         let bounds = UIEdgeInsetsInsetRect(self.bounds, contentInset)
        
-        var nframe = _iconView.frame
+        var nframe = _typeView.frame
         nframe.origin.x = bounds.minX + edg.left
         nframe.origin.y = bounds.minY + edg.top
         nframe.size.height = 27
-        _iconView.frame = nframe
+        _typeView.frame = nframe
     }
     fileprivate func _updateConsoleLayoutIfNeeded() {
         guard _consoleView.superview != nil else {
@@ -367,22 +359,23 @@ class BrowseDetailViewCell: UICollectionViewCell {
         containterView.addSubview(detailView)
         containterView.addGestureRecognizer(doubleTapGestureRecognizer)
         
-        _iconView.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
-        _iconView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        _iconView.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
-        _iconView.isUserInteractionEnabled = false
-        _iconView.backgroundColor = UIColor.white.withAlphaComponent(0.25)
-        _iconView.tintColor = UIColor.black.withAlphaComponent(0.6)
-        _iconView.layer.cornerRadius = 3
-        _iconView.layer.masksToBounds = true
+        _typeView.frame = CGRect(x: 0, y: 0, width: 60, height: 26)
+        _typeView.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        _typeView.titleEdgeInsets = UIEdgeInsetsMake(0, 4, 0, -4)
+        _typeView.isUserInteractionEnabled = false
+        _typeView.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        _typeView.tintColor = UIColor.black.withAlphaComponent(0.6)
+        _typeView.layer.cornerRadius = 3
+        _typeView.layer.masksToBounds = true
         
-        _iconView.setTitle("HDR", for: .normal)
-        _iconView.setImage(UIImage(named: "icon_hdr"), for: .normal)
+        _typeView.setTitle("HDR", for: .normal)
+        _typeView.setImage(UIImage(named: "icon_hdr"), for: .normal)
         
         _consoleView.delegate = self
         
         _progressView.radius = (_progressView.bounds.width / 2) - 3
-        _progressView.isUserInteractionEnabled = false
+        _progressView.fillColor = UIColor.white
+        _progressView.strokeColor = UIColor.lightGray
         
         super.addSubview(containterView)
     }
@@ -398,7 +391,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
     private var _progressOfLock: Double?
     private var _progressOfHidden: Bool = true
     
-    fileprivate lazy var _iconView = UIButton(type: .system)
+    fileprivate lazy var _typeView = UIButton(type: .system)
     fileprivate lazy var _consoleView = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
     fileprivate lazy var _progressView = BrowseOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
 }
