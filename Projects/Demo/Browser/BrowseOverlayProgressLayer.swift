@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreText
 
 open class BrowseOverlayProgressLayer: CAShapeLayer {
     
@@ -84,6 +85,14 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
         guard progress > 0.000001 else {
             // is <= 0, add round
             op.append(.init(roundedRect: rect2, cornerRadius: rect2.width / 2))
+            // if progress < 0, is error, show error icon
+            if progress < -0.000001 {
+                let mp = UIBezierPath(cgPath: iconForError())
+                let x = (rect1.width - mp.bounds.width) / 2
+                let y = (rect1.height - mp.bounds.height) / 2
+                mp.apply(CGAffineTransform(translationX: x, y: y))
+                op.append(mp)
+            }
             path = op.cgPath
             return
         }
@@ -102,6 +111,31 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
         
         path = op.cgPath
     }
+    
+    private func iconForError() -> CGPath {
+        if let path = _cacheIconPath, _cacheIconRadius == radius {
+            return path
+        }
+        let str = NSAttributedString(string: "!", attributes: nil) as CFAttributedString
+        let font = CTFontCreateWithName("Symbol" as CFString, radius * 2, nil)
+        
+        let line = CTLineCreateWithAttributedString(str)
+        let run = (CTLineGetGlyphRuns(line) as NSArray)[0] as! CTRun
+            
+        var glyph: CGGlyph = 0
+        CTRunGetGlyphs(run, CFRangeMake(0, 1), &glyph)
+        
+        let path = CTFontCreatePathForGlyph(font, glyph, nil)
+        let bounds = path?.boundingBox ?? .zero
+        var transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: -bounds.minX, y: -bounds.maxY)
+        
+        _cacheIconPath = path?.mutableCopy(using: &transform)
+        _cacheIconRadius = radius
+       
+        // 一定会成功的
+        return _cacheIconPath!
+    }
+    
     private func commonInit() {
         
         lineCap = kCALineCapRound
@@ -119,6 +153,9 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
     private var _cacheRadius: CGFloat = 0
     private var _cacheProgress: Double = -1
     private var _cacheBounds: CGRect = .zero
+    
+    private var _cacheIconRadius: CGFloat = 0
+    private var _cacheIconPath: CGPath?
     
     private var _currentRadius: CGFloat {
         return (presentation() as BrowseOverlayProgressLayer?)?.radius ?? radius
