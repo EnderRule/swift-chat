@@ -366,7 +366,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         _typeView.layer.masksToBounds = true
         
         _typeView.setTitle("HDR", for: .normal)
-        _typeView.setImage(UIImage(named: "browse_icon_badge_hdr"), for: .normal)
+        _typeView.setImage(UIImage(named: "browse_badge_hdr"), for: .normal)
         
         _consoleView.delegate = self
         

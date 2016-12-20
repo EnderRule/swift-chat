@@ -9,20 +9,38 @@
 import UIKit
 
 enum BrowseBadgeBarItemStyle {
-    case custom
     
-    case photosAll
-    case photosBurst
+    case burst
+    case favorites
+    case panorama
+    case screenshots
+    case selfies
+    case slomo
+    case timelapse
+    case video
     
-    case photosFavorites
-    case photosLastImport
-    case photosPanorama
-    case photosRecentlyDeleted
-    case photosScreenshots
-    case photosSelfies
-    case photosSlomo
-    case photosTimelapse
-    case photosVideo
+    case recentlyDeleted
+    case lastImport
+    
+    case loading
+    
+    fileprivate var imageName: String {
+        switch self {
+        case .burst:            return "browse_badge_burst"
+        case .favorites:        return "browse_badge_favorites"
+        case .panorama:         return "browse_badge_panorama"
+        case .screenshots:      return "browse_badge_screenshots"
+        case .selfies:          return "browse_badge_selfies"
+        case .slomo:            return "browse_badge_slomo"
+        case .timelapse:        return "browse_badge_timelapse"
+        case .video:            return "browse_badge_video"
+            
+        case .recentlyDeleted:  return "browse_badge_recentlyDeleted"
+        case .lastImport:       return "browse_badge_lastImport"
+            
+        case .loading:          return "browse_badge_loading"
+        }
+    }
 }
 
 class BrowseBadgeBarItem {
@@ -30,11 +48,16 @@ class BrowseBadgeBarItem {
     init(title: String) {
         self.title = title
     }
-    init(image: UIImage) {
+    init(image: UIImage?) {
         self.image = image
     }
     convenience init(style: BrowseBadgeBarItemStyle) {
-        self.init(image: UIImage(named: "browse_icon_badge_loading")!)
+        // 缓存
+        var icon = UIImage(named: style.imageName)
+        if style != .loading {
+            icon = icon?.withRenderingMode(.alwaysTemplate)
+        }
+        self.init(image: icon)
     }
     
     var title: String?
@@ -43,7 +66,11 @@ class BrowseBadgeBarItem {
 
 class BrowseBadgeBar: UIView {
     
-    var backgroundImage: UIImage?
+    var backgroundImage: UIImage? {
+        willSet {
+            layer.contents = newValue?.cgImage
+        }
+    }
     
     var leftBarItems: [BrowseBadgeBarItem]? {
         didSet {
@@ -65,7 +92,23 @@ class BrowseBadgeBar: UIView {
         _updateVisableViewLayoutIfNeeded()
     }
     
-    func _updateVisableViewsIfNeeded() {
+    override func tintColorDidChange() {
+        super.tintColorDidChange()
+        _leftViews.forEach { 
+            guard let label = $0 as? UILabel else {
+                return
+            }
+            label.textColor = tintColor
+        }
+        _rightViews.forEach { 
+            guard let label = $0 as? UILabel else {
+                return
+            }
+            label.textColor = tintColor
+        }
+    }
+    
+    private func _updateVisableViewsIfNeeded() {
         guard _needUpdateVisableViews else {
             return
         }
@@ -90,7 +133,7 @@ class BrowseBadgeBar: UIView {
         } ?? []
         _cacheBounds = nil
     }
-    func _updateVisableViewLayoutIfNeeded() {
+    private func _updateVisableViewLayoutIfNeeded() {
         guard _cacheBounds?.size != self.bounds.size else {
             return
         }
@@ -131,13 +174,14 @@ class BrowseBadgeBar: UIView {
     private func _createView(with item: BrowseBadgeBarItem) -> UIView {
         if let image = item.image {
             let view = UIImageView(image: image)
+            view.contentMode = .center
             return view
         }
         if let title = item.title {
             let label = UILabel()
             
             label.text = title
-            label.textColor = .white
+            label.textColor = tintColor
             label.font = UIFont.systemFont(ofSize: 12)
             //label.adjustsFontSizeToFitWidth = true
             

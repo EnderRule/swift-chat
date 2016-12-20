@@ -26,6 +26,11 @@ class BrowseViewCell: UICollectionViewCell {
             }
             _previewView.backgroundColor = newValue?.backgroundColor
             _previewView.image = newValue?.browseImage
+            
+            _badgeBar.backgroundImage = UIImage(named: "browse_background_gradient")
+            _badgeBar.leftBarItems = [.init(style: .video)]
+            //_badgeBar.rightBarItems = [.init(style: .loading)]
+            _badgeBar.rightBarItems = [.init(title: "9:99")]
         }
     }
     
@@ -41,7 +46,9 @@ class BrowseViewCell: UICollectionViewCell {
         _previewView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         _badgeBar.frame = CGRect(x: 0, y: contentView.bounds.height - 20, width: contentView.bounds.width, height: 20)
+        _badgeBar.tintColor = .white
         _badgeBar.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+        _badgeBar.isUserInteractionEnabled = false
         
         contentView.addSubview(_previewView)
         contentView.addSubview(_badgeBar)

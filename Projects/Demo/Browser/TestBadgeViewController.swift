@@ -16,6 +16,6 @@ class TestBadgeViewController: UIViewController {
         super.viewDidLoad()
 
         bar.leftBarItems = [.init(title: "99:99")]
-        bar.rightBarItems = [.init(style: .custom)]
+        bar.rightBarItems = [.init(style: .loading)]
     }
 }
