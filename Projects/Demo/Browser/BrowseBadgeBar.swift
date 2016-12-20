@@ -62,6 +62,7 @@ class BrowseBadgeBar: UIView {
         super.layoutSubviews()
         
         _updateVisableViewsIfNeeded()
+        _updateVisableViewLayoutIfNeeded()
     }
     
     func _updateVisableViewsIfNeeded() {
@@ -77,14 +78,78 @@ class BrowseBadgeBar: UIView {
             $0.removeFromSuperview()
         }
         
-        _logger.debug()
+        _leftViews = leftBarItems?.map { item -> UIView in
+            let view = _createView(with: item)
+            addSubview(view)
+            return view
+        } ?? []
+        _rightViews = rightBarItems?.map { item -> UIView in
+            let view = _createView(with: item)
+            addSubview(view)
+            return view
+        } ?? []
+        _cacheBounds = nil
+    }
+    func _updateVisableViewLayoutIfNeeded() {
+        guard _cacheBounds?.size != self.bounds.size else {
+            return
+        }
+        _cacheBounds = self.bounds
         
+        let sp = CGFloat(2)
+        let edg = UIEdgeInsetsMake(2, 4, 2, 4)
+        let bounds = UIEdgeInsetsInsetRect(self.bounds, edg)
+        
+        _ = _leftViews.reduce(bounds.minX) { x, view in
+            var nframe = CGRect(x: x, y: bounds.minY, width: 0, height: 0)
+            
+            let size = view.sizeThatFits(bounds.size)
+            
+            nframe.size.width = size.width
+            nframe.size.height = min(size.height, bounds.height)
+            nframe.origin.x = x
+            nframe.origin.y = bounds.minY + (bounds.height - nframe.height) / 2
+            
+            view.frame = nframe
+            return x + nframe.width + sp
+        }
+        _ = _rightViews.reduce(bounds.maxX) { x, view in
+            var nframe = CGRect(x: x, y: bounds.minY, width: 0, height: 0)
+            
+            let size = view.sizeThatFits(bounds.size)
+            
+            nframe.size.width = size.width
+            nframe.size.height = min(size.height, bounds.height)
+            nframe.origin.x = x - nframe.width
+            nframe.origin.y = bounds.minY + (bounds.height - nframe.height) / 2
+            
+            view.frame = nframe
+            return x - nframe.width - sp
+        }
     }
     
+    private func _createView(with item: BrowseBadgeBarItem) -> UIView {
+        if let image = item.image {
+            let view = UIImageView(image: image)
+            return view
+        }
+        if let title = item.title {
+            let label = UILabel()
+            
+            label.text = title
+            label.textColor = .white
+            label.font = UIFont.systemFont(ofSize: 12)
+            //label.adjustsFontSizeToFitWidth = true
+            
+            return label
+        }
+        return UIView()
+    }
+    
+    private var _cacheBounds: CGRect?
     private var _needUpdateVisableViews: Bool = true
     
     private lazy var _leftViews: [UIView] = []
     private lazy var _rightViews: [UIView] = []
 }
-
 

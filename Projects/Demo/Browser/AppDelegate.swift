@@ -17,9 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        //UIView.self.perform(Selector(String("_enableToolsDebugColorViewBounds:")), with: true)
-    
-        //UIView.perform(Selector())
+//        UIView.self.perform(Selector(String("_enableToolsDebugColorViewBounds:")), with: true)
         
 //        DispatchQueue.main.async {
 //            guard let window = self.window else {

@@ -15,7 +15,7 @@ class TestBadgeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        bar.leftBarItems = [.init(style: .custom)]
-        bar.rightBarItems = [.init(style: .photosAll)]
+        bar.leftBarItems = [.init(title: "99:99")]
+        bar.rightBarItems = [.init(style: .custom)]
     }
 }
