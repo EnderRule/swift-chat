@@ -34,7 +34,7 @@ class BrowseBadgeBarItem {
         self.image = image
     }
     convenience init(style: BrowseBadgeBarItemStyle) {
-        self.init(image: UIImage(named: "photo_icon_thumbnail_loading")!)
+        self.init(image: UIImage(named: "browse_icon_badge_loading")!)
     }
     
     var title: String?

@@ -161,8 +161,8 @@ class BrowseVideoConsoleView: UIView {
         _operatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         _operatorView.addTarget(self, action: #selector(operatorHandler(_:)), for: .touchUpInside)
         
-        _operatorView.setImage(UIImage(named: "photo_button_play"), for: .normal)
-        _operatorView.setImage(UIImage(named: "photo_button_play"), for: .highlighted)
+        _operatorView.setImage(UIImage(named: "browse_button_play"), for: .normal)
+        _operatorView.setImage(UIImage(named: "browse_button_play"), for: .highlighted)
         
         _indicatorView.frame = bounds
         _indicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
