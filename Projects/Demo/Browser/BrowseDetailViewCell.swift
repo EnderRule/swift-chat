@@ -130,7 +130,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
         _updateType(newValue.browseType, animated: false)
         _updateSubtype(newValue.browseSubtype, animated: false)
         
-        _updateProgress(0.25, force: false, animated: false)
+        //_updateProgress(0.25, force: false, animated: false)
+        _updateProgress(-1, force: false, animated: false)
         //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
         //    self._updateProgress(0.35, animated: true)
         //    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
@@ -157,7 +158,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     // MARK: Value
     
-    private func _updateType(_ type: BrowseAssetType, animated: Bool) {
+    fileprivate func _updateType(_ type: BrowseAssetType, animated: Bool) {
         guard _type != type else {
             _consoleView.stop()
             _consoleView.updateFocus(true, animated: animated)
@@ -178,7 +179,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             _consoleView.updateFocus(false, animated: animated)
         }
     }
-    private func _updateSubtype(_ subtype: BrowseAssetSubtype, animated: Bool) {
+    fileprivate func _updateSubtype(_ subtype: BrowseAssetSubtype, animated: Bool) {
         guard _subtype != subtype else {
             return // no change
         }
@@ -215,7 +216,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             })
         }
     }
-    private func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
+    fileprivate func _updateProgress(_ progress: Double, force: Bool? = nil, animated: Bool) {
         guard _progressOfLock == nil else {
             // is lock
             _progressOfLock = progress
@@ -372,6 +373,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
         _progressView.radius = (_progressView.bounds.width / 2) - 3
         _progressView.fillColor = UIColor.white
         _progressView.strokeColor = UIColor.lightGray
+        _progressView.addTarget(self, action: #selector(progressView(willRetry: )), for: .touchUpInside)
         
         super.addSubview(containterView)
     }
@@ -397,6 +399,15 @@ class BrowseDetailViewCell: UICollectionViewCell {
 }
 
 extension BrowseDetailViewCell: BrowseVideoConsoleViewDelegate {
+    
+    func progressView(willRetry sender: Any) {
+        _logger.debug()
+        
+        _updateProgress(0, animated: false)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
+            self._updateProgress(0.25, animated: true)
+        })
+    }
     
     func videoConsoleView(didPlay videoConsoleView: BrowseVideoConsoleView) {
         videoConsoleView.wait()

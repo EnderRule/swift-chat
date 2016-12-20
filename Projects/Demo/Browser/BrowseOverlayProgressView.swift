@@ -66,7 +66,7 @@ open class BrowseOverlayProgressView: UIControl {
         guard progress < -0.000001 else {
             return false
         }
-        return true
+        return super.point(inside: point, with: event)
     }
     
     open override class var layerClass: AnyClass { 
