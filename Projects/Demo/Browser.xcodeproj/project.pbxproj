@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0C1001DB1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */; };
+		0C15D2901E08CBB5002AE9B2 /* BrowseBadgeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */; };
+		0C15D2921E08D25B002AE9B2 /* TestBadgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */; };
 		0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D18C1DD8341C007877A0 /* AppDelegate.swift */; };
 		0C25D1921DD8341C007877A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C25D1901DD8341C007877A0 /* Main.storyboard */; };
 		0C25D1941DD8341C007877A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C25D1931DD8341C007877A0 /* Assets.xcassets */; };
@@ -50,6 +52,8 @@
 
 /* Begin PBXFileReference section */
 		0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVideoConsoleView.swift; sourceTree = "<group>"; };
+		0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseBadgeBar.swift; sourceTree = "<group>"; };
+		0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBadgeViewController.swift; sourceTree = "<group>"; };
 		0C25D1891DD8341C007877A0 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C25D18C1DD8341C007877A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0C25D1911DD8341C007877A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -129,6 +133,7 @@
 				0C25D1931DD8341C007877A0 /* Assets.xcassets */,
 				0C25D1951DD8341C007877A0 /* LaunchScreen.storyboard */,
 				0C25D1981DD8341C007877A0 /* Info.plist */,
+				0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */,
 				0C5B43171DFAECB600D893EB /* BrowseOverlayProgressView.swift */,
 				0CF97F3D1E051136002BC4BD /* BrowseOverlayProgressLayer.swift */,
 				0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */,
@@ -160,6 +165,7 @@
 				0C25D1B31DD9991B007877A0 /* TestAsset.swift */,
 				0C25D1B71DD9A88C007877A0 /* TestLayoutViewController.swift */,
 				0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */,
+				0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */,
 				0CD1E29E1DE432BA006832D0 /* Logger.swift */,
 				0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */,
 			);
@@ -268,11 +274,13 @@
 				0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */,
 				0CEF2C8E1DDAE08F0045BB09 /* BrowseContainterView.swift in Sources */,
 				0C25D1B81DD9A88C007877A0 /* TestLayoutViewController.swift in Sources */,
+				0C15D2901E08CBB5002AE9B2 /* BrowseBadgeBar.swift in Sources */,
 				0C4695CB1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift in Sources */,
 				0CA4943B1E07C11D009F0146 /* UIView+Animation.swift in Sources */,
 				0C25D1B21DD988D6007877A0 /* BrowseViewCell.swift in Sources */,
 				0C25D1AC1DD957D7007877A0 /* BrowseView.swift in Sources */,
 				0CEF2C951DDB0DC30045BB09 /* BrowseDetailViewCell.swift in Sources */,
+				0C15D2921E08D25B002AE9B2 /* TestBadgeViewController.swift in Sources */,
 				0CD1E2991DE2D399006832D0 /* BrowseExtendedToolbar.swift in Sources */,
 				0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */,
 				0C25D1AA1DD957CA007877A0 /* BrowseViewController.swift in Sources */,
