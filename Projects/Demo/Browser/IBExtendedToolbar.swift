@@ -1,5 +1,5 @@
 //
-//  BrowseExtendedToolbar.swift
+//  IBExtendedToolbar.swift
 //  Browser
 //
 //  Created by sagesse on 11/21/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class BrowseExtendedToolbar: UIToolbar {
+open class IBExtendedToolbar: UIToolbar {
     // 每一行
     private class LineContext: NSObject {
         
@@ -27,10 +27,10 @@ open class BrowseExtendedToolbar: UIToolbar {
     open override func setItems(_ items: [UIBarButtonItem]?, animated: Bool) {
         _items = items
         let lines = items?.reduce([], { result, item -> [[UIBarButtonItem]] in
-            if item is BrowseExtendedBarItem {
+            if item is IBExtendedItem {
                 return result + [[item]]
             }
-            if result.last?.last is BrowseExtendedBarItem || result.isEmpty {
+            if result.last?.last is IBExtendedItem || result.isEmpty {
                 return result + [[item]]
             }
             var tmp = result
@@ -54,7 +54,7 @@ open class BrowseExtendedToolbar: UIToolbar {
             context.items = $0
             context.minimuxHeight = minimuxHeight
             
-            if let item = $0.first as? BrowseExtendedBarItem {
+            if let item = $0.first as? IBExtendedItem {
                 context.view = item.customView
                 context.height = item.height
             } else {

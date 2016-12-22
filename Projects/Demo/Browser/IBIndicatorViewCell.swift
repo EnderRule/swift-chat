@@ -1,5 +1,5 @@
 //
-//  BrowseIndicatorViewCell.swift
+//  IBIndicatorViewCell.swift
 //  Browser
 //
 //  Created by sagesse on 11/22/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseIndicatorViewCell: BrowseTilingViewCell {
+class IBIndicatorViewCell: IBTilingViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)

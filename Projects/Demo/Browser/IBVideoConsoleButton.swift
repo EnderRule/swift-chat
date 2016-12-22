@@ -1,5 +1,5 @@
 //
-//  BrowseVideoConsoleButton.swift
+//  IBVideoConsoleButton.swift
 //  Browser
 //
 //  Created by sagesse on 15/12/2016.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseVideoConsoleButton: UIControl {
+class IBVideoConsoleButton: UIControl {
     
     func setImage(_ image: UIImage?, for state: UIControlState) {
         _allImages[state.rawValue] = image
@@ -93,6 +93,6 @@ class BrowseVideoConsoleButton: UIControl {
     private lazy var _imageView = UIImageView(frame: .zero)
     private lazy var _contentView = UIView(frame: .zero)
     
-    private lazy var _foregroundView = BrowseVideoConsoleBackgroundView(frame: .zero)
+    private lazy var _foregroundView = IBVideoConsoleBackgroundView(frame: .zero)
     private lazy var _backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
 }

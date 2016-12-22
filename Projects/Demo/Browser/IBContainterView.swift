@@ -1,5 +1,5 @@
 //
-//  BrowseContainterView.swift
+//  IBContainterView.swift
 //  Browser
 //
 //  Created by sagesse on 10/24/16.
@@ -9,43 +9,43 @@
 import UIKit
 
 
-@objc public protocol BrowseContainterViewDelegate {
+@objc public protocol IBContainterViewDelegate {
     
-    @objc optional func containterViewDidScroll(_ containterView: BrowseContainterView) // any offset changes
-    @objc optional func containterViewDidZoom(_ containterView: BrowseContainterView) // any zoom scale changes
-    @objc optional func containterViewDidRotation(_ containterView: BrowseContainterView) // any rotation changes
+    @objc optional func containterViewDidScroll(_ containterView: IBContainterView) // any offset changes
+    @objc optional func containterViewDidZoom(_ containterView: IBContainterView) // any zoom scale changes
+    @objc optional func containterViewDidRotation(_ containterView: IBContainterView) // any rotation changes
     
-    @objc optional func viewForZooming(in containterView: BrowseContainterView) -> UIView? // return a view that will be scaled. if delegate returns nil, nothing happens
+    @objc optional func viewForZooming(in containterView: IBContainterView) -> UIView? // return a view that will be scaled. if delegate returns nil, nothing happens
     
     // called on start of dragging (may require some time and or distance to move)
-    @objc optional func containterViewWillBeginDragging(_ containterView: BrowseContainterView)
+    @objc optional func containterViewWillBeginDragging(_ containterView: IBContainterView)
 
     // called on finger up if the user dragged. velocity is in points/millisecond. targetContentOffset may be changed to adjust where the scroll view comes to rest
-    @objc optional func containterViewWillEndDragging(_ containterView: BrowseContainterView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
+    @objc optional func containterViewWillEndDragging(_ containterView: IBContainterView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
 
     // called on finger up if the user dragged. decelerate is true if it will continue moving afterwards
-    @objc optional func containterViewDidEndDragging(_ containterView: BrowseContainterView, willDecelerate decelerate: Bool)
+    @objc optional func containterViewDidEndDragging(_ containterView: IBContainterView, willDecelerate decelerate: Bool)
 
-    @objc optional func containterViewWillBeginDecelerating(_ containterView: BrowseContainterView) // called on finger up as we are moving
-    @objc optional func containterViewDidEndDecelerating(_ containterView: BrowseContainterView) // called when scroll view grinds to a halt
+    @objc optional func containterViewWillBeginDecelerating(_ containterView: IBContainterView) // called on finger up as we are moving
+    @objc optional func containterViewDidEndDecelerating(_ containterView: IBContainterView) // called when scroll view grinds to a halt
 
-    @objc optional func containterViewDidEndScrollingAnimation(_ containterView: BrowseContainterView) // called when setContentOffset/scrollRectVisible:animated: finishes. not called if not animating
+    @objc optional func containterViewDidEndScrollingAnimation(_ containterView: IBContainterView) // called when setContentOffset/scrollRectVisible:animated: finishes. not called if not animating
 
-    @objc optional func containterViewShouldScrollToTop(_ containterView: BrowseContainterView) -> Bool // return a yes if you want to scroll to the top. if not defined, assumes YES
-    @objc optional func containterViewDidScrollToTop(_ containterView: BrowseContainterView) // called when scrolling animation finished. may be called immediately if already at top
+    @objc optional func containterViewShouldScrollToTop(_ containterView: IBContainterView) -> Bool // return a yes if you want to scroll to the top. if not defined, assumes YES
+    @objc optional func containterViewDidScrollToTop(_ containterView: IBContainterView) // called when scrolling animation finished. may be called immediately if already at top
     
-    @objc optional func containterViewWillBeginZooming(_ containterView: BrowseContainterView, with view: UIView?) // called before the scroll view begins zooming its content
-    @objc optional func containterViewDidEndZooming(_ containterView: BrowseContainterView, with view: UIView?, atScale scale: CGFloat) // scale between minimum and maximum. called after any 'bounce' animations
+    @objc optional func containterViewWillBeginZooming(_ containterView: IBContainterView, with view: UIView?) // called before the scroll view begins zooming its content
+    @objc optional func containterViewDidEndZooming(_ containterView: IBContainterView, with view: UIView?, atScale scale: CGFloat) // scale between minimum and maximum. called after any 'bounce' animations
 
-    @objc optional func containterViewShouldBeginRotationing(_ containterView: BrowseContainterView, with view: UIView?) -> Bool // called before the scroll view begins zooming its content
-    @objc optional func containterViewWillEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation)
-    @objc optional func containterViewDidEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
+    @objc optional func containterViewShouldBeginRotationing(_ containterView: IBContainterView, with view: UIView?) -> Bool // called before the scroll view begins zooming its content
+    @objc optional func containterViewWillEndRotationing(_ containterView: IBContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation)
+    @objc optional func containterViewDidEndRotationing(_ containterView: IBContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
 }
 
 
-@objc public class BrowseContainterView: UIView {
+@objc public class IBContainterView: UIView {
     
-    public weak var delegate: BrowseContainterViewDelegate?
+    public weak var delegate: IBContainterViewDelegate?
     
     // default CGPointZero
     public var contentOffset: CGPoint {
@@ -310,7 +310,7 @@ import UIKit
     }
 }
 
-fileprivate extension BrowseContainterView {
+fileprivate extension IBContainterView {
     
     fileprivate func _commonInit() {
         
@@ -472,7 +472,7 @@ fileprivate extension BrowseContainterView {
     }
 }
 
-extension BrowseContainterView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+extension IBContainterView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     
     public override func addSubview(_ view: UIView) {
         // always allows add to self

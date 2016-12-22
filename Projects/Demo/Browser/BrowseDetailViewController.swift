@@ -33,7 +33,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
     lazy var extraContentInset = UIEdgeInsetsMake(0, -20, 0, -20)
     lazy var interactiveDismissGestureRecognizer = UIPanGestureRecognizer()
     
-    lazy var indicatorView: BrowseIndicatorView = BrowseIndicatorView()
+    lazy var indicatorView: IBIndicatorView = IBIndicatorView()
     
     lazy var collectionViewLayout: BrowseDetailViewLayout = BrowseDetailViewLayout()
     lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.collectionViewLayout)
@@ -234,7 +234,7 @@ class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
 //        collectionView.register(SAPPreviewerCell.self, forCellWithReuseIdentifier: "Video")
         
         toolbarItems = [
-            BrowseExtendedBarItem(height: 40, view: indicatorView),
+            IBExtendedItem(height: 40, view: indicatorView),
             
             UIBarButtonItem(barButtonSystemItem: .action, target: nil, action: nil),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -255,11 +255,11 @@ extension BrowseDetailViewController: BrowseDetailViewDelegate, UINavigationBarD
         return true
     }
     
-    func browseDetailView(_ browseDetailView: Any, _ containterView: BrowseContainterView, shouldBeginRotationing view: UIView?) -> Bool {
+    func browseDetailView(_ browseDetailView: Any, _ containterView: IBContainterView, shouldBeginRotationing view: UIView?) -> Bool {
         collectionView.isScrollEnabled = false
         return true
     }
-    func browseDetailView(_ browseDetailView: Any, _ containterView: BrowseContainterView, didEndRotationing view: UIView?, atOrientation orientation: UIImageOrientation) {
+    func browseDetailView(_ browseDetailView: Any, _ containterView: IBContainterView, didEndRotationing view: UIView?, atOrientation orientation: UIImageOrientation) {
         collectionView.isScrollEnabled = true
     }
 }
@@ -295,7 +295,7 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
             guard let panGestureRecognizer = otherGestureRecognizer as? UIPanGestureRecognizer else {
                 return true
             }
-            guard let view = panGestureRecognizer.view, view.superview is BrowseContainterView else {
+            guard let view = panGestureRecognizer.view, view.superview is IBContainterView else {
                 return false
             }
             return true
@@ -304,22 +304,22 @@ extension BrowseDetailViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension BrowseDetailViewController: BrowseIndicatorViewDelegate {
+extension BrowseDetailViewController: IBIndicatorViewDelegate {
     
-    func indicatorWillBeginDragging(_ indicator: BrowseIndicatorView) {
+    func indicatorWillBeginDragging(_ indicator: IBIndicatorView) {
         logger.trace()
         
 //        collectionView.isScrollEnabled = false
 //        interactiveDismissGestureRecognizer.isEnabled = false
     }
-    func indicatorDidEndDragging(_ indicator: BrowseIndicatorView) {
+    func indicatorDidEndDragging(_ indicator: IBIndicatorView) {
         logger.trace()
         
 //        collectionView.isScrollEnabled = true
 //        interactiveDismissGestureRecognizer.isEnabled = true
     }
     
-    func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath) {
+    func indicator(_ indicator: IBIndicatorView, didSelectItemAt indexPath: IndexPath) {
 //        _logger.debug(indexPath)
 //        guard !_isInteractiving else {
 //            return // 正在交互

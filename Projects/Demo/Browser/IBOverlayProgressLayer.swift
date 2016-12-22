@@ -1,5 +1,5 @@
 //
-//  BrowseOverlayProgressLayer.swift
+//  IBOverlayProgressLayer.swift
 //  Browser
 //
 //  Created by sagesse on 12/17/16.
@@ -9,7 +9,7 @@
 import UIKit
 import CoreText
 
-open class BrowseOverlayProgressLayer: CAShapeLayer {
+open class IBOverlayProgressLayer: CAShapeLayer {
     
     public override init() {
         super.init()
@@ -158,10 +158,10 @@ open class BrowseOverlayProgressLayer: CAShapeLayer {
     private var _cacheIconPath: CGPath?
     
     private var _currentRadius: CGFloat {
-        return (presentation() as BrowseOverlayProgressLayer?)?.radius ?? radius
+        return (presentation() as IBOverlayProgressLayer?)?.radius ?? radius
     }
     private var _currentProgress: Double {
-        return (presentation() as BrowseOverlayProgressLayer?)?.progress ?? progress
+        return (presentation() as IBOverlayProgressLayer?)?.progress ?? progress
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  BrowseTilingView.swift
+//  IBTilingView.swift
 //  Browser
 //
 //  Created by sagesse on 11/28/16.
@@ -8,27 +8,27 @@
 
 import UIKit
 
-@objc protocol BrowseTilingViewDataSource {
+@objc protocol IBTilingViewDataSource {
     
-    func tilingView(_ tilingView: BrowseTilingView, numberOfItemsInSection section: Int) -> Int
+    func tilingView(_ tilingView: IBTilingView, numberOfItemsInSection section: Int) -> Int
     // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
-    func tilingView(_ tilingView: BrowseTilingView, cellForItemAt indexPath: IndexPath) -> BrowseTilingViewCell
+    func tilingView(_ tilingView: IBTilingView, cellForItemAt indexPath: IndexPath) -> IBTilingViewCell
     
-    @objc optional func numberOfSections(in tilingView: BrowseTilingView) -> Int
+    @objc optional func numberOfSections(in tilingView: IBTilingView) -> Int
 }
 
-@objc protocol BrowseTilingViewDelegate {
+@objc protocol IBTilingViewDelegate {
     
-    @objc optional func tilingView(_ tilingView: BrowseTilingView, shouldSelectItemAt indexPath: IndexPath) -> Bool
-    @objc optional func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath)
+    @objc optional func tilingView(_ tilingView: IBTilingView, shouldSelectItemAt indexPath: IndexPath) -> Bool
+    @objc optional func tilingView(_ tilingView: IBTilingView, didSelectItemAt indexPath: IndexPath)
     
-    @objc optional func tilingView(_ tilingView: BrowseTilingView, willDisplay cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath)
-    @objc optional func tilingView(_ tilingView: BrowseTilingView, didEndDisplaying cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath)
+    @objc optional func tilingView(_ tilingView: IBTilingView, willDisplay cell: IBTilingViewCell, forItemAt indexPath: IndexPath)
+    @objc optional func tilingView(_ tilingView: IBTilingView, didEndDisplaying cell: IBTilingViewCell, forItemAt indexPath: IndexPath)
     
-    @objc optional func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    @objc optional func tilingView(_ tilingView: IBTilingView, layout: IBTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
 }
 
-@objc class BrowseTilingView: UIScrollView {
+@objc class IBTilingView: UIScrollView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,10 +39,10 @@ import UIKit
         _commonInit()
     }
     
-    weak var tilingDelegate: BrowseTilingViewDelegate?
-    weak var tilingDataSource: BrowseTilingViewDataSource?
+    weak var tilingDelegate: IBTilingViewDelegate?
+    weak var tilingDataSource: IBTilingViewDataSource?
     
-    var layout: BrowseTilingViewLayout {
+    var layout: IBTilingViewLayout {
         return _layout
     }
     
@@ -53,11 +53,11 @@ import UIKit
         return tilingDataSource?.tilingView(self, numberOfItemsInSection: section) ?? 0
     }
     
-    func register(_ cellClass: BrowseTilingViewCell.Type?, forCellWithReuseIdentifier identifier: String) {
+    func register(_ cellClass: IBTilingViewCell.Type?, forCellWithReuseIdentifier identifier: String) {
         _registedCellClass[identifier] = cellClass
     }
     
-    func dequeueReusableCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> BrowseTilingViewCell {
+    func dequeueReusableCell(withReuseIdentifier identifier: String, for indexPath: IndexPath) -> IBTilingViewCell {
         if let cell = _reusableDequeues[identifier]?.pop(for: indexPath) {
             return cell
         }
@@ -104,7 +104,7 @@ import UIKit
             return max(dur, tmp ?? 0)
         }
     }
-    func reloadItems(at indexPaths: [IndexPath], _ sizeForItemWithHandler: (BrowseTilingViewLayoutAttributes) -> CGSize) {
+    func reloadItems(at indexPaths: [IndexPath], _ sizeForItemWithHandler: (IBTilingViewLayoutAttributes) -> CGSize) {
         
         _needsUpdateLayout = true // 重新更新
         _needsUpdateLayoutVisibleRect = true // 重新计算
@@ -131,16 +131,16 @@ import UIKit
         })?.indexPath ?? _layout.indexPathForItem(at: point)
     }
     
-    var visibleCells: [BrowseTilingViewCell] { 
+    var visibleCells: [IBTilingViewCell] { 
         return _visableCells.flatMap {
             return $0.value
         }
     }
-    func cellForItem(at indexPath: IndexPath) -> BrowseTilingViewCell? {
+    func cellForItem(at indexPath: IndexPath) -> IBTilingViewCell? {
         return _visableCells[indexPath]
     }
     
-    func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
+    func layoutAttributesForItem(at indexPath: IndexPath) -> IBTilingViewLayoutAttributes? {
         return _layout.layoutAttributesForItem(at: indexPath)
     }
     
@@ -222,7 +222,7 @@ import UIKit
             
             let count = _visableLayoutElements?.count ?? 0
             // 设置保留大小
-            var newVisableElements: [BrowseTilingViewLayoutAttributes] = []
+            var newVisableElements: [IBTilingViewLayoutAttributes] = []
             newVisableElements.reserveCapacity(count + 8)
             // 初始化可见区域
             var x1: CGFloat = .greatestFiniteMagnitude
@@ -326,7 +326,7 @@ import UIKit
                 return // 不允许重用
             }
             let queue = _reusableDequeues[identifier] ?? {
-                let tmp = BrowseTilingViewReusableDequeue()
+                let tmp = IBTilingViewReusableDequeue()
                 _reusableDequeues[identifier] = tmp
                 return tmp
             }()
@@ -409,7 +409,7 @@ import UIKit
         }
     }
     
-    private func _visableRect(with attr: BrowseTilingViewLayoutAttributes) -> CGRect {
+    private func _visableRect(with attr: IBTilingViewLayoutAttributes) -> CGRect {
         guard _animationIsStarted else {
             return attr.frame
         }
@@ -446,14 +446,14 @@ import UIKit
     private var _needsUpdateLayoutVisibleRect: Bool = true
     
     private var _vaildLayoutRect: CGRect = .zero
-    private var _vaildLayoutElements: [BrowseTilingViewLayoutAttributes]?
+    private var _vaildLayoutElements: [IBTilingViewLayoutAttributes]?
     
     private var _visibleLayoutRect: CGRect = .zero
-    private var _visableLayoutElements: [BrowseTilingViewLayoutAttributes]?
+    private var _visableLayoutElements: [IBTilingViewLayoutAttributes]?
     
     private lazy var _layoutIsPrepared: Bool = false
-    private lazy var _layout: BrowseTilingViewLayout = {
-        let layout = BrowseTilingViewLayout(tilingView: self)
+    private lazy var _layout: IBTilingViewLayout = {
+        let layout = IBTilingViewLayout(tilingView: self)
         
         layout.prepare()
         self.contentSize = layout.tilingViewContentSize
@@ -461,21 +461,21 @@ import UIKit
         return layout
     }()
     
-    private lazy var _visableCells: [IndexPath: BrowseTilingViewCell] = [:]
-    private lazy var _reusableDequeues: [String: BrowseTilingViewReusableDequeue] = [:]
-    private lazy var _registedCellClass: [String: BrowseTilingViewCell.Type] = [:]
+    private lazy var _visableCells: [IndexPath: IBTilingViewCell] = [:]
+    private lazy var _reusableDequeues: [String: IBTilingViewReusableDequeue] = [:]
+    private lazy var _registedCellClass: [String: IBTilingViewCell.Type] = [:]
     
     private lazy var _lazyTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
 }
 
-@objc class BrowseTilingViewReusableDequeue: NSObject {
+@objc class IBTilingViewReusableDequeue: NSObject {
     
-    private var _arr: Array<BrowseTilingViewCell> = []
+    private var _arr: Array<IBTilingViewCell> = []
     
-    func push(for indexPath: IndexPath, reuseableView view: BrowseTilingViewCell) {
+    func push(for indexPath: IndexPath, reuseableView view: IBTilingViewCell) {
         _arr.append(view)
     }
-    func pop(for indexPath: IndexPath) -> BrowseTilingViewCell? {
+    func pop(for indexPath: IndexPath) -> IBTilingViewCell? {
         if !_arr.isEmpty {
             return _arr.removeLast()
         }

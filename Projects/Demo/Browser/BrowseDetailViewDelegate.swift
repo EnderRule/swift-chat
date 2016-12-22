@@ -10,6 +10,6 @@ import UIKit
 
 @objc protocol BrowseDetailViewDelegate {
     
-    @objc optional func browseDetailView(_ browseDetailView: Any, _ containterView: BrowseContainterView, shouldBeginRotationing view: UIView?) -> Bool
-    @objc optional func browseDetailView(_ browseDetailView: Any, _ containterView: BrowseContainterView, didEndRotationing view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
+    @objc optional func browseDetailView(_ browseDetailView: Any, _ containterView: IBContainterView, shouldBeginRotationing view: UIView?) -> Bool
+    @objc optional func browseDetailView(_ browseDetailView: Any, _ containterView: IBContainterView, didEndRotationing view: UIView?, atOrientation orientation: UIImageOrientation) // scale between minimum and maximum. called after any 'bounce' animations
 }

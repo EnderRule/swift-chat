@@ -1,5 +1,5 @@
 //
-//  BrowseOverlayProgressView.swift
+//  IBOverlayProgressView.swift
 //  Browser
 //
 //  Created by sagesse on 12/9/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class BrowseOverlayProgressView: UIControl {
+open class IBOverlayProgressView: UIControl {
    
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,7 +70,7 @@ open class BrowseOverlayProgressView: UIControl {
     }
     
     open override class var layerClass: AnyClass { 
-        return BrowseOverlayProgressLayer.self
+        return IBOverlayProgressLayer.self
     }
     
     private func _commonInit() {
@@ -84,8 +84,8 @@ open class BrowseOverlayProgressView: UIControl {
         _layer.strokeColor = strokeColor?.cgColor
     }
     
-    private lazy var _layer: BrowseOverlayProgressLayer = {
-        return self.layer as! BrowseOverlayProgressLayer
+    private lazy var _layer: IBOverlayProgressLayer = {
+        return self.layer as! IBOverlayProgressLayer
     }()
 }
 

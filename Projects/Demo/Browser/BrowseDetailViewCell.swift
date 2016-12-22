@@ -44,7 +44,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
     weak var delegate: BrowseDetailViewDelegate?
     
     lazy var detailView: UIImageView = UIImageView()
-    lazy var containterView: BrowseContainterView = BrowseContainterView()
+    lazy var containterView: IBContainterView = IBContainterView()
     lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapHandler(_:)))
     
     override var contentView: UIView {
@@ -158,7 +158,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     // MARK: Value
     
-    fileprivate func _updateType(_ type: BrowseAssetType, animated: Bool) {
+    fileprivate func _updateType(_ type: IBAssetType, animated: Bool) {
         guard _type != type else {
             _consoleView.stop()
             _consoleView.updateFocus(true, animated: animated)
@@ -179,7 +179,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             _consoleView.updateFocus(false, animated: animated)
         }
     }
-    fileprivate func _updateSubtype(_ subtype: BrowseAssetSubtype, animated: Bool) {
+    fileprivate func _updateSubtype(_ subtype: IBAssetSubtype, animated: Bool) {
         guard _subtype != subtype else {
             return // no change
         }
@@ -384,8 +384,8 @@ class BrowseDetailViewCell: UICollectionViewCell {
     
     private var _containterInset: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
     
-    private var _type: BrowseAssetType = .unknow
-    private var _subtype: BrowseAssetSubtype = .unknow
+    private var _type: IBAssetType = .unknow
+    private var _subtype: IBAssetSubtype = .unknow
     
     private var _consoleOfLock: Bool = false
     
@@ -394,11 +394,11 @@ class BrowseDetailViewCell: UICollectionViewCell {
     private var _progressOfHidden: Bool = true
     
     fileprivate lazy var _typeView = UIButton(type: .system)
-    fileprivate lazy var _consoleView = BrowseVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
-    fileprivate lazy var _progressView = BrowseOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
+    fileprivate lazy var _consoleView = IBVideoConsoleView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+    fileprivate lazy var _progressView = IBOverlayProgressView(frame: CGRect(x: 0, y: 0, width: 22, height: 22))
 }
 
-extension BrowseDetailViewCell: BrowseVideoConsoleViewDelegate {
+extension BrowseDetailViewCell: IBVideoConsoleViewDelegate {
     
     func progressView(willRetry sender: Any) {
         _logger.debug()
@@ -409,40 +409,40 @@ extension BrowseDetailViewCell: BrowseVideoConsoleViewDelegate {
         })
     }
     
-    func videoConsoleView(didPlay videoConsoleView: BrowseVideoConsoleView) {
+    func videoConsoleView(didPlay videoConsoleView: IBVideoConsoleView) {
         videoConsoleView.wait()
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10), execute: {
             videoConsoleView.play()
         })
     }
-    func videoConsoleView(didStop videoConsoleView: BrowseVideoConsoleView) {
+    func videoConsoleView(didStop videoConsoleView: IBVideoConsoleView) {
         videoConsoleView.stop()
     }
 }
 
-extension BrowseDetailViewCell: BrowseContainterViewDelegate {
+extension BrowseDetailViewCell: IBContainterViewDelegate {
    
-    func viewForZooming(in containterView: BrowseContainterView) -> UIView? {
+    func viewForZooming(in containterView: IBContainterView) -> UIView? {
         return detailView
     }
     
-    func containterViewDidScroll(_ containterView: BrowseContainterView) {
+    func containterViewDidScroll(_ containterView: IBContainterView) {
         _updateProgressLayoutIfNeeded()
     }
     
-    func containterViewDidZoom(_ containterView: BrowseContainterView) {
+    func containterViewDidZoom(_ containterView: IBContainterView) {
         _updateProgressLayoutIfNeeded()
     }
     
-    func containterViewWillBeginDragging(_ containterView: BrowseContainterView) {
+    func containterViewWillBeginDragging(_ containterView: IBContainterView) {
         _updateConsoleLock(true, animated: true)
     }
     
-    func containterViewWillBeginZooming(_ containterView: BrowseContainterView, with view: UIView?) {
+    func containterViewWillBeginZooming(_ containterView: IBContainterView, with view: UIView?) {
         _updateConsoleLock(true, animated: true)
     }
     
-    func containterViewShouldBeginRotationing(_ containterView: BrowseContainterView, with view: UIView?) -> Bool {
+    func containterViewShouldBeginRotationing(_ containterView: IBContainterView, with view: UIView?) -> Bool {
         guard delegate?.browseDetailView?(self, containterView, shouldBeginRotationing: view) ?? true else {
             return false
         }
@@ -453,22 +453,22 @@ extension BrowseDetailViewCell: BrowseContainterViewDelegate {
         return true
     }
     
-    func containterViewDidEndDragging(_ containterView: BrowseContainterView, willDecelerate decelerate: Bool) {
+    func containterViewDidEndDragging(_ containterView: IBContainterView, willDecelerate decelerate: Bool) {
         guard !decelerate else {
             return
         }
         _updateConsoleLock(false, animated: true)
     }
     
-    func containterViewDidEndDecelerating(_ containterView: BrowseContainterView) {
+    func containterViewDidEndDecelerating(_ containterView: IBContainterView) {
         _updateConsoleLock(false, animated: true)
     }
     
-    func containterViewDidEndZooming(_ containterView: BrowseContainterView, with view: UIView?, atScale scale: CGFloat) {
+    func containterViewDidEndZooming(_ containterView: IBContainterView, with view: UIView?, atScale scale: CGFloat) {
         _updateConsoleLock(false, animated: true)
     }
     
-    func containterViewDidEndRotationing(_ containterView: BrowseContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
+    func containterViewDidEndRotationing(_ containterView: IBContainterView, with view: UIView?, atOrientation orientation: UIImageOrientation) {
         self.orientation = orientation
         self.detailView.image = detailView.image?.withOrientation(orientation)
         

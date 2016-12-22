@@ -1,5 +1,5 @@
 //
-//  BrowseTilingViewLayout.swift
+//  IBTilingViewLayout.swift
 //  Browser
 //
 //  Created by sagesse on 11/28/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class BrowseTilingViewLayoutPage: NSObject {
+@objc class IBTilingViewLayoutPage: NSObject {
     
     init(begin: Int, end: Int) {
         self.begin = begin
@@ -27,9 +27,9 @@ import UIKit
     var isVailded: Bool = false
 }
 
-@objc class BrowseTilingViewLayout: NSObject {
+@objc class IBTilingViewLayout: NSObject {
     
-    init(tilingView: BrowseTilingView) {
+    init(tilingView: IBTilingView) {
         super.init()
         self.tilingView = tilingView
     }
@@ -50,9 +50,9 @@ import UIKit
             return $0 + tilingView.numberOfItems(inSection: $1)
         }
         
-        var elements = [BrowseTilingViewLayoutAttributes]()
-        var pages = [BrowseTilingViewLayoutPage]()
-        var maps = [IndexPath: BrowseTilingViewLayoutAttributes](minimumCapacity: count)
+        var elements = [IBTilingViewLayoutAttributes]()
+        var pages = [IBTilingViewLayoutPage]()
+        var maps = [IndexPath: IBTilingViewLayoutAttributes](minimumCapacity: count)
         
         // 调整预留大小(性能优化)
         elements.reserveCapacity(count)
@@ -72,7 +72,7 @@ import UIKit
         for section in 0 ..< tilingView.numberOfSections {
             for item in 0 ..< tilingView.numberOfItems(inSection: section) {
                 let indexPath = IndexPath(item: item, section: section)
-                let attributes = BrowseTilingViewLayoutAttributes(forCellWith: indexPath)
+                let attributes = IBTilingViewLayoutAttributes(forCellWith: indexPath)
                 
                 var frame = CGRect(x: width, y: 0, width: 0, height: 0)
                 frame.size = sizeForItem(at: indexPath)
@@ -90,7 +90,7 @@ import UIKit
                 
                 // 检查page
                 if index == count || frame.maxX >= pageX + pageWidth {
-                    let page = BrowseTilingViewLayoutPage(begin: pageStart, end: index)
+                    let page = IBTilingViewLayoutPage(begin: pageStart, end: index)
                     
                     page.index = pages.count
                     page.visableRect = attributes.frame.union(elements[pageStart].frame)
@@ -124,7 +124,7 @@ import UIKit
             return sizeForItem(at: attr.indexPath)
         }
     }
-    func invalidateLayout(at indexPaths: [IndexPath], _ sizeForItemWithHandler: (BrowseTilingViewLayoutAttributes) -> CGSize) {
+    func invalidateLayout(at indexPaths: [IndexPath], _ sizeForItemWithHandler: (IBTilingViewLayoutAttributes) -> CGSize) {
         guard !indexPaths.isEmpty else {
             return // indexPaths is empty, no change
         }
@@ -216,10 +216,10 @@ import UIKit
         }
         return nil // 并没有找到, 可以点击到空白处了
     }
-    func layoutAttributesForItem(at indexPath: IndexPath) -> BrowseTilingViewLayoutAttributes? {
+    func layoutAttributesForItem(at indexPath: IndexPath) -> IBTilingViewLayoutAttributes? {
         return _tilingViewLayoutElementMaps[indexPath]
     }
-    func layoutAttributesForElements(in rect: CGRect) -> [BrowseTilingViewLayoutAttributes]? {
+    func layoutAttributesForElements(in rect: CGRect) -> [IBTilingViewLayoutAttributes]? {
         var begin: Int = .max
         var end: Int = .min
         // 可能跨页, 所以可能会存在多个结果(性能优化)
@@ -245,7 +245,7 @@ import UIKit
         return Array(_tilingViewLayoutElements[begin ..< end]) // copy
     }
     
-    private func _updatePage(_ page: BrowseTilingViewLayoutPage) {
+    private func _updatePage(_ page: IBTilingViewLayoutPage) {
         //_logger.debug(page.index)
         
         let x1 = page.visableRect.minX
@@ -339,12 +339,12 @@ import UIKit
         page.isVailded = false
     }
     
-    weak var tilingView: BrowseTilingView?
+    weak var tilingView: IBTilingView?
     
     private var _tilingViewContentSize: CGSize = .zero
     
     private var _version: Int = 0
-    private lazy var _tilingViewLayoutPages: [BrowseTilingViewLayoutPage] = []
-    private lazy var _tilingViewLayoutElements: [BrowseTilingViewLayoutAttributes] = []
-    private lazy var _tilingViewLayoutElementMaps: [IndexPath: BrowseTilingViewLayoutAttributes] = [:]
+    private lazy var _tilingViewLayoutPages: [IBTilingViewLayoutPage] = []
+    private lazy var _tilingViewLayoutElements: [IBTilingViewLayoutAttributes] = []
+    private lazy var _tilingViewLayoutElementMaps: [IndexPath: IBTilingViewLayoutAttributes] = [:]
 }

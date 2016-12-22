@@ -1,5 +1,5 @@
 //
-//  BrowseTilingViewCell.swift
+//  IBTilingViewCell.swift
 //  Browser
 //
 //  Created by sagesse on 11/29/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class BrowseTilingViewCell: UIView {
+@objc class IBTilingViewCell: UIView {
     
     var reuseIdentifier: String? 
     

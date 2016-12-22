@@ -1,5 +1,5 @@
 //
-//  BrowseVideoConsoleBackgroundView.swift
+//  IBVideoConsoleBackgroundView.swift
 //  Browser
 //
 //  Created by sagesse on 12/17/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseVideoConsoleBackgroundView: UIView {
+class IBVideoConsoleBackgroundView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)

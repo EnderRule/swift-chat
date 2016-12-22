@@ -1,5 +1,5 @@
 //
-//  BrowseBadgeBar.swift
+//  IBBadgeBar.swift
 //  Browser
 //
 //  Created by sagesse on 20/12/2016.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum BrowseBadgeBarItemStyle {
+enum IBBadgeBarItemStyle {
     
     case burst
     case favorites
@@ -43,7 +43,7 @@ enum BrowseBadgeBarItemStyle {
     }
 }
 
-class BrowseBadgeBarItem {
+class IBBadgeBarItem {
     
     init(title: String) {
         self.title = title
@@ -51,7 +51,7 @@ class BrowseBadgeBarItem {
     init(image: UIImage?) {
         self.image = image
     }
-    convenience init(style: BrowseBadgeBarItemStyle) {
+    convenience init(style: IBBadgeBarItemStyle) {
         // 缓存
         var icon = UIImage(named: style.imageName)
         if style != .loading {
@@ -64,7 +64,7 @@ class BrowseBadgeBarItem {
     var image: UIImage?
 }
 
-class BrowseBadgeBar: UIView {
+class IBBadgeBar: UIView {
     
     var backgroundImage: UIImage? {
         willSet {
@@ -72,13 +72,13 @@ class BrowseBadgeBar: UIView {
         }
     }
     
-    var leftBarItems: [BrowseBadgeBarItem]? {
+    var leftBarItems: [IBBadgeBarItem]? {
         didSet {
             _needUpdateVisableViews = true
             setNeedsLayout()
         }
     }
-    var rightBarItems: [BrowseBadgeBarItem]? {
+    var rightBarItems: [IBBadgeBarItem]? {
         didSet {
             _needUpdateVisableViews = true
             setNeedsLayout()
@@ -171,7 +171,7 @@ class BrowseBadgeBar: UIView {
         }
     }
     
-    private func _createView(with item: BrowseBadgeBarItem) -> UIView {
+    private func _createView(with item: IBBadgeBarItem) -> UIView {
         if let image = item.image {
             let view = UIImageView(image: image)
             view.contentMode = .center

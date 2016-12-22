@@ -1,5 +1,5 @@
 //
-//  BrowseExtendedBarItem.swift
+//  IBExtendedItem.swift
 //  Browser
 //
 //  Created by sagesse on 12/17/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class BrowseExtendedBarItem: UIBarButtonItem {
+open class IBExtendedItem: UIBarButtonItem {
     
     public init(height: CGFloat, view: UIView) {
         self.height = height

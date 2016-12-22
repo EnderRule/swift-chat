@@ -1,5 +1,5 @@
 //
-//  BrowseVideoConsoleView.swift
+//  IBVideoConsoleView.swift
 //  Browser
 //
 //  Created by sagesse on 16/12/2016.
@@ -9,16 +9,16 @@
 import UIKit
 
 
-@objc protocol BrowseVideoConsoleViewDelegate {
+@objc protocol IBVideoConsoleViewDelegate {
     
-    @objc optional func videoConsoleView(shouldPlay videoConsoleView: BrowseVideoConsoleView) -> Bool
-    @objc optional func videoConsoleView(didPlay videoConsoleView: BrowseVideoConsoleView)
+    @objc optional func videoConsoleView(shouldPlay videoConsoleView: IBVideoConsoleView) -> Bool
+    @objc optional func videoConsoleView(didPlay videoConsoleView: IBVideoConsoleView)
     
-    @objc optional func videoConsoleView(shouldStop videoConsoleView: BrowseVideoConsoleView) -> Bool
-    @objc optional func videoConsoleView(didStop videoConsoleView: BrowseVideoConsoleView)
+    @objc optional func videoConsoleView(shouldStop videoConsoleView: IBVideoConsoleView) -> Bool
+    @objc optional func videoConsoleView(didStop videoConsoleView: IBVideoConsoleView)
 }
 
-class BrowseVideoConsoleView: UIView {
+class IBVideoConsoleView: UIView {
     enum State {
         case none
         case playing
@@ -34,7 +34,7 @@ class BrowseVideoConsoleView: UIView {
         _commonInit()
     }
     
-    weak var delegate: BrowseVideoConsoleViewDelegate?
+    weak var delegate: IBVideoConsoleViewDelegate?
     
     func play() {
         _updateState(.playing, animated: true)
@@ -171,5 +171,5 @@ class BrowseVideoConsoleView: UIView {
     private var _state: State = .none
     
     private lazy var _indicatorView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
-    private lazy var _operatorView = BrowseVideoConsoleButton(frame: .zero)
+    private lazy var _operatorView = IBVideoConsoleButton(frame: .zero)
 }

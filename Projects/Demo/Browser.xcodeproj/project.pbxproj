@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C1001DB1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */; };
+		0C02D0731E0BEC1D003E79DD /* IBAssetValueOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02D0721E0BEC1D003E79DD /* IBAssetValueOptions.swift */; };
+		0C1001DB1E03BD1F00C51A98 /* IBVideoConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1001DA1E03BD1F00C51A98 /* IBVideoConsoleView.swift */; };
+		0C1023921E0B807200C045BB /* IBAssetResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1023911E0B807200C045BB /* IBAssetResourceLoader.swift */; };
+		0C1023941E0B828800C045BB /* IBAssetResourceLoadingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1023931E0B828800C045BB /* IBAssetResourceLoadingRequest.swift */; };
+		0C1023981E0BB06600C045BB /* IBAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1023971E0BB06600C045BB /* IBAsset.swift */; };
+		0C10239C1E0BCA7200C045BB /* TestLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C10239B1E0BCA7200C045BB /* TestLoaderViewController.swift */; };
 		0C1351E21E09928D008263FC /* browse_background_gradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C1351E11E09928D008263FC /* browse_background_gradient@2x.png */; };
-		0C15D2901E08CBB5002AE9B2 /* BrowseBadgeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */; };
+		0C15D2901E08CBB5002AE9B2 /* IBBadgeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C15D28F1E08CBB5002AE9B2 /* IBBadgeBar.swift */; };
 		0C15D2921E08D25B002AE9B2 /* TestBadgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */; };
 		0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D18C1DD8341C007877A0 /* AppDelegate.swift */; };
 		0C25D1921DD8341C007877A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0C25D1901DD8341C007877A0 /* Main.storyboard */; };
@@ -26,12 +31,12 @@
 		0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */; };
 		0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */; };
 		0C25D1C01DD9BF7C007877A0 /* BrowseAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */; };
-		0C4695C91DEBD0AC00E15CF7 /* BrowseTilingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695C81DEBD0AC00E15CF7 /* BrowseTilingView.swift */; };
-		0C4695CB1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CA1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift */; };
-		0C4695CD1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CC1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift */; };
-		0C5B43181DFAECB600D893EB /* BrowseOverlayProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5B43171DFAECB600D893EB /* BrowseOverlayProgressView.swift */; };
+		0C4695C91DEBD0AC00E15CF7 /* IBTilingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */; };
+		0C4695CB1DEBD0E800E15CF7 /* IBTilingViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */; };
+		0C4695CD1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CC1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift */; };
+		0C5B43181DFAECB600D893EB /* IBOverlayProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */; };
 		0C6741E81DF7BBF700282310 /* TestLayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */; };
-		0C769D121E026C0B003F7737 /* BrowseVideoConsoleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C769D111E026C0B003F7737 /* BrowseVideoConsoleButton.swift */; };
+		0C769D121E026C0B003F7737 /* IBVideoConsoleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */; };
 		0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */; };
 		0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */; };
 		0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */; };
@@ -52,25 +57,30 @@
 		0CC197AC1E09821B00122346 /* browse_badge_slomo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CC197A11E09821B00122346 /* browse_badge_slomo@2x.png */; };
 		0CC197AD1E09821B00122346 /* browse_badge_timelapse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CC197A21E09821B00122346 /* browse_badge_timelapse@2x.png */; };
 		0CC197AE1E09821B00122346 /* browse_badge_video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CC197A31E09821B00122346 /* browse_badge_video@2x.png */; };
-		0CC9C9C11DED28060097BB5E /* BrowseTilingViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9C9C01DED28060097BB5E /* BrowseTilingViewCell.swift */; };
-		0CD1E2991DE2D399006832D0 /* BrowseExtendedToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */; };
+		0CC9C9C11DED28060097BB5E /* IBTilingViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9C9C01DED28060097BB5E /* IBTilingViewCell.swift */; };
+		0CD1E2991DE2D399006832D0 /* IBExtendedToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2981DE2D399006832D0 /* IBExtendedToolbar.swift */; };
 		0CD1E29F1DE432BA006832D0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E29E1DE432BA006832D0 /* Logger.swift */; };
 		0CD1E2A11DE432C5006832D0 /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */; };
-		0CD1E2A31DE4464E006832D0 /* BrowseIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */; };
-		0CD1E2A51DE44D0B006832D0 /* BrowseIndicatorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A41DE44D0B006832D0 /* BrowseIndicatorViewCell.swift */; };
+		0CD1E2A31DE4464E006832D0 /* IBIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A21DE4464E006832D0 /* IBIndicatorView.swift */; };
+		0CD1E2A51DE44D0B006832D0 /* IBIndicatorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1E2A41DE44D0B006832D0 /* IBIndicatorViewCell.swift */; };
 		0CDBBFDA1DDD79BA000F694C /* BrowseDetailViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CDBBFD91DDD79BA000F694C /* BrowseDetailViewDelegate.swift */; };
-		0CEF2C8E1DDAE08F0045BB09 /* BrowseContainterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEF2C8D1DDAE08F0045BB09 /* BrowseContainterView.swift */; };
+		0CEF2C8E1DDAE08F0045BB09 /* IBContainterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEF2C8D1DDAE08F0045BB09 /* IBContainterView.swift */; };
 		0CEF2C901DDAE47A0045BB09 /* BrowseDetailViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEF2C8F1DDAE47A0045BB09 /* BrowseDetailViewLayout.swift */; };
 		0CEF2C951DDB0DC30045BB09 /* BrowseDetailViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEF2C941DDB0DC30045BB09 /* BrowseDetailViewCell.swift */; };
-		0CF97F3C1E050CEE002BC4BD /* BrowseVideoConsoleBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3B1E050CEE002BC4BD /* BrowseVideoConsoleBackgroundView.swift */; };
-		0CF97F3E1E051136002BC4BD /* BrowseOverlayProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3D1E051136002BC4BD /* BrowseOverlayProgressLayer.swift */; };
-		0CF97F401E0512DC002BC4BD /* BrowseExtendedBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3F1E0512DC002BC4BD /* BrowseExtendedBarItem.swift */; };
+		0CF97F3C1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3B1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift */; };
+		0CF97F3E1E051136002BC4BD /* IBOverlayProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3D1E051136002BC4BD /* IBOverlayProgressLayer.swift */; };
+		0CF97F401E0512DC002BC4BD /* IBExtendedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF97F3F1E0512DC002BC4BD /* IBExtendedItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVideoConsoleView.swift; sourceTree = "<group>"; };
+		0C02D0721E0BEC1D003E79DD /* IBAssetValueOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBAssetValueOptions.swift; sourceTree = "<group>"; };
+		0C1001DA1E03BD1F00C51A98 /* IBVideoConsoleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBVideoConsoleView.swift; sourceTree = "<group>"; };
+		0C1023911E0B807200C045BB /* IBAssetResourceLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBAssetResourceLoader.swift; sourceTree = "<group>"; };
+		0C1023931E0B828800C045BB /* IBAssetResourceLoadingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBAssetResourceLoadingRequest.swift; sourceTree = "<group>"; };
+		0C1023971E0BB06600C045BB /* IBAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBAsset.swift; sourceTree = "<group>"; };
+		0C10239B1E0BCA7200C045BB /* TestLoaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestLoaderViewController.swift; sourceTree = "<group>"; };
 		0C1351E11E09928D008263FC /* browse_background_gradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_background_gradient@2x.png"; sourceTree = "<group>"; };
-		0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseBadgeBar.swift; sourceTree = "<group>"; };
+		0C15D28F1E08CBB5002AE9B2 /* IBBadgeBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBBadgeBar.swift; sourceTree = "<group>"; };
 		0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBadgeViewController.swift; sourceTree = "<group>"; };
 		0C25D1891DD8341C007877A0 /* Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Browser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C25D18C1DD8341C007877A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,12 +99,12 @@
 		0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailView.swift; sourceTree = "<group>"; };
 		0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewController.swift; sourceTree = "<group>"; };
 		0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimator.swift; sourceTree = "<group>"; };
-		0C4695C81DEBD0AC00E15CF7 /* BrowseTilingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTilingView.swift; sourceTree = "<group>"; wrapsLines = 0; };
-		0C4695CA1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTilingViewLayout.swift; sourceTree = "<group>"; };
-		0C4695CC1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTilingViewLayoutAttributes.swift; sourceTree = "<group>"; };
-		0C5B43171DFAECB600D893EB /* BrowseOverlayProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseOverlayProgressView.swift; sourceTree = "<group>"; };
+		0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingView.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingViewLayout.swift; sourceTree = "<group>"; };
+		0C4695CC1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingViewLayoutAttributes.swift; sourceTree = "<group>"; };
+		0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBOverlayProgressView.swift; sourceTree = "<group>"; };
 		0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestLayerViewController.swift; sourceTree = "<group>"; };
-		0C769D111E026C0B003F7737 /* BrowseVideoConsoleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVideoConsoleButton.swift; sourceTree = "<group>"; };
+		0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBVideoConsoleButton.swift; sourceTree = "<group>"; };
 		0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimatedTransition.swift; sourceTree = "<group>"; };
 		0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseInteractiveTransition.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Pop.swift"; sourceTree = "<group>"; wrapsLines = 0; };
@@ -115,19 +125,19 @@
 		0CC197A11E09821B00122346 /* browse_badge_slomo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_badge_slomo@2x.png"; sourceTree = "<group>"; };
 		0CC197A21E09821B00122346 /* browse_badge_timelapse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_badge_timelapse@2x.png"; sourceTree = "<group>"; };
 		0CC197A31E09821B00122346 /* browse_badge_video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_badge_video@2x.png"; sourceTree = "<group>"; };
-		0CC9C9C01DED28060097BB5E /* BrowseTilingViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTilingViewCell.swift; sourceTree = "<group>"; };
-		0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseExtendedToolbar.swift; sourceTree = "<group>"; };
+		0CC9C9C01DED28060097BB5E /* IBTilingViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingViewCell.swift; sourceTree = "<group>"; };
+		0CD1E2981DE2D399006832D0 /* IBExtendedToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBExtendedToolbar.swift; sourceTree = "<group>"; };
 		0CD1E29E1DE432BA006832D0 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
 		0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Random.swift"; path = "../../Example/UIColor+Random.swift"; sourceTree = "<group>"; };
-		0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseIndicatorView.swift; sourceTree = "<group>"; };
-		0CD1E2A41DE44D0B006832D0 /* BrowseIndicatorViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseIndicatorViewCell.swift; sourceTree = "<group>"; };
+		0CD1E2A21DE4464E006832D0 /* IBIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBIndicatorView.swift; sourceTree = "<group>"; };
+		0CD1E2A41DE44D0B006832D0 /* IBIndicatorViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBIndicatorViewCell.swift; sourceTree = "<group>"; };
 		0CDBBFD91DDD79BA000F694C /* BrowseDetailViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewDelegate.swift; sourceTree = "<group>"; };
-		0CEF2C8D1DDAE08F0045BB09 /* BrowseContainterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseContainterView.swift; sourceTree = "<group>"; };
+		0CEF2C8D1DDAE08F0045BB09 /* IBContainterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBContainterView.swift; sourceTree = "<group>"; };
 		0CEF2C8F1DDAE47A0045BB09 /* BrowseDetailViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewLayout.swift; sourceTree = "<group>"; };
 		0CEF2C941DDB0DC30045BB09 /* BrowseDetailViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewCell.swift; sourceTree = "<group>"; wrapsLines = 0; };
-		0CF97F3B1E050CEE002BC4BD /* BrowseVideoConsoleBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseVideoConsoleBackgroundView.swift; sourceTree = "<group>"; };
-		0CF97F3D1E051136002BC4BD /* BrowseOverlayProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseOverlayProgressLayer.swift; sourceTree = "<group>"; };
-		0CF97F3F1E0512DC002BC4BD /* BrowseExtendedBarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseExtendedBarItem.swift; sourceTree = "<group>"; };
+		0CF97F3B1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBVideoConsoleBackgroundView.swift; sourceTree = "<group>"; };
+		0CF97F3D1E051136002BC4BD /* IBOverlayProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBOverlayProgressLayer.swift; sourceTree = "<group>"; };
+		0CF97F3F1E0512DC002BC4BD /* IBExtendedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBExtendedItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,21 +178,25 @@
 				0C25D1931DD8341C007877A0 /* Assets.xcassets */,
 				0C25D1951DD8341C007877A0 /* LaunchScreen.storyboard */,
 				0C25D1981DD8341C007877A0 /* Info.plist */,
-				0C15D28F1E08CBB5002AE9B2 /* BrowseBadgeBar.swift */,
-				0C5B43171DFAECB600D893EB /* BrowseOverlayProgressView.swift */,
-				0CF97F3D1E051136002BC4BD /* BrowseOverlayProgressLayer.swift */,
-				0C1001DA1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift */,
-				0C769D111E026C0B003F7737 /* BrowseVideoConsoleButton.swift */,
-				0CF97F3B1E050CEE002BC4BD /* BrowseVideoConsoleBackgroundView.swift */,
-				0CF97F3F1E0512DC002BC4BD /* BrowseExtendedBarItem.swift */,
-				0CD1E2981DE2D399006832D0 /* BrowseExtendedToolbar.swift */,
-				0CD1E2A21DE4464E006832D0 /* BrowseIndicatorView.swift */,
-				0CD1E2A41DE44D0B006832D0 /* BrowseIndicatorViewCell.swift */,
-				0C4695C81DEBD0AC00E15CF7 /* BrowseTilingView.swift */,
-				0CC9C9C01DED28060097BB5E /* BrowseTilingViewCell.swift */,
-				0C4695CA1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift */,
-				0C4695CC1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift */,
-				0CEF2C8D1DDAE08F0045BB09 /* BrowseContainterView.swift */,
+				0C1023971E0BB06600C045BB /* IBAsset.swift */,
+				0C02D0721E0BEC1D003E79DD /* IBAssetValueOptions.swift */,
+				0C1023911E0B807200C045BB /* IBAssetResourceLoader.swift */,
+				0C1023931E0B828800C045BB /* IBAssetResourceLoadingRequest.swift */,
+				0C1001DA1E03BD1F00C51A98 /* IBVideoConsoleView.swift */,
+				0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */,
+				0CF97F3B1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift */,
+				0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */,
+				0CF97F3D1E051136002BC4BD /* IBOverlayProgressLayer.swift */,
+				0C15D28F1E08CBB5002AE9B2 /* IBBadgeBar.swift */,
+				0CEF2C8D1DDAE08F0045BB09 /* IBContainterView.swift */,
+				0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */,
+				0CC9C9C01DED28060097BB5E /* IBTilingViewCell.swift */,
+				0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */,
+				0C4695CC1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift */,
+				0CD1E2A21DE4464E006832D0 /* IBIndicatorView.swift */,
+				0CD1E2A41DE44D0B006832D0 /* IBIndicatorViewCell.swift */,
+				0CF97F3F1E0512DC002BC4BD /* IBExtendedItem.swift */,
+				0CD1E2981DE2D399006832D0 /* IBExtendedToolbar.swift */,
 				0C25D1AB1DD957D7007877A0 /* BrowseView.swift */,
 				0C25D1B11DD988D6007877A0 /* BrowseViewCell.swift */,
 				0C25D1AD1DD95DED007877A0 /* BrowseViewLayout.swift */,
@@ -200,6 +214,7 @@
 				0C25D1B31DD9991B007877A0 /* TestAsset.swift */,
 				0C25D1B71DD9A88C007877A0 /* TestLayoutViewController.swift */,
 				0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */,
+				0C10239B1E0BCA7200C045BB /* TestLoaderViewController.swift */,
 				0C15D2911E08D25B002AE9B2 /* TestBadgeViewController.swift */,
 				0CD1E29E1DE432BA006832D0 /* Logger.swift */,
 				0CD1E2A01DE432C5006832D0 /* UIColor+Random.swift */,
@@ -322,42 +337,47 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0CF97F401E0512DC002BC4BD /* BrowseExtendedBarItem.swift in Sources */,
-				0C5B43181DFAECB600D893EB /* BrowseOverlayProgressView.swift in Sources */,
+				0CF97F401E0512DC002BC4BD /* IBExtendedItem.swift in Sources */,
+				0C5B43181DFAECB600D893EB /* IBOverlayProgressView.swift in Sources */,
 				0C25D1AE1DD95DED007877A0 /* BrowseViewLayout.swift in Sources */,
 				0C25D1A51DD83B07007877A0 /* Browser.swift in Sources */,
+				0C1023981E0BB06600C045BB /* IBAsset.swift in Sources */,
 				0C6741E81DF7BBF700282310 /* TestLayerViewController.swift in Sources */,
-				0CF97F3E1E051136002BC4BD /* BrowseOverlayProgressLayer.swift in Sources */,
-				0CF97F3C1E050CEE002BC4BD /* BrowseVideoConsoleBackgroundView.swift in Sources */,
-				0CD1E2A51DE44D0B006832D0 /* BrowseIndicatorViewCell.swift in Sources */,
+				0CF97F3E1E051136002BC4BD /* IBOverlayProgressLayer.swift in Sources */,
+				0CF97F3C1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift in Sources */,
+				0CD1E2A51DE44D0B006832D0 /* IBIndicatorViewCell.swift in Sources */,
 				0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */,
+				0C1023941E0B828800C045BB /* IBAssetResourceLoadingRequest.swift in Sources */,
 				0C25D1C01DD9BF7C007877A0 /* BrowseAnimator.swift in Sources */,
 				0CD1E29F1DE432BA006832D0 /* Logger.swift in Sources */,
 				0C25D1B41DD9991B007877A0 /* TestAsset.swift in Sources */,
-				0C4695C91DEBD0AC00E15CF7 /* BrowseTilingView.swift in Sources */,
-				0CD1E2A31DE4464E006832D0 /* BrowseIndicatorView.swift in Sources */,
+				0C4695C91DEBD0AC00E15CF7 /* IBTilingView.swift in Sources */,
+				0CD1E2A31DE4464E006832D0 /* IBIndicatorView.swift in Sources */,
+				0C02D0731E0BEC1D003E79DD /* IBAssetValueOptions.swift in Sources */,
 				0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */,
-				0C4695CD1DEBD0F500E15CF7 /* BrowseTilingViewLayoutAttributes.swift in Sources */,
+				0C4695CD1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift in Sources */,
 				0CEF2C901DDAE47A0045BB09 /* BrowseDetailViewLayout.swift in Sources */,
-				0C1001DB1E03BD1F00C51A98 /* BrowseVideoConsoleView.swift in Sources */,
+				0C1001DB1E03BD1F00C51A98 /* IBVideoConsoleView.swift in Sources */,
 				0CD1E2A11DE432C5006832D0 /* UIColor+Random.swift in Sources */,
 				0C25D1A11DD83650007877A0 /* Browseable.swift in Sources */,
 				0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */,
-				0C769D121E026C0B003F7737 /* BrowseVideoConsoleButton.swift in Sources */,
+				0C769D121E026C0B003F7737 /* IBVideoConsoleButton.swift in Sources */,
+				0C1023921E0B807200C045BB /* IBAssetResourceLoader.swift in Sources */,
 				0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */,
-				0CC9C9C11DED28060097BB5E /* BrowseTilingViewCell.swift in Sources */,
+				0CC9C9C11DED28060097BB5E /* IBTilingViewCell.swift in Sources */,
 				0CDBBFDA1DDD79BA000F694C /* BrowseDetailViewDelegate.swift in Sources */,
 				0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */,
-				0CEF2C8E1DDAE08F0045BB09 /* BrowseContainterView.swift in Sources */,
+				0CEF2C8E1DDAE08F0045BB09 /* IBContainterView.swift in Sources */,
 				0C25D1B81DD9A88C007877A0 /* TestLayoutViewController.swift in Sources */,
-				0C15D2901E08CBB5002AE9B2 /* BrowseBadgeBar.swift in Sources */,
-				0C4695CB1DEBD0E800E15CF7 /* BrowseTilingViewLayout.swift in Sources */,
+				0C15D2901E08CBB5002AE9B2 /* IBBadgeBar.swift in Sources */,
+				0C4695CB1DEBD0E800E15CF7 /* IBTilingViewLayout.swift in Sources */,
+				0C10239C1E0BCA7200C045BB /* TestLoaderViewController.swift in Sources */,
 				0CA4943B1E07C11D009F0146 /* UIView+Animation.swift in Sources */,
 				0C25D1B21DD988D6007877A0 /* BrowseViewCell.swift in Sources */,
 				0C25D1AC1DD957D7007877A0 /* BrowseView.swift in Sources */,
 				0CEF2C951DDB0DC30045BB09 /* BrowseDetailViewCell.swift in Sources */,
 				0C15D2921E08D25B002AE9B2 /* TestBadgeViewController.swift in Sources */,
-				0CD1E2991DE2D399006832D0 /* BrowseExtendedToolbar.swift in Sources */,
+				0CD1E2991DE2D399006832D0 /* IBExtendedToolbar.swift in Sources */,
 				0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */,
 				0C25D1AA1DD957CA007877A0 /* BrowseViewController.swift in Sources */,
 			);

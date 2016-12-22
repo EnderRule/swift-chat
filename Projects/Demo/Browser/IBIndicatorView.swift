@@ -1,5 +1,5 @@
 //
-//  BrowseIndicatorView.swift
+//  IBIndicatorView.swift
 //  Browser
 //
 //  Created by sagesse on 11/22/16.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-@objc public protocol BrowseIndicatorViewDelegate: class {
+@objc public protocol IBIndicatorViewDelegate: class {
     
-    @objc optional func indicatorWillBeginDragging(_ indicator: BrowseIndicatorView)
-    @objc optional func indicatorDidEndDragging(_ indicator: BrowseIndicatorView)
+    @objc optional func indicatorWillBeginDragging(_ indicator: IBIndicatorView)
+    @objc optional func indicatorDidEndDragging(_ indicator: IBIndicatorView)
     
-    @objc optional func indicator(_ indicator: BrowseIndicatorView, didSelectItemAt indexPath: IndexPath)
-    @objc optional func indicator(_ indicator: BrowseIndicatorView, didDeselectItemAt indexPath: IndexPath)
+    @objc optional func indicator(_ indicator: IBIndicatorView, didSelectItemAt indexPath: IndexPath)
+    @objc optional func indicator(_ indicator: IBIndicatorView, didDeselectItemAt indexPath: IndexPath)
 }
 
-@objc open class BrowseIndicatorView: UIView {
+@objc open class IBIndicatorView: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +28,7 @@ import UIKit
         _commonInit()
     }
     
-    open weak var delegate: BrowseIndicatorViewDelegate?
+    open weak var delegate: IBIndicatorViewDelegate?
     open weak var dataSource: BrowseDataSource?
     
     open var indexPath: IndexPath? {
@@ -251,7 +251,7 @@ import UIKit
         _tilingView.showsVerticalScrollIndicator = false
         _tilingView.showsHorizontalScrollIndicator = false
         
-        _tilingView.register(BrowseIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
+        _tilingView.register(IBIndicatorViewCell.self, forCellWithReuseIdentifier: "Asset")
         
         addSubview(_tilingView)
         clipsToBounds = true
@@ -262,16 +262,16 @@ import UIKit
     fileprivate var _isInteractiving: Bool = false
     fileprivate var _ignoreContentOffsetChange: Bool = false
     
-    fileprivate var _currentItem: BrowseTilingViewLayoutAttributes? // 当前显示的
+    fileprivate var _currentItem: IBTilingViewLayoutAttributes? // 当前显示的
     fileprivate var _currentIndexPath: IndexPath? // 当前选择的
     
     fileprivate var _interactivingToIndexPath: IndexPath?
     fileprivate var _interactivingFromIndexPath: IndexPath?
     
-    fileprivate lazy var _tilingView: BrowseTilingView = BrowseTilingView()
+    fileprivate lazy var _tilingView: IBTilingView = IBTilingView()
 }
 
-extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource, BrowseTilingViewDelegate {
+extension IBIndicatorView: UIScrollViewDelegate, IBTilingViewDataSource, IBTilingViewDelegate {
     
     fileprivate func _updateCurrentItem(_ offset: CGPoint) {
         // 检查是否存在变更
@@ -327,19 +327,19 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         self.scrollViewDidEndDragging(scrollView, willDecelerate: false)
     }
     
-    func numberOfSections(in tilingView: BrowseTilingView) -> Int {
+    func numberOfSections(in tilingView: IBTilingView) -> Int {
         return dataSource?.numberOfSections(in: self) ?? 1
     }
     
-    func tilingView(_ tilingView: BrowseTilingView, numberOfItemsInSection section: Int) -> Int {
+    func tilingView(_ tilingView: IBTilingView, numberOfItemsInSection section: Int) -> Int {
         return dataSource?.browser(self, numberOfItemsInSection: section) ?? 0
     }
-    func tilingView(_ tilingView: BrowseTilingView, cellForItemAt indexPath: IndexPath) -> BrowseTilingViewCell {
+    func tilingView(_ tilingView: IBTilingView, cellForItemAt indexPath: IndexPath) -> IBTilingViewCell {
         return tilingView.dequeueReusableCell(withReuseIdentifier: "Asset", for: indexPath)
     }
     
-    func tilingView(_ tilingView: BrowseTilingView, willDisplay cell: BrowseTilingViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? BrowseIndicatorViewCell else {
+    func tilingView(_ tilingView: IBTilingView, willDisplay cell: IBTilingViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? IBIndicatorViewCell else {
             return
         }
         UIView.performWithoutAnimation {
@@ -347,14 +347,14 @@ extension BrowseIndicatorView: UIScrollViewDelegate, BrowseTilingViewDataSource,
         }
     }
     
-    func tilingView(_ tilingView: BrowseTilingView, layout: BrowseTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func tilingView(_ tilingView: IBTilingView, layout: IBTilingViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard _currentIndexPath == indexPath else {
             return estimatedItemSize
         }
         return _sizeForItem(indexPath)
     }
     
-    func tilingView(_ tilingView: BrowseTilingView, didSelectItemAt indexPath: IndexPath) {
+    func tilingView(_ tilingView: IBTilingView, didSelectItemAt indexPath: IndexPath) {
         logger.debug(indexPath)
         updateIndexPath(indexPath, animated: true)
     }

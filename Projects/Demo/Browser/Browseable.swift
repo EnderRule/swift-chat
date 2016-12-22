@@ -22,12 +22,12 @@ public enum KeyValueStatus : Int {
 //var isReadable: Bool { get }
 //var isComposable: Bool { get }
 
-public enum BrowseAssetType: Int {
+public enum IBAssetType: Int {
     case unknow
     case image
     case video
 }
-public enum BrowseAssetSubtype: Int {
+public enum IBAssetSubtype: Int {
     case unknow
     case hdr
     //case gif
@@ -42,8 +42,8 @@ public protocol Browseable: class {
     // test
     var browseImage: UIImage? { get }
     
-    var browseType: BrowseAssetType { get }
-    var browseSubtype: BrowseAssetSubtype { get }
+    var browseType: IBAssetType { get }
+    var browseSubtype: IBAssetSubtype { get }
     
 //    
 //    func statusOfValue(forKey key: String, error outError: NSErrorPointer) -> KeyValueStatus

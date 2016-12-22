@@ -55,6 +55,6 @@ class BrowseViewCell: UICollectionViewCell {
     }
     
     private lazy var _previewView = UIImageView(frame: .zero)
-    private lazy var _badgeBar = BrowseBadgeBar(frame: .zero)
+    private lazy var _badgeBar = IBBadgeBar(frame: .zero)
 }
 

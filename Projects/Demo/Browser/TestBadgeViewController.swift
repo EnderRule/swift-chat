@@ -10,7 +10,7 @@ import UIKit
 
 class TestBadgeViewController: UIViewController {
     
-    @IBOutlet weak var bar: BrowseBadgeBar!
+    @IBOutlet weak var bar: IBBadgeBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()

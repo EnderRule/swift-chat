@@ -1,5 +1,5 @@
 //
-//  BrowseTilingViewLayoutAttributes.swift
+//  IBTilingViewLayoutAttributes.swift
 //  Browser
 //
 //  Created by sagesse on 11/28/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class BrowseTilingViewLayoutAttributes: NSObject {
+@objc class IBTilingViewLayoutAttributes: NSObject {
     
     init(forCellWith indexPath: IndexPath) {
         self.indexPath = indexPath

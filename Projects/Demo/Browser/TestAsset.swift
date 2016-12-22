@@ -49,8 +49,8 @@ class LocalImageAsset: NSObject, Browseable {
     //lazy var browseContentSize: CGSize = CGSize(width: 1080, height: 1920)
     //lazy var browseImage: UIImage? = UIImage(named: "m44.jpg")
     
-    var browseType: BrowseAssetType = .unknow
-    var browseSubtype: BrowseAssetSubtype = .unknow
+    var browseType: IBAssetType = .unknow
+    var browseSubtype: IBAssetSubtype = .unknow
     
     var browseImage: UIImage? 
     var browseContentSize: CGSize = .zero
