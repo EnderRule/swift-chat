@@ -294,7 +294,7 @@ import UIKit
         return delegate?.viewForZooming?(in: self)
     }
     
-    fileprivate lazy var _scrollView: BrowseContainterScrollView = BrowseContainterScrollView()
+    fileprivate lazy var _scrollView: IBContainterScrollView = IBContainterScrollView()
     fileprivate lazy var _backgroundView: UIImageView = UIImageView()
     
     fileprivate lazy var _rotationGestureRecognizer: UIRotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(rotationHandler(_:)))
@@ -622,7 +622,7 @@ extension IBContainterView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     }
 }
 
-internal class BrowseContainterScrollView: UIScrollView {
+internal class IBContainterScrollView: UIScrollView {
     
     override var contentOffset: CGPoint {
         set {
