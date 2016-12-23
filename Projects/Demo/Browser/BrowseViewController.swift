@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseViewController: UIViewController, BrowseContextTransitioning {
+class BrowseViewController: UIViewController, IBControllerContextTransitioning {
     
     weak var delegate: BrowseDelegate?
     weak var dataSource: BrowseDataSource?
@@ -73,7 +73,7 @@ class BrowseViewController: UIViewController, BrowseContextTransitioning {
         controller.delegate = delegate
         controller.dataSource = dataSource
         
-        _browseAnimator = BrowseAnimator(from: self, to: controller)
+        _browseAnimator = IBControllerAnimator(from: self, to: controller)
         _browseIndexPath = indexPath
         
         // self => controller
@@ -129,7 +129,7 @@ class BrowseViewController: UIViewController, BrowseContextTransitioning {
 //        }
     }()
     
-    fileprivate var _browseAnimator: BrowseAnimator?
+    fileprivate var _browseAnimator: IBControllerAnimator?
     fileprivate var _browseIndexPath: IndexPath?
     
     

@@ -8,8 +8,8 @@
 
 import UIKit
 
-class BrowseDismissInteractiveTransition: NSObject, UIViewControllerInteractiveTransitioning, CALayerDelegate {
-    init?(transition: BrowseAnimatedTransition) {
+class IBControllerDismissInteractiveTransition: NSObject, UIViewControllerInteractiveTransitioning, CALayerDelegate {
+    init?(transition: IBControllerAnimatedTransition) {
         self.fromContext = transition.fromContext
         self.toContext = transition.toContext
         super.init()
@@ -25,8 +25,8 @@ class BrowseDismissInteractiveTransition: NSObject, UIViewControllerInteractiveT
         recognizer?.removeTarget(self, action: #selector(gestureRecognizerHandler(_:)))
     }
     
-    let fromContext: BrowseAnimatedTransitionContextObject 
-    let toContext: BrowseAnimatedTransitionContextObject
+    let fromContext: IBControllerAnimatedTransitionContextObject 
+    let toContext: IBControllerAnimatedTransitionContextObject
     
     var completionSpeed: CGFloat { 
         return 1
@@ -223,54 +223,5 @@ class BrowseDismissInteractiveTransition: NSObject, UIViewControllerInteractiveT
             self.transition?.containerView.layoutIfNeeded()
             self.transition?.completeTransition(true)
         })
-    }
-}
-
-class BrowseLayerDelegaetForwarder: NSObject, CALayerDelegate {
-    
-    init(object1: CALayerDelegate?, object2: CALayerDelegate?) {
-        super.init()
-        self.object1 = object1
-        self.object2 = object2
-    }
-    
-    weak var object1: CALayerDelegate?
-    weak var object2: CALayerDelegate?
-    
-    override func responds(to aSelector: Selector!) -> Bool {
-        let f1 = object1?.responds(to: aSelector) ?? false
-        let f2 = object2?.responds(to: aSelector) ?? false
-        return f1 || f2
-    }
-    
-    override func forwardingTarget(for aSelector: Selector!) -> Any? {
-        return object2
-    }
-    
-    func display(_ layer: CALayer) {
-        object1?.display?(layer)
-        object2?.display?(layer)
-    }
-    func draw(_ layer: CALayer, in ctx: CGContext) {
-        object1?.draw?(layer, in: ctx)
-        object2?.draw?(layer, in: ctx)
-    }
-    
-    @available(iOS 10.0, *)
-    func layerWillDraw(_ layer: CALayer) {
-        object1?.layerWillDraw?(layer)
-        object2?.layerWillDraw?(layer)
-    }
-    
-    func layoutSublayers(of layer: CALayer) {
-        object1?.layoutSublayers?(of: layer)
-        object2?.layoutSublayers?(of: layer)
-    }
-    
-    func action(for layer: CALayer, forKey event: String) -> CAAction? {
-        let r1 = object1?.action?(for: layer, forKey: event)
-        let r2 = object2?.action?(for: layer, forKey: event)
-        
-        return r1 ?? r2
     }
 }

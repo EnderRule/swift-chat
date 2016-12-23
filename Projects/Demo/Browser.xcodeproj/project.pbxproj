@@ -30,15 +30,15 @@
 		0C25D1B81DD9A88C007877A0 /* TestLayoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1B71DD9A88C007877A0 /* TestLayoutViewController.swift */; };
 		0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */; };
 		0C25D1BC1DD9B0F3007877A0 /* BrowseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */; };
-		0C25D1C01DD9BF7C007877A0 /* BrowseAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */; };
+		0C25D1C01DD9BF7C007877A0 /* IBControllerAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C25D1BF1DD9BF7C007877A0 /* IBControllerAnimator.swift */; };
 		0C4695C91DEBD0AC00E15CF7 /* IBTilingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */; };
 		0C4695CB1DEBD0E800E15CF7 /* IBTilingViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */; };
 		0C4695CD1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4695CC1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift */; };
 		0C5B43181DFAECB600D893EB /* IBOverlayProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */; };
 		0C6741E81DF7BBF700282310 /* TestLayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */; };
 		0C769D121E026C0B003F7737 /* IBVideoConsoleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */; };
-		0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */; };
-		0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */; };
+		0CA445941DDCD674008815E3 /* IBControllerAnimatedTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445931DDCD674008815E3 /* IBControllerAnimatedTransition.swift */; };
+		0CA445961DDCE86D008815E3 /* IBControllerInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445951DDCE86D008815E3 /* IBControllerInteractiveTransition.swift */; };
 		0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */; };
 		0CA4943B1E07C11D009F0146 /* UIView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA4943A1E07C11D009F0146 /* UIView+Animation.swift */; };
 		0CC197931E09811F00122346 /* browse_button_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CC1978C1E09811F00122346 /* browse_button_play@2x.png */; };
@@ -98,15 +98,15 @@
 		0C25D1B71DD9A88C007877A0 /* TestLayoutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestLayoutViewController.swift; sourceTree = "<group>"; };
 		0C25D1B91DD9B0E3007877A0 /* BrowseDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailView.swift; sourceTree = "<group>"; };
 		0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseDetailViewController.swift; sourceTree = "<group>"; };
-		0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimator.swift; sourceTree = "<group>"; };
+		0C25D1BF1DD9BF7C007877A0 /* IBControllerAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBControllerAnimator.swift; sourceTree = "<group>"; };
 		0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingViewLayout.swift; sourceTree = "<group>"; };
 		0C4695CC1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBTilingViewLayoutAttributes.swift; sourceTree = "<group>"; };
 		0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBOverlayProgressView.swift; sourceTree = "<group>"; };
 		0C6741E71DF7BBF700282310 /* TestLayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestLayerViewController.swift; sourceTree = "<group>"; };
 		0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBVideoConsoleButton.swift; sourceTree = "<group>"; };
-		0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAnimatedTransition.swift; sourceTree = "<group>"; };
-		0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseInteractiveTransition.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0CA445931DDCD674008815E3 /* IBControllerAnimatedTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBControllerAnimatedTransition.swift; sourceTree = "<group>"; };
+		0CA445951DDCE86D008815E3 /* IBControllerInteractiveTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IBControllerInteractiveTransition.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Pop.swift"; sourceTree = "<group>"; wrapsLines = 0; };
 		0CA4943A1E07C11D009F0146 /* UIView+Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Animation.swift"; sourceTree = "<group>"; };
 		0CC1978C1E09811F00122346 /* browse_button_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "browse_button_play@2x.png"; sourceTree = "<group>"; };
@@ -182,13 +182,13 @@
 				0C02D0721E0BEC1D003E79DD /* IBAssetValueOptions.swift */,
 				0C1023911E0B807200C045BB /* IBAssetResourceLoader.swift */,
 				0C1023931E0B828800C045BB /* IBAssetResourceLoadingRequest.swift */,
+				0CEF2C8D1DDAE08F0045BB09 /* IBContainterView.swift */,
+				0C15D28F1E08CBB5002AE9B2 /* IBBadgeBar.swift */,
 				0C1001DA1E03BD1F00C51A98 /* IBVideoConsoleView.swift */,
 				0C769D111E026C0B003F7737 /* IBVideoConsoleButton.swift */,
 				0CF97F3B1E050CEE002BC4BD /* IBVideoConsoleBackgroundView.swift */,
 				0C5B43171DFAECB600D893EB /* IBOverlayProgressView.swift */,
 				0CF97F3D1E051136002BC4BD /* IBOverlayProgressLayer.swift */,
-				0C15D28F1E08CBB5002AE9B2 /* IBBadgeBar.swift */,
-				0CEF2C8D1DDAE08F0045BB09 /* IBContainterView.swift */,
 				0C4695C81DEBD0AC00E15CF7 /* IBTilingView.swift */,
 				0CC9C9C01DED28060097BB5E /* IBTilingViewCell.swift */,
 				0C4695CA1DEBD0E800E15CF7 /* IBTilingViewLayout.swift */,
@@ -197,6 +197,9 @@
 				0CD1E2A41DE44D0B006832D0 /* IBIndicatorViewCell.swift */,
 				0CF97F3F1E0512DC002BC4BD /* IBExtendedItem.swift */,
 				0CD1E2981DE2D399006832D0 /* IBExtendedToolbar.swift */,
+				0C25D1BF1DD9BF7C007877A0 /* IBControllerAnimator.swift */,
+				0CA445931DDCD674008815E3 /* IBControllerAnimatedTransition.swift */,
+				0CA445951DDCE86D008815E3 /* IBControllerInteractiveTransition.swift */,
 				0C25D1AB1DD957D7007877A0 /* BrowseView.swift */,
 				0C25D1B11DD988D6007877A0 /* BrowseViewCell.swift */,
 				0C25D1AD1DD95DED007877A0 /* BrowseViewLayout.swift */,
@@ -206,9 +209,6 @@
 				0CEF2C941DDB0DC30045BB09 /* BrowseDetailViewCell.swift */,
 				0CEF2C8F1DDAE47A0045BB09 /* BrowseDetailViewLayout.swift */,
 				0C25D1BB1DD9B0F3007877A0 /* BrowseDetailViewController.swift */,
-				0C25D1BF1DD9BF7C007877A0 /* BrowseAnimator.swift */,
-				0CA445931DDCD674008815E3 /* BrowseAnimatedTransition.swift */,
-				0CA445951DDCE86D008815E3 /* BrowseInteractiveTransition.swift */,
 				0CA4943A1E07C11D009F0146 /* UIView+Animation.swift */,
 				0CA445971DDD64A1008815E3 /* UINavigationBar+Pop.swift */,
 				0C25D1B31DD9991B007877A0 /* TestAsset.swift */,
@@ -348,13 +348,13 @@
 				0CD1E2A51DE44D0B006832D0 /* IBIndicatorViewCell.swift in Sources */,
 				0CA445981DDD64A1008815E3 /* UINavigationBar+Pop.swift in Sources */,
 				0C1023941E0B828800C045BB /* IBAssetResourceLoadingRequest.swift in Sources */,
-				0C25D1C01DD9BF7C007877A0 /* BrowseAnimator.swift in Sources */,
+				0C25D1C01DD9BF7C007877A0 /* IBControllerAnimator.swift in Sources */,
 				0CD1E29F1DE432BA006832D0 /* Logger.swift in Sources */,
 				0C25D1B41DD9991B007877A0 /* TestAsset.swift in Sources */,
 				0C4695C91DEBD0AC00E15CF7 /* IBTilingView.swift in Sources */,
 				0CD1E2A31DE4464E006832D0 /* IBIndicatorView.swift in Sources */,
 				0C02D0731E0BEC1D003E79DD /* IBAssetValueOptions.swift in Sources */,
-				0CA445941DDCD674008815E3 /* BrowseAnimatedTransition.swift in Sources */,
+				0CA445941DDCD674008815E3 /* IBControllerAnimatedTransition.swift in Sources */,
 				0C4695CD1DEBD0F500E15CF7 /* IBTilingViewLayoutAttributes.swift in Sources */,
 				0CEF2C901DDAE47A0045BB09 /* BrowseDetailViewLayout.swift in Sources */,
 				0C1001DB1E03BD1F00C51A98 /* IBVideoConsoleView.swift in Sources */,
@@ -363,7 +363,7 @@
 				0C25D1BA1DD9B0E3007877A0 /* BrowseDetailView.swift in Sources */,
 				0C769D121E026C0B003F7737 /* IBVideoConsoleButton.swift in Sources */,
 				0C1023921E0B807200C045BB /* IBAssetResourceLoader.swift in Sources */,
-				0CA445961DDCE86D008815E3 /* BrowseInteractiveTransition.swift in Sources */,
+				0CA445961DDCE86D008815E3 /* IBControllerInteractiveTransition.swift in Sources */,
 				0CC9C9C11DED28060097BB5E /* IBTilingViewCell.swift in Sources */,
 				0CDBBFDA1DDD79BA000F694C /* BrowseDetailViewDelegate.swift in Sources */,
 				0C25D18D1DD8341C007877A0 /* AppDelegate.swift in Sources */,

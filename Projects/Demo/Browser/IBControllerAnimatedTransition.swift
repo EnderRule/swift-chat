@@ -1,5 +1,5 @@
 //
-//  BrowseAnimatedTransition.swift
+//  IBControllerAnimatedTransition.swift
 //  Browser
 //
 //  Created by sagesse on 11/17/16.
@@ -8,13 +8,13 @@
 
 import UIKit
 
-class BrowseAnimatedTransition: NSObject, UIViewControllerAnimatedTransitioning {
+class IBControllerAnimatedTransition: NSObject, UIViewControllerAnimatedTransitioning {
     
-    init?(for indexPath: IndexPath, from: BrowseContextTransitioning, to: BrowseContextTransitioning) {
-        guard let fromContext = BrowseAnimatedTransitionContextObject(transitionContext: from, at: indexPath, for: .from) else {
+    init?(for indexPath: IndexPath, from: IBControllerContextTransitioning, to: IBControllerContextTransitioning) {
+        guard let fromContext = IBControllerAnimatedTransitionContextObject(transitionContext: from, at: indexPath, for: .from) else {
             return nil
         }
-        guard let toContext = BrowseAnimatedTransitionContextObject(transitionContext: to, at: indexPath, for: .to) else {
+        guard let toContext = IBControllerAnimatedTransitionContextObject(transitionContext: to, at: indexPath, for: .to) else {
             return nil
         }
         
@@ -24,8 +24,8 @@ class BrowseAnimatedTransition: NSObject, UIViewControllerAnimatedTransitioning 
         super.init()
     }
     
-    let fromContext: BrowseAnimatedTransitionContextObject 
-    let toContext: BrowseAnimatedTransitionContextObject
+    let fromContext: IBControllerAnimatedTransitionContextObject 
+    let toContext: IBControllerAnimatedTransitionContextObject
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
@@ -35,9 +35,9 @@ class BrowseAnimatedTransition: NSObject, UIViewControllerAnimatedTransitioning 
     }
 }
 
-class BrowseAnimatedTransitionContextObject {
+class IBControllerAnimatedTransitionContextObject {
     
-    init?(transitionContext: BrowseContextTransitioning, at indexPath: IndexPath, for key: UITransitionContextViewKey) {
+    init?(transitionContext: IBControllerContextTransitioning, at indexPath: IndexPath, for key: UITransitionContextViewKey) {
         guard let view = transitionContext.browseTransitioningView(at: indexPath, forKey: key) else {
             return nil
         }
@@ -66,7 +66,7 @@ class BrowseAnimatedTransitionContextObject {
     var contentMode: UIViewContentMode
     
     var view: UIView
-    var context: BrowseContextTransitioning
+    var context: IBControllerContextTransitioning
     
     func align(rect: CGRect) -> CGRect {
         let size = contentSizeWithOrientation
@@ -140,7 +140,7 @@ class BrowseAnimatedTransitionContextObject {
 
 
 
-class BrowseShowAnimatedTransition: BrowseAnimatedTransition {
+class IBControllerShowAnimatedTransition: IBControllerAnimatedTransition {
     override func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
         let fromContext = self.fromContext
@@ -218,7 +218,7 @@ class BrowseShowAnimatedTransition: BrowseAnimatedTransition {
         })
     }
 }
-class BrowseDismissAnimatedTransition: BrowseAnimatedTransition {
+class IBControllerDismissAnimatedTransition: IBControllerAnimatedTransition {
     override func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
         let fromContext = self.fromContext

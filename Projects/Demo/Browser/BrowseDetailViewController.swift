@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BrowseDetailViewController: UIViewController, BrowseContextTransitioning {
+class BrowseDetailViewController: UIViewController, IBControllerContextTransitioning {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
