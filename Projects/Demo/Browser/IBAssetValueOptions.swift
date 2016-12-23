@@ -42,6 +42,7 @@ import UIKit
     
     /// Requested the version
     open var version: IBAssetValueVersion
+    
     /// Requested the size
     open var targetSize: CGSize
     /// Requested the content mode

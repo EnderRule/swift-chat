@@ -15,7 +15,18 @@ class TestLoaderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        asset.loadValuesAsynchronously(for: .init(version: .thumbnail, targetSize: .init(width: 80, height: 80))) { v, e in
+            // 显示 or 处理错误 or 进度通知?
+            print("\(v)", "\(e)")
+        }
+        asset.loadValuesAsynchronously(for: .init(version: .large, targetSize: .init(width: 320, height: 568))) { v, e in
+            // 显示 or 处理错误 or 进度通知?
+            print("\(v)", "\(e)")
+        }
+        asset.loadValuesAsynchronously(for: .init(version: .original, targetSize: .zero)) { v, e in
+            // 显示 or 处理错误 or 进度通知?
+            print("\(v)", "\(e)")
+        }
     }
 
     override func didReceiveMemoryWarning() {

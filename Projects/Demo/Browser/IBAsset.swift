@@ -12,7 +12,6 @@ import UIKit
 @objc open class IBAsset: NSObject {
     
     public override init() {
-        self.resourceLoader = IBAssetResourceLoader()
         super.init()
     }
     
@@ -21,6 +20,18 @@ import UIKit
     }
     open func loadValuesAsynchronously(for options: IBAssetValueOptions, completionHandler handler: ((Any?, Error?) -> Swift.Void)? = nil) {
         
+        let level = Int(options.targetSize.width)
+        
+        // 偿试读取缓存
+        if let value = _cacheValues[options.version]?[level] {
+            handler?(value, nil)
+            return
+        }
+        
+        
+        
+        // 检查有没有缓存, 如果有使用之, 如果没有使用resourceloader加载
+        resourceLoader.loadValuesAsynchronously(for: options, completionHandler: handler)
     }
     
     /// Cancels the loading of all values for all observers.
@@ -28,5 +39,10 @@ import UIKit
     }
     
     /// A asset resource loader
-    open var resourceLoader: IBAssetResourceLoader
+    open lazy var resourceLoader: IBAssetResourceLoader = IBAssetResourceLoader(asset: self)
+    
+    
+    private lazy var _cacheValues: [IBAssetValueVersion: [Int: Any]] = [:]
 }
+
+

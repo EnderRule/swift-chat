@@ -11,9 +11,10 @@ import UIKit
 
 @objc open class IBAssetResourceLoadingRequest: NSObject {
     
-    public override init() {
-        
-        fatalError()
+    public init(asset: IBAsset, options: IBAssetValueOptions) {
+        self.asset = asset
+        self.options = options
+        super.init()
     }
     
     
@@ -27,15 +28,17 @@ import UIKit
     
     // MARK: Reporting the Result of the Request
     
+    /// A Boolean value that indicates whether the request has been cancelled.
+    open var isCancelled: Bool = false
+    
+    /// A Boolean value that indicates whether loading of the resource has finished.
+    open var isFinished: Bool = false
+    
     /// Provides data to the loading request.
     open func respond(with: Any) {
     }
-    
-    /// A Boolean value that indicates whether the request has been cancelled.
-    open var isCancelled: Bool
-    
-    /// A Boolean value that indicates whether loading of the resource has finished.
-    open var isFinished: Bool
+//    open func response(progress: Double) {
+//    }
     
     /// Causes the receiver to treat the processing of the request as complete.
     open func finishLoading() {
