@@ -8,12 +8,14 @@
 
 import UIKit
 
-class TestLoaderViewController: UIViewController {
+class TestLoaderViewController: UIViewController, IBAssetResourceLoaderDelegate {
     
     lazy var asset = IBAsset()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        asset.resourceLoader.delegate = self
 
         asset.loadValuesAsynchronously(for: .init(version: .thumbnail, targetSize: .init(width: 80, height: 80))) { v, e in
             // 显示 or 处理错误 or 进度通知?
@@ -35,6 +37,23 @@ class TestLoaderViewController: UIViewController {
     }
     
 
+    func resourceLoader(_ resourceLoader: IBAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: IBAssetResourceLoadingRequest) -> Bool {
+        // v1
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
+            loadingRequest.respond(with: "xx")
+            loadingRequest.progress(with: 0.9)
+            loadingRequest.finishLoading()
+            //loadingRequest.finishLoading(wiht: xxx)
+        })
+        
+        logger.debug()
+        return true
+    }
+    func resourceLoader(_ resourceLoader: IBAssetResourceLoader, didCancel loadingRequest: IBAssetResourceLoadingRequest) {
+        logger.debug()
+    }
+    
     /*
     // MARK: - Navigation
 

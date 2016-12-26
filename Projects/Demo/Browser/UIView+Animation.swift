@@ -10,7 +10,7 @@ import UIKit
 
 internal extension UIView {
     
-    internal static func browse_animate(withDuration duration: TimeInterval, animated: Bool, animations: @escaping () -> Swift.Void, completion: ((Bool) -> Swift.Void)? = nil) {
+    internal static func ib_animate(withDuration duration: TimeInterval, animated: Bool, animations: @escaping () -> Swift.Void, completion: ((Bool) -> Swift.Void)? = nil) {
         guard animated else {
             animations()
             completion?(true)

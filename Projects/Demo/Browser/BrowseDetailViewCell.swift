@@ -194,7 +194,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             guard _typeView.alpha < 1 else {
                 return
             }
-            UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
+            UIView.ib_animate(withDuration: 0.25, animated: animated, animations: {
                 self._typeView.alpha = 1
             })
         } else {
@@ -203,7 +203,7 @@ class BrowseDetailViewCell: UICollectionViewCell {
             guard _typeView.superview != nil else {
                 return
             }
-            UIView.browse_animate(withDuration: 0.25, animated: animated, animations: {
+            UIView.ib_animate(withDuration: 0.25, animated: animated, animations: {
 
                 self._typeView.alpha = 0
 

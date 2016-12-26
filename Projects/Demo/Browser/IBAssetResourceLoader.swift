@@ -37,8 +37,9 @@ import UIKit
     open func cancelLoading() {
         // all request cancel
         
-        _allRequests.forEach {
-            delegate?.resourceLoader?(self, didCancel: $0)
+        _allRequests.forEach { loadingRequest in
+            loadingRequest.isCancelled = true
+            delegate?.resourceLoader?(self, didCancel: loadingRequest)
         }
         _allRequests.removeAll(keepingCapacity: true)
     }
@@ -50,9 +51,9 @@ import UIKit
 @objc public protocol IBAssetResourceLoaderDelegate: class {
     
     /// Asks the delegate if it wants to load the requested resource.
-    @objc optional func resourceLoader(_ resourceLoader: IBAssetResourceLoader, shouldWaitForLoadingOfRequestedResource: IBAssetResourceLoadingRequest) -> Bool
+    @objc optional func resourceLoader(_ resourceLoader: IBAssetResourceLoader, shouldWaitForLoadingOfRequestedResource loadingRequest: IBAssetResourceLoadingRequest) -> Bool
     
     /// Invoked to inform the delegate that a prior loading request has been cancelled
-    @objc optional func resourceLoader(_ resourceLoader: IBAssetResourceLoader, didCancel: IBAssetResourceLoadingRequest)
+    @objc optional func resourceLoader(_ resourceLoader: IBAssetResourceLoader, didCancel loadingRequest: IBAssetResourceLoadingRequest)
     
 }

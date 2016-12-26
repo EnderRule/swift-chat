@@ -35,10 +35,12 @@ import UIKit
     open var isFinished: Bool = false
     
     /// Provides data to the loading request.
-    open func respond(with: Any) {
+    open func respond(with data: Any) {
     }
-//    open func response(progress: Double) {
-//    }
+    
+    /// Provides progress info to the loading request.
+    open func progress(with progress: Double) {
+    }
     
     /// Causes the receiver to treat the processing of the request as complete.
     open func finishLoading() {
