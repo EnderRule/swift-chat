@@ -33,12 +33,16 @@ open class SACChatViewController: UIViewController {
         _logger.trace()
     }
     
+    open override func loadView() {
+        super.loadView()
+        self.view = chatView
+    }
+    
+    lazy var chatViewLayout: SACChatViewLayout = SACChatViewLayout()
+    lazy var chatView: SACChatView = SACChatView(frame: .zero, collectionViewLayout: self.chatViewLayout)
     
     open var conversation: SACConversationProtocol
     
-    open var contentView: UITableView {
-        return _contentView
-    }
     
 //    var isLandscape: Bool {
 //        // iOS 8.0+
@@ -52,22 +56,30 @@ open class SACChatViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
+         SACChatViewLayoutAttributes().calc(with: CGSize(width: 320, height: 120))
         
-        view.backgroundColor = .white
+//        view.backgroundColor = .white
         
         _toolbar.delegate = self
         
-        contentView.frame = view.bounds
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        contentView.scrollsToTop = true
-        contentView.keyboardDismissMode = .interactive
-        contentView.alwaysBounceVertical = true
-        contentView.separatorStyle = .none
-        //contentView.showsHorizontalScrollIndicator = false
-        contentView.showsVerticalScrollIndicator = false
-        contentView.backgroundColor = .clear
         
-        view.addSubview(contentView)
+        chatView.register(SACChatViewCell.self, forCellWithReuseIdentifier: "Cell")
+        
+        chatView.delegate = self
+        chatView.dataSource = self
+        chatView.keyboardDismissMode = .interactive
+        
+//        contentView.frame = view.bounds
+//        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        contentView.scrollsToTop = true
+//        contentView.keyboardDismissMode = .interactive
+//        contentView.alwaysBounceVertical = true
+//        contentView.separatorStyle = .none
+//        //contentView.showsHorizontalScrollIndicator = false
+//        contentView.showsVerticalScrollIndicator = false
+//        contentView.backgroundColor = .clear
+        
+//        view.addSubview(contentView)
         
         if let group = SACEmoticonGroup(identifier: "com.qq.classic") {
             _emoticonGroups.append(group)
@@ -157,12 +169,32 @@ open class SACChatViewController: UIViewController {
     }()
 }
 
+
+extension SACChatViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 99
+    }
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        cell.backgroundColor = .random
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 320, height: 120)
+    }
+    
+}
+
 // MARK: - SAInputBarDelegate & SAInputBarDisplayable
 
 extension SACChatViewController: SAIInputBarDelegate, SAIInputBarDisplayable {
     
     open var scrollView: UIScrollView {
-        return contentView
+        return chatView
     }
     
     open func inputView(with item: SAIInputItem) -> UIView? {

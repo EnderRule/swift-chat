@@ -10,6 +10,11 @@
 		0C001CDF1DC745B8004A5F08 /* SAInput.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDC1DC745B8004A5F08 /* SAInput.framework */; };
 		0C001CE01DC745B8004A5F08 /* SAMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDD1DC745B8004A5F08 /* SAMedia.framework */; };
 		0C001CE11DC745B8004A5F08 /* SAPhotos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */; };
+		0C02A4DF1E10B7E6005DDE2A /* SACChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02A4DE1E10B7E6005DDE2A /* SACChatView.swift */; };
+		0C02A4E11E10B7FC005DDE2A /* SACChatViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02A4E01E10B7FC005DDE2A /* SACChatViewLayout.swift */; };
+		0C02A4E31E10C391005DDE2A /* SACChatViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02A4E21E10C391005DDE2A /* SACChatViewCell.swift */; };
+		0C02A4E51E10C996005DDE2A /* UIColor+Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02A4E41E10C996005DDE2A /* UIColor+Random.swift */; };
+		0C02A4E71E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C02A4E61E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift */; };
 		0C09E8E51DC85A3C000E11D1 /* SAIInputBar+Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C09E8E41DC85A3C000E11D1 /* SAIInputBar+Resource.swift */; };
 		0C09E9461DC85D65000E11D1 /* UIImage+Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C09E9451DC85D65000E11D1 /* UIImage+Chat.swift */; };
 		0C09E9761DC86A9D000E11D1 /* chat_bottom_Camera_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9471DC86A9D000E11D1 /* chat_bottom_Camera_nor@3x.png */; };
@@ -37,7 +42,7 @@
 		0C09E98C1DC86A9D000E11D1 /* chat_bottom_shake_nor@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E95D1DC86A9D000E11D1 /* chat_bottom_shake_nor@3x.png */; };
 		0C09E98D1DC86A9D000E11D1 /* chat_bottom_shake_press@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E95E1DC86A9D000E11D1 /* chat_bottom_shake_press@3x.png */; };
 		0C09E98E1DC86A9D000E11D1 /* chat_bottom_textfield@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E95F1DC86A9D000E11D1 /* chat_bottom_textfield@2x.png */; };
-		0C09E98F1DC86A9D000E11D1 /* chat_emoticons.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9601DC86A9D000E11D1 /* chat_emoticons.bundle */; };
+		0C09E98F1DC86A9D000E11D1 /* emoticons.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9601DC86A9D000E11D1 /* emoticons.bundle */; };
 		0C09E9901DC86A9D000E11D1 /* chat_tool_aa_collection@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9611DC86A9D000E11D1 /* chat_tool_aa_collection@3x.png */; };
 		0C09E9911DC86A9D000E11D1 /* chat_tool_camera@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9621DC86A9D000E11D1 /* chat_tool_camera@3x.png */; };
 		0C09E9921DC86A9D000E11D1 /* chat_tool_favorite@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C09E9631DC86A9D000E11D1 /* chat_tool_favorite@3x.png */; };
@@ -83,6 +88,11 @@
 		0C001CDC1DC745B8004A5F08 /* SAInput.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAInput.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAInput.framework"; sourceTree = "<group>"; };
 		0C001CDD1DC745B8004A5F08 /* SAMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAMedia.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAMedia.framework"; sourceTree = "<group>"; };
 		0C001CDE1DC745B8004A5F08 /* SAPhotos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SAPhotos.framework; path = "../../../Library/Developer/Xcode/DerivedData/Projects-ftedyhxnutwhngeypglfuwkpqpam/Build/Products/Debug-iphonesimulator/SAPhotos.framework"; sourceTree = "<group>"; };
+		0C02A4DE1E10B7E6005DDE2A /* SACChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatView.swift; sourceTree = "<group>"; };
+		0C02A4E01E10B7FC005DDE2A /* SACChatViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatViewLayout.swift; sourceTree = "<group>"; };
+		0C02A4E21E10C391005DDE2A /* SACChatViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatViewCell.swift; sourceTree = "<group>"; };
+		0C02A4E41E10C996005DDE2A /* UIColor+Random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Random.swift"; sourceTree = "<group>"; };
+		0C02A4E61E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatViewLayoutAttributes.swift; sourceTree = "<group>"; };
 		0C09E8E41DC85A3C000E11D1 /* SAIInputBar+Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SAIInputBar+Resource.swift"; sourceTree = "<group>"; };
 		0C09E9451DC85D65000E11D1 /* UIImage+Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Chat.swift"; sourceTree = "<group>"; };
 		0C09E9471DC86A9D000E11D1 /* chat_bottom_Camera_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_Camera_nor@3x.png"; sourceTree = "<group>"; };
@@ -110,7 +120,7 @@
 		0C09E95D1DC86A9D000E11D1 /* chat_bottom_shake_nor@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_shake_nor@3x.png"; sourceTree = "<group>"; };
 		0C09E95E1DC86A9D000E11D1 /* chat_bottom_shake_press@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_shake_press@3x.png"; sourceTree = "<group>"; };
 		0C09E95F1DC86A9D000E11D1 /* chat_bottom_textfield@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_bottom_textfield@2x.png"; sourceTree = "<group>"; };
-		0C09E9601DC86A9D000E11D1 /* chat_emoticons.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = chat_emoticons.bundle; sourceTree = "<group>"; };
+		0C09E9601DC86A9D000E11D1 /* emoticons.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = emoticons.bundle; sourceTree = "<group>"; };
 		0C09E9611DC86A9D000E11D1 /* chat_tool_aa_collection@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_tool_aa_collection@3x.png"; sourceTree = "<group>"; };
 		0C09E9621DC86A9D000E11D1 /* chat_tool_camera@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_tool_camera@3x.png"; sourceTree = "<group>"; };
 		0C09E9631DC86A9D000E11D1 /* chat_tool_favorite@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chat_tool_favorite@3x.png"; sourceTree = "<group>"; };
@@ -190,6 +200,7 @@
 		0C09E8E61DC85D0E000E11D1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0C09E9601DC86A9D000E11D1 /* emoticons.bundle */,
 				0C09E9471DC86A9D000E11D1 /* chat_bottom_Camera_nor@3x.png */,
 				0C09E9481DC86A9D000E11D1 /* chat_bottom_Camera_press@3x.png */,
 				0C09E9491DC86A9D000E11D1 /* chat_bottom_emoticon_nor@3x.png */,
@@ -219,7 +230,6 @@
 				0C09E9AC1DC872D6000E11D1 /* chat_emoticon_btn_send_blue@2x.png */,
 				0C09E9AD1DC872D6000E11D1 /* chat_emoticon_btn_send_gray@2x.png */,
 				0C09E9AE1DC872D6000E11D1 /* chat_emoticon_btn_setting@2x.png */,
-				0C09E9601DC86A9D000E11D1 /* chat_emoticons.bundle */,
 				0C09E9611DC86A9D000E11D1 /* chat_tool_aa_collection@3x.png */,
 				0C09E9621DC86A9D000E11D1 /* chat_tool_camera@3x.png */,
 				0C09E9631DC86A9D000E11D1 /* chat_tool_favorite@3x.png */,
@@ -268,6 +278,7 @@
 		0C0BB0151DC72C3400B5CF4F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0C02A4E41E10C996005DDE2A /* UIColor+Random.swift */,
 				0C3F7C241DC8400D00461848 /* Logger.swift */,
 				0C0BB0161DC72C3400B5CF4F /* SAChat.h */,
 				0C0BB0171DC72C3400B5CF4F /* Info.plist */,
@@ -300,6 +311,10 @@
 		0C3F7BB41DC83B5600461848 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0C02A4E21E10C391005DDE2A /* SACChatViewCell.swift */,
+				0C02A4DE1E10B7E6005DDE2A /* SACChatView.swift */,
+				0C02A4E01E10B7FC005DDE2A /* SACChatViewLayout.swift */,
+				0C02A4E61E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift */,
 				0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */,
 				0C3F7BB71DC83B5600461848 /* SIMChatViewController+Keyboard.swift */,
 				0C3F7BB81DC83B5600461848 /* SIMChatViewController+Message.swift */,
@@ -403,7 +418,7 @@
 				0C09E9851DC86A9D000E11D1 /* chat_bottom_PTT_nor@3x.png in Resources */,
 				0C09E9861DC86A9D000E11D1 /* chat_bottom_PTT_press@3x.png in Resources */,
 				0C09E98C1DC86A9D000E11D1 /* chat_bottom_shake_nor@3x.png in Resources */,
-				0C09E98F1DC86A9D000E11D1 /* chat_emoticons.bundle in Resources */,
+				0C09E98F1DC86A9D000E11D1 /* emoticons.bundle in Resources */,
 				0C09E9A01DC86A9D000E11D1 /* chat_tool_share_nameplate@3x.png in Resources */,
 				0C09E9B11DC872D6000E11D1 /* chat_emoticon_btn_send_gray@2x.png in Resources */,
 				0C09E97F1DC86A9D000E11D1 /* chat_bottom_more_nor@3x.png in Resources */,
@@ -453,6 +468,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C02A4E11E10B7FC005DDE2A /* SACChatViewLayout.swift in Sources */,
 				0C2770321DC8441300FE17FC /* SACUserProtocol.swift in Sources */,
 				0C3F7BC11DC83C0700461848 /* SACChatViewController.swift in Sources */,
 				0C09E9AA1DC86BE0000E11D1 /* SACEmoticonGroup.swift in Sources */,
@@ -461,12 +477,16 @@
 				0C3F7BBC1DC83B5600461848 /* SIMChatViewController+Message.swift in Sources */,
 				0C09E9A81DC86BB1000E11D1 /* SACEmoticonLarge.swift in Sources */,
 				0C3F7C251DC8400D00461848 /* Logger.swift in Sources */,
+				0C02A4E51E10C996005DDE2A /* UIColor+Random.swift in Sources */,
 				0C3F7BBD1DC83B5600461848 /* SIMChatViewController.swift in Sources */,
 				0C2770341DC8442D00FE17FC /* SACManager.swift in Sources */,
 				0C09E9A61DC86B51000E11D1 /* SACEmoticon.swift in Sources */,
 				0C09E9461DC85D65000E11D1 /* UIImage+Chat.swift in Sources */,
 				0C2770311DC8441300FE17FC /* SACConversationProtocol.swift in Sources */,
+				0C02A4E31E10C391005DDE2A /* SACChatViewCell.swift in Sources */,
 				0C3F7BBB1DC83B5600461848 /* SIMChatViewController+Keyboard.swift in Sources */,
+				0C02A4E71E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift in Sources */,
+				0C02A4DF1E10B7E6005DDE2A /* SACChatView.swift in Sources */,
 				0C09E8E51DC85A3C000E11D1 /* SAIInputBar+Resource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

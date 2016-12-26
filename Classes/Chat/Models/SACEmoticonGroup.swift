@@ -38,7 +38,7 @@ open class SACEmoticonGroup: SAIEmoticonGroup {
     
     convenience init?(identifier : String) {
         let bundle = SACManager.mainBundle ?? .main
-        guard let path = bundle.path(forResource: "chat_emoticons.bundle/\(identifier)/Info", ofType: "plist") else {
+        guard let path = bundle.path(forResource: "emoticons.bundle/\(identifier)/Info", ofType: "plist") else {
             return nil
         }
         self.init(contentsOfFile: path)
