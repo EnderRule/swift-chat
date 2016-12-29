@@ -56,8 +56,6 @@ open class SACChatViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-         SACChatViewLayoutAttributes().calc(with: CGSize(width: 320, height: 120))
-        
 //        view.backgroundColor = .white
         
         _toolbar.delegate = self
@@ -180,11 +178,16 @@ extension SACChatViewController: UICollectionViewDataSource, UICollectionViewDel
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         cell.backgroundColor = .random
+        guard let cell = cell as? SACChatViewCell  else {
+            return
+        }
+        cell._apply()
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 320, height: 120)
+        return CGSize(width: 320, height: 160)
     }
     
 }

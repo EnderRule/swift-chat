@@ -33,26 +33,25 @@ class SACChatViewLayoutAttributes: UICollectionViewLayoutAttributes {
     var options: SACChatViewLayoutOptions
     
    
-    
     var cardSize: CGSize = CGSize(width: 0, height: 20)
-    var cardMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+    var cardMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 0, 8)
     
     var avatarSize: CGSize = CGSize(width: 40, height: 40)
-    var avatarMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+    var avatarMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 0)
     
-    var layoutMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 10, 8, 10)
-    var contentMargins: UIEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+    var layoutMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+    var contentMargins: UIEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
     
     func systemLayoutSizeFitting(_ targetSize: CGSize) -> CGSize {
-        return .zero
+        return CGSize(width: 180, height: 80)
     }
     
     func calc(with size: CGSize) {
         
         // 计算的时候以左对齐为基准
         
-        // +---------------------------------------+ r0
-        // |+---------------------------------+ r1 |
+        // +---------------------------------------+ r
+        // |+---------------------------------+ r0 |
         // ||+---+ <NAME>                     |    |
         // ||| A | +---------------------\ r4 |    |
         // ||+---+ |+---------------+ r5 |    |    |
@@ -62,11 +61,9 @@ class SACChatViewLayoutAttributes: UICollectionViewLayoutAttributes {
         // |+---------------------------------+    |
         // +---------------------------------------+
         
+        let edg0 = _layoutMargins(with: options.alignment)
         var r0 = CGRect(x: 0, y: 0, width: size.width, height: .greatestFiniteMagnitude)
-        
-        // add layout margins
-        let edg1 = _layoutMargins(with: .left)
-        var r1 = UIEdgeInsetsInsetRect(r0, edg1)
+        var r1 = UIEdgeInsetsInsetRect(r0, edg0)
         
         var x1 = r1.minX
         var y1 = r1.minY
@@ -74,35 +71,66 @@ class SACChatViewLayoutAttributes: UICollectionViewLayoutAttributes {
         var y2 = r1.maxY
         
         // add avatar if needed
-        let size2 = avatarSize
-        let edg2 = avatarMargins
-        var r2 = CGRect(x: x1, y: y1, width: edg2.left + size2.width + edg2.right, height: edg2.top + size2.height + edg2.bottom)
-    
         if options.showsAvatar {
-            x1 = r2.maxX
+            let size = avatarSize
+            let edg = avatarMargins
+            
+            let box = CGRect(x: x1, y: y1, width: edg.left + size.width + edg.right, height: edg.top + size.height + edg.bottom)
+            let rect = UIEdgeInsetsInsetRect(box, edg)
+            
+            _avatarRect = rect
+            _avatarBoxRect = box
+            
+            x1 = box.maxX
         }
-        
         // add card if needed
-        let size3 = cardSize
-        let edg3 = cardMargins
-        let r3 = CGRect(x: x1, y: y1, width: x2 - x1 - edg3.right, height: edg3.top + size3.height + edg3.bottom)
-        
         if options.showsCard {
-            y1 = r3.maxY
+            let size = cardSize
+            let edg = cardMargins
+            
+            let box = CGRect(x: x1, y: y1, width: x2 - x1, height: edg.top + size.height + edg.bottom)
+            let rect = UIEdgeInsetsInsetRect(box, edg)
+            
+            _cardRect = rect
+            _cardBoxRect = box
+            
+            y1 = box.maxY
         }
-        
         // add content
-        let edg4 = contentMargins
-        let r4 = UIEdgeInsetsInsetRect(CGRect(x: x1, y: y1, width: x2 - x1, height: y2 - y1), edg4)
+        if true {
+           
+            let edg = contentMargins
+            
+            var box = CGRect(x: x1, y: y1, width: x2 - x1, height: y2 - y1)
+            var rect = UIEdgeInsetsInsetRect(box, edg)
+            
+            // calc content size
+            let size = systemLayoutSizeFitting(rect.size)
+            
+            // restore offset
+            box.size.width = edg.left + size.width + edg.right
+            box.size.height = edg.top + size.height + edg.bottom
+            rect.size.width = size.width
+            rect.size.height = size.height
+            
+            _contentRect = rect
+            _contentBoxRect = box
+            
+            x1 = box.maxX
+            y1 = box.maxY
+        }
+        // adjust
+        r1.size.height = y1 - r1.minY
+        r0.size.height = r1.height + edg0.bottom
         
-        // calc content size
-        let size4 = systemLayoutSizeFitting(r4.size)
+        _rect = r1
+        _boxRect = r0
         
-        // restore offset
-        let w = size4.width
-        let h = r4.minY + size4.height + r0.maxY - y2
-        
-        
+        // algin
+        if options.alignment == .right {
+            
+            
+        }
     }
     
     private func _layoutMargins(with alignment: SACChatViewLayoutAlignment) -> UIEdgeInsets {
@@ -120,11 +148,15 @@ class SACChatViewLayoutAttributes: UICollectionViewLayoutAttributes {
     }
     
     
-    private lazy var _frame: CGRect = .zero
+    lazy var _rect: CGRect = .zero
+    lazy var _boxRect: CGRect = .zero
     
-    private lazy var _cardRect: CGRect = .zero
-    private lazy var _avatarRect: CGRect = .zero
+    lazy var _cardRect: CGRect = .zero
+    lazy var _cardBoxRect: CGRect = .zero
     
-    private lazy var _bubbleRect: CGRect = .zero
-    private lazy var _contentRect: CGRect = .zero
+    lazy var _avatarRect: CGRect = .zero
+    lazy var _avatarBoxRect: CGRect = .zero
+    
+    lazy var _contentRect: CGRect = .zero
+    lazy var _contentBoxRect: CGRect = .zero
 }

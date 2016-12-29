@@ -82,6 +82,7 @@
 		0C3F7BBD1DC83B5600461848 /* SIMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BB91DC83B5600461848 /* SIMChatViewController.swift */; };
 		0C3F7BC11DC83C0700461848 /* SACChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */; };
 		0C3F7C251DC8400D00461848 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3F7C241DC8400D00461848 /* Logger.swift */; };
+		0CFE7A581E15235B0044D61F /* Debugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFE7A571E15235B0044D61F /* Debugger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -162,6 +163,7 @@
 		0C3F7BB91DC83B5600461848 /* SIMChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SIMChatViewController.swift; sourceTree = "<group>"; };
 		0C3F7BC01DC83C0700461848 /* SACChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SACChatViewController.swift; sourceTree = "<group>"; };
 		0C3F7C241DC8400D00461848 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ../../Classes/Logger/Logger.swift; sourceTree = "<group>"; };
+		0CFE7A571E15235B0044D61F /* Debugger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debugger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +280,7 @@
 		0C0BB0151DC72C3400B5CF4F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0CFE7A571E15235B0044D61F /* Debugger.swift */,
 				0C02A4E41E10C996005DDE2A /* UIColor+Random.swift */,
 				0C3F7C241DC8400D00461848 /* Logger.swift */,
 				0C0BB0161DC72C3400B5CF4F /* SAChat.h */,
@@ -483,6 +486,7 @@
 				0C09E9A61DC86B51000E11D1 /* SACEmoticon.swift in Sources */,
 				0C09E9461DC85D65000E11D1 /* UIImage+Chat.swift in Sources */,
 				0C2770311DC8441300FE17FC /* SACConversationProtocol.swift in Sources */,
+				0CFE7A581E15235B0044D61F /* Debugger.swift in Sources */,
 				0C02A4E31E10C391005DDE2A /* SACChatViewCell.swift in Sources */,
 				0C3F7BBB1DC83B5600461848 /* SIMChatViewController+Keyboard.swift in Sources */,
 				0C02A4E71E10E1A9005DDE2A /* SACChatViewLayoutAttributes.swift in Sources */,
